@@ -21,25 +21,50 @@ rs
 config
 render
 use xcb::{self, randr, Rectangle};
-var kingchris = ['^ MASSIVE willy ^'];
 
-if (IRC.event) {
-    const { type, message, user, target, init, timestamp } = IRC.event;
-    print(_.shuffle(kingchris)[0]);
-    IRC.eventFns.addEvent('speak', {
-        callback: 'MASSIVEbanks',
-        time: new Date(),
-        message: target,
-        target,
-    });
-}
-else if (input) {
-    const now = new Date();
-    IRC.eventFns.addEvent('speak', {
-        callback: 'MASSIVEbanks',
-        time: new Date(),
-        message: input,
-        target: input,
-    });
-    print(_.shuffle(kingchris)[0]);
+fn bump() {
+
+    let (conn, screen_num) = xcb::Connection::connect(None).unwrap();
+    let setup = conn.get_setup();
+    let screen = setup.roots().nth(screen_num as usize).unwrap();
+
+    let window = conn.generate_id();
+
+    let values = [
+        (xcb::CW_BACK_PIXEL, screen.white_pixel()),
+        (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_EXPOSURE | xcb::EVENT_MASK_KEY_PRESS),
+    ];
+
+    xcb::create_window(&conn,
+        xcb::COPY_FROM_PARENT as u8,
+        window,
+        screen.root(),
+        0, 0,
+        150, 40,
+        10,
+        xcb::WINDOW_CLASS_INPUT_OUTPUT as u16,
+        screen.root_visual(),
+        &values);
+    let title = "Basic Window";
+    //
+    // Set all window properties
+    let height = 40;
+    let struts = [0, 0, height, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    set_prop!(&conn, window, "_NET_WM_STRUT", &struts[0..4]);
+    set_prop!(&conn, window, "_NET_WM_STRUT_PARTIAL", &struts);
+    set_prop!(&conn, window, "_NET_WM_WINDOW_TYPE", @atom "_NET_WM_WINDOW_TYPE_DOCK");
+    set_prop!(&conn, window, "_NET_WM_STATE", @atom "_NET_WM_STATE_STICKY");
+    set_prop!(&conn, window, "_NET_WM_DESKTOP", &[-1]);
+    // set_prop!(&conn, window, "_NET_WM_NAME", &title[..3], "UTF8_STRING", 8);
+// set_prop!(&conn, window, "WM_NAME", &title[..3], "STRING", 8);
+
+    xcb::map_window(&conn, window);
+
+    // setting title
+    xcb::change_property(&conn, xcb::PROP_MODE_REPLACE as u8, window,
+            xcb::ATOM_WM_NAME, xcb::ATOM_STRING, 8, title.as_bytes());
+
+    conn.flush();
+
+    loop { let event = conn.wait_for_event(); }
 }

@@ -1,5 +1,5 @@
 [package]
-name = "rustybar"
+name = "cakebar"
 version = "0.1.0"
 authors = ["kirjavascript <snkenjoi@gmail.com>"]
 
@@ -7,7 +7,7 @@ authors = ["kirjavascript <snkenjoi@gmail.com>"]
 chrono = "0.4"
 # glib = "^0"
 gio = "^0"
-# gdk = "^0"
+gdk = "^0"
 # gdk-pixbuf = "^0"
 gtk = "^0"
 xcb = "0.8.2"
