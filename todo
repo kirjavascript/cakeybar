@@ -8,6 +8,7 @@ reload config
 https://crates.io/crates/leechbar
 https://github.com/jaagr/polybar
 https://github.com/geommer/yabar
+https://github.com/paholg/rustybar
 lemonbar
 <command interval="5000">
     uname -a
@@ -20,3 +21,25 @@ rs
 config
 render
 use xcb::{self, randr, Rectangle};
+var kingchris = ['^ MASSIVE willy ^'];
+
+if (IRC.event) {
+    const { type, message, user, target, init, timestamp } = IRC.event;
+    print(_.shuffle(kingchris)[0]);
+    IRC.eventFns.addEvent('speak', {
+        callback: 'MASSIVEbanks',
+        time: new Date(),
+        message: target,
+        target,
+    });
+}
+else if (input) {
+    const now = new Date();
+    IRC.eventFns.addEvent('speak', {
+        callback: 'MASSIVEbanks',
+        time: new Date(),
+        message: input,
+        target: input,
+    });
+    print(_.shuffle(kingchris)[0]);
+}
