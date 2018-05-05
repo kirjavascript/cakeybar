@@ -1,0 +1,22 @@
+XML / SVG (layout) config
+conditional display / flexbox
+dmenu replacement
+realm
+Inconsolata
+crates: clap (options for monitors)
+reload config
+https://crates.io/crates/leechbar
+https://github.com/jaagr/polybar
+https://github.com/geommer/yabar
+lemonbar
+<command interval="5000">
+    uname -a
+</command>
+
+bindsym $mod+m exec rustybar-msg
+yaml toml json xml nginx
+
+rs
+config
+render
+use xcb::{self, randr, Rectangle};

@@ -1,0 +1,15 @@
+[package]
+name = "rustybar"
+version = "0.1.0"
+authors = ["kirjavascript <snkenjoi@gmail.com>"]
+
+[dependencies]
+chrono = "0.4"
+# glib = "^0"
+gio = "^0"
+# gdk = "^0"
+# gdk-pixbuf = "^0"
+gtk = "^0"
+xcb = "0.8.2"
+# pango = "^0"
+# cairo-rs = { version = "^0", features = ["png"] }
