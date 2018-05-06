@@ -1,10 +1,13 @@
-global_string = "test"
-global_integer = 5
-[server]
-ip = "127.0.0.1"
-port = 80
-[[peers]]
-ip = "127.0.0.1"
-port = 8080
-[[peers]]
-ip = "127.0.0.1"
+# default config example
+
+theme = "theme.css"
+
+[[bar]]
+monitor = 0
+position = "top"
+class = "first"
+
+[[bar]]
+monitor = 1
+position = "bottom"
+class = "second"

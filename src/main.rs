@@ -48,10 +48,12 @@ fn main() {
 
     // TODO: xdg
 
-    let config = matches.value_of("config")
+    let config_path = matches.value_of("config")
         .unwrap_or("~/.config/cakeybar/config.toml");
 
-    config::parse_config(config);
+    let config = config::parse_config(config_path);
+
+    println!("{:#?}", config);
 
     // GTK application
 

@@ -17,6 +17,8 @@ lemonbar
 </command>
 xdg
 
+toml inherit
+
 Component trait
 
 bindsym $mod+m exec rustybar-msg
