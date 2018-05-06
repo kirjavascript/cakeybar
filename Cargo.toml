@@ -11,6 +11,7 @@ gdk = "^0"
 # gdk-pixbuf = "^0"
 # gtk-sys = "0.6.0"
 gtk = "^0"
-xcb = "0.8.2"
+i3ipc = "0.8.2"
+clap = "2.31.2"
 # pango = "^0"
 # cairo-rs = { version = "^0", features = ["png"] }
