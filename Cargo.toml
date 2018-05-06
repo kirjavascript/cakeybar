@@ -1,5 +1,5 @@
 [package]
-name = "cakebar"
+name = "cakeybar"
 version = "0.1.0"
 authors = ["kirjavascript <snkenjoi@gmail.com>"]
 
@@ -9,6 +9,7 @@ chrono = "0.4"
 gio = "^0"
 gdk = "^0"
 # gdk-pixbuf = "^0"
+# gtk-sys = "0.6.0"
 gtk = "^0"
 xcb = "0.8.2"
 # pango = "^0"

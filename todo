@@ -5,6 +5,7 @@ realm
 Inconsolata
 crates: clap (options for monitors)
 reload config
+windows taskbar (clickable) + osx background rice
 https://crates.io/crates/leechbar
 https://github.com/jaagr/polybar
 https://github.com/geommer/yabar
@@ -13,14 +14,15 @@ lemonbar
 <command interval="5000">
     uname -a
 </command>
+xdg
 
 bindsym $mod+m exec rustybar-msg
 yaml toml json xml nginx
+css: https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 
 rs
 config
 render
-use xcb::{self, randr, Rectangle};
 
 fn bump() {
 

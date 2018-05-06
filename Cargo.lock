@@ -43,6 +43,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "cakeybar"
+version = "0.1.0"
+dependencies = [
+ "chrono 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gdk 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gio 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "gtk 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "xcb 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "cc"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -289,17 +300,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "redox_syscall"
 version = "0.1.37"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
-name = "rustybar"
-version = "0.1.0"
-dependencies = [
- "chrono 0.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "gdk 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gio 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "gtk 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "xcb 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
 
 [[package]]
 name = "time"
