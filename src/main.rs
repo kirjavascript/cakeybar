@@ -2,6 +2,8 @@ extern crate gio;
 extern crate gtk;
 extern crate gdk;
 extern crate clap;
+#[macro_use]
+extern crate serde_derive;
 
 use gio::prelude::*;
 use gtk::prelude::*;
@@ -9,14 +11,10 @@ use gtk::prelude::*;
 use clap::{Arg, App, SubCommand};
 
 mod util;
+mod config;
 
 fn init(application: &gtk::Application) {
-
     let monitors = util::get_monitors();
-
-    println!("{:#?}", monitors);
-
-    // get config
 }
 
 fn main() {
@@ -52,8 +50,8 @@ fn main() {
 
     let config = matches.value_of("config")
         .unwrap_or("~/.config/cakeybar/config.toml");
-    println!("Value for config: {}", config);
 
+    config::parse_config(config);
 
     // GTK application
 
@@ -68,6 +66,6 @@ fn main() {
     });
     application.connect_activate(|_| {});
 
-    application.run(&Vec::new());
+    application.run(&Vec::new()); // dont pass any arguments to GTK
 
 }
