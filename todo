@@ -22,5 +22,10 @@ toml inherit
 Component trait
 
 bindsym $mod+m exec rustybar-msg
-css: https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
+
+css:
+https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
+https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
+
+type stuff
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug

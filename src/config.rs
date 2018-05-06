@@ -7,20 +7,21 @@ use std::process::exit;
 #[derive(Debug, Deserialize)]
 pub struct Config {
     theme: Option<String>,
-    bar: Option<Vec<BarConfig>>,
+    bar: Vec<BarConfig>,
 }
 
 #[derive(Debug, Deserialize)]
 pub struct BarConfig {
     monitor: Option<u64>,
     position: Option<String>,
+    class: Option<String>,
 }
 
 pub fn parse_config(filename: &str) -> Config {
     let mut file_result = File::open(filename);
 
-    if file_result.is_err() {
-        eprintln!("{}: {}", filename, file_result.err().unwrap());
+    if let Err(e) = file_result {
+        eprintln!("{}: {}", filename, e);
         exit(2i32);
     }
 
@@ -31,10 +32,12 @@ pub fn parse_config(filename: &str) -> Config {
 
     let decoded_result: Result<Config, _> = toml::from_str(&contents);
 
-    if decoded_result.is_err() {
-        eprintln!("{}: {}", filename, decoded_result.err().unwrap());
+    if let Err(e) = decoded_result {
+        eprintln!("{}: {}", filename, e);
         exit(1i32);
     }
 
-    decoded_result.unwrap()
+    let config = decoded_result.unwrap();
+
+    config
 }

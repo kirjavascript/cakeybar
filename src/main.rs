@@ -12,9 +12,14 @@ use clap::{Arg, App, SubCommand};
 
 mod util;
 mod config;
+mod bar;
 
-fn init(application: &gtk::Application) {
+fn init(application: &gtk::Application, config: &config::Config) {
     let monitors = util::get_monitors();
+    println!("{:#?}", config);
+
+    bar::Bar::new(&application);
+    bar::Bar::new(&application);
 }
 
 fn main() {
@@ -46,14 +51,12 @@ fn main() {
         return ();
     }
 
-    // TODO: xdg
+    // Get config
 
     let config_path = matches.value_of("config")
-        .unwrap_or("~/.config/cakeybar/config.toml");
+        .unwrap_or("~/.config/cakeybar/config.toml"); // TODO: xdg
 
     let config = config::parse_config(config_path);
-
-    println!("{:#?}", config);
 
     // GTK application
 
@@ -63,8 +66,8 @@ fn main() {
         )
         .expect("Initialization failed...");
 
-    application.connect_startup(|app| {
-        init(app);
+    application.connect_startup(move |app| {
+        init(&app, &config);
     });
     application.connect_activate(|_| {});
 
