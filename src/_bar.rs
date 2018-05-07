@@ -6,7 +6,7 @@ extern crate chrono;
 
 use gio::prelude::*;
 use gtk::prelude::*;
-use gdk::{Screen, ScreenExt};
+use gdk::{Screen, ScreenExt, RGBA};
 use gtk::{
     Box,
     Label,
@@ -14,7 +14,8 @@ use gtk::{
     Orientation,
     Image,
     CssProvider,
-    STYLE_PROVIDER_PRIORITY_APPLICATION,
+    StateFlags,
+    StyleContext,
 };
 use std::env::args;
 use std::path::Path;
@@ -67,29 +68,42 @@ fn build_ui(application: &gtk::Application) {
 
     gtk::timeout_add_seconds(1, tick);
 
+    // window.set_opacity(0.5);
+
+    // window.override_background_color(StateFlags::NORMAL, &RGBA {
+    //     red: 255.,
+    //     green: 255.,
+    //     blue: 0.,
+    //     alpha: 0.5,
+    // });
 
     // styles
 
+    // apparently I should just add the provider to screen
+
     WidgetExt::set_name(&window, "bork");
-    let style_context = window.get_style_context().unwrap();
-    let style_context_2 = label.get_style_context().unwrap();
     // let style = include_bytes!("../../style/command-input.css");
     let style = r#"
-        #bork, GtkEntry {
-            background-color: rgba(255, 255, 255, 0);
+        #bork {
+            background-color: rgba(0, 0, 0, 0);
+            opacity: 0.5;
+        }
+        box {
+            background-color: purple;
+            opacity: 1;
         }
         label {
             color: white;
             font-family: Inconsolata;
             text-shadow: 1px 1px pink;
             font-size: 24px;
+            opacity: 1;
         }
     "#;
     let provider = CssProvider::new();
     match provider.load_from_data(style.as_bytes()) {
         Ok(_) => {
-            style_context.add_provider(&provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
-            style_context_2.add_provider(&provider, STYLE_PROVIDER_PRIORITY_APPLICATION);
+            StyleContext::add_provider_for_screen(&screen, &provider, 0);
         },
         Err(_) => println!("Error parsing stylesheet"),
     };

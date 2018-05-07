@@ -1,10 +1,11 @@
 # default config example
 
+theme = "theme.css"
+
 [[bar]]
 monitor = 0
 position = "top"
 name = "first"
-theme = "theme.css"
 # layout
 # inherit
 

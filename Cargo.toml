@@ -19,6 +19,6 @@ toml = "0.4"
 # pango = "^0"
 # cairo-rs = { version = "^0", features = ["png"] }
 
-[[bin]]
+[[example]]
 name = "basic"
 path = "src/_bar.rs"
