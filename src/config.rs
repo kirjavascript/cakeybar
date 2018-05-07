@@ -4,21 +4,45 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::process::exit;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Config {
-    theme: Option<String>,
-    bar: Vec<BarConfig>,
+    pub bar: Vec<BarConfig>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
+pub enum Position {
+    top,
+    bottom,
+}
+
+#[derive(Debug, Deserialize, Clone)]
 pub struct BarConfig {
+    name: Option<String>,
     monitor: Option<u64>,
-    position: Option<String>,
-    class: Option<String>,
+    position: Option<Position>,
+    theme: Option<String>,
+}
+
+impl BarConfig {
+    pub fn get_monitor_index(&self) -> usize {
+        if let Some(index) = self.monitor {
+            index as usize
+        } else {
+            0
+        }
+    }
+    pub fn get_position(&self) -> Position {
+        if let Some(pos) = self.position.clone() {
+            pos
+        }
+        else {
+            Position::top
+        }
+    }
 }
 
 pub fn parse_config(filename: &str) -> Config {
-    let mut file_result = File::open(filename);
+    let file_result = File::open(filename);
 
     if let Err(e) = file_result {
         eprintln!("{}: {}", filename, e);

@@ -10,23 +10,25 @@ use gtk::prelude::*;
 
 use clap::{Arg, App, SubCommand};
 
+pub const NAME: &str = "cakeybar";
+
 mod util;
 mod config;
 mod bar;
 
 fn init(application: &gtk::Application, config: &config::Config) {
-    let monitors = util::get_monitors();
     println!("{:#?}", config);
 
-    bar::Bar::new(&application);
-    bar::Bar::new(&application);
+    for bar_config in config.bar.iter() {
+        let _ = bar::Bar::new(&application, bar_config.clone());
+    }
 }
 
 fn main() {
 
     // CLI config
 
-    let matches = App::new("cakeybar")
+    let matches = App::new(NAME)
         .arg(Arg::with_name("config")
              .short("c")
              .long("config")
@@ -61,7 +63,7 @@ fn main() {
     // GTK application
 
     let application = gtk::Application::new(
-        "com.kirjava.cakeybar",
+        &format!("com.kirjava.{}", NAME),
         gio::ApplicationFlags::empty(),
         )
         .expect("Initialization failed...");
