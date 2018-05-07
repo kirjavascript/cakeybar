@@ -10,7 +10,7 @@ use gtk::prelude::*;
 
 use clap::{Arg, App, SubCommand};
 
-pub const NAME: &str = "cakeybar";
+pub static NAME: &str = "cakeybar";
 
 mod util;
 mod config;

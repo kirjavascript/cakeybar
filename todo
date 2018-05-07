@@ -1,11 +1,7 @@
 better name
 conditional display / flexbox
 dmenu replacement
-realm
-Inconsolata
-crates: clap (options for monitors)
 reload config
-windows taskbar (clickable) + osx background rice / pice of cake / normal
 https://crates.io/crates/leechbar
 https://github.com/jaagr/polybar
 https://github.com/geommer/yabar
@@ -29,3 +25,9 @@ https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
 
 type stuff
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
+
+===
+transset 0.75
+windows taskbar (clickable) + osx background rice / pice of cake / normal
+solid multi monitors
+images

@@ -18,3 +18,7 @@ serde_derive = "1.0"
 toml = "0.4"
 # pango = "^0"
 # cairo-rs = { version = "^0", features = ["png"] }
+
+[[bin]]
+name = "basic"
+path = "src/_bar.rs"

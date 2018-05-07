@@ -75,7 +75,7 @@ fn build_ui(application: &gtk::Application) {
     let style_context_2 = label.get_style_context().unwrap();
     // let style = include_bytes!("../../style/command-input.css");
     let style = r#"
-        #bork {
+        #bork, GtkEntry {
             background-color: rgba(255, 255, 255, 0);
         }
         label {

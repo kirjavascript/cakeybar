@@ -25,19 +25,10 @@ pub struct BarConfig {
 
 impl BarConfig {
     pub fn get_monitor_index(&self) -> usize {
-        if let Some(index) = self.monitor {
-            index as usize
-        } else {
-            0
-        }
+        self.monitor.unwrap_or(0) as usize
     }
     pub fn get_position(&self) -> Position {
-        if let Some(pos) = self.position.clone() {
-            pos
-        }
-        else {
-            Position::top
-        }
+        self.position.clone().unwrap_or(Position::top)
     }
 }
 
@@ -60,6 +51,8 @@ pub fn parse_config(filename: &str) -> Config {
         eprintln!("{}: {}", filename, e);
         exit(1i32);
     }
+
+    // TODO: assert unique names for modules
 
     let config = decoded_result.unwrap();
 
