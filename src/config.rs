@@ -73,13 +73,14 @@ pub fn parse_config(filename: &str) -> Config {
     }
 
     let bar_configs: Vec<BarConfig> = bars.iter().map(|&(key, value)| {
-        let default_position = &Value::String(String::from(""));
-        let position = value.get("position").unwrap_or(default_position).as_str();
+
+        let position = value.get("position").map(|x| x.as_str().unwrap_or(""));
         let position = match position.unwrap_or("") {
             "bottom" => Position::Bottom,
             _ => Position::Top,
         };
-        let monitor_index = value.get("monitor").unwrap_or(&Value::Integer(0)).as_integer().unwrap_or(0) as usize;
+
+        let monitor_index = value.get("monitor").map(|x| x.as_integer().unwrap_or(0)).unwrap_or(0) as usize;
 
         BarConfig {
             name: key.to_string(),
@@ -88,8 +89,13 @@ pub fn parse_config(filename: &str) -> Config {
         }
     }).collect();
 
+    // theme
+
+    let theme = parsed.get("theme").map(|x| x.as_str().unwrap_or(""));
+    let theme = theme.map(|x| x.to_string());
+
     let config = Config {
-        theme: Some(String::from("asda")),
+        theme: theme,
         bars: bar_configs,
     };
 

@@ -3,14 +3,14 @@
 theme = "theme.css"
 
 [bar.left]
-monitor = 0
+monitor = 1
 position = "top"
 layout = [ "box1" ]
 # inherit
 
 [bar.right]
-monitor = 1
-postiion = "top"
+monitor = "asd"
+position = "top"
 layout = [ "clock" ]
 
 [component.box1]
