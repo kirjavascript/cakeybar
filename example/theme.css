@@ -1,0 +1,15 @@
+#left, #right {
+    background-color: purple;
+    /* opacity: 0.5; */
+}
+
+label {
+    color: white;
+    font-family: Inconsolata;
+    text-shadow: 1px 1px pink;
+    font-size: 24px;
+}
+
+#icon {
+    margin: 5px;
+}

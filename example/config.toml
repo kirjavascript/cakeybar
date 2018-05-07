@@ -5,23 +5,27 @@ theme = "theme.css"
 [bar.left]
 monitor = 1
 position = "top"
-layout = [ "box1" ]
+layout = [ "box1", "clock2" ]
 # inherit
 
 [bar.right]
 monitor = "asd"
 position = "top"
-layout = [ "clock" ]
+layout = [ "clock1" ]
 
 [component.box1]
 type = "container"
 direction = "row"
-layout = [ "clock", "icon" ]
+layout = [ "clock1", "icon" ]
 
 [component.icon]
 type = "image"
 src = "icon.svg"
 
-[component.clock]
+[component.clock1]
 type = "clock"
-format = "%Y-%m-%d %H:%M:%S"
+format = "%H:%M:%S"
+
+[component.clock2]
+type = "clock"
+format = "%Y-%m-%d"
