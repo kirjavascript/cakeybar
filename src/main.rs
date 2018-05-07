@@ -2,8 +2,6 @@ extern crate gio;
 extern crate gtk;
 extern crate gdk;
 extern crate clap;
-#[macro_use]
-extern crate serde_derive;
 
 use gio::prelude::*;
 use gtk::prelude::*;
@@ -17,9 +15,7 @@ mod config;
 mod bar;
 
 fn init(application: &gtk::Application, config: &config::Config) {
-    println!("{:#?}", config);
-
-    for bar_config in config.bar.iter() {
+    for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(&application, bar_config.clone());
     }
 }

@@ -1,12 +1,13 @@
 better name
 conditional display / flexbox
 dmenu replacement
-reload config
+reload config / theme
 https://crates.io/crates/leechbar
 https://github.com/jaagr/polybar
 https://github.com/geommer/yabar
 https://github.com/paholg/rustybar
 https://crates.io/crates/i3ipc
+system tray crate
 lemonbar
 <command interval="5000">
     uname -a

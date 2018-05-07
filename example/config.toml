@@ -2,14 +2,26 @@
 
 theme = "theme.css"
 
-[[bar]]
+[bar.left]
 monitor = 0
 position = "top"
-name = "first"
-# layout
+layout = [ "box1" ]
 # inherit
 
-[[bar]]
+[bar.right]
 monitor = 1
-position = "top"
-name = "second"
+postiion = "top"
+layout = [ "clock" ]
+
+[component.box1]
+type = "container"
+direction = "row"
+layout = [ "clock", "icon" ]
+
+[component.icon]
+type = "image"
+src = "icon.svg"
+
+[component.clock]
+type = "clock"
+format = "%Y-%m-%d %H:%M:%S"

@@ -22,7 +22,7 @@ use std::path::Path;
 use chrono::Local;
 
 fn current_time() -> String {
-    return format!("{}", Local::now().format("hello world 🍰 %Y-%m-%d %H:%M:%S"));
+    return format!("{}", Local::now().format("hello world %Y-%m-%d %H:%M:%S"));
 }
 
 fn build_ui(application: &gtk::Application) {
@@ -46,7 +46,7 @@ fn build_ui(application: &gtk::Application) {
 
     let container = Box::new(Orientation::Horizontal, 10);
 
-    let img: Image = Image::new_from_file(Path::new("./resources/icon.svg"));
+    let img: Image = Image::new_from_file(Path::new("./example/icon.svg"));
     container.add(&img);
 
     let time = current_time();
@@ -86,18 +86,19 @@ fn build_ui(application: &gtk::Application) {
     let style = r#"
         #bork {
             background-color: rgba(0, 0, 0, 0);
-            opacity: 0.5;
+            /* opacity: 0.5; */
         }
         box {
-            background-color: purple;
-            opacity: 1;
+            background-color: black;
+        }
+        image {
+            margin: 5px;
         }
         label {
             color: white;
             font-family: Inconsolata;
             text-shadow: 1px 1px pink;
             font-size: 24px;
-            opacity: 1;
         }
     "#;
     let provider = CssProvider::new();

@@ -4,14 +4,12 @@ use gtk::prelude::*;
 use gtk::{
     Window,
     WindowType,
+    // WidgetExt,
 
     // Box,
     // Label,
-    // WidgetExt,
     // Orientation,
     // Image,
-    // CssProvider,
-    // STYLE_PROVIDER_PRIORITY_APPLICATION,
 };
 
 use super::config::{BarConfig, Position};
@@ -24,8 +22,7 @@ pub struct Bar {
 impl Bar {
     pub fn new(application: &gtk::Application, config: BarConfig) -> Bar {
         let monitors = util::get_monitors();
-        let monitor_index = config.get_monitor_index();
-        let monitor_option = monitors.get(monitor_index);
+        let monitor_option = monitors.get(config.monitor_index);
 
         let bar = Bar {
             config: config,
@@ -33,6 +30,7 @@ impl Bar {
 
         match monitor_option {
             Some(monitor) => {
+                // load bar
                 let mut window = Window::new(WindowType::Toplevel);
                 application.add_window(&window);
 
@@ -42,16 +40,16 @@ impl Bar {
 
                 // set position
                 let x = monitor.x;
-                let y = match bar.config.get_position() {
-                    Position::bottom => monitor.y + (monitor.height / 2),
-                    Position::top => monitor.y,
+                let y = match bar.config.position {
+                    Position::Bottom => monitor.y + (monitor.height / 2),
+                    Position::Top => monitor.y,
                 };
                 window.move_(x, y);
 
                 window.show_all();
             },
             None => {
-                eprintln!("warning: no monitor at index {}", monitor_index);
+                eprintln!("warning: no monitor at index {}", bar.config.monitor_index);
             },
         }
 
