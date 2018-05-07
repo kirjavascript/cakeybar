@@ -28,7 +28,7 @@ type stuff
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
-transset 0.75
-windows taskbar (clickable) + osx background rice / pice of cake / normal
+osx top bar / windows taskbar (clickable) + osx background rice / pice of cake / normal
 solid multi monitors
 images
+simple configuration

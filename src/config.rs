@@ -110,7 +110,7 @@ pub fn parse_config(filename: &str) -> Config {
 
     // theme
 
-    let theme = parsed.get("theme").map(|x| x.as_str().unwrap_or(""));
+    let theme = parsed.get("theme").map(|x| x.as_str().unwrap());
     let theme = theme.map(|x| x.to_string());
 
     // root

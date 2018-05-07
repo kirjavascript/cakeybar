@@ -18,6 +18,10 @@ fn init(application: &gtk::Application, config: &config::Config) {
     for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(&application, bar_config.clone());
     }
+    match &config.theme {
+        &Some(ref src) => println!("TODO: theme {}", src),
+        &None => println!("load default theme"),
+    }
 }
 
 fn main() {
