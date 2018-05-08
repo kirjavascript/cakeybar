@@ -84,7 +84,7 @@ fn build_ui(application: &gtk::Application) {
     WidgetExt::set_name(&window, "bork");
     // let style = include_bytes!("../../style/command-input.css");
     let style = r#"
-        #bork {
+        #bork, window {
             background-color: rgba(0, 0, 0, 0);
             /* opacity: 0.5; */
         }

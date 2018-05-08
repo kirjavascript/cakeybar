@@ -7,7 +7,7 @@ use gtk::{
     // WidgetExt,
 
     // Box,
-    // Label,
+    Label,
     // Orientation,
     // Image,
 };
@@ -37,6 +37,11 @@ impl Bar {
                 window.set_title(super::NAME);
                 window.set_default_size(0, 27);
                 window.set_type_hint(gdk::WindowTypeHint::Dock);
+                WidgetExt::set_name(&window, &bar.config.name);
+
+    let label = Label::new(None);
+    label.set_text(&"hello world");
+    window.add(&label);
 
                 // set position
                 let x = monitor.x;

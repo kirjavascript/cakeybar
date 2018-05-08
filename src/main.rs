@@ -6,6 +6,9 @@ extern crate clap;
 use gio::prelude::*;
 use gtk::prelude::*;
 
+use gdk::{Screen};
+use gtk::{CssProvider, StyleContext};
+
 use clap::{Arg, App, SubCommand};
 
 pub static NAME: &str = "cakeybar";
@@ -15,14 +18,24 @@ mod config;
 mod bar;
 
 fn init(application: &gtk::Application, config: &config::Config) {
-    // load theme to screen
-    match &config.theme {
-        &Some(ref src) => println!("TODO: theme {}", src),
-        &None => println!("load default theme"),
-    }
     // load bars
     for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(&application, bar_config.clone());
+    }
+    // load theme to screen
+    match &config.theme {
+        &Some(ref src) => {
+            // move this into util
+            let provider = CssProvider::new();
+            let screen = Screen::get_default().unwrap();
+            match provider.load_from_data(src.as_bytes()) {
+                Ok(_) => {
+                    StyleContext::add_provider_for_screen(&screen, &provider, 0);
+                },
+                Err(_) => println!("Error parsing stylesheet"),
+            };
+        },
+        &None => {/* default theme */},
     }
 }
 

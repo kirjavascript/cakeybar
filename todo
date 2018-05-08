@@ -7,6 +7,10 @@ https://github.com/paholg/rustybar
 https://crates.io/crates/i3ipc
 system tray crate
 lemonbar
+css:
+https://developer.gnome.org/gtk3/stable/theming.html
+https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
+https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
 
 impl
 ====
@@ -25,21 +29,21 @@ conditional display / flexbox
 </command>
 <api/>
 <webview>
+transparent background image
 
 config
 ====
 xdg
-toml inherit
+toml inherit?
+thing["foo"]["bar"][3].unwrap()
+you have to specify the resulting type, but Value implements the index operator, and if you index into Value::Null, you get another Value::Null
 
-css:
-https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
-https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
-
-type stuff
+type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
 osx top bar / windows taskbar (clickable) + osx background rice / pice of cake / normal
+resizable icons ? dock ?
 solid multi monitors
 images
 simple configuration

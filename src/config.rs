@@ -111,25 +111,36 @@ pub fn parse_config(filename: &str) -> Config {
 
     // theme
 
-    let theme = parsed.get("theme").map(|x| x.as_str().unwrap_or(""));
-    let theme = theme.map(|x| x.to_string());
+    let theme = match parsed.get("theme") {
+        Some(theme) => theme.as_str().map(String::from),
+        None => None,
+    };
 
-    // {
-    //     let config_dir = *Path::new(filename).parent().unwrap();
-    //     let theme_path = Path::new("theme.css");
-    //     let theme_path = if theme_path.is_absolute() {
-    //         theme_path
-    //     } else {
-    //         config_dir.join(theme_path).as_path()
-    //     };
-
-    //     println!("{:#?}", theme_path);
-    // }
+    let theme_str = theme.clone().map(|x| {
+        // this can be improved
+        let config_dir = Path::new(filename).parent().unwrap();
+        let theme_path = Path::new(&x);
+        let theme_path = if theme_path.is_absolute() {
+            theme_path.to_path_buf()
+        } else {
+            config_dir.join(&theme_path)
+        }.canonicalize();
+        if theme_path.is_err() {
+            eprintln!("{}: {:?}", &x, theme_path.err().unwrap());
+            exit(2i32);
+        }
+        let file_result = File::open(theme_path.unwrap());
+        let mut contents = String::new();
+        file_result.unwrap()
+            .read_to_string(&mut contents)
+            .expect("something went wrong reading the theme");
+        contents
+    });
 
     // root
 
     let config = Config {
-        theme: theme,
+        theme: theme_str,
         bars: bar_configs,
     };
 

@@ -1,6 +1,12 @@
+@define-color purple #551A8B;
+
 #left, #right {
-    background-color: purple;
+    background-color: @purple;
     /* opacity: 0.5; */
+}
+
+window {
+    background-color: red;
 }
 
 label {
