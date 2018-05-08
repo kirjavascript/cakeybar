@@ -26,10 +26,6 @@ impl Bar {
         let monitors = util::get_monitors();
         let monitor_option = monitors.get(config.monitor_index);
 
-        let bar = Bar {
-            config: config,
-        };
-
         match monitor_option {
             Some(monitor) => {
                 // load bar
@@ -39,8 +35,9 @@ impl Bar {
                 window.set_title(super::NAME);
                 window.set_default_size(0, 27);
                 window.set_type_hint(gdk::WindowTypeHint::Dock);
-
-    let container = Box::new(Orientation::Horizontal, 10);
+                let container = Box::new(Orientation::Horizontal, 10);
+                WidgetExt::set_name(&window, &config.name);
+                WidgetExt::set_name(&container, &config.name);
 
     let img: Image = Image::new_from_file(Path::new("./example/icon.svg"));
     container.add(&img);
@@ -53,11 +50,10 @@ impl Bar {
     window.add(&container);
     window.show_all();
 
-                WidgetExt::set_name(&window, &bar.config.name);
 
                 // set position
                 let x = monitor.x;
-                let y = match bar.config.position {
+                let y = match config.position {
                     Position::Bottom => monitor.y + (monitor.height / 2),
                     Position::Top => monitor.y,
                 };
@@ -67,10 +63,12 @@ impl Bar {
 
             },
             None => {
-                eprintln!("warning: no monitor at index {}", bar.config.monitor_index);
+                eprintln!("warning: no monitor at index {}", config.monitor_index);
             },
         }
 
-        bar
+        Bar {
+            config: config,
+        }
     }
 }
