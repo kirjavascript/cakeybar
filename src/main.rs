@@ -15,12 +15,14 @@ mod config;
 mod bar;
 
 fn init(application: &gtk::Application, config: &config::Config) {
-    for bar_config in config.bars.iter() {
-        let _ = bar::Bar::new(&application, bar_config.clone());
-    }
+    // load theme to screen
     match &config.theme {
         &Some(ref src) => println!("TODO: theme {}", src),
         &None => println!("load default theme"),
+    }
+    // load bars
+    for bar_config in config.bars.iter() {
+        let _ = bar::Bar::new(&application, bar_config.clone());
     }
 }
 

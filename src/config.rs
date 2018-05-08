@@ -4,6 +4,7 @@ use self::toml::value::*;
 
 use std::fs::File;
 use std::io::prelude::*;
+use std::path::Path;
 use std::process::exit;
 use std::collections::HashMap;
 
@@ -110,8 +111,20 @@ pub fn parse_config(filename: &str) -> Config {
 
     // theme
 
-    let theme = parsed.get("theme").map(|x| x.as_str().unwrap());
+    let theme = parsed.get("theme").map(|x| x.as_str().unwrap_or(""));
     let theme = theme.map(|x| x.to_string());
+
+    // {
+    //     let config_dir = *Path::new(filename).parent().unwrap();
+    //     let theme_path = Path::new("theme.css");
+    //     let theme_path = if theme_path.is_absolute() {
+    //         theme_path
+    //     } else {
+    //         config_dir.join(theme_path).as_path()
+    //     };
+
+    //     println!("{:#?}", theme_path);
+    // }
 
     // root
 

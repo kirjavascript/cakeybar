@@ -1,7 +1,5 @@
-better name
-conditional display / flexbox
-dmenu replacement
-reload config / theme
+halp
+====
 https://crates.io/crates/leechbar
 https://github.com/jaagr/polybar
 https://github.com/geommer/yabar
@@ -9,16 +7,29 @@ https://github.com/paholg/rustybar
 https://crates.io/crates/i3ipc
 system tray crate
 lemonbar
+
+impl
+====
+better name
+Component trait
+reload config / theme
+dmenu replacement
+bindsym $mod+m exec rustybar-msg
+transparency via window type popup layer
+
+components
+====
+conditional display / flexbox
 <command interval="5000">
     uname -a
 </command>
+<api/>
+<webview>
+
+config
+====
 xdg
-
 toml inherit
-
-Component trait
-
-bindsym $mod+m exec rustybar-msg
 
 css:
 https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
