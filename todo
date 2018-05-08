@@ -9,6 +9,7 @@ system tray crate
 lemonbar
 css:
 https://developer.gnome.org/gtk3/stable/theming.html
+https://developer.gnome.org/gtk3/stable/chap-css-properties.html
 https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
 

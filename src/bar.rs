@@ -37,16 +37,15 @@ impl Bar {
 
                 // set base values
                 window.set_title(super::NAME);
-                window.set_default_size(0, 27);
+                window.set_default_size(0, 0);
                 window.set_type_hint(gdk::WindowTypeHint::Dock);
                 window.set_wmclass(NAME, NAME);
 
                 // attach container
                 let container = Box::new(Orientation::Horizontal, 10);
+                // TODO: attach opacity popup here
                 WidgetExt::set_name(&window, &config.name);
                 WidgetExt::set_name(&container, &config.name);
-
-                // TODO: attach opacity popup here
 
                 // set position
                 let x = monitor.x;
@@ -62,13 +61,9 @@ impl Bar {
 
     let label = Label::new(None);
     label.set_text(&"hello world");
-    // label.set_margin_left(10);
     container.add(&label);
 
-    window.add(&container);
-    window.show_all();
-
-
+                window.add(&container);
                 window.show_all();
             },
         }

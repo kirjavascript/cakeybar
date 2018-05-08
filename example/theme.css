@@ -1,14 +1,12 @@
 @define-color purple #551A8B;
 
-#left {
-    background-color: @purple;
-}
-
-#right {
+#left, #right {
+    min-height: 27px;
     background-color: black;
 }
 
 label {
+    background-color: @purple;
     color: white;
     font-family: Inconsolata;
     text-shadow: 1px 1px pink;

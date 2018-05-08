@@ -30,9 +30,7 @@ pub fn load_theme(src: &str) {
     let screen = Screen::get_default().unwrap();
     let provider = CssProvider::new();
     match provider.load_from_data(src.as_bytes()) {
-        Ok(_) => {
-            StyleContext::add_provider_for_screen(&screen, &provider, 0);
-        },
-        Err(_) => println!("Error parsing stylesheet"),
+        Ok(_) => StyleContext::add_provider_for_screen(&screen, &provider, 0),
+        Err(e) => println!("Error parsing stylesheet:\n{}", e),
     };
 }
