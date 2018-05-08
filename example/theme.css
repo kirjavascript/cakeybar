@@ -1,7 +1,11 @@
 @define-color purple #551A8B;
 
-#left, #right {
+#left {
     background-color: @purple;
+}
+
+#right {
+    background-color: black;
 }
 
 label {

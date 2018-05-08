@@ -8,11 +8,11 @@ use gtk::prelude::*;
 
 use clap::{Arg, App, SubCommand};
 
-pub static NAME: &str = "cakeybar";
-
 mod util;
 mod config;
 mod bar;
+
+pub static NAME: &str = "cakeybar";
 
 fn init(application: &gtk::Application, config: &config::Config) {
     // load bars
@@ -51,8 +51,8 @@ fn main() {
 
     // Get config
 
-    let config_path = matches.value_of("config")
-        .unwrap_or("~/.config/cakeybar/config.toml"); // TODO: xdg
+    let default_path = format!("~/.config/{}/config.toml", NAME); // TODO: xdg
+    let config_path = matches.value_of("config").unwrap_or(&default_path);
 
     let config = config::parse_config(config_path);
 

@@ -16,7 +16,7 @@ pub fn get_dimensions() -> (i32, i32) {
 }
 
 pub fn show_monitor_debug() {
-    super::gtk::init();
+    super::gtk::init().ok(); // ok to ensure result is used
     let (width, height) = get_dimensions();
     println!("Screen: {}x{}", width, height);
     let monitors = get_monitors();

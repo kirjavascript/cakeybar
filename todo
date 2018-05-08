@@ -24,6 +24,7 @@ transparency via window type popup layer
 components
 ====
 conditional display / flexbox
+overlay component
 <command interval="5000">
     uname -a
 </command>
