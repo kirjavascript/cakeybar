@@ -6,11 +6,13 @@ use gtk::{
     WindowType,
     // WidgetExt,
 
-    // Box,
+    Box,
     Label,
-    // Orientation,
-    // Image,
+    Orientation,
+    Image,
 };
+
+use std::path::Path;
 
 use super::config::{BarConfig, Position};
 use super::util;
@@ -37,11 +39,21 @@ impl Bar {
                 window.set_title(super::NAME);
                 window.set_default_size(0, 27);
                 window.set_type_hint(gdk::WindowTypeHint::Dock);
-                WidgetExt::set_name(&window, &bar.config.name);
+
+    let container = Box::new(Orientation::Horizontal, 10);
+
+    let img: Image = Image::new_from_file(Path::new("./example/icon.svg"));
+    container.add(&img);
 
     let label = Label::new(None);
     label.set_text(&"hello world");
-    window.add(&label);
+    // label.set_margin_left(10);
+    container.add(&label);
+
+    window.add(&container);
+    window.show_all();
+
+                WidgetExt::set_name(&window, &bar.config.name);
 
                 // set position
                 let x = monitor.x;
@@ -52,6 +64,7 @@ impl Bar {
                 window.move_(x, y);
 
                 window.show_all();
+
             },
             None => {
                 eprintln!("warning: no monitor at index {}", bar.config.monitor_index);

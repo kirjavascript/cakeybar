@@ -1,21 +1,38 @@
-@define-color purple #551A8B;
+/* @define-color purple #551A8B; */
 
-#left, #right {
-    background-color: @purple;
+/* #left, #right { */
+/*     background-color: @purple; */
+/* } */
+
+/* window, #left { */
+/*     background-color: rgba(0, 0, 0, 0); */
+/*     /1* opacity: 0.5; *1/ */
+/* } */
+
+/* label { */
+/*     color: white; */
+/*     font-family: Inconsolata; */
+/*     text-shadow: 1px 1px pink; */
+/*     font-size: 24px; */
+/* } */
+
+/* #icon { */
+/*     margin: 5px; */
+/* } */
+
+#left {
+    background-color: rgba(0, 0, 0, 0);
     /* opacity: 0.5; */
 }
-
-window {
-    background-color: red;
+box {
+    background-color: black;
 }
-
+image {
+    margin: 5px;
+}
 label {
     color: white;
     font-family: Inconsolata;
     text-shadow: 1px 1px pink;
     font-size: 24px;
-}
-
-#icon {
-    margin: 5px;
 }

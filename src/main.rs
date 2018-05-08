@@ -18,6 +18,7 @@ fn init(application: &gtk::Application, config: &config::Config) {
     // load bars
     for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(&application, bar_config.clone());
+
     }
     // load theme to screen
     match &config.theme {
