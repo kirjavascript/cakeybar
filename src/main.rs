@@ -6,9 +6,6 @@ extern crate clap;
 use gio::prelude::*;
 use gtk::prelude::*;
 
-use gdk::{Screen};
-use gtk::{CssProvider, StyleContext};
-
 use clap::{Arg, App, SubCommand};
 
 pub static NAME: &str = "cakeybar";
@@ -24,17 +21,7 @@ fn init(application: &gtk::Application, config: &config::Config) {
     }
     // load theme to screen
     match &config.theme {
-        &Some(ref src) => {
-            // move this into util
-            let provider = CssProvider::new();
-            let screen = Screen::get_default().unwrap();
-            match provider.load_from_data(src.as_bytes()) {
-                Ok(_) => {
-                    StyleContext::add_provider_for_screen(&screen, &provider, 0);
-                },
-                Err(_) => println!("Error parsing stylesheet"),
-            };
-        },
+        &Some(ref src) => util::load_theme(src),
         &None => {/* default theme */},
     }
 }
@@ -57,14 +44,7 @@ fn main() {
 
     // show monitor debug
     if matches.is_present("monitors") {
-        gtk::init();
-        let (width, height) = util::get_dimensions();
-        println!("Screen: {}x{}", width, height);
-        let monitors = util::get_monitors();
-        for (i, mon) in monitors.iter().enumerate() {
-            let &gdk::Rectangle { x, y, width, height } = mon;
-            println!("Monitor {}: {}x{} x: {} y: {}", i, width, height, x, y);
-        }
+        util::show_monitor_debug();
         return ();
     }
 
