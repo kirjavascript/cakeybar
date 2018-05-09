@@ -12,8 +12,12 @@ https://developer.gnome.org/gtk3/stable/theming.html
 https://developer.gnome.org/gtk3/stable/chap-css-properties.html
 https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
+
 examples use GTK 3.2+, depending on the version used styling may change
+home: 3.22
+work: 3.18
 https://developer.gnome.org/gtk3/stable/ch32s10.html
+https://developer.gnome.org/gtk3/3.18/theming.html
 
 impl
 ====
