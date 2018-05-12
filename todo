@@ -13,32 +13,44 @@ https://developer.gnome.org/gtk3/stable/chap-css-properties.html
 https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
 
+examples use GTK 3.2+, depending on the version used styling may change
+home: 3.22
+work: 3.18
+https://developer.gnome.org/gtk3/stable/ch32s10.html
+https://developer.gnome.org/gtk3/3.18/theming.html
+
 impl
 ====
 better name
-Component trait
+Component trait - 11:17:04 < j`ey> it's actually like: foo<I: Iterator>(thing: I)
 reload config / theme
 dmenu replacement
 bindsym $mod+m exec rustybar-msg
 transparency via window type popup layer
+https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 
 components
 ====
 conditional display / flexbox
 overlay component
-<command interval="5000">
-    uname -a
-</command>
+command (inverval, input)
 <api/>
 <webview>
-transparent background image
+mpd ipc
+dmenu
+dropdown menu
+container (clickable)
 
 config
 ====
 xdg
+[event.something]
 toml inherit?
+toml parsing tests
 thing["foo"]["bar"][3].unwrap()
 you have to specify the resulting type, but Value implements the index operator, and if you index into Value::Null, you get another Value::Null
+
+send path to load_theme() and load the file there? load_from_path ?
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
@@ -49,3 +61,4 @@ resizable icons ? dock ?
 solid multi monitors
 images
 simple configuration
+stronger rice game than feudal japan
