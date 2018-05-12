@@ -129,12 +129,7 @@ pub fn parse_config(filename: &str) -> Config {
             eprintln!("{}: {:?}", &x, theme_path.err().unwrap());
             exit(2i32);
         }
-        let file_result = File::open(theme_path.unwrap());
-        let mut contents = String::new();
-        file_result.unwrap()
-            .read_to_string(&mut contents)
-            .expect("something went wrong reading the theme");
-        contents
+        theme_path.unwrap().as_path().to_str().unwrap_or("").to_string()
     });
 
     // root

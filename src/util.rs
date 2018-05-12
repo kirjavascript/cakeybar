@@ -26,10 +26,10 @@ pub fn show_monitor_debug() {
     }
 }
 
-pub fn load_theme(src: &str) {
+pub fn load_theme(path: &str) {
     let screen = Screen::get_default().unwrap();
     let provider = CssProvider::new();
-    match provider.load_from_data(src.as_bytes()) {
+    match provider.load_from_path(path) {
         Ok(_) => StyleContext::add_provider_for_screen(&screen, &provider, 0),
         Err(e) => println!("Error parsing stylesheet:\n{}", e),
     };

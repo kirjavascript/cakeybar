@@ -50,8 +50,6 @@ toml parsing tests
 thing["foo"]["bar"][3].unwrap()
 you have to specify the resulting type, but Value implements the index operator, and if you index into Value::Null, you get another Value::Null
 
-send path to load_theme() and load the file there? load_from_path ?
-
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
