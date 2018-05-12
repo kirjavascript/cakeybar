@@ -11,6 +11,8 @@ label {
     font-family: Inconsolata;
     text-shadow: 1px 1px pink;
     font-size: 24px;
+    padding: 0px 50px;
+    background-image: url("./test-bg.svg");
 }
 
 #icon {

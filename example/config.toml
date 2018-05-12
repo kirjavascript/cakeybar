@@ -6,8 +6,6 @@ theme = "theme.css"
 monitor = 0
 position = "top"
 layout = [ "box1", "clock2" ]
-transparency = false # add popup
-# inherit
 
 [bar.right]
 monitor = 1
