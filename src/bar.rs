@@ -46,6 +46,7 @@ impl Bar {
                 // TODO: attach opacity popup here
                 WidgetExt::set_name(&window, &config.name);
                 WidgetExt::set_name(&container, &config.name);
+                window.add(&container);
 
                 // set position
                 let x = monitor.x;
@@ -63,7 +64,6 @@ impl Bar {
     label.set_text(&"hello world");
     container.add(&label);
 
-                window.add(&container);
                 window.show_all();
             },
         }
