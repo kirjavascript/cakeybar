@@ -32,15 +32,15 @@ pub struct BarConfig {
 #[derive(Debug, Clone)]
 pub struct ComponentConfig {
     pub name: String,
-    pub type_: String,
     pub properties: HashMap<String, Property>,
 }
 
 #[derive(Debug, Clone)]
 pub enum Property {
     String(String),
-    Number(u64),
+    // Number(u64),
     Array(Vec<Property>),
+    Null,
 }
 
 pub fn parse_config(filename: &str) -> Config {
@@ -139,7 +139,7 @@ pub fn parse_config(filename: &str) -> Config {
 
     let component_option = parsed.get("component");
 
-    if let Some(Some(component_table)) = component_option.map(|d| d.as_table()) {
+    let components = if let Some(Some(component_table)) = component_option.map(|d| d.as_table()) {
         // get all component tables
         let components: Vec<(&String, &Value)> = component_table
             .iter()
@@ -148,21 +148,23 @@ pub fn parse_config(filename: &str) -> Config {
         let component_configs: Vec<ComponentConfig> = components
             .iter()
             .map(|&(key, value)| {
-                let type_ = value.get("type");
-                if type_.is_none() {
-                    eprintln!("{}: component {} requires a type property", filename, key);
-                    exit(1i32);
-                }
+                // get properties
+                let mut properties: HashMap<String, Property> = HashMap::new();
+                value.as_table().unwrap().iter().for_each(|(key, value)| {
+                    let key_str = key.to_string();
+                    properties.insert(key_str, value_to_property(value));
+                });
 
                 ComponentConfig {
                     name: key.to_string(),
-                    type_: String::from("poop"),
-                    properties: HashMap::new(),
+                    properties,
                 }
             })
             .collect();
 
-        println!("{:#?}", component_configs);
+        component_configs
+    } else {
+        Vec::new()
     };
 
 
@@ -171,12 +173,24 @@ pub fn parse_config(filename: &str) -> Config {
     let config = Config {
         theme: theme_str,
         bars: bar_configs,
-        components: Vec::new(),
+        components,
     };
 
-    // println!("{:#?}", config);
+    println!("{:#?}", config);
 
     config
+}
+
+fn value_to_property(value: &Value) -> Property {
+    match value {
+        &Value::String(ref str_) => Property::String(
+            str_.to_string()
+        ),
+        &Value::Array(ref arr) => Property::Array(
+            arr.iter().map(value_to_property).collect()
+        ),
+        _ => Property::Null,
+    }
 }
 
 fn get_layout(value: &Value) -> Vec<String> {
