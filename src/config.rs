@@ -43,23 +43,9 @@ pub enum Property {
     Null,
 }
 
+// TODO: return Result<Config, Err> instead
 pub fn parse_config(filename: &str) -> Config {
-    // create get_path closure
     let config_dir = Path::new(filename).parent().unwrap();
-    let get_path = |f| {
-        // this can be improved (probably)
-        let file_path = Path::new(&f);
-        let file_path = if file_path.is_absolute() {
-            file_path.to_path_buf()
-        } else {
-            config_dir.join(&file_path)
-        }.canonicalize();
-        if file_path.is_err() {
-            eprintln!("{}: {:?}", &f, file_path.err().unwrap());
-            exit(2i32);
-        }
-        file_path.unwrap().as_path().to_str().unwrap_or("").to_string()
-    };
 
     // get file
     let file_result = File::open(filename);
@@ -89,7 +75,7 @@ pub fn parse_config(filename: &str) -> Config {
         Some(theme) => theme.as_str().map(String::from),
         None => None,
     };
-    let theme_str = theme.map(get_path);
+    let theme_str = theme.map(|x| get_path(x, config_dir));
 
     // get bars
 
@@ -155,6 +141,11 @@ pub fn parse_config(filename: &str) -> Config {
                     properties.insert(key_str, value_to_property(value));
                 });
 
+                // convert src prop to real path
+                if let Some(&mut Property::String(ref mut src)) = properties.get_mut("src") {
+                    *src = get_path(src.to_string(), config_dir);
+                }
+
                 ComponentConfig {
                     name: key.to_string(),
                     properties,
@@ -179,6 +170,20 @@ pub fn parse_config(filename: &str) -> Config {
     println!("{:#?}", config);
 
     config
+}
+
+fn get_path(file: String, directory: &Path) -> String {
+    let file_path = Path::new(&file);
+    let file_path = if file_path.is_absolute() {
+        file_path.to_path_buf()
+    } else {
+        directory.join(&file_path)
+    }.canonicalize();
+    if file_path.is_err() {
+        eprintln!("{}: {:?}", &file, file_path.err().unwrap());
+        exit(2i32);
+    }
+    file_path.unwrap().as_path().to_str().unwrap_or("").to_string()
 }
 
 fn value_to_property(value: &Value) -> Property {
