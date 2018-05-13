@@ -26,7 +26,7 @@ pub struct BarConfig {
     pub name: String,
     pub monitor_index: usize,
     pub position: Position,
-    pub layout: Vec<String>,
+    pub layout: Property,
 }
 
 #[derive(Debug, Clone)]
@@ -113,11 +113,15 @@ pub fn parse_config(filename: &str) -> Config {
         // monitor
         let monitor_index = value.get("monitor").map(|x| x.as_integer().unwrap_or(0)).unwrap_or(0) as usize;
 
+        // layout
+        let layout = value.get("layout").map(value_to_property)
+            .unwrap_or(Property::Array(Vec::new()));
+
         BarConfig {
             name: key.to_string(),
             monitor_index,
             position,
-            layout: get_layout(&value),
+            layout,
         }
     }).collect();
 
@@ -167,7 +171,7 @@ pub fn parse_config(filename: &str) -> Config {
         components,
     };
 
-    println!("{:#?}", config);
+    // println!("{:#?}", config);
 
     config
 }
