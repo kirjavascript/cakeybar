@@ -8,20 +8,20 @@ use std::path::Path;
 use std::process::exit;
 use std::collections::HashMap;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Config {
     pub theme: Option<String>,
     pub bars: Vec<BarConfig>,
     pub components: Vec<ComponentConfig>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Position {
     Top,
     Bottom,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct BarConfig {
     pub name: String,
     pub monitor_index: usize,
@@ -29,13 +29,13 @@ pub struct BarConfig {
     pub layout: Property,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct ComponentConfig {
     pub name: String,
     pub properties: HashMap<String, Property>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Property {
     String(String),
     // Number(u64),

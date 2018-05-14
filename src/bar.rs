@@ -4,11 +4,11 @@ use gtk::prelude::*;
 use gtk::{
     Window,
     WindowType,
+    Orientation,
     // WidgetExt,
 
     Box,
     Label,
-    Orientation,
     Image,
 };
 
@@ -60,7 +60,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
         // attach container
         let container = Box::new(Orientation::Horizontal, 10);
-        // TODO: attach opacity popup here
+        // TODO: opacity popup
         WidgetExt::set_name(&window, &self.config.name);
         WidgetExt::set_name(&container, &self.config.name);
         window.add(&container);
