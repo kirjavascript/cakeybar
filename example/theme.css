@@ -1,12 +1,11 @@
 @define-color purple #551A8B;
 
-GtkBox {
-    /* min-height: 27px; */
-    background-color: rgb(255, 0, 0);
-    color: rgb(0, 255, 0)
+#left, #right {
+    min-height: 27px;
+    background-color: black;
 }
 
-GtkLabel {
+label {
     background-color: @purple;
     color: white;
     font-family: Inconsolata;
@@ -16,6 +15,6 @@ GtkLabel {
     background-image: url("./test-bg.svg");
 }
 
-GtkImage {
-    margin: 50px;
+#icon {
+    margin: 5px;
 }
