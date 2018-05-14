@@ -11,15 +11,18 @@ use clap::{Arg, App, SubCommand};
 mod util;
 mod config;
 mod bar;
-mod components;
+// mod components;
 
 pub static NAME: &str = "cakeybar";
 
 fn init(application: &gtk::Application, config: &config::Config) {
     // load bars
     for bar_config in config.bars.iter() {
-        let _ = bar::Bar::new(&application, bar_config.clone());
-
+        let _ = bar::Bar::new(
+            &application,
+            &bar_config,
+            &config.components,
+        );
     }
     // load theme to screen
     match &config.theme {
