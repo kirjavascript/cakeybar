@@ -171,7 +171,8 @@ pub fn parse_config(filename: &str) -> Config {
         components,
     };
 
-    // println!("{:#?}", config);
+    #[cfg(debug_assertions)]
+    println!("{:#?}", config);
 
     config
 }

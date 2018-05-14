@@ -14,7 +14,7 @@ use gtk::{
 
 use std::path::Path;
 
-use super::config::{BarConfig, Position};
+use super::config::{BarConfig, Position, ComponentConfig, Property};
 use super::{util, NAME};
 
 pub struct Bar {
