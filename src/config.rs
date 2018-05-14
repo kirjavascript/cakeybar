@@ -202,11 +202,3 @@ fn value_to_property(value: &Value) -> Property {
         _ => Property::Null,
     }
 }
-
-fn get_layout(value: &Value) -> Vec<String> {
-    let empty_layout = Vec::new();
-    let layout = value.get("layout").map(|x| x.as_array().unwrap_or(&empty_layout));
-    let layout = layout.unwrap_or(&empty_layout).iter().filter(|x| x.is_str());
-    let layout: Vec<String> = layout.map(|x| String::from(x.as_str().unwrap())).collect();
-    layout
-}

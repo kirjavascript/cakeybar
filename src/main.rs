@@ -11,6 +11,7 @@ use clap::{Arg, App, SubCommand};
 mod util;
 mod config;
 mod bar;
+mod components;
 
 pub static NAME: &str = "cakeybar";
 
