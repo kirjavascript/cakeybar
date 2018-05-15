@@ -5,17 +5,18 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "icon", "clock1" ]
+layout = [ "icon" ]
 
 [bar.right]
 monitor = 1
 position = "top"
-layout = [ "clock2" ]
+layout = [ "box1" ]
 
 [component.box1]
 type = "container"
-direction = "row"
-layout = [ "clock1", "icon" ]
+direction = "column"
+spacing = 10
+layout = [ "clock1", "clock2" ]
 
 [component.icon]
 type = "image"

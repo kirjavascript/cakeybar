@@ -3,6 +3,7 @@ use super::bar::Bar;
 use super::config::{ComponentConfig, Property};
 
 mod clock;
+mod container;
 mod image;
 mod void;
 
@@ -38,6 +39,7 @@ fn load_component(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         // decide which component to load
         let component_init = match component_type.as_str() {
             "clock" => clock::Clock::init,
+            "container" => container::Container::init,
             "image" => image::Image::init,
             _ => void::Void::init,
         };

@@ -38,7 +38,7 @@ pub struct ComponentConfig {
 #[derive(Debug)]
 pub enum Property {
     String(String),
-    // Number(u64),
+    Integer(i64),
     Array(Vec<Property>),
     Null,
 }
@@ -195,6 +195,9 @@ fn value_to_property(value: &Value) -> Property {
     match value {
         &Value::String(ref str_) => Property::String(
             str_.to_string()
+        ),
+        &Value::Integer(ref int) => Property::Integer(
+            *int
         ),
         &Value::Array(ref arr) => Property::Array(
             arr.iter().map(value_to_property).collect()

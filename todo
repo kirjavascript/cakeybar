@@ -23,9 +23,7 @@ https://thegnomejournal.wordpress.com/2011/03/15/styling-gtk-with-css/
 impl
 ====
 better name
-Component trait - 11:17:04 < j`ey> it's actually like: foo<I: Iterator>(thing: I)
 reload config / theme
-dmenu replacement
 bindsym $mod+m exec rustybar-msg
 transparency via window type popup layer
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
@@ -33,14 +31,14 @@ https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855
 components
 ====
 conditional display / flexbox
-overlay component
 command (inverval, input)
 <api/>
 <webview>
+i3 stuff
 mpd ipc
 dmenu
 dropdown menu
-container (clickable)
+container: clickable, packing
 
 config
 ====

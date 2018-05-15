@@ -57,7 +57,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         window.set_wmclass(NAME, NAME);
 
         // attach container
-        let container = Box::new(Orientation::Horizontal, 10);
+        let container = Box::new(Orientation::Horizontal, 0);
         // TODO: opacity popup
         WidgetExt::set_name(&window, &self.config.name);
         WidgetExt::set_name(&container, &self.config.name);
