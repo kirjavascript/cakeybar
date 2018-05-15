@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "icon", "clock2" ]
+layout = [ "icon", "clock1" ]
 
 [bar.right]
 monitor = 1
@@ -23,8 +23,8 @@ src = "icon.svg"
 
 [component.clock1]
 type = "clock"
-format = "%H:%M:%S"
+format = "%Y-%m-%d %H:%M"
 
 [component.clock2]
 type = "clock"
-format = "%Y-%m-%d"
+format = "%H:%M:%S"

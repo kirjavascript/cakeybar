@@ -4,7 +4,6 @@ extern crate gdk;
 extern crate clap;
 
 use gio::prelude::*;
-use gtk::prelude::*;
 
 use clap::{Arg, App, SubCommand};
 

@@ -1,5 +1,4 @@
 use super::{gdk, gtk};
-use gio::prelude::*;
 use gtk::prelude::*;
 use gtk::{
     Window,
@@ -9,7 +8,7 @@ use gtk::{
 };
 
 use super::{util, NAME};
-use super::config::{BarConfig, Position, ComponentConfig, Property};
+use super::config::{BarConfig, Position, ComponentConfig};
 use super::components;
 
 #[derive(Debug)]
