@@ -5,12 +5,12 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "box1", "clock2" ]
+layout = [ "icon", "clock2" ]
 
 [bar.right]
 monitor = 1
 position = "top"
-layout = [ "clock1" ]
+layout = [ "clock2" ]
 
 [component.box1]
 type = "container"

@@ -5,22 +5,18 @@ use gtk::{
     Window,
     WindowType,
     Orientation,
-    // WidgetExt,
-
     Box,
-    Label,
-    Image,
 };
 
-use std::path::Path;
-
-use super::config::{BarConfig, Position, ComponentConfig, Property};
 use super::{util, NAME};
+use super::config::{BarConfig, Position, ComponentConfig, Property};
+use super::components;
 
+#[derive(Debug)]
 pub struct Bar<'a, 'b, 'c> {
-    config: &'b BarConfig,
-    components: &'c Vec<ComponentConfig>,
-    application: &'a gtk::Application,
+    pub config: &'b BarConfig,
+    pub components: &'c Vec<ComponentConfig>,
+    pub application: &'a gtk::Application,
 }
 
 impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
@@ -37,7 +33,10 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
         match monitor_option {
             None => {
-                eprintln!("warning: no monitor at index {}", bar.config.monitor_index);
+                eprintln!(
+                    "warning: no monitor at index {}",
+                    bar.config.monitor_index,
+                );
             },
             Some(monitor) => {
                 bar.init(monitor);
@@ -54,7 +53,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
         // set base values
         window.set_title(super::NAME);
-        window.set_default_size(0, 0);
+        window.set_default_size(0, 2);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
 
@@ -73,14 +72,10 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         };
         window.move_(x, y);
 
-let img: Image = Image::new_from_file(Path::new("./example/icon.svg"));
-WidgetExt::set_name(&img, "icon");
-container.add(&img);
+        // load components
+        components::load_components(&container, &self);
 
-let label = Label::new(None);
-label.set_text(&"hello world");
-container.add(&label);
-
+        // show bar
         window.show_all();
 
     }
