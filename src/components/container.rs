@@ -1,4 +1,4 @@
-use super::{Component, Bar, ComponentConfig, Property};
+use super::{Component, Bar, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Box, Orientation, Align};
 

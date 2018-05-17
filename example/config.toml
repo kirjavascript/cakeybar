@@ -5,18 +5,21 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "icon" ]
+layout = [ "icon", "workspaces" ]
 
 [bar.right]
 monitor = 1
 position = "top"
-layout = [ "box1" ]
+layout = [ "box1"]
 
 [component.box1]
 type = "container"
 direction = "row"
-spacing = 10
+spacing = 5
 layout = [ "clock1", "clock2" ]
+
+[component.workspaces]
+type = "i3workspace"
 
 [component.icon]
 type = "image"

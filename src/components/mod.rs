@@ -1,9 +1,27 @@
+// Template:
+//
+// use super::{Component, Bar, gtk, ComponentConfig};
+// use gtk::prelude::*;
+// use gtk::{Label};
+//
+// pub struct Template {
+// }
+//
+// impl Component for Template {
+//     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
+//         let label = Label::new(None);
+//         WidgetExt::set_name(&label, &config.name);
+//         label.set_text(&"test");
+//         container.add(&label);
+//     }
+// }
 use super::gtk;
 use super::bar::Bar;
 use super::config::{ComponentConfig, Property};
 
 mod clock;
 mod container;
+mod i3workspace;
 mod image;
 mod void;
 
@@ -40,6 +58,7 @@ fn load_component(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let component_init = match component_type.as_str() {
             "clock" => clock::Clock::init,
             "container" => container::Container::init,
+            "i3workspace" => i3workspace::I3Workspace::init,
             "image" => image::Image::init,
             _ => void::Void::init,
         };
