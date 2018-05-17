@@ -35,6 +35,27 @@ pub struct ComponentConfig {
     pub properties: HashMap<String, Property>,
 }
 
+impl ComponentConfig {
+    pub fn get_int_or(&self, prop: &str, or: i64) -> i64 {
+        let value_option = self.properties.get(prop);
+        if let Some(&Property::Integer(ref val)) = value_option {
+            *val
+        }
+        else {
+            or
+        }
+    }
+    pub fn get_str_or<'a>(&'a self, prop: &str, or: &'a str) -> &'a str {
+        let value_option = self.properties.get(prop);
+        if let Some(&Property::String(ref val)) = value_option {
+            val.as_str()
+        }
+        else {
+            or
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum Property {
     String(String),

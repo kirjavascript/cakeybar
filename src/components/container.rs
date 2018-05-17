@@ -1,6 +1,6 @@
 use super::{Component, Bar, ComponentConfig, Property};
 use gtk::prelude::*;
-use gtk::{Box, Orientation};
+use gtk::{Box, Orientation, Align};
 
 pub struct Container {
 }
@@ -10,26 +10,26 @@ impl Component for Container {
         if let Some(layout) = config.properties.get("layout") {
 
             // get spacing
-            let spacing = config.properties.get("spacing");
-            let spacing = if let Some(&Property::Integer(ref sp)) = spacing {
-                *sp
-            } else {
-                0
-            }.abs() as i32;
+            let spacing = config.get_int_or("spacing", 0) as i32;
 
             // get direction
-            let direction = match config.properties.get("direction") {
-                Some(&Property::String(ref dir)) => if dir.as_str() == "column" {
-                    Orientation::Vertical
-                } else {
-                    Orientation::Horizontal
-                }, _ => Orientation::Horizontal,
+            let direction = config.get_str_or("direction", "column");
+            let direction = match direction {
+                "column" | "horiz" => Orientation::Horizontal,
+                _ => Orientation::Vertical,
             };
+
+            // let direction = Orientation::Horizontal;
 
             let new_container = Box::new(direction, spacing);
             WidgetExt::set_name(&new_container, &config.name);
             super::layout_to_container(&new_container, layout, bar);
             container.add(&new_container);
+
+            if false {
+                new_container.set_hexpand(true);
+                new_container.set_halign(Align::Fill);
+            }
         }
     }
 }

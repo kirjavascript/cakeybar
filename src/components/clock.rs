@@ -1,6 +1,6 @@
 extern crate chrono;
 
-use super::{Component, Bar, gtk, ComponentConfig, Property};
+use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 use self::chrono::Local;
@@ -17,12 +17,7 @@ impl Component for Clock {
         let label = Label::new(None);
         WidgetExt::set_name(&label, &config.name);
 
-        let format = config.properties.get("format");
-        let format = if let Some(&Property::String(ref fmt)) = format {
-            fmt
-        } else {
-            "%Y-%m-%d %H:%M:%S"
-        }.to_string();
+        let format = config.get_str_or("format", "%Y-%m-%d %H:%M:%S").to_string();
 
         label.set_text(&current_time(format.clone()));
 

@@ -12,13 +12,13 @@ https://developer.gnome.org/gtk3/stable/theming.html
 https://developer.gnome.org/gtk3/stable/chap-css-properties.html
 https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
-
-examples use GTK 3.2+, depending on the version used styling may change
-home: 3.22
-work: 3.18
-https://developer.gnome.org/gtk3/stable/ch32s10.html
-https://developer.gnome.org/gtk3/3.18/theming.html
 https://thegnomejournal.wordpress.com/2011/03/15/styling-gtk-with-css/
+https://developer.gnome.org/gtk3/stable/ch32s10.html
+layout:
+http://zetcode.com/gui/gtk2/gtklayoutmanagement/
+http://python-gtk-3-tutorial.readthedocs.io/en/latest/layout.html
+flowbox / headerbar
+set_valign
 
 impl
 ====
@@ -46,6 +46,8 @@ xdg
 [event.something]
 toml parsing tests
 thing["foo"]["bar"][3].unwrap()
+get_int_or()
+get_str_or()
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug

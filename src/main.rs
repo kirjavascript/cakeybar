@@ -61,6 +61,11 @@ fn main() {
 
     // GTK application
 
+    // check version
+    if let Some(err) = gtk::check_version(3, 22, 0) {
+        eprintln!("{} (requires 3.22+)", err);
+    }
+
     let application = gtk::Application::new(
         &format!("com.kirjava.{}", NAME),
         gio::ApplicationFlags::empty(),

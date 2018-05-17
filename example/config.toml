@@ -14,7 +14,7 @@ layout = [ "box1" ]
 
 [component.box1]
 type = "container"
-direction = "column"
+direction = "row"
 spacing = 10
 layout = [ "clock1", "clock2" ]
 
