@@ -28,23 +28,18 @@ impl Component for I3Workspace {
             listener.subscribe(&subs).unwrap();
 
             for event in listener.listen() {
-                match event.unwrap() {
+                let _ = match event.unwrap() {
                     Event::WorkspaceEvent(e) => tx.send(format!("{:?}", e)),
-                    _ => unreachable!()
+                    _ => unreachable!(),
                 };
             }
         });
 
-        label.set_text(&"test");
-
         let label_clone = label.clone();
         gtk::idle_add(move || {
-            match rx.try_recv() {
-                Ok(msg) => {
-                    label_clone.set_text(&msg);
-                },
-                _ => {},
-            };
+            if let Ok(msg) = rx.try_recv() {
+                label_clone.set_text(&msg);
+            }
             gtk::Continue(true)
         });
 
