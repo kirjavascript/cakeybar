@@ -24,24 +24,22 @@ impl Component for I3Workspace {
 
         thread::spawn(move || {
             let mut listener = I3EventListener::connect().unwrap();
-            let subs = [Subscription::Workspace];
+            let subs = [Subscription::Workspace, Subscription::Window];
             listener.subscribe(&subs).unwrap();
 
             for event in listener.listen() {
                 match event.unwrap() {
-                    Event::WorkspaceEvent(e) => tx.send(format!("{:?}", e)),
+                    Event::WorkspaceEvent(e) => tx.send(e),
                     _ => unreachable!()
                 };
             }
         });
 
-        label.set_text(&"test");
-
         let label_clone = label.clone();
         gtk::idle_add(move || {
             match rx.try_recv() {
                 Ok(msg) => {
-                    label_clone.set_text(&msg);
+                    label_clone.set_text(&format!("{:?}", msg));
                 },
                 _ => {},
             };
