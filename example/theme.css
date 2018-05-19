@@ -9,15 +9,20 @@ label {
     font-family: Inconsolata;
 }
 
-#clock1, #clock2 {
+#clock {
     background-color: @purple;
     color: white;
     text-shadow: 1px 1px pink;
-    font-size: 24px;
-    padding: 0px 50px;
+    font-size: 16px;
 }
 
-#clock2 {
+#window {
+    margin-left: 280px;
+}
+
+#network {
+    color: white;
+    font-size: 16px;
     background-image: url("./test-bg.svg");
 }
 

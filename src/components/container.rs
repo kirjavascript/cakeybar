@@ -1,6 +1,6 @@
 use super::{Component, Bar, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Box, Orientation, Align};
+use gtk::{Box, Orientation};
 
 pub struct Container {
 }
@@ -19,17 +19,11 @@ impl Component for Container {
                 _ => Orientation::Vertical,
             };
 
-            // let direction = Orientation::Horizontal;
-
             let new_container = Box::new(direction, spacing);
             WidgetExt::set_name(&new_container, &config.name);
+            Container::align_item(&new_container, config);
             super::layout_to_container(&new_container, layout, bar);
             container.add(&new_container);
-
-            if false {
-                new_container.set_hexpand(true);
-                new_container.set_halign(Align::Fill);
-            }
         }
     }
 }

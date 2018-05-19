@@ -16,6 +16,7 @@ impl Component for Clock {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
         WidgetExt::set_name(&label, &config.name);
+        Clock::align_item(&label, config);
 
         let format = config.get_str_or("format", "%Y-%m-%d %H:%M:%S").to_string();
 
@@ -30,5 +31,6 @@ impl Component for Clock {
         gtk::timeout_add_seconds(1, tick);
 
         container.add(&label);
+
     }
 }

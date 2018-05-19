@@ -5,17 +5,18 @@ authors = ["kirjavascript <snkenjoi@gmail.com>"]
 
 [dependencies]
 chrono = "0.4"
-# glib = "^0"
+glib = "^0"
 gio = "^0"
 gdk = "^0"
 # gdk-pixbuf = "^0"
 # gtk-sys = "0.6.0"
 gtk = "^0"
-i3ipc = "0.8.2"
 clap = "2.31.2"
 toml = "0.4"
 # pango = "^0"
 # cairo-rs = { version = "^0", features = ["png"] }
+i3ipc = "0.8.2"
+pnet = "0.21.0"
 
 [[example]]
 name = "basic"

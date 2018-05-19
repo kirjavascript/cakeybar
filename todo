@@ -1,10 +1,6 @@
 halp
 ====
-https://crates.io/crates/leechbar
 https://github.com/jaagr/polybar
-https://github.com/geommer/yabar
-https://github.com/paholg/rustybar
-https://crates.io/crates/i3ipc
 system tray crate
 lemonbar
 css:
@@ -14,19 +10,17 @@ https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
 https://thegnomejournal.wordpress.com/2011/03/15/styling-gtk-with-css/
 https://developer.gnome.org/gtk3/stable/ch32s10.html
-layout:
-http://zetcode.com/gui/gtk2/gtklayoutmanagement/
-http://python-gtk-3-tutorial.readthedocs.io/en/latest/layout.html
 flowbox / headerbar
 set_valign
 
 impl
 ====
 better name
-reload config / theme
-bindsym $mod+m exec rustybar-msg
+reload config / theme (theme should be easy)
+bindsym $mod+m exec -- --message
 transparency via window type popup layer
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
+manage wallpaper
 
 components
 ====
@@ -36,9 +30,11 @@ command (inverval, input)
 <webview>
 i3 stuff
 mpd ipc
+network get upload rate
 dmenu
 dropdown menu
 container: clickable, packing
+networ - ipv6 / v4
 
 config
 ====

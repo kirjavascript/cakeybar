@@ -13,6 +13,7 @@ impl Component for Image {
                 Path::new(src)
             );
             WidgetExt::set_name(&img, &config.name);
+            Image::align_item(&img, config);
             container.add(&img);
         }
     }
