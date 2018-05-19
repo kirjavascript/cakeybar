@@ -38,4 +38,3 @@ interface = "enp3s0"
 [component.clock]
 type = "clock"
 format = "%Y-%m-%d %H:%M"
-halign = "start"

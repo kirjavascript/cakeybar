@@ -1,31 +1,43 @@
-@define-color purple #551A8B;
+@define-color dark-purple #551A8B;
+@define-color purple #747;
 
 #left, #right {
     min-height: 27px;
-    background-color: black;
+    background-image: -gtk-gradient (linear, 0 0, 0 1,
+       color-stop(0, #000),
+       color-stop(0.3, @purple),
+       color-stop(0.7, @purple),
+       color-stop(1, #000));
 }
 
 label {
     font-family: Inconsolata;
 }
 
-#clock {
-    background-color: @purple;
-    color: white;
-    text-shadow: 1px 1px pink;
-    font-size: 16px;
-}
-
 #window {
     margin-left: 280px;
 }
 
-#network {
-    color: white;
+#box1 {
+    color: #E8E;
     font-size: 16px;
+    background-color: black;
+    font-weight: bold;
+}
+
+#box1 label {
+    background-color: @dark-purple;
     background-image: url("./test-bg.svg");
 }
 
+#workspaces label {
+    background-color: @dark-purple;
+    color: white;
+    font-size: 14px;
+    margin: 2px;
+    padding: 5px;
+}
+
 #icon {
-    margin: 5px;
+    padding: 5px;
 }
