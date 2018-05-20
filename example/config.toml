@@ -7,10 +7,10 @@ monitor = 0
 position = "top"
 layout = [ "icon", "workspaces", "title", "box1" ]
 
-# [bar.right]
-# monitor = 1
-# position = "top"
-# layout = [ "workspaces", "box1" ]
+[bar.right]
+monitor = 1
+position = "top"
+layout = [ "workspaces", "box1" ]
 
 [component.box1]
 type = "container"
@@ -26,7 +26,7 @@ halign = "center"
 
 [component.workspaces]
 type = "i3workspace"
-show_all = true
+# show_all = true
 
 [component.icon]
 type = "image"

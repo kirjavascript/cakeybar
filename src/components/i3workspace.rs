@@ -47,7 +47,7 @@ impl Component for I3Workspace {
                 }
             }).collect();
 
-            // println!("{:#?}", test);
+            println!("{:#?}", test);
         }
 
 
@@ -82,6 +82,12 @@ impl Component for I3Workspace {
                             }
                             else {
                                 StyleContextExt::remove_class(&ctx, "focused");
+                            }
+                            if workspace.visible {
+                                StyleContextExt::add_class(&ctx, "visible");
+                            }
+                            else {
+                                StyleContextExt::remove_class(&ctx, "visible");
                             }
                         }
                         None

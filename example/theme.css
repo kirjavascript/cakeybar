@@ -45,8 +45,14 @@ label {
     font-weight: bold;
 }
 
+#workspaces .visible {
+    background-color: @purple;
+}
 #workspaces .focused {
     background-color: @dark-purple;
+}
+#workspaces .urgent {
+    background-color: red;
 }
 
 #icon {
