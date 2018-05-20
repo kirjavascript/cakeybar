@@ -2,10 +2,12 @@ extern crate i3ipc;
 
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Label, Box, Orientation, LabelExt, Button, WidgetExt, StyleContextExt};
+use gtk::{Label, Box, Orientation, EventBox, LabelExt, Button, WidgetExt, StyleContextExt};
+use gdk;
 use gdk::{Screen, ScreenExt, Rectangle};
 
 use self::i3ipc::I3Connection;
+use self::i3ipc::reply::Workspace;
 
 
 pub struct I3Workspace {
@@ -32,19 +34,20 @@ impl Component for I3Workspace {
         let monitor_name = screen.get_monitor_plug_name(bar.config.monitor_index as i32);
         let has_name = monitor_name.is_some();
         let monitor_name = monitor_name.unwrap_or("poop".to_string());
+        let show_all = config.get_bool_or("show_all", false);
 
         let workspaces = connection.get_workspaces();
 
         if let Ok(workspaces) = connection.get_workspaces() {
-            let test: Vec<_> = workspaces.workspaces.iter().filter(|x| {
-                if has_name {
+            let test: Vec<&Workspace> = workspaces.workspaces.iter().filter(|x| {
+                if !show_all && has_name {
                     x.output == monitor_name
                 } else {
                     true
                 }
             }).collect();
 
-            println!("{:#?}", test);
+            // println!("{:#?}", test);
         }
 
 
@@ -55,13 +58,19 @@ impl Component for I3Workspace {
         gtk::timeout_add(100, move || {
 
             if let Ok(workspaces) = connection.get_workspaces() {
-                let filtered: Vec<_> = workspaces.workspaces.iter().filter(|x| {
-                    if has_name {
-                        x.output == monitor_name
-                    } else {
-                        true
-                    }
-                }).collect();
+                // get workspaces for this window
+                let mut filtered: Vec<&Workspace> = workspaces.workspaces.iter()
+                    .filter(|x| {
+                        if !show_all && has_name {
+                            x.output == monitor_name
+                        } else {
+                            true
+                        }
+                    })
+                    .collect();
+                // sort by num
+                filtered.sort_by(|a, b| a.num.cmp(&b.num));
+                let filtered = filtered;
 
                 for (i, workspace) in filtered.iter().enumerate() {
                     let added_new = if let Some(label) = labels.get_mut(i) {
@@ -80,7 +89,7 @@ impl Component for I3Workspace {
                     else {
                         // otherwise, create a new one
                         let label = Label::new(None);
-                        label.set_label(&workspace.name);
+                        // label.set_label(&workspace.name);
                         wrapper.add(&label);
                         wrapper.show_all();
                         Some(label)

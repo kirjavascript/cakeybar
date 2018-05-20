@@ -45,6 +45,15 @@ impl ComponentConfig {
             or
         }
     }
+    pub fn get_bool_or(&self, prop: &str, or: bool) -> bool {
+        let value_option = self.properties.get(prop);
+        if let Some(&Property::Boolean(ref val)) = value_option {
+            *val
+        }
+        else {
+            or
+        }
+    }
     pub fn get_str_or<'a>(&'a self, prop: &str, or: &'a str) -> &'a str {
         let value_option = self.properties.get(prop);
         if let Some(&Property::String(ref val)) = value_option {
@@ -61,6 +70,7 @@ pub enum Property {
     String(String),
     Integer(i64),
     Array(Vec<Property>),
+    Boolean(bool),
     Null,
 }
 
@@ -222,6 +232,9 @@ fn value_to_property(value: &Value) -> Property {
         ),
         &Value::Array(ref arr) => Property::Array(
             arr.iter().map(value_to_property).collect()
+        ),
+        &Value::Boolean(ref boolean) => Property::Boolean(
+            *boolean
         ),
         _ => Property::Null,
     }
