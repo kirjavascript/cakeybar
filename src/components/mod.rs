@@ -10,8 +10,7 @@
 // impl Component for Template {
 //     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
 //         let label = Label::new(None);
-//         WidgetExt::set_name(&label, &config.name);
-//         Template::align_item(&label, &config.name);
+//         Template::init_widget(&label, &config.name);
 //         label.set_text(&"test");
 //         container.add(&label);
 //     }
@@ -33,10 +32,13 @@ mod void;
 
 pub trait Component {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar);
-    fn align_item<T>(widget: &T, config: &ComponentConfig)
+    fn init_widget<T>(widget: &T, config: &ComponentConfig)
         where T: gtk::IsA<gtk::Widget>
             + gtk::IsA<gtk::Object>
             + glib::value::SetValue {
+        // set name
+        widget.set_name(&config.name);
+        // align
         let halign_str = config.get_str_or("halign", "null");
         if halign_str != "null" {
             WidgetExt::set_halign(widget, Self::get_alignment(halign_str));

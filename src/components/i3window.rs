@@ -17,8 +17,7 @@ pub struct I3Window {
 impl Component for I3Window {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar){
         let label = Label::new(None);
-        WidgetExt::set_name(&label, &config.name);
-        I3Window::align_item(&label, config);
+        I3Window::init_widget(&label, config);
         container.add(&label);
 
         let (tx, rx) = mpsc::channel();

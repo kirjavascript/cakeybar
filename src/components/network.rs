@@ -11,8 +11,7 @@ pub struct Network { }
 impl Component for Network {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
-        WidgetExt::set_name(&label, &config.name);
-        Network::align_item(&label, config);
+        Network::init_widget(&label, config);
         container.add(&label);
 
         let interface = String::from(config.get_str_or("interface", "null"));

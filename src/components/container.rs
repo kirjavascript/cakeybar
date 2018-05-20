@@ -19,11 +19,10 @@ impl Component for Container {
                 _ => Orientation::Vertical,
             };
 
-            let new_container = Box::new(direction, spacing);
-            WidgetExt::set_name(&new_container, &config.name);
-            Container::align_item(&new_container, config);
-            super::layout_to_container(&new_container, layout, bar);
-            container.add(&new_container);
+            let wrapper = Box::new(direction, spacing);
+            Container::init_widget(&wrapper, config);
+            super::layout_to_container(&wrapper, layout, bar);
+            container.add(&wrapper);
         }
     }
 }

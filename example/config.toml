@@ -5,26 +5,28 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "icon", "workspaces", "window", "box1" ]
+layout = [ "icon", "workspaces", "title", "box1" ]
 
-# [bar.right]
-# monitor = 1
-# position = "top"
-# layout = [ "window", "box1" ]
+[bar.right]
+monitor = 1
+position = "top"
+layout = [ "workspaces", "box1" ]
 
 [component.box1]
 type = "container"
-direction = "row"
+# direction = "row"
 spacing = 5
 layout = [ "network", "clock" ]
 halign = "end"
+# valign = "end"
 
-[component.window]
+[component.title]
 type = "i3window"
 halign = "center"
 
 [component.workspaces]
 type = "i3workspace"
+show_all = false
 
 [component.icon]
 type = "image"
@@ -32,7 +34,7 @@ src = "icon.svg"
 
 [component.network]
 type = "network"
-halign = "fill"
+# halign = "top"
 interface = "enp3s0"
 
 [component.clock]

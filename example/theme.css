@@ -3,24 +3,24 @@
 
 #left, #right {
     min-height: 27px;
-    background-image: -gtk-gradient (linear, 0 0, 0 1,
-       color-stop(0, #000),
-       color-stop(0.3, @purple),
-       color-stop(0.7, @purple),
-       color-stop(1, #000));
+    border: 2px solid @purple;
+    background-color: black;
+    /* background-image: -gtk-gradient (linear, 0 0, 0 1, */
+    /*    color-stop(0, #000), */
+    /*    color-stop(0.3, @purple), */
+       /* color-stop(0.7, @purple), */
+       /* color-stop(1, #000)); */
 }
 
 label {
     font-family: Inconsolata;
 }
 
-#window {
+#title {
     margin-left: 280px;
 }
 
 #box1 {
-    color: #E8E;
-    font-size: 16px;
     background-color: black;
     font-weight: bold;
 }
@@ -28,16 +28,27 @@ label {
 #box1 label {
     background-color: @dark-purple;
     background-image: url("./test-bg.svg");
+    padding: 0 5px;
+}
+
+#workspaces {
+    background-color: @purple;
+    /* padding: 0 1px; */
 }
 
 #workspaces label {
-    background-color: @dark-purple;
+    background-color: black;
     color: white;
-    font-size: 14px;
-    margin: 2px;
-    padding: 5px;
+    font-size: 18px;
+    margin: 0 1px;
+    padding: 0 8px;
+    font-weight: bold;
+}
+
+#workspaces .focused {
+    background-color: @dark-purple;
 }
 
 #icon {
-    padding: 5px;
+    padding: 0 5px;
 }

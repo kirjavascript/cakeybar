@@ -12,8 +12,7 @@ impl Component for Image {
             let img: GtkImage = GtkImage::new_from_file(
                 Path::new(src)
             );
-            WidgetExt::set_name(&img, &config.name);
-            Image::align_item(&img, config);
+            Image::init_widget(&img, config);
             container.add(&img);
         }
     }
