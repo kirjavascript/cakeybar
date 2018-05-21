@@ -18,35 +18,20 @@ use std::sync::mpsc;
 
 pub struct I3Workspace { }
 
-fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
-    move |s, b| {
-        if b { StyleContextExt::add_class(&ctx, s); }
-        else { StyleContextExt::remove_class(&ctx, s); }
-    }
-}
-
 impl Component for I3Workspace {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
 
         // get spacing
         let spacing = config.get_int_or("spacing", 0) as i32;
 
+        // misc config
+        let show_all = config.get_bool_or("show_all", false);
+        let show_name = config.get_bool_or("show_name", false);
+
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);
         I3Workspace::init_widget(&wrapper, config);
         container.add(&wrapper);
-
-        // load thread
-        I3Workspace::load_thread(&wrapper, &config, &bar);
-    }
-}
-
-impl I3Workspace {
-    fn load_thread(wrapper: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
-
-        // misc config
-        let show_all = config.get_bool_or("show_all", false);
-        let show_name = config.get_bool_or("show_name", false);
 
         // get monitor name / details
         let screen = Screen::get_default().unwrap();
@@ -55,30 +40,24 @@ impl I3Workspace {
         let has_name = monitor_name_opt.is_some();
         let monitor_name = monitor_name_opt.unwrap_or("poop".to_string());
 
+        // load thread
+        I3Workspace::load_thread(&wrapper, show_name, show_all, has_name, monitor_name);
+    }
+}
+
+impl I3Workspace {
+    fn load_thread(
+        wrapper: &gtk::Box,
+        show_name: bool,
+        show_all: bool,
+        has_name: bool,
+        monitor_name: String,
+    ) {
         // i3 connection
         let mut connection = I3Connection::connect().unwrap();
 
-        // get initial workspace list
-        let workspace_list = connection.get_workspaces()
-            .unwrap_or(Workspaces { workspaces: Vec::new()})
-            .workspaces;
-
-        let mut workspaces: Vec<&Workspace> = workspace_list
-            .iter()
-            .filter(|w| {
-                if !show_all && has_name {
-                    w.output == monitor_name
-                } else {
-                    true
-                }
-            })
-        .collect();
-
-        // sort by number
-        workspaces.sort_by(|a, b| a.num.cmp(&b.num));
-        let workspaces = workspaces;
-
-        // println!("{:#?}", workspaces);
+        let workspace_list = get_workspace_list(&mut connection);
+        let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
 
         // create initial UI
 
@@ -86,18 +65,7 @@ impl I3Workspace {
 
         for workspace in workspaces.iter() {
             let label = Label::new(None);
-            if show_name {
-                label.set_label(&workspace.name);
-            } else {
-                label.set_label(&workspace.num.to_string());
-            };
-            if let Some(ctx) = label.get_style_context() {
-                let set_class = get_set_class(ctx);
-                set_class("focused", workspace.focused);
-                set_class("visible", workspace.visible);
-                set_class("urgent", workspace.urgent);
-            }
-            // style
+            set_label_attrs(&label, &workspace, show_name);
             wrapper.add(&label);
             labels.push(label);
         }
@@ -147,57 +115,16 @@ impl I3Workspace {
                         // msg.change = WorkspaceChange
                         // Focus Init Empty Urgent Rename Reload Restored Move Unknown
 
-                        // remove old children
-                        // wrapper_clone.get_children().iter().for_each(|w| {
-                        //     wrapper_clone.remove(w);
-                        // });
-
-                        // TODO: this code needs some DRY
-
-                        // get initial workspace list
-                        let workspace_list = connection.get_workspaces()
-                            .unwrap_or(Workspaces { workspaces: Vec::new()})
-                            .workspaces;
-
-                        let mut workspaces: Vec<&Workspace> = workspace_list
-                            .iter()
-                            .filter(|w| {
-                                if !show_all && has_name {
-                                    w.output == monitor_name
-                                } else {
-                                    true
-                                }
-                            })
-                            .collect();
-
-                        // sort by number
-                        workspaces.sort_by(|a, b| a.num.cmp(&b.num));
-                        let workspaces = workspaces;
+                        let workspace_list = get_workspace_list(&mut connection);
+                        let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
 
                         for (i, workspace) in workspaces.iter().enumerate() {
                             let added_new = if let Some(label) = labels.get_mut(i) {
-                                // style
-                                if let Some(ctx) = label.get_style_context() {
-                                    let set_class = get_set_class(ctx);
-                                    set_class("focused", workspace.focused);
-                                    set_class("visible", workspace.visible);
-                                    set_class("urgent", workspace.urgent);
-                                }
+                                set_label_attrs(&label, &workspace, show_name);
                                 None
                             } else {
                                 let label = Label::new(None);
-                                if show_name {
-                                    label.set_label(&workspace.name);
-                                } else {
-                                    label.set_label(&workspace.num.to_string());
-                                };
-                                // style
-                                if let Some(ctx) = label.get_style_context() {
-                                    let set_class = get_set_class(ctx);
-                                    set_class("focused", workspace.focused);
-                                    set_class("visible", workspace.visible);
-                                    set_class("urgent", workspace.urgent);
-                                }
+                                set_label_attrs(&label, &workspace, show_name);
                                 wrapper_clone.add(&label);
                                 Some(label)
                             };
@@ -220,7 +147,7 @@ impl I3Workspace {
                     Err(err) => {
                         eprintln!("{}\nTODO: restart thread", err);
 
-                        // I3Workspace::load_thread(&wrapper_clone, &config, &bar);
+                        I3Workspace::load_thread(&wrapper_clone, show_name, show_all, has_name, monitor_name.clone());
                         return gtk::Continue(false);
                     },
                 };
@@ -229,18 +156,49 @@ impl I3Workspace {
         });
     }
 
-    fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
-        if show_name {
-            label.set_label(&workspace.name);
-        } else {
-            label.set_label(&workspace.num.to_string());
-        };
-        // style
-        if let Some(ctx) = label.get_style_context() {
-            let set_class = get_set_class(ctx);
-            set_class("focused", workspace.focused);
-            set_class("visible", workspace.visible);
-            set_class("urgent", workspace.urgent);
-        }
+}
+
+fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
+    move |s, b| {
+        if b { StyleContextExt::add_class(&ctx, s); }
+        else { StyleContextExt::remove_class(&ctx, s); }
+    }
+}
+
+fn get_workspace_list(connection: &mut I3Connection) -> Vec<Workspace> {
+    connection.get_workspaces()
+        .unwrap_or(Workspaces { workspaces: Vec::new()})
+        .workspaces
+}
+
+fn get_workspaces<'a>(workspace_list: &'a Vec<Workspace>, show_all: bool, has_name: bool, monitor_name: String) -> Vec<&'a Workspace> {
+    let mut workspaces: Vec<&Workspace> = workspace_list
+        .iter()
+        .filter(|w| {
+            if !show_all && has_name {
+                w.output == monitor_name
+            } else {
+                true
+            }
+        })
+        .collect();
+
+    // sort by number
+    workspaces.sort_by(|a, b| a.num.cmp(&b.num));
+    workspaces
+}
+
+fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
+    if show_name {
+        label.set_label(&workspace.name);
+    } else {
+        label.set_label(&workspace.num.to_string());
+    };
+    // style
+    if let Some(ctx) = label.get_style_context() {
+        let set_class = get_set_class(ctx);
+        set_class("focused", workspace.focused);
+        set_class("visible", workspace.visible);
+        set_class("urgent", workspace.urgent);
     }
 }
