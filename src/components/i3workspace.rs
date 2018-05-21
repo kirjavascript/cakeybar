@@ -33,15 +33,8 @@ impl Component for I3Workspace {
         I3Workspace::init_widget(&wrapper, config);
         container.add(&wrapper);
 
-        // get monitor name / details
-        let screen = Screen::get_default().unwrap();
-        let monitor_index = bar.config.monitor_index as i32;
-        let monitor_name_opt = screen.get_monitor_plug_name(monitor_index);
-        let has_name = monitor_name_opt.is_some();
-        let monitor_name = monitor_name_opt.unwrap_or("poop".to_string());
-
         // load thread
-        I3Workspace::load_thread(&wrapper, show_name, show_all, has_name, monitor_name);
+        I3Workspace::load_thread(&wrapper, show_name, show_all, bar.config.monitor_index as i32);
     }
 }
 
@@ -50,9 +43,14 @@ impl I3Workspace {
         wrapper: &gtk::Box,
         show_name: bool,
         show_all: bool,
-        has_name: bool,
-        monitor_name: String,
+        monitor_index: i32,
     ) {
+        // get monitor name / details
+        let screen = Screen::get_default().unwrap();
+        let monitor_name_opt = screen.get_monitor_plug_name(monitor_index);
+        let has_name = monitor_name_opt.is_some();
+        let monitor_name = monitor_name_opt.unwrap_or("poop".to_string());
+
         // i3 connection
         let connection_result = I3Connection::connect();
         match connection_result {
@@ -154,8 +152,11 @@ impl I3Workspace {
                             },
                             Err(err) => {
                                 eprintln!("{}, restarting thread", err);
-                                // TODO: add timeout
-                                I3Workspace::load_thread(&wrapper_clone, show_name, show_all, has_name, monitor_name.clone());
+                                let wrapper_clone_clone = wrapper_clone.clone();
+                                gtk::timeout_add(100, move || {
+                                    I3Workspace::load_thread(&wrapper_clone_clone, show_name, show_all, monitor_index);
+                                    gtk::Continue(false)
+                                });
                                 return gtk::Continue(false);
                             },
                         };
@@ -165,7 +166,11 @@ impl I3Workspace {
             },
             Err(err) => {
                 eprintln!("{}, restarting thread", err);
-                I3Workspace::load_thread(&wrapper, show_name, show_all, has_name, monitor_name.clone());
+                let wrapper_clone = wrapper.clone();
+                gtk::timeout_add(100, move || {
+                    I3Workspace::load_thread(&wrapper_clone, show_name, show_all, monitor_index);
+                    gtk::Continue(false)
+                });
             },
         };
 
