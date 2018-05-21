@@ -4,8 +4,7 @@
 // use gtk::prelude::*;
 // use gtk::{Label};
 //
-// pub struct Template {
-// }
+// pub struct Template { }
 //
 // impl Component for Template {
 //     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {

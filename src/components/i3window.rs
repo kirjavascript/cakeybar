@@ -11,8 +11,7 @@ use self::i3ipc::event::Event;
 use std::thread;
 use std::sync::mpsc;
 
-pub struct I3Window {
-}
+pub struct I3Window { }
 
 impl Component for I3Window {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar){
@@ -28,11 +27,23 @@ impl Component for I3Window {
             listener.subscribe(&subs).unwrap();
 
             for event in listener.listen() {
-                let _ = match event.unwrap() {
-                    Event::WindowEvent(e) => tx.send(e),
-                    _ => unreachable!()
+                match event {
+                    Ok(message) => {
+                        match message {
+                            Event::WindowEvent(e) => tx.send(e),
+                            _ => unreachable!(),
+                        };
+                    },
+                    Err(err) => {
+                        println!("{:#?}", err);
+                        break;
+                    },
                 };
             }
+            eprintln!("TODO: restart i3ipc");
+
+            // send message that the thread is dead - start a new one (gtk::COntinue(false))
+            illegal
         });
 
         let label_clone = label.clone();

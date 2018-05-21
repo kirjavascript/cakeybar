@@ -28,11 +28,12 @@ command (inverval, input)
 <webview>
 i3 stuff
 mpd ipc
-network get upload rate
+network get upload/download rate
 dmenu
 dropdown menu
 container: clickable, packing
 networ - ipv6 / v4
+notifications?
 
 config
 ====
@@ -54,3 +55,7 @@ images
 simple configuration
 stronger rice game than feudal japan
 crosspost on unixporn / r/rust
+https://i.imgur.com/oe8pbEz.png
+
+https://alpha.wallhaven.cc/
+http://simpledesktops.com

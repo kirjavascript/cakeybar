@@ -3,8 +3,7 @@ use gtk::prelude::*;
 use gtk::{Image as GtkImage};
 use std::path::Path;
 
-pub struct Image {
-}
+pub struct Image { }
 
 impl Component for Image {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {

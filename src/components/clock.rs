@@ -5,8 +5,7 @@ use gtk::prelude::*;
 use gtk::{Label};
 use self::chrono::Local;
 
-pub struct Clock {
-}
+pub struct Clock { }
 
 fn current_time(format: String) -> String {
     return format!("{}", Local::now().format(&format));
