@@ -2,16 +2,15 @@ extern crate i3ipc;
 
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Label, Box, Orientation, EventBox, LabelExt, Button, WidgetExt, StyleContextExt};
-use gdk;
-use gdk::{Screen, ScreenExt, Rectangle};
+use gtk::{Label, Box, Orientation, LabelExt, WidgetExt, StyleContextExt};
+use gdk::{Screen, ScreenExt};
 
 use self::i3ipc::I3Connection;
 use self::i3ipc::reply::{Workspace, Workspaces};
 use self::i3ipc::I3EventListener;
 use self::i3ipc::Subscription;
 use self::i3ipc::event::{Event};
-use self::i3ipc::event::inner::WorkspaceChange;
+// use self::i3ipc::event::inner::WorkspaceChange;
 
 use std::thread;
 use std::sync::mpsc;
@@ -38,6 +37,7 @@ impl Component for I3Workspace {
     }
 }
 
+#[allow(unused_must_use)]
 impl I3Workspace {
     fn load_thread(
         wrapper: &gtk::Box,
@@ -116,7 +116,7 @@ impl I3Workspace {
                 gtk::timeout_add(10, move || {
                     if let Ok(msg_result) = rx.try_recv() {
                         match msg_result {
-                            Ok(msg) => {
+                            Ok(_msg) => {
                                 // TODO: update UI by diffing for better perf
                                 // msg.change = WorkspaceChange
                                 // Focus Init Empty Urgent Rename Reload Restored Move Unknown
