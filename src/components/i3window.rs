@@ -20,15 +20,15 @@ impl Component for I3Window {
         container.add(&label);
         I3Window::load_thread(&label);
     }
-
 }
 
+#[allow(unused_must_use)]
 impl I3Window {
     fn load_thread(label: &Label) {
         let (tx, rx) = mpsc::channel();
 
         thread::spawn(move || {
-            let mut listener_result = I3EventListener::connect();
+            let listener_result = I3EventListener::connect();
             match listener_result {
                 Ok(mut listener) => {
                     let subs = [Subscription::Window];

@@ -72,7 +72,7 @@ impl Component for I3Workspace {
 
         // create initial UI
 
-        let mut labels: Vec<Label> = Vec::new();
+        let mut labels: Vec<(Label, &Workspace)> = Vec::new();
 
         workspaces.iter().for_each(|workspace| {
             let label = Label::new(None);
@@ -90,9 +90,15 @@ impl Component for I3Workspace {
             // style
             wrapper.add(&label);
             wrapper.show_all();
+            labels.push((label, workspace));
         });
 
         // listen for workspace events in another thread
+
+
+
+    }
+}
 
         // let (tx, rx) = mpsc::channel();
 
@@ -188,7 +194,3 @@ impl Component for I3Workspace {
         //     }
         //     gtk::Continue(true)
         // });
-
-
-    }
-}

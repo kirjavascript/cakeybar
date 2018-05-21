@@ -3,8 +3,8 @@
 
 #left, #right {
     min-height: 27px;
-    border: 2px solid @purple;
-    background-color: black;
+    border-bottom: 2px solid black;
+    background-color: @purple;
     /* background-image: -gtk-gradient (linear, 0 0, 0 1, */
     /*    color-stop(0, #000), */
     /*    color-stop(0.3, @purple), */
@@ -56,5 +56,7 @@ label {
 }
 
 #icon {
-    padding: 0 5px;
+    padding: 0 3px;
+    margin: 2px;
+    background-color: black;
 }
