@@ -18,42 +18,64 @@ impl Component for I3Window {
         let label = Label::new(None);
         I3Window::init_widget(&label, config);
         container.add(&label);
+        I3Window::load_thread(&label);
+    }
 
+}
+
+impl I3Window {
+    fn load_thread(label: &Label) {
         let (tx, rx) = mpsc::channel();
 
         thread::spawn(move || {
-            let mut listener = I3EventListener::connect().unwrap();
-            let subs = [Subscription::Window];
-            listener.subscribe(&subs).unwrap();
+            let mut listener_result = I3EventListener::connect();
+            match listener_result {
+                Ok(mut listener) => {
+                    let subs = [Subscription::Window];
+                    listener.subscribe(&subs).unwrap();
 
-            for event in listener.listen() {
-                match event {
-                    Ok(message) => {
-                        match message {
-                            Event::WindowEvent(e) => tx.send(e),
-                            _ => unreachable!(),
+                    for event in listener.listen() {
+                        match event {
+                            Ok(message) => {
+                                match message {
+                                    Event::WindowEvent(e) => tx.send(Ok(e)),
+                                    _ => unreachable!(),
+                                };
+                            },
+                            Err(err) => {
+                                // listener is rip
+                                tx.send(Err(format!("{}", err)));
+                                break;
+                            },
                         };
-                    },
-                    Err(err) => {
-                        println!("{:#?}", err);
-                        break;
-                    },
-                };
-            }
-            eprintln!("TODO: restart i3ipc");
-
-            // send message that the thread is dead - start a new one (gtk::COntinue(false))
-            illegal
+                    }
+                },
+                Err(err) => {
+                    // socket failed to connect
+                    tx.send(Err(format!("{}", err)));
+                },
+            };
         });
 
         let label_clone = label.clone();
         gtk::timeout_add(10, move || {
-            if let Ok(msg) = rx.try_recv() {
-                label_clone.set_text(&msg.container.name.unwrap_or("".to_owned()));
+            if let Ok(msg_result) = rx.try_recv() {
+                match msg_result {
+                    Ok(msg) => {
+                        label_clone.set_text(&msg.container.name.unwrap_or("".to_owned()));
+                    },
+                    Err(err) => {
+                        eprintln!("{}, restarting thread", err);
+                        let label_clone_clone = label_clone.clone();
+                        gtk::timeout_add(100, move || {
+                            I3Window::load_thread(&label_clone_clone);
+                            gtk::Continue(false)
+                        });
+                        return gtk::Continue(false);
+                    },
+                };
             }
             gtk::Continue(true)
         });
-
-
     }
 }
