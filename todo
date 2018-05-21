@@ -29,7 +29,7 @@ command (inverval, input)
 i3 stuff
 mpd ipc
 network get upload/download rate
-dmenu
+dmenu gtk::WindowType::Toplevel
 dropdown menu
 container: clickable, packing
 networ - ipv6 / v4

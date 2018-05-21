@@ -76,14 +76,15 @@ impl I3Workspace {
 
         // sort by number
         workspaces.sort_by(|a, b| a.num.cmp(&b.num));
+        let workspaces = workspaces;
 
-        println!("{:#?}", workspaces);
+        // println!("{:#?}", workspaces);
 
         // create initial UI
 
-        // let mut labels: Vec<(Label, &Workspace)> = Vec::new();
+        let mut labels: Vec<Label> = Vec::new();
 
-        workspaces.iter().for_each(|workspace| {
+        for workspace in workspaces.iter() {
             let label = Label::new(None);
             if show_name {
                 label.set_label(&workspace.name);
@@ -98,9 +99,9 @@ impl I3Workspace {
             }
             // style
             wrapper.add(&label);
-            wrapper.show_all();
-            // labels.push((label, workspace));
-        });
+            labels.push(label);
+        }
+        wrapper.show_all();
 
         // listen for workspace events in another thread
 
@@ -136,7 +137,6 @@ impl I3Workspace {
             };
         });
 
-        let mut labels: Vec<Label> = Vec::new();
 
         let wrapper_clone = wrapper.clone();
         gtk::timeout_add(10, move || {
@@ -148,9 +148,11 @@ impl I3Workspace {
                         // Focus Init Empty Urgent Rename Reload Restored Move Unknown
 
                         // remove old children
-                        wrapper_clone.get_children().iter().for_each(|w| {
-                            wrapper_clone.remove(w);
-                        });
+                        // wrapper_clone.get_children().iter().for_each(|w| {
+                        //     wrapper_clone.remove(w);
+                        // });
+
+                        // TODO: this code needs some DRY
 
                         // get initial workspace list
                         let workspace_list = connection.get_workspaces()
@@ -166,28 +168,54 @@ impl I3Workspace {
                                     true
                                 }
                             })
-                        .collect();
-
-                        workspaces.iter().for_each(|workspace| {
-                            let label = Label::new(None);
-                            if show_name {
-                                label.set_label(&workspace.name);
-                            } else {
-                                label.set_label(&workspace.num.to_string());
-                            };
-                            if let Some(ctx) = label.get_style_context() {
-                                let set_class = get_set_class(ctx);
-                                set_class("focused", workspace.focused);
-                                set_class("visible", workspace.visible);
-                                set_class("urgent", workspace.urgent);
-                            }
-                            // style
-                            wrapper_clone.add(&label);
-                            wrapper_clone.show_all();
-                        });
+                            .collect();
 
                         // sort by number
                         workspaces.sort_by(|a, b| a.num.cmp(&b.num));
+                        let workspaces = workspaces;
+
+                        for (i, workspace) in workspaces.iter().enumerate() {
+                            let added_new = if let Some(label) = labels.get_mut(i) {
+                                // style
+                                if let Some(ctx) = label.get_style_context() {
+                                    let set_class = get_set_class(ctx);
+                                    set_class("focused", workspace.focused);
+                                    set_class("visible", workspace.visible);
+                                    set_class("urgent", workspace.urgent);
+                                }
+                                None
+                            } else {
+                                let label = Label::new(None);
+                                if show_name {
+                                    label.set_label(&workspace.name);
+                                } else {
+                                    label.set_label(&workspace.num.to_string());
+                                };
+                                // style
+                                if let Some(ctx) = label.get_style_context() {
+                                    let set_class = get_set_class(ctx);
+                                    set_class("focused", workspace.focused);
+                                    set_class("visible", workspace.visible);
+                                    set_class("urgent", workspace.urgent);
+                                }
+                                wrapper_clone.add(&label);
+                                Some(label)
+                            };
+                            if let Some(added) = added_new {
+                                labels.push(added);
+                            }
+                        }
+                        wrapper_clone.show_all();
+
+                        // remove items
+                        let work_len = workspaces.len();
+                        let label_len = labels.len();
+                        if label_len > work_len {
+                            labels.splice(work_len.., vec![]).for_each(|w| {
+                                wrapper_clone.remove(&w);
+                            });
+                        }
+
                     },
                     Err(err) => {
                         eprintln!("{}\nTODO: restart thread", err);
@@ -199,5 +227,20 @@ impl I3Workspace {
             }
             gtk::Continue(true)
         });
+    }
+
+    fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
+        if show_name {
+            label.set_label(&workspace.name);
+        } else {
+            label.set_label(&workspace.num.to_string());
+        };
+        // style
+        if let Some(ctx) = label.get_style_context() {
+            let set_class = get_set_class(ctx);
+            set_class("focused", workspace.focused);
+            set_class("visible", workspace.visible);
+            set_class("urgent", workspace.urgent);
+        }
     }
 }
