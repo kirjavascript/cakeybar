@@ -10,14 +10,14 @@ use self::i3ipc::I3Connection;
 use self::i3ipc::reply::{Workspace, Workspaces};
 use self::i3ipc::I3EventListener;
 use self::i3ipc::Subscription;
-use self::i3ipc::event::Event;
+use self::i3ipc::event::{Event};
+use self::i3ipc::event::inner::WorkspaceChange;
 
 use std::thread;
 use std::sync::mpsc;
 
 pub struct I3Workspace { }
 
-// better as a macro?
 fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
     move |s, b| {
         if b { StyleContextExt::add_class(&ctx, s); }
@@ -30,14 +30,23 @@ impl Component for I3Workspace {
 
         // get spacing
         let spacing = config.get_int_or("spacing", 0) as i32;
-        // misc config
-        let show_all = config.get_bool_or("show_all", false);
-        let show_name = config.get_bool_or("show_name", false);
 
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);
         I3Workspace::init_widget(&wrapper, config);
         container.add(&wrapper);
+
+        // load thread
+        I3Workspace::load_thread(&wrapper, &config, &bar);
+    }
+}
+
+impl I3Workspace {
+    fn load_thread(wrapper: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+
+        // misc config
+        let show_all = config.get_bool_or("show_all", false);
+        let show_name = config.get_bool_or("show_name", false);
 
         // get monitor name / details
         let screen = Screen::get_default().unwrap();
@@ -63,7 +72,7 @@ impl Component for I3Workspace {
                     true
                 }
             })
-            .collect();
+        .collect();
 
         // sort by number
         workspaces.sort_by(|a, b| a.num.cmp(&b.num));
@@ -72,7 +81,7 @@ impl Component for I3Workspace {
 
         // create initial UI
 
-        let mut labels: Vec<(Label, &Workspace)> = Vec::new();
+        // let mut labels: Vec<(Label, &Workspace)> = Vec::new();
 
         workspaces.iter().for_each(|workspace| {
             let label = Label::new(None);
@@ -90,107 +99,105 @@ impl Component for I3Workspace {
             // style
             wrapper.add(&label);
             wrapper.show_all();
-            labels.push((label, workspace));
+            // labels.push((label, workspace));
         });
 
         // listen for workspace events in another thread
 
+        let (tx, rx) = mpsc::channel();
 
+        thread::spawn(move || {
+            let listener_result = I3EventListener::connect();
+            match listener_result {
+                Ok(mut listener) => {
+                    let subs = [Subscription::Workspace];
+                    listener.subscribe(&subs).unwrap();
 
+                    for event in listener.listen() {
+                        match event {
+                            Ok(message) => {
+                                match message {
+                                    Event::WorkspaceEvent(e) => tx.send(Ok(e)),
+                                    _ => unreachable!(),
+                                };
+                            },
+                            Err(err) => {
+                                // listener is rip
+                                tx.send(Err(format!("{}", err)));
+                                break;
+                            },
+                        };
+                    }
+                },
+                Err(err) => {
+                    // socket failed to connect
+                    tx.send(Err(format!("{}", err)));
+                },
+            };
+        });
+
+        let mut labels: Vec<Label> = Vec::new();
+
+        let wrapper_clone = wrapper.clone();
+        gtk::timeout_add(10, move || {
+            if let Ok(msg_result) = rx.try_recv() {
+                match msg_result {
+                    Ok(msg) => {
+                        // TODO: update UI by diffing for better perf
+                        // msg.change = WorkspaceChange
+                        // Focus Init Empty Urgent Rename Reload Restored Move Unknown
+
+                        // remove old children
+                        wrapper_clone.get_children().iter().for_each(|w| {
+                            wrapper_clone.remove(w);
+                        });
+
+                        // get initial workspace list
+                        let workspace_list = connection.get_workspaces()
+                            .unwrap_or(Workspaces { workspaces: Vec::new()})
+                            .workspaces;
+
+                        let mut workspaces: Vec<&Workspace> = workspace_list
+                            .iter()
+                            .filter(|w| {
+                                if !show_all && has_name {
+                                    w.output == monitor_name
+                                } else {
+                                    true
+                                }
+                            })
+                        .collect();
+
+                        workspaces.iter().for_each(|workspace| {
+                            let label = Label::new(None);
+                            if show_name {
+                                label.set_label(&workspace.name);
+                            } else {
+                                label.set_label(&workspace.num.to_string());
+                            };
+                            if let Some(ctx) = label.get_style_context() {
+                                let set_class = get_set_class(ctx);
+                                set_class("focused", workspace.focused);
+                                set_class("visible", workspace.visible);
+                                set_class("urgent", workspace.urgent);
+                            }
+                            // style
+                            wrapper_clone.add(&label);
+                            wrapper_clone.show_all();
+                        });
+
+                        // sort by number
+                        workspaces.sort_by(|a, b| a.num.cmp(&b.num));
+                    },
+                    Err(err) => {
+                        eprintln!("{}\nTODO: restart thread", err);
+
+                        // I3Workspace::load_thread(&wrapper_clone, &config, &bar);
+                        return gtk::Continue(false);
+                    },
+                };
+            }
+            gtk::Continue(true)
+        });
     }
 }
-
-        // let (tx, rx) = mpsc::channel();
-
-        // thread::spawn(move || {
-        //     let mut listener = I3EventListener::connect().unwrap();
-        //     let subs = [Subscription::Workspace];
-        //     listener.subscribe(&subs).unwrap();
-
-        //     for event in listener.listen() {
-        //         let _ = match event.unwrap() {
-        //             Event::WorkspaceEvent(e) => tx.send(e),
-        //             _ => unreachable!()
-        //         };
-        //     }
-        // });
-
-        // gtk::timeout_add(10, move || {
-        //     if let Ok(msg) = rx.try_recv() {
-        //         // println!("{:#?}", msg.current.unwrap().name);
-        //         // match msg.change {
-
-        //         // }
-        //     }
-        //     gtk::Continue(true)
-        // });
-
-        // legacy
-
-
-        // let mut labels: Vec<Label> = Vec::new();
-
-        // gtk::timeout_add(100, move || {
-
-        //     if let Ok(workspaces) = connection.get_workspaces() {
-        //         // get workspaces for this window
-        //         let mut filtered: Vec<&Workspace> = workspaces.workspaces.iter()
-        //             .filter(|x| {
-        //                 if !show_all && has_name {
-        //                     x.output == monitor_name
-        //                 } else {
-        //                     true
-        //                 }
-        //             })
-        //             .collect();
-        //         // sort by num
-        //         filtered.sort_by(|a, b| a.num.cmp(&b.num));
-        //         let filtered = filtered;
-
-        //         for (i, workspace) in filtered.iter().enumerate() {
-        //             let added_new = if let Some(label) = labels.get_mut(i) {
-        //                 // if a label exists
-        //                 if show_name {
-        //                     label.set_label(&workspace.name);
-        //                 } else {
-        //                     label.set_label(&workspace.num.to_string());
-        //                 };
-        //                 if let Some(ctx) = label.get_style_context() {
-        //                     if workspace.focused {
-        //                         StyleContextExt::add_class(&ctx, "focused");
-        //                     } else {
-        //                         StyleContextExt::remove_class(&ctx, "focused");
-        //                     }
-        //                     if workspace.visible {
-        //                         StyleContextExt::add_class(&ctx, "visible");
-        //                     } else {
-        //                         StyleContextExt::remove_class(&ctx, "visible");
-        //                     }
-        //                 }
-        //                 None
-        //             }
-        //             else {
-        //                 // otherwise, create a new one
-        //                 let label = Label::new(None);
-        //                 // label.set_label(&workspace.name);
-        //                 wrapper.add(&label);
-        //                 wrapper.show_all();
-        //                 Some(label)
-        //             };
-        //             if let Some(added) = added_new {
-        //                 // if we created a new one, add it to the vec
-        //                 labels.push(added);
-        //             }
-        //         }
-        //         // remove extra items
-        //         let work_len = filtered.len();
-        //         let label_len = labels.len();
-        //         if label_len > work_len {
-        //             labels.splice(work_len.., vec![]).for_each(|w| {
-        //                 wrapper.remove(&w);
-        //             });
-        //         }
-
-        //     }
-        //     gtk::Continue(true)
-        // });
