@@ -5,10 +5,8 @@ use gtk::prelude::*;
 use gtk::{Label, Box, Orientation, LabelExt, WidgetExt, StyleContextExt};
 use gdk::{Screen, ScreenExt};
 
-use self::i3ipc::I3Connection;
+use self::i3ipc::{I3Connection, I3EventListener, Subscription, EstablishError};
 use self::i3ipc::reply::{Workspace, Workspaces};
-use self::i3ipc::I3EventListener;
-use self::i3ipc::Subscription;
 use self::i3ipc::event::{Event};
 // use self::i3ipc::event::inner::WorkspaceChange;
 
@@ -56,7 +54,7 @@ impl I3Workspace {
         match connection_result {
             Ok(mut connection) => {
 
-                // remove children of widget
+                // remove children of widget from previous thread
 
                 for child in wrapper.get_children().iter() {
                     wrapper.remove(child);
@@ -151,12 +149,8 @@ impl I3Workspace {
 
                             },
                             Err(err) => {
-                                eprintln!("{}, restarting thread", err);
-                                let wrapper_clone_clone = wrapper_clone.clone();
-                                gtk::timeout_add(100, move || {
-                                    I3Workspace::load_thread(&wrapper_clone_clone, show_name, show_all, monitor_index);
-                                    gtk::Continue(false)
-                                });
+                                // thread has stopped
+                                handle_err(err, &wrapper_clone, show_name, show_all, monitor_index);
                                 return gtk::Continue(false);
                             },
                         };
@@ -165,18 +159,25 @@ impl I3Workspace {
                 });
             },
             Err(err) => {
-                eprintln!("{}, restarting thread", err);
-                let wrapper_clone = wrapper.clone();
-                gtk::timeout_add(100, move || {
-                    I3Workspace::load_thread(&wrapper_clone, show_name, show_all, monitor_index);
-                    gtk::Continue(false)
-                });
+                // connection failed
+                let err_str = format!("{}", err);
+                handle_err(err_str, wrapper, show_name, show_all, monitor_index);
             },
         };
 
     }
-
 }
+
+fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, monitor_index: i32) {
+    eprintln!("{}, restarting thread", err);
+    let wrapper_clone = wrapper.clone();
+    gtk::timeout_add(100, move || {
+        I3Workspace::load_thread(&wrapper_clone, show_name, show_all, monitor_index);
+        gtk::Continue(false)
+    });
+}
+
+// TODO: fn handle_err, enclose!()
 
 fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
     move |s, b| {
