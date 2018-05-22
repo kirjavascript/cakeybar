@@ -22,6 +22,7 @@ impl Component for Container {
             Container::init_widget(&wrapper, config);
             super::layout_to_container(&wrapper, layout, bar);
             container.add(&wrapper);
+            wrapper.show();
         }
     }
 }

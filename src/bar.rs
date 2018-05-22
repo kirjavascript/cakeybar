@@ -70,12 +70,12 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
             Position::Top => monitor.y,
         };
         window.move_(x, y);
+        // show bar
+        window.show_all();
 
         // load components
         components::load_components(&container, &self);
 
-        // show bar
-        window.show_all();
 
     }
 }

@@ -42,9 +42,6 @@ config
 xdg
 [event.something]
 toml parsing tests
-thing["foo"]["bar"][3].unwrap()
-get_int_or()
-get_str_or()
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
@@ -59,6 +56,7 @@ stronger rice game than feudal japan
 crosspost on unixporn / r/rust
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
+https://i.imgur.com/TF69nPa.png
 blue rope / plain background
 slanted workspace names with SVG
 

@@ -9,20 +9,19 @@ use i3ipc::event::Event;
 use std::thread;
 use std::sync::mpsc;
 
-pub struct I3Window { }
+pub struct I3Mode { }
 
-impl Component for I3Window {
+impl Component for I3Mode {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar){
         let label = Label::new(None);
-        I3Window::init_widget(&label, config);
+        I3Mode::init_widget(&label, config);
         container.add(&label);
-        label.show();
-        I3Window::load_thread(&label);
+        I3Mode::load_thread(&label);
     }
 }
 
 #[allow(unused_must_use)]
-impl I3Window {
+impl I3Mode {
     fn load_thread(label: &Label) {
         let (tx, rx) = mpsc::channel();
 
@@ -30,14 +29,14 @@ impl I3Window {
             let listener_result = I3EventListener::connect();
             match listener_result {
                 Ok(mut listener) => {
-                    let subs = [Subscription::Window];
+                    let subs = [Subscription::Mode];
                     listener.subscribe(&subs).unwrap();
 
                     for event in listener.listen() {
                         match event {
                             Ok(message) => {
                                 match message {
-                                    Event::WindowEvent(e) => tx.send(Ok(e)),
+                                    Event::ModeEvent(e) => tx.send(Ok(e)),
                                     _ => unreachable!(),
                                 };
                             },
@@ -57,17 +56,24 @@ impl I3Window {
         });
 
         let label_clone = label.clone();
-        gtk::timeout_add(10, move || {
+        let tick = move || {
             if let Ok(msg_result) = rx.try_recv() {
                 match msg_result {
                     Ok(msg) => {
-                        label_clone.set_text(&msg.container.name.unwrap_or("".to_owned()));
+                        let is_default = msg.change == "default";
+
+                        if is_default {
+                            label_clone.hide();
+                        } else {
+                            label_clone.show();
+                            label_clone.set_text(&msg.change);
+                        }
                     },
                     Err(err) => {
                         eprintln!("{}, restarting thread", err);
                         let label_clone_clone = label_clone.clone();
                         gtk::timeout_add(100, move || {
-                            I3Window::load_thread(&label_clone_clone);
+                            I3Mode::load_thread(&label_clone_clone);
                             gtk::Continue(false)
                         });
                         return gtk::Continue(false);
@@ -75,6 +81,8 @@ impl I3Window {
                 };
             }
             gtk::Continue(true)
-        });
+        };
+
+        gtk::timeout_add(10, tick);
     }
 }

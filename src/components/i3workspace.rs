@@ -1,4 +1,3 @@
-
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label, Box, Orientation, LabelExt, WidgetExt, StyleContextExt};
@@ -28,6 +27,7 @@ impl Component for I3Workspace {
         let wrapper = Box::new(Orientation::Horizontal, spacing);
         I3Workspace::init_widget(&wrapper, config);
         container.add(&wrapper);
+        wrapper.show();
 
         // load thread
         I3Workspace::load_thread(&wrapper, show_name, show_all, bar.config.monitor_index as i32);
@@ -117,7 +117,6 @@ impl I3Workspace {
                                 // TODO: update UI by diffing for better perf
                                 // msg.change = WorkspaceChange
                                 // Focus Init Empty Urgent Rename Reload Restored Move Unknown
-
                                 let workspace_list = get_workspace_list(&mut connection);
                                 let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
 

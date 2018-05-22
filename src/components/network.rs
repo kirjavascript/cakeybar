@@ -12,6 +12,7 @@ impl Component for Network {
         let label = Label::new(None);
         Network::init_widget(&label, config);
         container.add(&label);
+        label.show();
 
         let interface = String::from(config.get_str_or("interface", "null"));
 

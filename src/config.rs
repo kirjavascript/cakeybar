@@ -63,6 +63,7 @@ impl ComponentConfig {
             or
         }
     }
+    // get_arr (or vec![])
 }
 
 #[derive(Debug)]

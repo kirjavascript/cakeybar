@@ -53,12 +53,15 @@ label {
 }
 
 #logo {
-    padding: 2px 5px;
+    padding: 2px 10px;
+}
+
+#mode {
+    padding: 0 10px;
 }
 
 #workspaces .focused,
-#box1,
-#logo
+.gradient
 {
     background-image: -gtk-gradient (linear, 0 0, 0 1,
        color-stop(0, @dark),

@@ -5,20 +5,12 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "bottom"
-layout = [ "logo", "workspaces", "title", "box1" ]
+layout = [ "logo", "workspaces", "mode", "title", "box1" ]
 
-# [bar.right]
-# monitor = 1
-# position = "bottom"
-# layout = [ "workspaces", "title", "box1" ]
-
-[component.box1]
-type = "container"
-# direction = "row"
-# spacing = 5
-layout = [ "cpu_icon", "cpu", "network_icon", "network", "clock_icon", "clock" ]
-halign = "end"
-# valign = "end"
+[bar.right]
+monitor = 1
+position = "bottom"
+layout = [ "workspaces", "mode", "title", "box1" ]
 
 [component.title]
 type = "i3window"
@@ -26,12 +18,35 @@ halign = "center"
 
 [component.workspaces]
 type = "i3workspace"
-show_all = true
+show_all = false
 show_name = true
+
+[component.mode]
+type = "i3mode"
+class = "gradient"
 
 [component.logo]
 type = "image"
 src = "windows_black.png"
+class = "gradient"
+
+[component.box1]
+type = "container"
+direction = "row"
+spacing = 5
+layout = [ "box1_top", "box1_bottom" ]
+halign = "end"
+class = "gradient"
+# valign = "end"
+
+[component.box1_top]
+type = "container"
+layout = [ "cpu_icon", "cpu", "network_icon", "network"]
+halign = "end"
+[component.box1_bottom]
+type = "container"
+layout = [ "clock_icon", "clock"]
+halign = "end"
 
 [component.network_icon]
 type = "image"
@@ -53,6 +68,7 @@ class = "icon"
 # cloud-download
 # coud-upload
 
+
 [component.network]
 type = "network"
 interface = "enp3s0"
@@ -62,4 +78,4 @@ type = "cpu"
 
 [component.clock]
 type = "clock"
-format = "%Y-%m-%d %H:%M"
+format = "%Y-%m-%d %H:%M:%S"

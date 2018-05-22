@@ -7,6 +7,7 @@ extern crate clap;
 extern crate i3ipc;
 extern crate chrono;
 extern crate systemstat;
+extern crate probes;
 
 use gio::prelude::*;
 

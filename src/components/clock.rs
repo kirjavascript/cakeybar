@@ -27,6 +27,7 @@ impl Component for Clock {
         gtk::timeout_add_seconds(1, tick);
 
         container.add(&label);
+        label.show();
 
     }
 }

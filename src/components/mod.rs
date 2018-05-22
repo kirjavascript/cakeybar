@@ -12,6 +12,7 @@
 //         Template::init_widget(&label, &config.name);
 //         label.set_text(&"test");
 //         container.add(&label);
+//         label.show();
 //     }
 // }
 
@@ -23,6 +24,7 @@ use super::config::{ComponentConfig, Property};
 mod clock;
 mod container;
 mod cpu;
+mod i3mode;
 mod i3window;
 mod i3workspace;
 mod image;
@@ -97,6 +99,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "clock" => clock::Clock::init,
             "container" => container::Container::init,
             "cpu" => cpu::CPU::init,
+            "i3mode" => i3mode::I3Mode::init,
             "i3window" => i3window::I3Window::init,
             "i3workspace" => i3workspace::I3Workspace::init,
             "image" => image::Image::init,

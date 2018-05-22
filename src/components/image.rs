@@ -13,6 +13,7 @@ impl Component for Image {
             );
             Image::init_widget(&img, config);
             container.add(&img);
+            img.show();
         }
     }
 }
