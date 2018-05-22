@@ -28,21 +28,10 @@ impl Component for I3Workspace {
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);
         I3Workspace::init_widget(&wrapper, config);
-        // add to container and show
-
-        // attach scroll wrapper
-        let viewport = gtk::Viewport::new(None, None);
-        viewport.add(&wrapper);
-        viewport.connect_scroll_event(move |_, e| {
-            let is_next = e.get_delta().1 > 0.;
-            scroll_workspace(is_next, monitor_index);
-            Inhibit(false)
-        });
-        viewport.set_shadow_type(gtk::ShadowType::None);
 
         // add to container and show
-        container.add(&viewport);
-        viewport.show();
+        container.add(&wrapper);
+        wrapper.show();
 
         // load thread
         I3Workspace::load_thread(&wrapper, show_name, show_all, monitor_index);

@@ -10,6 +10,7 @@ use gtk::{
 use super::{util, NAME};
 use super::config::{BarConfig, Position, ComponentConfig};
 use super::components;
+use components::i3workspace::scroll_workspace;
 
 #[derive(Debug)]
 pub struct Bar<'a, 'b, 'c> {
@@ -58,10 +59,20 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
         // attach container
         let container = Box::new(Orientation::Horizontal, 0);
-        // TODO: opacity popup
-        WidgetExt::set_name(&window, &self.config.name);
         WidgetExt::set_name(&container, &self.config.name);
-        window.add(&container);
+        WidgetExt::set_name(&window, &self.config.name);
+
+        // attach scrollevent
+        let monitor_index = self.config.monitor_index as i32;
+        let viewport = gtk::Viewport::new(None, None);
+        viewport.add(&container);
+        viewport.connect_scroll_event(move |_, e| {
+            let is_next = e.get_delta().1 > 0.;
+            scroll_workspace(is_next, monitor_index);
+            Inhibit(false)
+        });
+        viewport.set_shadow_type(gtk::ShadowType::None);
+        window.add(&viewport);
 
         // set position
         let x = monitor.x;

@@ -26,7 +26,7 @@ mod container;
 mod cpu;
 mod i3mode;
 mod i3window;
-mod i3workspace;
+pub mod i3workspace;
 mod image;
 mod network;
 mod void;
