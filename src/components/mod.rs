@@ -14,15 +14,15 @@
 //         container.add(&label);
 //     }
 // }
-extern crate glib;
 
-use super::gtk;
-use super::gtk::{Box, Align, WidgetExt};
+use super::{gtk, glib};
+use super::gtk::{Box, Align, WidgetExt, StyleContextExt};
 use super::bar::Bar;
 use super::config::{ComponentConfig, Property};
 
 mod clock;
 mod container;
+mod cpu;
 mod i3window;
 mod i3workspace;
 mod image;
@@ -47,6 +47,13 @@ pub trait Component {
         if valign_str != "null" {
             WidgetExt::set_valign(widget, Self::get_alignment(valign_str));
             WidgetExt::set_vexpand(widget, true);
+        }
+        // class
+        let class_str = config.get_str_or("class", "null");
+        if class_str != "null"  {
+            if let Some(ctx) = widget.get_style_context() {
+                StyleContextExt::add_class(&ctx, class_str);
+            }
         }
     }
     fn get_alignment(align: &str) -> Align {
@@ -89,6 +96,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
         let component_init = match component_type.as_str() {
             "clock" => clock::Clock::init,
             "container" => container::Container::init,
+            "cpu" => cpu::CPU::init,
             "i3window" => i3window::I3Window::init,
             "i3workspace" => i3workspace::I3Workspace::init,
             "image" => image::Image::init,

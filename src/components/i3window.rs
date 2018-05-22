@@ -1,12 +1,10 @@
-extern crate i3ipc;
-
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 
-use self::i3ipc::I3EventListener;
-use self::i3ipc::Subscription;
-use self::i3ipc::event::Event;
+use i3ipc::I3EventListener;
+use i3ipc::Subscription;
+use i3ipc::event::Event;
 
 use std::thread;
 use std::sync::mpsc;

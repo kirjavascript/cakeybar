@@ -1,9 +1,7 @@
-extern crate chrono;
-
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
-use self::chrono::Local;
+use chrono::Local;
 
 pub struct Clock { }
 

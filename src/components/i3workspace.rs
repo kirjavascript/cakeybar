@@ -1,13 +1,12 @@
-extern crate i3ipc;
 
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label, Box, Orientation, LabelExt, WidgetExt, StyleContextExt};
 use gdk::{Screen, ScreenExt};
 
-use self::i3ipc::{I3Connection, I3EventListener, Subscription};
-use self::i3ipc::reply::{Workspace, Workspaces};
-use self::i3ipc::event::{Event};
+use i3ipc::{I3Connection, I3EventListener, Subscription};
+use i3ipc::reply::{Workspace, Workspaces};
+use i3ipc::event::{Event};
 // use self::i3ipc::event::inner::WorkspaceChange;
 
 use std::thread;
@@ -177,13 +176,6 @@ fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, 
     });
 }
 
-fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
-    move |s, b| {
-        if b { StyleContextExt::add_class(&ctx, s); }
-        else { StyleContextExt::remove_class(&ctx, s); }
-    }
-}
-
 fn get_workspace_list(connection: &mut I3Connection) -> Vec<Workspace> {
     connection.get_workspaces()
         .unwrap_or(Workspaces { workspaces: Vec::new()})
@@ -206,6 +198,14 @@ fn get_workspaces<'a>(workspace_list: &'a Vec<Workspace>, show_all: bool, has_na
     workspaces.sort_by(|a, b| a.num.cmp(&b.num));
     workspaces
 }
+
+fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
+    move |s, b| {
+        if b { StyleContextExt::add_class(&ctx, s); }
+        else { StyleContextExt::remove_class(&ctx, s); }
+    }
+}
+
 
 fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
     if show_name {

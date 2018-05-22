@@ -1,7 +1,12 @@
 extern crate gio;
 extern crate gtk;
 extern crate gdk;
+extern crate glib;
 extern crate clap;
+// used in components
+extern crate i3ipc;
+extern crate chrono;
+extern crate systemstat;
 
 use gio::prelude::*;
 

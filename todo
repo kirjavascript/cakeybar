@@ -3,6 +3,7 @@ halp
 https://github.com/jaagr/polybar
 system tray crate
 lemonbar
+https://github.com/myfreeweb/unixbar
 css:
 https://developer.gnome.org/gtk3/stable/theming.html
 https://developer.gnome.org/gtk3/stable/chap-css-properties.html
@@ -31,6 +32,8 @@ network get upload/download rate
 dmenu gtk::WindowType::Toplevel
 dropdown menu
 container: clickable
+keyboard layout
+volume
 networ - ipv6 / v4
 notifications?
 

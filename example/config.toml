@@ -5,18 +5,18 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "bottom"
-layout = [ "icon", "workspaces", "title", "box1" ]
+layout = [ "logo", "workspaces", "title", "box1" ]
 
-[bar.right]
-monitor = 1
-position = "bottom"
-layout = [ "workspaces", "title", "box1" ]
+# [bar.right]
+# monitor = 1
+# position = "bottom"
+# layout = [ "workspaces", "title", "box1" ]
 
 [component.box1]
 type = "container"
 # direction = "row"
-spacing = 5
-layout = [ "network", "clock" ]
+# spacing = 5
+layout = [ "cpu_icon", "cpu", "network_icon", "network", "clock_icon", "clock" ]
 halign = "end"
 # valign = "end"
 
@@ -26,16 +26,39 @@ halign = "center"
 
 [component.workspaces]
 type = "i3workspace"
-show_all = false
+show_all = true
 show_name = true
 
-[component.icon]
+[component.logo]
 type = "image"
 src = "windows_black.png"
+
+[component.network_icon]
+type = "image"
+src = "./svg/flame.svg"
+class = "icon"
+
+[component.clock_icon]
+type = "image"
+src = "./svg/clock.svg"
+class = "icon"
+
+[component.cpu_icon]
+type = "image"
+src = "./svg/pulse.svg"
+class = "icon"
+
+# pulse - cpu
+# plug
+# cloud-download
+# coud-upload
 
 [component.network]
 type = "network"
 interface = "enp3s0"
+
+[component.cpu]
+type = "cpu"
 
 [component.clock]
 type = "clock"

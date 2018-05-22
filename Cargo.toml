@@ -16,8 +16,7 @@ toml = "0.4"
 # pango = "^0"
 # cairo-rs = { version = "^0", features = ["png"] }
 i3ipc = "0.8.2"
-# pnet = "0.21.0"
-ifaces = "0.1.0"
+systemstat = "0.1.2"
 
 [[example]]
 name = "basic"
