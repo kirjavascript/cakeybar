@@ -13,7 +13,13 @@ impl Component for Image {
             );
             Image::init_widget(&img, config);
             container.add(&img);
-            img.show();
+
+            // wait a tick, otherwise we get negative height warnings
+            let img_clone = img.clone();
+            gtk::idle_add(move || {
+                img_clone.show();
+                gtk::Continue(false)
+            });
         }
     }
 }

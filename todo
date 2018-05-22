@@ -19,7 +19,7 @@ reload config / theme (theme should be easy)
 bindsym $mod+m exec -- --message
 transparency via window type popup layer
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
-manage wallpaper
+connect_focus on bar window
 
 components
 ====

@@ -1,7 +1,7 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Label, Box, Orientation, LabelExt, WidgetExt, StyleContextExt};
-use gdk::{Screen, ScreenExt};
+use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
+use gdk::{Screen, ScreenExt, EventType};
 
 use i3ipc::{I3Connection, I3EventListener, Subscription};
 use i3ipc::reply::{Workspace, Workspaces};
@@ -69,7 +69,16 @@ impl I3Workspace {
                 for workspace in workspaces.iter() {
                     let label = Label::new(None);
                     set_label_attrs(&label, &workspace, show_name);
-                    wrapper.add(&label);
+                    // add event box
+                    let ebox = EventBox::new();
+                    ebox.add(&label);
+                    let workspace_name_clone = workspace.name.clone();
+                    ebox.connect_button_press_event(move |_, _| {
+                        let command = format!("workspace {}", workspace_name_clone);
+                        run_command(&command);
+                        Inhibit(false)
+                    });
+                    wrapper.add(&ebox);
                     labels.push(label);
                 }
                 wrapper.show_all();
@@ -127,7 +136,16 @@ impl I3Workspace {
                                     } else {
                                         let label = Label::new(None);
                                         set_label_attrs(&label, &workspace, show_name);
-                                        wrapper_clone.add(&label);
+                                        // attach events
+                                        let ebox = EventBox::new();
+                                        ebox.add(&label);
+                                        let workspace_name_clone = workspace.name.clone();
+                                        ebox.connect_button_press_event(move |_, _| {
+                                            let command = format!("workspace {}", workspace_name_clone);
+                                            run_command(&command);
+                                            Inhibit(false)
+                                        });
+                                        wrapper_clone.add(&ebox);
                                         Some(label)
                                     };
                                     if let Some(added) = added_new {
@@ -141,7 +159,10 @@ impl I3Workspace {
                                 let label_len = labels.len();
                                 if label_len > work_len {
                                     labels.splice(work_len.., vec![]).for_each(|w| {
-                                        wrapper_clone.remove(&w);
+                                        if let Some(parent) = w.get_parent() {
+                                            // nuke the event box
+                                            parent.destroy();
+                                        }
                                     });
                                 }
 
@@ -173,6 +194,19 @@ fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, 
         I3Workspace::load_thread(&wrapper_clone, show_name, show_all, monitor_index);
         gtk::Continue(false)
     });
+}
+
+#[allow(unused_must_use)]
+fn run_command(string: &str) {
+    let connection_result = I3Connection::connect();
+    match connection_result {
+        Ok(mut connection) => {
+            connection.run_command(string);
+        },
+        Err(err) => {
+            eprintln!("{}", err);
+        },
+    }
 }
 
 fn get_workspace_list(connection: &mut I3Connection) -> Vec<Workspace> {
