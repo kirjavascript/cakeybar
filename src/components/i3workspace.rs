@@ -208,7 +208,11 @@ pub fn scroll_workspace(is_next: bool, monitor_index: i32) {
 
             // get workspace details
             let workspace_list = get_workspace_list(&mut connection);
-            let workspaces = get_workspaces(&workspace_list, false, has_name, monitor_name.clone());
+            let mut workspaces = get_workspaces(&workspace_list, false, has_name, monitor_name.clone());
+            // so we can search backwards
+            if !is_next {
+                workspaces.reverse();
+            }
 
             // get focused workspace
             let focused_opt = workspaces.iter().find(|x| x.focused);

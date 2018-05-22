@@ -1,6 +1,7 @@
 # default config example
 
 theme = "theme.css"
+scroll_workspace = true
 
 [bar.left]
 monitor = 0
@@ -32,7 +33,7 @@ class = "gradient"
 
 [component.box1]
 type = "container"
-direction = "row"
+# direction = "row"
 spacing = 5
 layout = [ "box1_top", "box1_bottom" ]
 halign = "end"
@@ -67,7 +68,6 @@ class = "icon"
 # plug
 # cloud-download
 # coud-upload
-
 
 [component.network]
 type = "network"
