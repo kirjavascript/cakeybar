@@ -1,7 +1,7 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
-use gdk::{Screen, ScreenExt, EventType};
+use gdk::{Screen, ScreenExt};
 
 use i3ipc::{I3Connection, I3EventListener, Subscription};
 use i3ipc::reply::{Workspace, Workspaces};
@@ -16,6 +16,8 @@ pub struct I3Workspace { }
 impl Component for I3Workspace {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
 
+        let monitor_index = bar.config.monitor_index as i32;
+
         // get spacing
         let spacing = config.get_int_or("spacing", 0) as i32;
 
@@ -26,11 +28,24 @@ impl Component for I3Workspace {
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);
         I3Workspace::init_widget(&wrapper, config);
-        container.add(&wrapper);
-        wrapper.show();
+        // add to container and show
+
+        // attach scroll wrapper
+        let viewport = gtk::Viewport::new(None, None);
+        viewport.add(&wrapper);
+        viewport.connect_scroll_event(move |_, e| {
+            let is_next = e.get_delta().1 > 0.;
+            scroll_workspace(is_next, monitor_index);
+            Inhibit(false)
+        });
+        viewport.set_shadow_type(gtk::ShadowType::None);
+
+        // add to container and show
+        container.add(&viewport);
+        viewport.show();
 
         // load thread
-        I3Workspace::load_thread(&wrapper, show_name, show_all, bar.config.monitor_index as i32);
+        I3Workspace::load_thread(&wrapper, show_name, show_all, monitor_index);
     }
 }
 
@@ -42,11 +57,8 @@ impl I3Workspace {
         show_all: bool,
         monitor_index: i32,
     ) {
-        // get monitor name / details
-        let screen = Screen::get_default().unwrap();
-        let monitor_name_opt = screen.get_monitor_plug_name(monitor_index);
-        let has_name = monitor_name_opt.is_some();
-        let monitor_name = monitor_name_opt.unwrap_or("poop".to_string());
+        // get monitor details
+        let (has_name, monitor_name) = get_monitor_name(monitor_index);
 
         // i3 connection
         let connection_result = I3Connection::connect();
@@ -69,15 +81,7 @@ impl I3Workspace {
                 for workspace in workspaces.iter() {
                     let label = Label::new(None);
                     set_label_attrs(&label, &workspace, show_name);
-                    // add event box
-                    let ebox = EventBox::new();
-                    ebox.add(&label);
-                    let workspace_name_clone = workspace.name.clone();
-                    ebox.connect_button_press_event(move |_, _| {
-                        let command = format!("workspace {}", workspace_name_clone);
-                        run_command(&command);
-                        Inhibit(false)
-                    });
+                    let ebox = add_event_box(&label, workspace.name.clone());
                     wrapper.add(&ebox);
                     labels.push(label);
                 }
@@ -131,20 +135,14 @@ impl I3Workspace {
 
                                 for (i, workspace) in workspaces.iter().enumerate() {
                                     let added_new = if let Some(label) = labels.get_mut(i) {
+                                        // if a label already exists
                                         set_label_attrs(&label, &workspace, show_name);
                                         None
                                     } else {
+                                        // if adding a new label
                                         let label = Label::new(None);
                                         set_label_attrs(&label, &workspace, show_name);
-                                        // attach events
-                                        let ebox = EventBox::new();
-                                        ebox.add(&label);
-                                        let workspace_name_clone = workspace.name.clone();
-                                        ebox.connect_button_press_event(move |_, _| {
-                                            let command = format!("workspace {}", workspace_name_clone);
-                                            run_command(&command);
-                                            Inhibit(false)
-                                        });
+                                        let ebox = add_event_box(&label, workspace.name.clone());
                                         wrapper_clone.add(&ebox);
                                         Some(label)
                                     };
@@ -196,17 +194,63 @@ fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, 
     });
 }
 
-#[allow(unused_must_use)]
-fn run_command(string: &str) {
+// i3 stuff
+
+pub fn run_command(string: &str) {
     let connection_result = I3Connection::connect();
     match connection_result {
         Ok(mut connection) => {
-            connection.run_command(string);
+            connection.run_command(string)
+                .expect("something went wrong running an i3 command");
         },
         Err(err) => {
             eprintln!("{}", err);
         },
     }
+}
+
+pub fn scroll_workspace(is_next: bool, monitor_index: i32) {
+    let connection_result = I3Connection::connect();
+    match connection_result {
+        Ok(mut connection) => {
+
+            // get monitor name / details
+            let (has_name, monitor_name) = get_monitor_name(monitor_index);
+
+            // get workspace details
+            let workspace_list = get_workspace_list(&mut connection);
+            let workspaces = get_workspaces(&workspace_list, false, has_name, monitor_name.clone());
+
+            // get focused workspace
+            let focused_opt = workspaces.iter().find(|x| x.focused);
+            if let Some(focused) = focused_opt {
+                // get next one
+                let next_opt = workspaces.iter().find(|x| {
+                    if is_next {
+                        x.num > focused.num
+                    } else {
+                        x.num < focused.num
+                    }
+                });
+                if let Some(next) = next_opt {
+                    let command = format!("workspace {}", next.name);
+                    connection.run_command(&command)
+                        .expect("something went wrong running an i3 command");
+                }
+            }
+        },
+        Err(err) => {
+            eprintln!("{}", err);
+        },
+    }
+}
+
+fn get_monitor_name(monitor_index: i32) -> (bool, String) {
+    let screen = Screen::get_default().unwrap();
+    let monitor_name_opt = screen.get_monitor_plug_name(monitor_index);
+    let has_name = monitor_name_opt.is_some();
+    let monitor_name = monitor_name_opt.unwrap_or("poop".to_string());
+    (has_name, monitor_name)
 }
 
 fn get_workspace_list(connection: &mut I3Connection) -> Vec<Workspace> {
@@ -232,6 +276,8 @@ fn get_workspaces<'a>(workspace_list: &'a Vec<Workspace>, show_all: bool, has_na
     workspaces
 }
 
+// UI stuff
+
 fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
     move |s, b| {
         if b { StyleContextExt::add_class(&ctx, s); }
@@ -253,4 +299,15 @@ fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
         set_class("visible", workspace.visible);
         set_class("urgent", workspace.urgent);
     }
+}
+
+fn add_event_box(label: &Label, workspace_name: String) -> EventBox {
+    let ebox = EventBox::new();
+    ebox.add(label);
+    ebox.connect_button_press_event(move |_, _| {
+        let command = format!("workspace {}", workspace_name);
+        run_command(&command);
+        Inhibit(false)
+    });
+    ebox
 }
