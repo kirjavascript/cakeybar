@@ -1,15 +1,14 @@
 @define-color dark-purple #551A8B;
 @define-color purple #747;
+/* @define-color dark-purple #4C070F; */
+/* @define-color purple #aF462E; */
+/* @define-color dark-purple #1A558B; */
+/* @define-color purple #477; */
 
 #left, #right {
     min-height: 27px;
-    border-bottom: 2px solid black;
-    background-color: @purple;
-    /* background-image: -gtk-gradient (linear, 0 0, 0 1, */
-    /*    color-stop(0, #000), */
-    /*    color-stop(0.3, @purple), */
-       /* color-stop(0.7, @purple), */
-       /* color-stop(1, #000)); */
+    background-color: black;
+    border-top: 2px solid @dark-purple;
 }
 
 label {
@@ -26,29 +25,23 @@ label {
 }
 
 #box1 label {
-    background-color: @dark-purple;
-    background-image: url("./test-bg.svg");
     padding: 0 5px;
 }
 
 #workspaces {
-    background-color: @purple;
-    /* padding: 0 1px; */
+    background-color: @dark-purple;
 }
 
 #workspaces label {
     background-color: black;
     color: white;
-    font-size: 18px;
+    font-size: 15px;
     margin: 0 1px;
     padding: 0 8px;
     font-weight: bold;
 }
 
 #workspaces .visible {
-    background-color: @purple;
-}
-#workspaces .focused {
     background-color: @dark-purple;
 }
 #workspaces .urgent {
@@ -56,7 +49,16 @@ label {
 }
 
 #icon {
-    padding: 0 3px;
-    margin: 2px;
-    background-color: black;
+    padding: 2px 5px;
+}
+
+#workspaces .focused,
+#box1 label,
+#icon
+{
+    background-image: -gtk-gradient (linear, 0 0, 0 1,
+       color-stop(0, @dark-purple),
+       color-stop(0.3, @purple),
+       color-stop(0.7, @purple),
+       color-stop(1, @dark-purple));
 }

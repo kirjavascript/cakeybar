@@ -1,10 +1,12 @@
-extern crate pnet;
+// extern crate pnet;
+
+extern crate ifaces;
 
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 
-use self::pnet::datalink;
+// use self::pnet::datalink;
 
 pub struct Network { }
 
@@ -18,10 +20,15 @@ impl Component for Network {
 
         let label_tick_clone = label.clone();
         let tick = move || {
-            let interfaces = datalink::interfaces();
-            if let Some(iface) = interfaces.iter().find(|x| x.name == interface) {
-                label_tick_clone.set_text(&format!("{}", iface.ips[0].ip()));
+    for iface in
+        ifaces::Interface::get_all().unwrap()
+            .into_iter() {
+                println!("{}\t{:?}\t{:?}", iface.name, iface.kind, iface.addr);
             }
+            // let interfaces = datalink::interfaces();
+            // if let Some(iface) = interfaces.iter().find(|x| x.name == interface) {
+            //     label_tick_clone.set_text(&format!("{}", iface.ips[0].ip()));
+            // }
             gtk::Continue(true)
         };
 

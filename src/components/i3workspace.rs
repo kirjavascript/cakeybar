@@ -5,7 +5,7 @@ use gtk::prelude::*;
 use gtk::{Label, Box, Orientation, LabelExt, WidgetExt, StyleContextExt};
 use gdk::{Screen, ScreenExt};
 
-use self::i3ipc::{I3Connection, I3EventListener, Subscription, EstablishError};
+use self::i3ipc::{I3Connection, I3EventListener, Subscription};
 use self::i3ipc::reply::{Workspace, Workspaces};
 use self::i3ipc::event::{Event};
 // use self::i3ipc::event::inner::WorkspaceChange;
@@ -176,8 +176,6 @@ fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, 
         gtk::Continue(false)
     });
 }
-
-// TODO: fn handle_err, enclose!()
 
 fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
     move |s, b| {

@@ -4,12 +4,12 @@ theme = "theme.css"
 
 [bar.left]
 monitor = 0
-position = "top"
+position = "bottom"
 layout = [ "icon", "workspaces", "title", "box1" ]
 
 [bar.right]
 monitor = 1
-position = "top"
+position = "bottom"
 layout = [ "workspaces", "title", "box1" ]
 
 [component.box1]
@@ -31,11 +31,10 @@ show_name = true
 
 [component.icon]
 type = "image"
-src = "icon.svg"
+src = "windows_black.png"
 
 [component.network]
 type = "network"
-# halign = "top"
 interface = "enp3s0"
 
 [component.clock]

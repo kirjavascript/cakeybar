@@ -26,12 +26,11 @@ conditional display / flexbox
 command (inverval, input)
 <api/>
 <webview>
-i3 stuff
 mpd ipc
 network get upload/download rate
 dmenu gtk::WindowType::Toplevel
 dropdown menu
-container: clickable, packing
+container: clickable
 networ - ipv6 / v4
 notifications?
 
@@ -56,6 +55,8 @@ simple configuration
 stronger rice game than feudal japan
 crosspost on unixporn / r/rust
 https://i.imgur.com/oe8pbEz.png
+https://i.imgur.com/haiUWbT.png
+blue rope / plain background
 slanted workspace names with SVG
 
 https://alpha.wallhaven.cc/
