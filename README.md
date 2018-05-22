@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="docs/logo.svg" alt="mspaint">
+    <img src="docs/logo.svg.png" alt="mspaint">
     <br>
 </div>
 <br>
