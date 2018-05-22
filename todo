@@ -14,7 +14,7 @@ set_valign
 
 impl
 ====
-better name
+better name - UltrasaurusBar
 reload config / theme (theme should be easy)
 bindsym $mod+m exec -- --message
 transparency via window type popup layer
@@ -48,10 +48,6 @@ https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable
 
 ===
 osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal
-resizable icons ? dock ?
-solid multi monitors
-images
-simple configuration
 stronger rice game than feudal japan
 crosspost on unixporn / r/rust
 https://i.imgur.com/oe8pbEz.png
