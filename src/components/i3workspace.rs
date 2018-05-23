@@ -14,7 +14,7 @@ use std::sync::mpsc;
 pub struct I3Workspace { }
 
 impl Component for I3Workspace {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
+    fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
 
         let monitor_index = bar.config.monitor_index as i32;
 
@@ -41,7 +41,7 @@ impl Component for I3Workspace {
 #[allow(unused_must_use)]
 impl I3Workspace {
     fn load_thread(
-        wrapper: &gtk::Box,
+        wrapper: &Box,
         show_name: bool,
         show_all: bool,
         monitor_index: i32,

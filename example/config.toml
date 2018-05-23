@@ -34,7 +34,7 @@ class = "gradient"
 [component.box1]
 type = "container"
 # direction = "row"
-spacing = 5
+# spacing = 5
 layout = [ "box1_top", "box1_bottom" ]
 halign = "end"
 class = "gradient"

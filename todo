@@ -29,7 +29,7 @@ command (inverval, input)
 <webview>
 mpd ipc
 network get upload/download rate
-dmenu gtk::WindowType::Toplevel
+dmenu gtk::WindowType::Popup
 dropdown menu
 container: clickable
 keyboard layout
