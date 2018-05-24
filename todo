@@ -1,25 +1,20 @@
 halp
 ====
 https://github.com/jaagr/polybar
-system tray crate
-lemonbar
 https://github.com/myfreeweb/unixbar
 css:
 https://developer.gnome.org/gtk3/stable/theming.html
 https://developer.gnome.org/gtk3/stable/chap-css-properties.html
 https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
-flowbox / headerbar
-set_valign
 
 impl
 ====
-better name - UltrasaurusBar
 reload config / theme (theme should be easy)
 bindsym $mod+m exec -- --message
-transparency via window type popup layer
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 connect_focus on bar window
+fix scroll on trackpad
 
 components
 ====
@@ -34,7 +29,7 @@ dropdown menu
 container: clickable
 keyboard layout
 volume
-networ - ipv6 / v4
+networ - ipv6 / v4 - autodetect interface
 notifications?
 
 config

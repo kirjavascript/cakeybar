@@ -71,7 +71,8 @@ class = "icon"
 
 [component.network]
 type = "network"
-interface = "enp3s0"
+# interface = "enp3s0"
+interface = "wlp58s0"
 
 [component.cpu]
 type = "cpu"

@@ -16,7 +16,6 @@ impl Component for CPU {
         container.add(&label);
         label.show();
 
-
         // let sys = System::new();
 
         let label_tick_clone = label.clone();

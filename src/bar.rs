@@ -67,8 +67,11 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let viewport = gtk::Viewport::new(None, None);
         viewport.add(&container);
         viewport.connect_scroll_event(move |_, e| {
-            let is_next = e.get_delta().1 > 0.;
-            scroll_workspace(is_next, monitor_index);
+            let (_dx, dy) = e.get_delta();
+            if dy != 0. {
+                let is_next = dy > 0.;
+                scroll_workspace(is_next, monitor_index);
+            }
             Inhibit(false)
         });
         viewport.set_shadow_type(gtk::ShadowType::None);
