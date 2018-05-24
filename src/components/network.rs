@@ -21,6 +21,7 @@ impl Component for Network {
         let label_tick_clone = label.clone();
         let tick = move || {
             if let Ok(interfaces) = sys.networks() {
+                // TODO: fix when offline, add ipv6
                 let find_interface = interfaces.iter().find(|x| x.0 == &interface);
                 if let Some((_name, iface)) = find_interface {
                     if let IpAddr::V4(addr) = iface.addrs[0].addr {
