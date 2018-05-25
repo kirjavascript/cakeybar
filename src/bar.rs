@@ -68,9 +68,13 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         viewport.add(&container);
         viewport.connect_scroll_event(move |_, e| {
             let (_dx, dy) = e.get_delta();
+            // println!("{:#?}", e.get_root());
+
             if dy != 0. {
                 let is_next = dy > 0.;
                 scroll_workspace(is_next, monitor_index);
+            } else {
+                println!("{:#?}", _dx);
             }
             Inhibit(false)
         });

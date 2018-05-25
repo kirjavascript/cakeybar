@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="docs/logo.svg.png" alt="mspaint">
+    <img src="docs/logo.svg.png" alt="cakeybar">
     <br>
 </div>
 <br>
@@ -9,9 +9,9 @@
 cakeybar is a customizable statusbar for your windowmanager
 
 * solid multimonitor support
-* i3 mode, window, workspaces
 * easy layout model
 * flexible theming with CSS
+* i3 components: mode, window, workspaces
 * image support
 
 currently only i3 is supported though this could be expanded in future

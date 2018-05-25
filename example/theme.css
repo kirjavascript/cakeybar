@@ -2,12 +2,12 @@
 /* @define-color purple #747; */
 /* @define-color dark #4C070F; */
 /* @define-color purple #aF462E; */
-/* @define-color darkest #124; */
-/* @define-color dark #1A558B; */
-/* @define-color normal #477; */
-@define-color dark #551A8B;
-@define-color normal #747;
-@define-color darkest #212;
+@define-color darkest #124;
+@define-color dark #1A558B;
+@define-color normal #477;
+/* @define-color dark #551A8B; */
+/* @define-color normal #747; */
+/* @define-color darkest #212; */
 
 #left, #right {
     min-height: 27px;

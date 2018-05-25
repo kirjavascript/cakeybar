@@ -24,7 +24,8 @@ impl Component for Clock {
             gtk::Continue(true)
         };
 
-        gtk::timeout_add_seconds(1, tick);
+        let interval = config.get_int_or("interval", 1);
+        gtk::timeout_add_seconds(interval as u32, tick);
 
         container.add(&label);
         label.show();

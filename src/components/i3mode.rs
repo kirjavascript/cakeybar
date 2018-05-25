@@ -70,6 +70,7 @@ impl I3Mode {
                         }
                     },
                     Err(err) => {
+                        #[cfg(debug_assertions)]
                         eprintln!("{}, restarting thread", err);
                         let label_clone_clone = label_clone.clone();
                         gtk::timeout_add(100, move || {

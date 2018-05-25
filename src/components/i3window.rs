@@ -64,6 +64,7 @@ impl I3Window {
                         label_clone.set_text(&msg.container.name.unwrap_or("".to_owned()));
                     },
                     Err(err) => {
+                        #[cfg(debug_assertions)]
                         eprintln!("{}, restarting thread", err);
                         let label_clone_clone = label_clone.clone();
                         gtk::timeout_add(100, move || {

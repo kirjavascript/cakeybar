@@ -64,15 +64,9 @@ type = "image"
 src = "./svg/pulse.svg"
 class = "icon"
 
-# pulse - cpu
-# plug
-# cloud-download
-# coud-upload
-
 [component.network]
 type = "network"
-# interface = "enp3s0"
-interface = "wlp58s0"
+interface = "enp3s0"
 
 [component.cpu]
 type = "cpu"

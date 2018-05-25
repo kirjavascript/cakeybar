@@ -175,6 +175,7 @@ impl I3Workspace {
 }
 
 fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, monitor_index: i32) {
+    #[cfg(debug_assertions)]
     eprintln!("{}, restarting thread", err);
     let wrapper_clone = wrapper.clone();
     gtk::timeout_add(100, move || {
