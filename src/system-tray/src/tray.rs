@@ -1,3 +1,4 @@
+extern crate xcb_util;
 use atom;
 use xcb;
 
@@ -91,12 +92,12 @@ impl<'a> Tray<'a> {
             8,
             format!("{0}\0{0}", ::PROGRAM).as_bytes()
         );
-        // self.set_property(
-        //     self.atoms.get(atom::_NET_SYSTEM_TRAY_ORIENTATION),
-        //     xcb::ATOM_CARDINAL,
-        //     32,
-        //     &[0 as u32] // 0 is horizontal, 1 is vertical
-        // );
+        self.set_property(
+            self.atoms.get(atom::_NET_SYSTEM_TRAY_ORIENTATION),
+            xcb::ATOM_CARDINAL,
+            32,
+            &[0 as u32] // 0 is horizontal, 1 is vertical
+        );
 
         xcb::change_property(
             self.conn,
@@ -157,6 +158,7 @@ impl<'a> Tray<'a> {
         );
 
 
+        // seems to stop delete event ruining our fun
         xcb::change_property(
             self.conn,
             xcb::PROP_MODE_REPLACE as u8,
@@ -178,15 +180,15 @@ impl<'a> Tray<'a> {
         );
 
 
-        xcb::change_property(
-            self.conn,
-            xcb::PROP_MODE_APPEND as u8,
-            self.window,
-            self.atoms.get(atom::_NET_WM_STATE),
-            xcb::ATOM_ATOM,
-            32,
-            &[self.atoms.get(atom::_NET_WM_STATE_STICKY)]
-        );
+        // xcb::change_property(
+        //     self.conn,
+        //     xcb::PROP_MODE_APPEND as u8,
+        //     self.window,
+        //     self.atoms.get(atom::_NET_WM_STATE),
+        //     xcb::ATOM_ATOM,
+        //     32,
+        //     &[self.atoms.get(atom::_NET_WM_STATE_STICKY)]
+        // );
 
         // make decorationless
         xcb::change_property_checked(
@@ -202,14 +204,21 @@ impl<'a> Tray<'a> {
         xcb::change_window_attributes(self.conn, self.window, &[
             (xcb::CW_EVENT_MASK,
             xcb::EVENT_MASK_FOCUS_CHANGE
-             // |xcb::EVENT_MASK_STRUCTURE_NOTIFY
-             // |xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
-             // |xcb::EVENT_MASK_EXPOSURE
+             // xcb::EVENT_MASK_STRUCTURE_NOTIFY
+             // xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
+             // xcb::EVENT_MASK_EXPOSURE
             ),
         ]);
 
+
+        let hints = xcb_util::icccm::WmHints::empty()
+            .input(false)
+            .build();
+        xcb_util::icccm::set_wm_hints(self.conn, self.window, &hints);
+
+        // xcb_util::icccm::set_wm_protocols(self.conn, self.window, self.atoms.get(atom::WM_PROTOCOLS), &[self.atoms.get(atom::WM_TAKE_FOCUS)]);
+
         // TODO: make immovable
-        // TODO: make undeletable
         // TODO: make unfullscreenable
 
         self.conn.flush();
@@ -416,7 +425,7 @@ impl<'a> Tray<'a> {
                     self.finish();
                 },
                 xcb::FOCUS_IN => {
-                    // println!("{:#?}", event.response_type());
+                    println!("{:#?}", event.response_type());
                     // self.reposition();
                     //
                     // xcb::configure_window(self.conn, self.window, &[
@@ -431,7 +440,7 @@ impl<'a> Tray<'a> {
 
                     // self.conn.flush();
 
-                    // println!("{:#?}", event.response_type());
+                    println!("{:#?}", event.response_type());
                 }
             }
             None
