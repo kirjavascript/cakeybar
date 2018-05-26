@@ -77,10 +77,6 @@ impl<'a> Tray<'a> {
             &[
                 (xcb::CW_BACK_PIXEL, self.bg),
                 (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
-
-                // (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT),
-                // (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
-                // (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_EXPOSURE),
             ]
         );
         self.set_property(
@@ -152,7 +148,7 @@ impl<'a> Tray<'a> {
 
         xcb::change_property(
             self.conn,
-            xcb::PROP_MODE_APPEND as u8,
+            xcb::PROP_MODE_REPLACE as u8,
             self.window,
             self.atoms.get(atom::_NET_WM_STATE),
             xcb::ATOM_ATOM,
@@ -181,24 +177,15 @@ impl<'a> Tray<'a> {
             &[self.atoms.get(atom::WM_TAKE_FOCUS)]
         );
 
-        xcb::change_property(
-            self.conn,
-            xcb::PROP_MODE_REPLACE as u8,
-            self.window,
-            self.atoms.get(atom::_COMPTON_SHADOW),
-            xcb::ATOM_CARDINAL,
-            32,
-            &[0]
-        );
 
         xcb::change_property(
             self.conn,
-            xcb::PROP_MODE_REPLACE as u8,
+            xcb::PROP_MODE_APPEND as u8,
             self.window,
-            self.atoms.get(atom::_NET_WM_ALLOWED_ACTIONS),
+            self.atoms.get(atom::_NET_WM_STATE),
             xcb::ATOM_ATOM,
             32,
-            &[0]
+            &[self.atoms.get(atom::_NET_WM_STATE_STICKY)]
         );
 
         // make decorationless
@@ -212,6 +199,14 @@ impl<'a> Tray<'a> {
             &[0b10, 0, 0, 0, 0]
         );
 
+        xcb::change_window_attributes(self.conn, self.window, &[
+            (xcb::CW_EVENT_MASK,
+            xcb::EVENT_MASK_FOCUS_CHANGE
+             // |xcb::EVENT_MASK_STRUCTURE_NOTIFY
+             // |xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
+             // |xcb::EVENT_MASK_EXPOSURE
+            ),
+        ]);
 
         // TODO: make immovable
         // TODO: make undeletable
@@ -219,6 +214,15 @@ impl<'a> Tray<'a> {
 
         self.conn.flush();
         // self.conn.flush();
+        xcb::change_property(
+            self.conn,
+            xcb::PROP_MODE_REPLACE as u8,
+            self.window,
+            self.atoms.get(atom::_COMPTON_SHADOW),
+            xcb::ATOM_CARDINAL,
+            32,
+            &[0]
+        );
     }
 
     pub fn set_property<T>(&self, name: xcb::Atom, type_: xcb::Atom, format: u8, data: &[T]) {
@@ -411,8 +415,23 @@ impl<'a> Tray<'a> {
                 xcb::SELECTION_CLEAR => {
                     self.finish();
                 },
+                xcb::FOCUS_IN => {
+                    // println!("{:#?}", event.response_type());
+                    // self.reposition();
+                    //
+                    // xcb::configure_window(self.conn, self.window, &[
+                    //     (xcb::CONFIG_WINDOW_X as u16, 0 as u32),
+                    //     (xcb::CONFIG_WINDOW_Y as u16, 0 as u32),
+                    // ]);
+                    //
+
+                    // self.conn.flush();
+                },
                 _ => {
-                    println!("{}", event.response_type());
+
+                    // self.conn.flush();
+
+                    // println!("{:#?}", event.response_type());
                 }
             }
             None
