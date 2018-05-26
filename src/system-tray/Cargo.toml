@@ -1,0 +1,14 @@
+[package]
+name = "rusttray"
+version = "0.1.0"
+authors = ["Thomas Dy <thatsmydoing@gmail.com>"]
+
+[dependencies]
+chan = "0.1.18"
+chan-signal = "0.1.6"
+getopts = "0.2"
+css-color-parser = "*"
+
+[dependencies.xcb]
+version = "0.8.2"
+features = [ "thread" ]
