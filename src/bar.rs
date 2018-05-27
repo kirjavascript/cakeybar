@@ -66,19 +66,19 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let monitor_index = self.config.monitor_index as i32;
         let viewport = gtk::Viewport::new(None, None);
         viewport.add(&container);
-        viewport.connect_scroll_event(move |_, e| {
+        viewport.connect_scroll_event(move |_vp, e| {
             let (_dx, dy) = e.get_delta();
             // println!("{:#?}", e.get_root());
+            // println!("{:#?}", _vp.get_vadjustment().unwrap().get_property("value"));
 
             if dy != 0. {
                 let is_next = dy > 0.;
                 scroll_workspace(is_next, monitor_index);
-            } else {
-                println!("{:#?}", _dx);
             }
-            Inhibit(false)
+            Inhibit(true)
         });
         viewport.set_shadow_type(gtk::ShadowType::None);
+        viewport.set_vexpand(true);
         window.add(&viewport);
 
         // set position
@@ -94,5 +94,12 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
         // load components
         components::load_components(&container, &self);
+
+        // windowEnter
+        // window.connect_enter_notify_event(move |_, _evt| {
+        //     // viewport.clone().emit_scroll_child(gtk::ScrollType::StepDown, false);
+        //     Inhibit(true)
+        // });
+
     }
 }

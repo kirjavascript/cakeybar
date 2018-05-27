@@ -15,7 +15,7 @@ use std::process;
 use std::thread;
 use std::sync::Arc;
 
-const PROGRAM: &'static str = "poop";
+const PROGRAM: &'static str = "System Tray";
 const EXIT_WRONG_ARGS: i32 = 1;
 const EXIT_FAILED_CONNECT: i32 = 10;
 const EXIT_FAILED_SELECT: i32 = 11;
@@ -65,7 +65,7 @@ fn real_main() -> i32 {
         },
         None => 20
     };
-    let black = Color { r: 0, g: 0, b: 0, a: 0.0 };
+    let black = Color { r: 34, g: 17, b: 34, a: 0.0 };
     let bg = matches.opt_str("b");
     let bg = match bg {
         Some(color) => match color.parse::<Color>() {

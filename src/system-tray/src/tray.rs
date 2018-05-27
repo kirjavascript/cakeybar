@@ -35,7 +35,7 @@ pub struct Tray<'a> {
     window: xcb::Window,
     children: Vec<xcb::Window>,
     timestamp: xcb::Timestamp,
-    finishing: bool
+    finishing: bool,
 }
 
 impl<'a> Tray<'a> {
@@ -57,7 +57,7 @@ impl<'a> Tray<'a> {
             window: conn.generate_id(),
             children: vec![],
             timestamp: 0,
-            finishing: false
+            finishing: false,
         }
     }
 
@@ -201,14 +201,16 @@ impl<'a> Tray<'a> {
             &[0b10, 0, 0, 0, 0]
         );
 
-        // xcb::change_window_attributes(self.conn, self.window, &[
-        //     (xcb::CW_EVENT_MASK,
-        //     xcb::EVENT_MASK_FOCUS_CHANGE
-        //      // |xcb::EVENT_MASK_STRUCTURE_NOTIFY
-        //      // |xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
-        //      // |xcb::EVENT_MASK_EXPOSURE
-        //     ),
-        // ]);
+        xcb::change_window_attributes(self.conn, self.window, &[
+            (xcb::CW_EVENT_MASK,
+        // xcb::EVENT_MASK_PROPERTY_CHANGE
+            // xcb::EVENT_MASK_FOCUS_CHANGE
+             xcb::EVENT_MASK_STRUCTURE_NOTIFY
+             // |xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
+             // |xcb::EVENT_MASK_EXPOSURE
+            ),
+        ]);
+
 
 
         let hints = xcb_util::icccm::WmHints::empty()
@@ -218,8 +220,8 @@ impl<'a> Tray<'a> {
 
         // xcb_util::icccm::set_wm_protocols(self.conn, self.window, self.atoms.get(atom::WM_PROTOCOLS), &[self.atoms.get(atom::WM_TAKE_FOCUS)]);
 
-        // TODO: make immovable
         // TODO: make unfullscreenable
+        // TODO: vlc icon
 
         self.conn.flush();
         // self.conn.flush();
@@ -416,31 +418,24 @@ impl<'a> Tray<'a> {
                     self.forget(event.window());
                 },
                 xcb::CONFIGURE_NOTIFY => {
-                    let event: &xcb::ConfigureNotifyEvent = unsafe {
-                        xcb::cast_event(&event)
-                    };
-                    self.force_size(event.window(), Some((event.width(), event.height())));
+                    // let event: &xcb::ConfigureNotifyEvent = unsafe {
+                    //     xcb::cast_event(&event)
+                    // };
+                    // self.force_size(event.window(), Some((event.width(), event.height())));
                 },
                 xcb::SELECTION_CLEAR => {
                     self.finish();
                 },
-                xcb::FOCUS_IN => {
-                    println!("{:#?}", event.response_type());
-                    // self.reposition();
-                    //
-                    // xcb::configure_window(self.conn, self.window, &[
-                    //     (xcb::CONFIG_WINDOW_X as u16, 0 as u32),
-                    //     (xcb::CONFIG_WINDOW_Y as u16, 0 as u32),
-                    // ]);
-                    //
-
-                    // self.conn.flush();
+                // resize
+                150 => {
+                    // force window in place
+                    xcb::configure_window(self.conn, self.window, &[
+                        (xcb::CONFIG_WINDOW_X as u16, 1460),
+                        (xcb::CONFIG_WINDOW_Y as u16, 1056),
+                    ]);
+                    self.conn.flush();
                 },
                 _ => {
-
-                    // self.conn.flush();
-
-                    println!("{:#?}", event.response_type());
                 }
             }
             None
