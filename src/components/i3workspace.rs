@@ -6,7 +6,6 @@ use gdk::{Screen, ScreenExt};
 use i3ipc::{I3Connection, I3EventListener, Subscription};
 use i3ipc::reply::{Workspace, Workspaces};
 use i3ipc::event::{Event};
-// use self::i3ipc::event::inner::WorkspaceChange;
 
 use std::thread;
 use std::sync::mpsc;

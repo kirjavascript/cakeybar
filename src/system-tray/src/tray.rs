@@ -206,8 +206,7 @@ impl<'a> Tray<'a> {
 
         // TODO: make unfullscreenable
 
-        self.conn.flush();
-        // self.conn.flush();
+        // disable compton shadow (apparently)
         xcb::change_property(
             self.conn,
             xcb::PROP_MODE_REPLACE as u8,
@@ -217,6 +216,7 @@ impl<'a> Tray<'a> {
             32,
             &[0]
         );
+        self.conn.flush();
     }
 
     pub fn set_property<T>(&self, name: xcb::Atom, type_: xcb::Atom, format: u8, data: &[T]) {
