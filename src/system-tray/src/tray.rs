@@ -147,6 +147,7 @@ impl<'a> Tray<'a> {
             &[screen.root_visual()]
         );
 
+        // skip showing in taskbar
         xcb::change_property(
             self.conn,
             xcb::PROP_MODE_REPLACE as u8,
@@ -156,7 +157,6 @@ impl<'a> Tray<'a> {
             32,
             &[self.atoms.get(atom::_NET_WM_STATE_SKIP_TASKBAR)]
         );
-
 
         // seems to stop delete event ruining our fun
         xcb::change_property(
@@ -179,16 +179,16 @@ impl<'a> Tray<'a> {
             &[self.atoms.get(atom::WM_TAKE_FOCUS)]
         );
 
-
-        // xcb::change_property(
-        //     self.conn,
-        //     xcb::PROP_MODE_APPEND as u8,
-        //     self.window,
-        //     self.atoms.get(atom::_NET_WM_STATE),
-        //     xcb::ATOM_ATOM,
-        //     32,
-        //     &[self.atoms.get(atom::_NET_WM_STATE_STICKY)]
-        // );
+        // keeps tray on every workspace screen
+        xcb::change_property(
+            self.conn,
+            xcb::PROP_MODE_APPEND as u8,
+            self.window,
+            self.atoms.get(atom::_NET_WM_STATE),
+            xcb::ATOM_ATOM,
+            32,
+            &[self.atoms.get(atom::_NET_WM_STATE_STICKY)]
+        );
 
         // make decorationless
         xcb::change_property_checked(
@@ -201,14 +201,14 @@ impl<'a> Tray<'a> {
             &[0b10, 0, 0, 0, 0]
         );
 
-        xcb::change_window_attributes(self.conn, self.window, &[
-            (xcb::CW_EVENT_MASK,
-            xcb::EVENT_MASK_FOCUS_CHANGE
-             // xcb::EVENT_MASK_STRUCTURE_NOTIFY
-             // xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
-             // xcb::EVENT_MASK_EXPOSURE
-            ),
-        ]);
+        // xcb::change_window_attributes(self.conn, self.window, &[
+        //     (xcb::CW_EVENT_MASK,
+        //     xcb::EVENT_MASK_FOCUS_CHANGE
+        //      // |xcb::EVENT_MASK_STRUCTURE_NOTIFY
+        //      // |xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
+        //      // |xcb::EVENT_MASK_EXPOSURE
+        //     ),
+        // ]);
 
 
         let hints = xcb_util::icccm::WmHints::empty()
