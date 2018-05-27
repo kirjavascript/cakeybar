@@ -1,23 +1,6 @@
 use atom;
 use xcb;
 
-pub enum HorizontalAlign {
-    Left,
-    Right
-}
-
-pub enum VerticalAlign {
-    Top,
-    Bottom
-}
-
-pub type Position = (VerticalAlign, HorizontalAlign);
-
-pub const TOP_LEFT: Position = (VerticalAlign::Top, HorizontalAlign::Left);
-pub const TOP_RIGHT: Position = (VerticalAlign::Top, HorizontalAlign::Right);
-pub const BOTTOM_LEFT: Position = (VerticalAlign::Bottom, HorizontalAlign::Left);
-pub const BOTTOM_RIGHT: Position = (VerticalAlign::Bottom, HorizontalAlign::Right);
-
 const CLIENT_MESSAGE: u8 = xcb::CLIENT_MESSAGE | 0x80; // 0x80 flag for client messages
 
 const SYSTEM_TRAY_REQUEST_DOCK: u32 = 0;
@@ -29,7 +12,6 @@ pub struct Tray<'a> {
     atoms: &'a atom::Atoms<'a>,
     screen: usize,
     icon_size: u16,
-    position: Position,
     bg: u32,
     window: xcb::Window,
     children: Vec<xcb::Window>,
@@ -43,7 +25,6 @@ impl<'a> Tray<'a> {
         atoms: &'b atom::Atoms,
         screen: usize,
         icon_size: u16,
-        position: Position,
         bg: u32
     ) -> Tray<'b> {
         Tray::<'b> {
@@ -51,7 +32,6 @@ impl<'a> Tray<'a> {
             atoms: atoms,
             screen: screen,
             icon_size: icon_size,
-            position: position,
             bg: bg,
             window: conn.generate_id(),
             children: vec![],
@@ -108,34 +88,15 @@ impl<'a> Tray<'a> {
             &[2, 0, 0, 0, 0]
         );
 
-
-// _NET_SYSTEM_TRAY_COLORS(CARDINAL) = 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17
-// _NET_SYSTEM_TRAY_ORIENTATION(_NET_SYSTEM_TRAY_ORIENTATION) = 0x0
-/// _NET_SYSTEM_TRAY_VISUAL(VISUALID): visual id # 0x21
-// _NET_WM_PID(CARDINAL) = 12298
-/// _NET_WM_STATE(ATOM) = _NET_WM_STATE_SKIP_TASKBAR
-/// _NET_WM_WINDOW_TYPE(ATOM) = _NET_WM_WINDOW_TYPE_DOCK, _NET_WM_WINDOW_TYPE_NORMAL
-/// WM_PROTOCOLS(ATOM): protocols  WM_DELETE_WINDOW, WM_TAKE_FOCUS
-/// WM_CLASS(STRING) = "tray", "Polybar"
-/// WM_NAME(STRING) = "Polybar tray window"
-/// _COMPTON_SHADOW(CARDINAL) = 0
-
+        // set window type to utility (so it floats)
         self.set_property(
             self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
             xcb::ATOM_ATOM,
             32,
             &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_UTILITY)]
         );
-        // xcb::change_property(
-        //     self.conn,
-        //     xcb::PROP_MODE_APPEND as u8,
-        //     self.window,
-        //     self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
-        //     xcb::ATOM_ATOM,
-        //     32,
-        //     &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_NORMAL)]
-        // );
 
+        // ??? (seems set in polybar)
         xcb::change_property(
             self.conn,
             xcb::PROP_MODE_REPLACE as u8,
@@ -301,18 +262,12 @@ impl<'a> Tray<'a> {
     pub fn reposition(&self) {
         let width = self.children.len() as u16 * self.icon_size;
         if width > 0 {
-            let setup = self.conn.get_setup();
-            let screen = setup.roots().nth(self.screen).unwrap();
+            // let setup = self.conn.get_setup();
+            // let screen = setup.roots().nth(self.screen).unwrap();
+                // &HorizontalAlign::Right => screen.width_in_pixels() - width
 
-            let (ref valign, ref halign) = self.position;
-            let y = match valign {
-                &VerticalAlign::Top => 0,
-                &VerticalAlign::Bottom => screen.height_in_pixels() - self.icon_size
-            };
-            let x = match halign {
-                &HorizontalAlign::Left => 0,
-                &HorizontalAlign::Right => screen.width_in_pixels() - width
-            };
+            let y = 0;
+            let x = 0;
             xcb::configure_window(self.conn, self.window, &[
                 (xcb::CONFIG_WINDOW_X as u16, x as u32),
                 (xcb::CONFIG_WINDOW_Y as u16, y as u32),

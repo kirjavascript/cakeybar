@@ -72,6 +72,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         viewport.connect_scroll_event(move |_vp, e| {
             let direction = e.get_direction();
             let is_next = direction == ScrollDirection::Down;
+            // change workspace (i3)
             scroll_workspace(is_next, monitor_index);
             Inhibit(true)
         });
