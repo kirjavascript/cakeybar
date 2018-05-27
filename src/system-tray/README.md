@@ -1,3 +1,1 @@
-originally taken from (public domain) https://github.com/thatsmydoing/rusttray
-
-modified for cakeybar
+originally taken from https://github.com/thatsmydoing/rusttray and modified

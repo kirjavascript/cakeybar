@@ -1,4 +1,3 @@
-extern crate xcb_util;
 use atom;
 use xcb;
 
@@ -202,26 +201,10 @@ impl<'a> Tray<'a> {
         );
 
         xcb::change_window_attributes(self.conn, self.window, &[
-            (xcb::CW_EVENT_MASK,
-        // xcb::EVENT_MASK_PROPERTY_CHANGE
-            // xcb::EVENT_MASK_FOCUS_CHANGE
-             xcb::EVENT_MASK_STRUCTURE_NOTIFY
-             // |xcb::EVENT_MASK_SUBSTRUCTURE_REDIRECT
-             // |xcb::EVENT_MASK_EXPOSURE
-            ),
+            (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
         ]);
 
-
-
-        let hints = xcb_util::icccm::WmHints::empty()
-            .input(false)
-            .build();
-        xcb_util::icccm::set_wm_hints(self.conn, self.window, &hints);
-
-        // xcb_util::icccm::set_wm_protocols(self.conn, self.window, self.atoms.get(atom::WM_PROTOCOLS), &[self.atoms.get(atom::WM_TAKE_FOCUS)]);
-
         // TODO: make unfullscreenable
-        // TODO: vlc icon
 
         self.conn.flush();
         // self.conn.flush();
@@ -430,7 +413,7 @@ impl<'a> Tray<'a> {
                 150 => {
                     // force window in place
                     xcb::configure_window(self.conn, self.window, &[
-                        (xcb::CONFIG_WINDOW_X as u16, 1460),
+                        (xcb::CONFIG_WINDOW_X as u16, 1440),
                         (xcb::CONFIG_WINDOW_Y as u16, 1056),
                     ]);
                     self.conn.flush();
