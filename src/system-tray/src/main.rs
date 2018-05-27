@@ -54,7 +54,7 @@ fn real_main() -> i32 {
             chan_select!(
                 rx.recv() -> event => {
                     if let Some(code) = tray.handle_event(event.unwrap()) {
-                    println!("{:?}", code);
+                        println!("{:?}", code);
                         return code
                     }
                 },
