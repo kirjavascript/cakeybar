@@ -72,7 +72,7 @@ fn main() {
     let config = config::parse_config(config_path);
 
     // load tray
-    tray::init();
+    // tray::init();
 
     // GTK application
 

@@ -79,22 +79,21 @@ impl<'a> Tray<'a> {
             &[0 as u32] // 0 is horizontal, 1 is vertical
         );
 
-        xcb::change_property(
-            self.conn,
-            xcb::PROP_MODE_APPEND as u8,
-            self.window,
-            self.atoms.get(atom::WM_PROTOCOLS),
-            xcb::ATOM_INTEGER,
-            32,
-            &[2, 0, 0, 0, 0]
-        );
-
         // set window type to utility (so it floats)
         self.set_property(
             self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_UTILITY)]
+            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_DOCK)]
+        );
+        xcb::change_property(
+            self.conn,
+            xcb::PROP_MODE_APPEND as u8,
+            self.window,
+            self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
+            xcb::ATOM_ATOM,
+            32,
+            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_NORMAL)]
         );
 
         // ??? (seems set in polybar)
@@ -162,12 +161,6 @@ impl<'a> Tray<'a> {
             &[0b10, 0, 0, 0, 0]
         );
 
-        xcb::change_window_attributes(self.conn, self.window, &[
-            (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
-        ]);
-
-        // TODO: make unfullscreenable
-
         // disable compton shadow (apparently)
         xcb::change_property(
             self.conn,
@@ -178,6 +171,64 @@ impl<'a> Tray<'a> {
             32,
             &[0]
         );
+
+        // xcb::change_window_attributes(self.conn, self.window, &[
+        //     (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
+        // ]);
+        //
+  // /**
+  //  * Get main root window
+  //  */
+  // xcb_window_t root_window(connection& conn) {
+  //   auto children = conn.query_tree(conn.screen()->root).children();
+  //   const auto wm_name = [&](xcb_connection_t* conn, xcb_window_t win) -> string {
+  //     string title;
+  //     if (!(title = ewmh_util::get_wm_name(win)).empty()) {
+  //       return title;
+  //     } else if (!(title = icccm_util::get_wm_name(conn, win)).empty()) {
+  //       return title;
+  //     } else {
+  //       return "";
+  //     }
+  //   };
+
+  //   for (auto it = children.begin(); it != children.end(); it++) {
+  //     if (wm_name(conn, *it) == "i3") {
+  //       return *it;
+  //     }
+  //   }
+
+  //   return XCB_NONE;
+  // }
+
+  // /**
+  //  * Restack given window relative to the i3 root window
+  //  * defined for the given monitor
+  //  *
+  //  * Fixes the issue with always-on-top window's
+  //  */
+  // bool restack_to_root(connection& conn, const xcb_window_t win) {
+  //   const unsigned int value_mask = XCB_CONFIG_WINDOW_SIBLING | XCB_CONFIG_WINDOW_STACK_MODE;
+  //   const unsigned int value_list[2]{root_window(conn), XCB_STACK_MODE_ABOVE};
+  //   if (value_list[0] != XCB_NONE) {
+  //     conn.configure_window_checked(win, value_mask, value_list);
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
+        // xcb::configure_window_checked(self.conn, self.window, &[
+        //     (
+        //         (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16,
+        //         ((screen.root() << 16), xcb::STACK_MODE_ABOVE),
+        //     ),
+        // ]);
+
+        // xcb::change_window_attributes(self.conn, screen.root(), &[
+        //     (xcb::CONFIG_WINDOW_STACK_MODE, xcb::STACK_MODE_ABOVE),
+        // ]);
+
+
         self.conn.flush();
     }
 
@@ -357,23 +408,23 @@ impl<'a> Tray<'a> {
                     self.forget(event.window());
                 },
                 xcb::CONFIGURE_NOTIFY => {
-                    // let event: &xcb::ConfigureNotifyEvent = unsafe {
-                    //     xcb::cast_event(&event)
-                    // };
-                    // self.force_size(event.window(), Some((event.width(), event.height())));
+                    let event: &xcb::ConfigureNotifyEvent = unsafe {
+                        xcb::cast_event(&event)
+                    };
+                    self.force_size(event.window(), Some((event.width(), event.height())));
                 },
                 xcb::SELECTION_CLEAR => {
                     self.finish();
                 },
                 // resize
-                150 => {
-                    // force window in place
-                    xcb::configure_window(self.conn, self.window, &[
-                        (xcb::CONFIG_WINDOW_X as u16, 1440),
-                        (xcb::CONFIG_WINDOW_Y as u16, 1056),
-                    ]);
-                    self.conn.flush();
-                },
+                // 150 => {
+                //     // force window in place
+                //     xcb::configure_window(self.conn, self.window, &[
+                //         (xcb::CONFIG_WINDOW_X as u16, 1440),
+                //         (xcb::CONFIG_WINDOW_Y as u16, 1056),
+                //     ]);
+                //     self.conn.flush();
+                // },
                 _ => {
                 }
             }
