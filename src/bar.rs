@@ -68,7 +68,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let viewport = gtk::Viewport::new(None, None);
         // set gdk::EventMask::SCROLL_MASK and disable 'smooth' scrolling
         viewport.add_events(2097152);
-        // when receiving events, change workspace
+        // when scrolling, change workspace
         viewport.connect_scroll_event(move |_vp, e| {
             let direction = e.get_direction();
             let is_next = direction == ScrollDirection::Down;
@@ -94,7 +94,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         // load components
         components::load_components(&container, &self);
 
-        // windowEnter
+        // TODO: windowEnter set ::focus
         // window.connect_enter_notify_event(move |_, _evt| {
         //     Inhibit(true)
         // });

@@ -8,6 +8,11 @@ extern crate i3ipc;
 extern crate chrono;
 extern crate systemstat;
 extern crate probes;
+// used in tray
+#[macro_use]
+extern crate chan;
+extern crate chan_signal;
+extern crate xcb;
 
 use gio::prelude::*;
 
@@ -17,10 +22,13 @@ mod util;
 mod config;
 mod bar;
 mod components;
+mod tray;
 
 pub static NAME: &str = "cakeybar";
 
 fn init(application: &gtk::Application, config: &config::Config) {
+    // load tray
+    // tray::init();
     // load bars
     for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(
@@ -58,7 +66,7 @@ fn main() {
         return ();
     }
 
-    // Get config
+    // get config
 
     let default_path = format!("~/.config/{}/config.toml", NAME); // TODO: xdg
     let config_path = matches.value_of("config").unwrap_or(&default_path);

@@ -1,9 +1,13 @@
 // initially copied from https://github.com/thatsmydoing/rusttray
 
-#[macro_use]
-extern crate chan;
-extern crate chan_signal;
-extern crate xcb;
+// #[macro_use]
+// extern crate chan;
+// extern crate chan_signal;
+// extern crate xcb;
+
+use chan;
+use chan_signal;
+use xcb;
 
 mod atom;
 mod tray;
@@ -12,17 +16,15 @@ use std::process;
 use std::thread;
 use std::sync::Arc;
 
-use std::sync::mpsc;
-
 const PROGRAM: &'static str = "System Tray";
 const EXIT_FAILED_CONNECT: i32 = 10;
 const EXIT_FAILED_SELECT: i32 = 11;
 
-fn main() {
-    process::exit(real_main());
-}
+// fn main() {
+//     process::exit(real_main());
+// }
 
-fn real_main() -> i32 {
+pub fn init() -> i32 {
     let signal = chan_signal::notify(&[chan_signal::Signal::INT, chan_signal::Signal::TERM]);
 
     let size = 20;
