@@ -27,8 +27,6 @@ mod tray;
 pub static NAME: &str = "cakeybar";
 
 fn init(application: &gtk::Application, config: &config::Config) {
-    // load tray
-    // tray::init();
     // load bars
     for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(
@@ -72,6 +70,9 @@ fn main() {
     let config_path = matches.value_of("config").unwrap_or(&default_path);
 
     let config = config::parse_config(config_path);
+
+    // load tray
+    // tray::init();
 
     // GTK application
 

@@ -3,6 +3,7 @@ use xcb;
 
 const CLIENT_MESSAGE: u8 = xcb::CLIENT_MESSAGE | 0x80; // 0x80 flag for client messages
 
+const WM_NAME: &'static str = "System Tray";
 const SYSTEM_TRAY_REQUEST_DOCK: u32 = 0;
 const SYSTEM_TRAY_BEGIN_MESSAGE: u32 = 1;
 const SYSTEM_TRAY_CANCEL_MESSAGE: u32 = 2;
@@ -63,7 +64,7 @@ impl<'a> Tray<'a> {
             xcb::ATOM_WM_NAME,
             xcb::ATOM_STRING,
             8,
-            "System Tray".as_bytes()
+            WM_NAME.as_bytes()
         );
         self.set_property(
             xcb::ATOM_WM_CLASS,
@@ -161,6 +162,7 @@ impl<'a> Tray<'a> {
             &[0b10, 0, 0, 0, 0]
         );
 
+        // capture resize events
         xcb::change_window_attributes(self.conn, self.window, &[
             (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
         ]);

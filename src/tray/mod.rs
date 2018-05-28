@@ -12,66 +12,72 @@ use xcb;
 mod atom;
 mod tray;
 
-use std::process;
 use std::thread;
 use std::sync::Arc;
 
-const PROGRAM: &'static str = "System Tray";
 const EXIT_FAILED_CONNECT: i32 = 10;
 const EXIT_FAILED_SELECT: i32 = 11;
 
-// fn main() {
-//     process::exit(real_main());
-// }
-
-pub fn init() -> i32 {
+pub fn init() {
     let signal = chan_signal::notify(&[chan_signal::Signal::INT, chan_signal::Signal::TERM]);
+// 1 	SIGHUP
+// 2 	SIGINT
+// 3 	SIGQUIT
+// 6 	SIGABRT
+// 9 	SIGKILL
+// 14 	SIGALRM
+// 15 	SIGTERM
+// TODO: signals
+// TODO: Ctrl+Alt+X unwrap panic
 
-    let size = 20;
-    let bg = 0x221122;
+    thread::spawn(move || {
 
-    if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
-        let conn = Arc::new(conn);
-        let atoms = atom::Atoms::new(&conn);
+        let size = 20;
+        let bg = 0x221122;
 
-        let mut tray = tray::Tray::new(&conn, &atoms, preferred as usize, size, bg);
+        if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
+            let conn = Arc::new(conn);
+            let atoms = atom::Atoms::new(&conn);
 
-        if !tray.is_selection_available() {
-            println!("Another system tray is already running");
-            return EXIT_FAILED_SELECT
-        }
+            let mut tray = tray::Tray::new(&conn, &atoms, preferred as usize, size, bg);
 
-        let (tx, rx) = chan::sync(0);
-        {
-            let conn = conn.clone();
-            thread::spawn(move || {
-                loop {
-                    match conn.wait_for_event() {
-                        Some(event) => { tx.send(event); },
-                        None => { break; }
+            if !tray.is_selection_available() {
+                println!("Another system tray is already running");
+                return EXIT_FAILED_SELECT
+            }
+
+            let (tx, rx) = chan::sync(0);
+            {
+                let conn = conn.clone();
+                thread::spawn(move || {
+                    loop {
+                        match conn.wait_for_event() {
+                            Some(event) => { tx.send(event); },
+                            None => { break; }
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        tray.create();
+            tray.create();
 
-        loop {
-            chan_select!(
-                rx.recv() -> event => {
-                    if let Some(code) = tray.handle_event(event.unwrap()) {
-                        println!("{:?}", code);
-                        return code
+            loop {
+                chan_select!(
+                    rx.recv() -> event => {
+                        if let Some(code) = tray.handle_event(event.unwrap()) {
+                            println!("{:?}", code);
+                            return code
+                        }
+                    },
+                    signal.recv() => {
+                        tray.finish();
                     }
-                },
-                signal.recv() => {
-                    tray.finish();
-                }
-            );
+                    );
+            }
         }
-    }
-    else {
-        println!("Could not connect to X server!");
-        return EXIT_FAILED_CONNECT
-    }
+        else {
+            println!("Could not connect to X server!");
+            return EXIT_FAILED_CONNECT
+        }
+    });
 }
