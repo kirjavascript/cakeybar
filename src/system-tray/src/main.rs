@@ -12,8 +12,6 @@ use std::process;
 use std::thread;
 use std::sync::Arc;
 
-use std::sync::mpsc;
-
 const PROGRAM: &'static str = "System Tray";
 const EXIT_FAILED_CONNECT: i32 = 10;
 const EXIT_FAILED_SELECT: i32 = 11;
@@ -23,7 +21,14 @@ fn main() {
 }
 
 fn real_main() -> i32 {
-    let signal = chan_signal::notify(&[chan_signal::Signal::INT, chan_signal::Signal::TERM]);
+    let signal = chan_signal::notify(&[
+        chan_signal::Signal::INT,
+        chan_signal::Signal::TERM,
+        chan_signal::Signal::KILL,
+        // chan_signal::Signal::QUIT,
+        // chan_signal::Signal::ABRT,
+        // chan_signal::Signal::ILL,
+    ]);
 
     let size = 20;
     let bg = 0x221122;
@@ -56,10 +61,15 @@ fn real_main() -> i32 {
 
         loop {
             chan_select!(
-                rx.recv() -> event => {
-                    if let Some(code) = tray.handle_event(event.unwrap()) {
-                        println!("{:?}", code);
-                        return code
+                rx.recv() -> event_opt => {
+                    if let Some(event) = event_opt {
+                        if let Some(code) = tray.handle_event(event) {
+                            println!("{:?}", code);
+                            return code
+                        }
+                    }
+                    else {
+                        eprintln!("X connection is rip - killed by XKillClient(), maybe?");
                     }
                 },
                 signal.recv() => {

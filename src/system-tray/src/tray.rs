@@ -57,6 +57,7 @@ impl<'a> Tray<'a> {
             &[
                 (xcb::CW_BACK_PIXEL, self.bg),
                 (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
+                (xcb::CW_OVERRIDE_REDIRECT, 1),
             ]
         );
         self.set_property(
@@ -266,8 +267,8 @@ impl<'a> Tray<'a> {
             // let screen = setup.roots().nth(self.screen).unwrap();
                 // &HorizontalAlign::Right => screen.width_in_pixels() - width
 
-            let y = 0;
-            let x = 0;
+            let x = 1440;
+            let y = 1056;
             xcb::configure_window(self.conn, self.window, &[
                 (xcb::CONFIG_WINDOW_X as u16, x as u32),
                 (xcb::CONFIG_WINDOW_Y as u16, y as u32),

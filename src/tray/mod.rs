@@ -28,7 +28,6 @@ pub fn init() {
 // 14 	SIGALRM
 // 15 	SIGTERM
 // TODO: signals
-// TODO: Ctrl+Alt+X unwrap panic
 
     thread::spawn(move || {
 
@@ -63,10 +62,15 @@ pub fn init() {
 
             loop {
                 chan_select!(
-                    rx.recv() -> event => {
-                        if let Some(code) = tray.handle_event(event.unwrap()) {
-                            println!("{:?}", code);
-                            return code
+                    rx.recv() -> event_opt => {
+                        if let Some(event) = event_opt {
+                            if let Some(code) = tray.handle_event(event) {
+                                println!("{:?}", code);
+                                return code
+                            }
+                        }
+                        else {
+                            eprintln!("X connection is rip - killed by XKillClient(), maybe?");
                         }
                     },
                     signal.recv() => {
