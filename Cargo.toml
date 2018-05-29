@@ -27,7 +27,3 @@ chan-signal = "0.1.6"
 [dependencies.xcb]
 version = "0.8.2"
 features = [ "thread" ]
-
-[[example]]
-name = "basic"
-path = "src/_bar.rs"
