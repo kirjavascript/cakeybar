@@ -89,6 +89,7 @@ fn main() {
 
     application.connect_startup(move |app| {
         init(&app, &config);
+
     });
     application.connect_activate(|_| {});
 

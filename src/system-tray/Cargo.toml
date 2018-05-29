@@ -10,3 +10,7 @@ chan-signal = "0.1.6"
 [dependencies.xcb]
 version = "0.8.2"
 features = [ "thread" ]
+
+[dependencies.xcb-util]
+version = "0.2.0"
+features = [ "ewmh" ]

@@ -172,64 +172,32 @@ impl<'a> Tray<'a> {
             &[0]
         );
 
+        // adds resize event
         // xcb::change_window_attributes(self.conn, self.window, &[
         //     (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
         // ]);
         //
-  // /**
-  //  * Get main root window
-  //  */
-  // xcb_window_t root_window(connection& conn) {
-  //   auto children = conn.query_tree(conn.screen()->root).children();
-  //   const auto wm_name = [&](xcb_connection_t* conn, xcb_window_t win) -> string {
-  //     string title;
-  //     if (!(title = ewmh_util::get_wm_name(win)).empty()) {
-  //       return title;
-  //     } else if (!(title = icccm_util::get_wm_name(conn, win)).empty()) {
-  //       return title;
-  //     } else {
-  //       return "";
-  //     }
-  //   };
 
-  //   for (auto it = children.begin(); it != children.end(); it++) {
-  //     if (wm_name(conn, *it) == "i3") {
-  //       return *it;
-  //     }
-  //   }
-
-  //   return XCB_NONE;
-  // }
-
-  // /**
-  //  * Restack given window relative to the i3 root window
-  //  * defined for the given monitor
-  //  *
-  //  * Fixes the issue with always-on-top window's
-  //  */
-  // bool restack_to_root(connection& conn, const xcb_window_t win) {
-  //   const unsigned int value_mask = XCB_CONFIG_WINDOW_SIBLING | XCB_CONFIG_WINDOW_STACK_MODE;
-  //   const unsigned int value_list[2]{root_window(conn), XCB_STACK_MODE_ABOVE};
-  //   if (value_list[0] != XCB_NONE) {
-  //     conn.configure_window_checked(win, value_mask, value_list);
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-        // xcb::configure_window_checked(self.conn, self.window, &[
-        //     (
-        //         (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16,
-        //         ((screen.root() << 16), xcb::STACK_MODE_ABOVE),
-        //     ),
-        // ]);
-
-        // xcb::change_window_attributes(self.conn, screen.root(), &[
-        //     (xcb::CONFIG_WINDOW_STACK_MODE, xcb::STACK_MODE_ABOVE),
-        // ]);
-
+        // restack window (fixes always on top bug)
+        if let Ok(reply) = xcb::query_tree(self.conn, screen.root()).get_reply() {
+            let children = reply.children();
+            let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
+            // find the first i3 window
+            for child in children {
+                let wm_name = xcb_get_wm_name(self.conn, *child);
+                if wm_name.contains("i3") {
+                    // put the window directly above it
+                    xcb::configure_window_checked(self.conn, self.window, &[
+                        (value_mask, *child),
+                        (value_mask, xcb::STACK_MODE_ABOVE),
+                    ]);
+                    break;
+                }
+            }
+        }
 
         self.conn.flush();
+
     }
 
     pub fn set_property<T>(&self, name: xcb::Atom, type_: xcb::Atom, format: u8, data: &[T]) {
@@ -440,4 +408,42 @@ impl<'a> Tray<'a> {
         }
         None
     }
+}
+
+fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
+    let window: xcb::Window = id;
+    let long_length: u32 = 8;
+    let mut long_offset: u32 = 0;
+    let mut buf = Vec::new();
+    loop {
+        let cookie = xcb::get_property(
+            &conn,
+            false,
+            window,
+            xcb::ATOM_WM_NAME,
+            xcb::ATOM_STRING,
+            long_offset,
+            long_length,
+        );
+        match cookie.get_reply() {
+            Ok(reply) => {
+                let value: &[u8] = reply.value();
+                buf.extend_from_slice(value);
+                match reply.bytes_after() {
+                    0 => break,
+                    _ => {
+                        let len = reply.value_len();
+                        long_offset += len / 4;
+                    }
+                }
+            }
+            Err(err) => {
+                println!("{:?}", err);
+                break;
+            }
+        }
+    }
+    let result = String::from_utf8(buf).unwrap();
+    let results: Vec<&str> = result.split('\0').collect();
+    results[0].to_string()
 }

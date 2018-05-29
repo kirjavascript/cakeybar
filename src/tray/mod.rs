@@ -1,10 +1,5 @@
 // initially copied from https://github.com/thatsmydoing/rusttray
 
-// #[macro_use]
-// extern crate chan;
-// extern crate chan_signal;
-// extern crate xcb;
-
 use chan;
 use chan_signal;
 use xcb;

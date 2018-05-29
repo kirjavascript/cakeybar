@@ -80,22 +80,21 @@ impl<'a> Tray<'a> {
             &[0 as u32] // 0 is horizontal, 1 is vertical
         );
 
-        xcb::change_property(
-            self.conn,
-            xcb::PROP_MODE_APPEND as u8,
-            self.window,
-            self.atoms.get(atom::WM_PROTOCOLS),
-            xcb::ATOM_INTEGER,
-            32,
-            &[2, 0, 0, 0, 0]
-        );
-
         // set window type to utility (so it floats)
         self.set_property(
             self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_UTILITY)]
+            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_DOCK)]
+        );
+        xcb::change_property(
+            self.conn,
+            xcb::PROP_MODE_APPEND as u8,
+            self.window,
+            self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
+            xcb::ATOM_ATOM,
+            32,
+            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_NORMAL)]
         );
 
         // ??? (seems set in polybar)
@@ -163,13 +162,6 @@ impl<'a> Tray<'a> {
             &[0b10, 0, 0, 0, 0]
         );
 
-        // capture resize events
-        xcb::change_window_attributes(self.conn, self.window, &[
-            (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
-        ]);
-
-        // TODO: make unfullscreenable
-
         // disable compton shadow (apparently)
         xcb::change_property(
             self.conn,
@@ -180,6 +172,31 @@ impl<'a> Tray<'a> {
             32,
             &[0]
         );
+
+        // adds resize event
+        // xcb::change_window_attributes(self.conn, self.window, &[
+        //     (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
+        // ]);
+        //
+
+        // restack window (fixes always on top bug)
+        if let Ok(reply) = xcb::query_tree(self.conn, screen.root()).get_reply() {
+            let children = reply.children();
+            let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
+            // find the first i3 window
+            for child in children {
+                let wm_name = xcb_get_wm_name(self.conn, *child);
+                if wm_name.contains("i3") {
+                    // put the window directly above it
+                    xcb::configure_window_checked(self.conn, self.window, &[
+                        (value_mask, *child),
+                        (value_mask, xcb::STACK_MODE_ABOVE),
+                    ]);
+                    break;
+                }
+            }
+        }
+
         self.conn.flush();
     }
 
@@ -359,23 +376,23 @@ impl<'a> Tray<'a> {
                     self.forget(event.window());
                 },
                 xcb::CONFIGURE_NOTIFY => {
-                    // let event: &xcb::ConfigureNotifyEvent = unsafe {
-                    //     xcb::cast_event(&event)
-                    // };
-                    // self.force_size(event.window(), Some((event.width(), event.height())));
+                    let event: &xcb::ConfigureNotifyEvent = unsafe {
+                        xcb::cast_event(&event)
+                    };
+                    self.force_size(event.window(), Some((event.width(), event.height())));
                 },
                 xcb::SELECTION_CLEAR => {
                     self.finish();
                 },
-                // resize
-                150 => {
-                    // force window in place
-                    xcb::configure_window(self.conn, self.window, &[
-                        (xcb::CONFIG_WINDOW_X as u16, 1440),
-                        (xcb::CONFIG_WINDOW_Y as u16, 1056),
-                    ]);
-                    self.conn.flush();
-                },
+                // // resize
+                // 150 => {
+                //     // force window in place
+                //     xcb::configure_window(self.conn, self.window, &[
+                //         (xcb::CONFIG_WINDOW_X as u16, 1440),
+                //         (xcb::CONFIG_WINDOW_Y as u16, 1056),
+                //     ]);
+                //     self.conn.flush();
+                // },
                 _ => {
                 }
             }
@@ -391,4 +408,42 @@ impl<'a> Tray<'a> {
         }
         None
     }
+}
+
+fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
+    let window: xcb::Window = id;
+    let long_length: u32 = 8;
+    let mut long_offset: u32 = 0;
+    let mut buf = Vec::new();
+    loop {
+        let cookie = xcb::get_property(
+            &conn,
+            false,
+            window,
+            xcb::ATOM_WM_NAME,
+            xcb::ATOM_STRING,
+            long_offset,
+            long_length,
+        );
+        match cookie.get_reply() {
+            Ok(reply) => {
+                let value: &[u8] = reply.value();
+                buf.extend_from_slice(value);
+                match reply.bytes_after() {
+                    0 => break,
+                    _ => {
+                        let len = reply.value_len();
+                        long_offset += len / 4;
+                    }
+                }
+            }
+            Err(err) => {
+                println!("{:?}", err);
+                break;
+            }
+        }
+    }
+    let result = String::from_utf8(buf).unwrap();
+    let results: Vec<&str> = result.split('\0').collect();
+    results[0].to_string()
 }
