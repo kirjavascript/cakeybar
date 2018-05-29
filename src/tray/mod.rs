@@ -5,7 +5,7 @@ use chan_signal;
 use xcb;
 
 mod atom;
-mod tray;
+pub mod tray;
 
 use std::thread;
 use std::sync::Arc;

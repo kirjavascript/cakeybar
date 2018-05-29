@@ -27,6 +27,11 @@ mod tray;
 pub static NAME: &str = "cakeybar";
 
 fn init(application: &gtk::Application, config: &config::Config) {
+    // load theme to screen
+    match &config.theme {
+        &Some(ref src) => util::load_theme(src),
+        &None => {/* default theme */},
+    }
     // load bars
     for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(
@@ -35,11 +40,41 @@ fn init(application: &gtk::Application, config: &config::Config) {
             &config.components,
         );
     }
-    // load theme to screen
-    match &config.theme {
-        &Some(ref src) => util::load_theme(src),
-        &None => {/* default theme */},
-    }
+
+    // attempt to stack gtk bar BELOW tray
+    // if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
+    //     let setup = conn.get_setup();
+    //     let screen = setup.roots().nth(preferred as usize).unwrap();
+    //     let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
+
+    //     if let Ok(reply) = xcb::query_tree(&conn, screen.root()).get_reply() {
+    //         let tray_opt = reply.children().iter().find(|child| {
+    //              tray::tray::xcb_get_wm_name(&conn, **child).contains("i3")
+    //         });
+    //         let bar_opt = reply.children().iter().find(|child| {
+    //             NAME == tray::tray::xcb_get_wm_name(&conn, **child)
+    //         });
+    //         if let Some(bar) = bar_opt{
+    //             if let Some(tray) = tray_opt {
+    //                 println!("{:#?}", (tray, bar));
+
+    //                 xcb::configure_window_checked(&conn, *bar, &[
+    //                     (value_mask, *tray),
+    //                     (value_mask, xcb::STACK_MODE_ABOVE),
+    //                 ]);
+
+    //                 println!("{:#?}", "swapped");
+    //                 conn.flush();
+    //             }
+    //         }
+    //     }
+
+    //     if let Ok(reply) = xcb::query_tree(&conn, screen.root()).get_reply() {
+    //         for i in reply.children() {
+    //             println!("{:#?} {}", tray::tray::xcb_get_wm_name(&conn, *i), i);
+    //         }
+    //     }
+    // }
 }
 
 fn main() {
@@ -72,7 +107,7 @@ fn main() {
     let config = config::parse_config(config_path);
 
     // load tray
-    // tray::init();
+    tray::init();
 
     // GTK application
 

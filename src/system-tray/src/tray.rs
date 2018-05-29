@@ -57,7 +57,7 @@ impl<'a> Tray<'a> {
             &[
                 (xcb::CW_BACK_PIXEL, self.bg),
                 (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
-                (xcb::CW_OVERRIDE_REDIRECT, 1),
+                // (xcb::CW_OVERRIDE_REDIRECT, 1),
             ]
         );
         self.set_property(

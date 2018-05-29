@@ -410,7 +410,7 @@ impl<'a> Tray<'a> {
     }
 }
 
-fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
+pub fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
     let window: xcb::Window = id;
     let long_length: u32 = 8;
     let mut long_offset: u32 = 0;
