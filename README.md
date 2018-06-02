@@ -16,3 +16,7 @@ cakeybar is a customizable statusbar for your windowmanager
 * image support
 
 currently only i3 is supported though this may be expanded in future
+
+```rust
+cargo run --release
+```

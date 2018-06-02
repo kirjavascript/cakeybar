@@ -1,11 +1,12 @@
 // use systemstat::{System, Platform};
-// use systemstat::data::IpAddr;
 
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 
 // use probes::{cpu, network, load};
+//use sysinfo::{ProcessExt, SystemExt};
+use sysinfo::{ProcessorExt, SystemExt, System};
 
 pub struct CPU { }
 
@@ -16,29 +17,22 @@ impl Component for CPU {
         container.add(&label);
         label.show();
 
+        // let mut system = System::new();
 
-        // let sys = System::new();
-
-        let label_tick_clone = label.clone();
-        let tick = move || {
-            // let last_measurement_res = sys.cpu_load();
-            // match last_measurement_res {
-            //     Ok(load) => {
-
-            //         gtk::timeout_add_seconds(1, move || {
-            //                 println!("{:#?}", load.done());
-
-            //             gtk::Continue(false)
-            //         });
-            //     },
-            //     Err(e) => {
-            //         eprintln!("{:?}", e);
-            //     },
-            // }
-
-                    label_tick_clone.set_text(&"CPU: ?");
-            gtk::Continue(true)
-        };
+        // let label_clone = label.clone();
+        // let tick = move || {
+        //     system.refresh_all();
+        //     let processor_list = system.get_processor_list();
+        //     if !processor_list.is_empty() {
+        //         let pro = &processor_list[0];
+        //         label_clone.set_text(format!("{:.2} %", pro.get_cpu_usage() * 100.).as_str());
+        //     } else {
+        //         label_clone.set_text("0.0 %");
+        //     }
+        //     // let text = format!("{}", processor.get_cpu_usage());
+        //     // label_tick_clone.set_text(&text);
+        //     gtk::Continue(true)
+        // };
 
         let interval = config.get_int_or("interval", 1);
         tick();

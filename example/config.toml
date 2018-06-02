@@ -61,7 +61,7 @@ class = "gradient"
 
 [component.ip]
 type = "ip"
-interface = "enp3s0"
+interface = "enp3s0" # remove this for 'auto' mode
 # ipv6 = true
 
 [component.bandwidth]

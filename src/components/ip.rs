@@ -14,7 +14,7 @@ impl Component for IP {
         container.add(&label);
         label.show();
 
-        let interface = String::from(config.get_str_or("interface", "lo"));
+        let interface = String::from(config.get_str_or("interface", "auto"));
         let ipv6 = config.get_bool_or("ipv6", false);
 
         let sys = System::new();
@@ -22,7 +22,11 @@ impl Component for IP {
         let label_tick_clone = label.clone();
         let tick = move || {
             if let Ok(interfaces) = sys.networks() {
-                let mut iterface_opt = interfaces.iter().find(|x| x.0 == &interface);
+                let mut iterface_opt = if interface == "auto" {
+                    interfaces.iter().find(|_| true)
+                } else {
+                    interfaces.iter().find(|x| x.0 == &interface)
+                };
                 if let Some((_name, iface)) = iterface_opt {
                     let ip_opt = IP::get_ip_from_network(iface, ipv6);
                     if let Some(ip) = ip_opt {

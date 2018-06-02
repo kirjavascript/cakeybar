@@ -24,8 +24,8 @@ impl Component for Bandwidth {
         container.add(&label);
         label.show();
 
-        let interface = String::from(config.get_str_or("interface", "lo"));
-        let interval = config.get_int_or("interval", 1) as u64;
+        let interface = String::from(config.get_str_or("interface", "auto"));
+        let interval = config.get_int_or("interval", 5) as u64;
 
         let mut recv = 0u64;
         let label_tick_clone = label.clone();
@@ -33,13 +33,19 @@ impl Component for Bandwidth {
             let bw = network::read();
             match bw {
                 Ok(info) => {
-                    let interface_opt = info.interfaces.iter().find(|x| x.0 == &interface);
+                    let mut interface_opt = if interface == "auto" {
+                        info.interfaces.iter().find(|_| true)
+                    } else {
+                        info.interfaces.iter().find(|x| x.0 == &interface)
+                    };
                     if let Some((_name, interface)) = interface_opt {
                         let diff = interface.received - recv;
                         if recv != 0 {
                             label_tick_clone.set_text(
                                 &bytes_to_string(diff / interval)
                             );
+                        } else {
+                            label_tick_clone.set_text(&"0B/s");
                         }
                         recv = interface.received;
                     }
@@ -48,8 +54,6 @@ impl Component for Bandwidth {
                     eprintln!("{}", err);
                 },
             }
-
-            // label_tick_clone.set_text(&"Bandwidth: ?");
             gtk::Continue(true)
         };
 

@@ -8,6 +8,7 @@ extern crate i3ipc;
 extern crate chrono;
 extern crate systemstat;
 extern crate probes;
+extern crate sysinfo;
 // used in tray
 // #[macro_use]
 // extern crate chan;
