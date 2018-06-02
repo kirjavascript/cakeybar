@@ -16,6 +16,7 @@ impl Component for CPU {
         container.add(&label);
         label.show();
 
+
         // let sys = System::new();
 
         let label_tick_clone = label.clone();
@@ -32,18 +33,6 @@ impl Component for CPU {
             //     },
             //     Err(e) => {
             //         eprintln!("{:?}", e);
-            //     },
-            // }
-
-            // let cpu = network::read();
-            // match cpu {
-            //     Ok(info) => {
-            //         let received = info.interfaces.get("enp3s0").unwrap().received;
-            //         let s = format!("{}kb", received);
-            //         label_tick_clone.set_text(&s);
-            //     },
-            //     Err(err) => {
-            //         eprintln!("{}", err);
             //     },
             // }
 

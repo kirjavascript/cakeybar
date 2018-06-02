@@ -1,7 +1,9 @@
 # default config example
 
 theme = "theme.css"
-scroll_workspace = true
+scroll_workspace = true # TODO
+
+# bars
 
 [bar.left]
 monitor = 0
@@ -12,6 +14,35 @@ layout = [ "logo", "workspaces", "mode", "title", "box1" ]
 monitor = 1
 position = "bottom"
 layout = [ "workspaces", "mode", "title", "box1" ]
+
+# logo
+
+[component.logo]
+type = "image"
+src = "windows_black.png"
+class = "gradient"
+
+# layout
+
+[component.box1]
+type = "container"
+# direction = "row"
+# spacing = 5
+layout = [ "box1_top", "box1_bottom" ]
+halign = "end"
+class = "gradient"
+# valign = "end"
+
+[component.box1_top]
+type = "container"
+layout = [ "cpu", "pulse_icon", "bandwidth", "fire_icon", "ip"]
+halign = "end"
+[component.box1_bottom]
+type = "container"
+layout = [ "clock_icon", "clock"]
+halign = "end"
+
+# i3 stuff
 
 [component.title]
 type = "i3window"
@@ -26,46 +57,15 @@ show_name = true
 type = "i3mode"
 class = "gradient"
 
-[component.logo]
-type = "image"
-src = "windows_black.png"
-class = "gradient"
+# stats
 
-[component.box1]
-type = "container"
-# direction = "row"
-# spacing = 5
-layout = [ "box1_top", "box1_bottom" ]
-halign = "end"
-class = "gradient"
-# valign = "end"
+[component.ip]
+type = "ip"
+interface = "enp3s0"
+# ipv6 = true
 
-[component.box1_top]
-type = "container"
-layout = [ "cpu_icon", "cpu", "network_icon", "network"]
-halign = "end"
-[component.box1_bottom]
-type = "container"
-layout = [ "clock_icon", "clock"]
-halign = "end"
-
-[component.network_icon]
-type = "image"
-src = "./svg/flame.svg"
-class = "icon"
-
-[component.clock_icon]
-type = "image"
-src = "./svg/clock.svg"
-class = "icon"
-
-[component.cpu_icon]
-type = "image"
-src = "./svg/pulse.svg"
-class = "icon"
-
-[component.network]
-type = "network"
+[component.bandwidth]
+type = "bandwidth"
 interface = "enp3s0"
 # ipv6 = true
 
@@ -75,3 +75,20 @@ type = "cpu"
 [component.clock]
 type = "clock"
 format = "%Y-%m-%d %H:%M:%S"
+
+# icons
+
+[component.fire_icon]
+type = "image"
+src = "./svg/flame.svg"
+class = "icon"
+
+[component.clock_icon]
+type = "image"
+src = "./svg/clock.svg"
+class = "icon"
+
+[component.pulse_icon]
+type = "image"
+src = "./svg/pulse.svg"
+class = "icon"

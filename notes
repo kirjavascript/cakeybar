@@ -42,6 +42,7 @@ keyboard layout
 volume
 networ - ipv6 / v4 - autodetect interface
 notifications?
+label
 
 config
 ====

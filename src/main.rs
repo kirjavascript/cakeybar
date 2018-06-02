@@ -9,10 +9,10 @@ extern crate chrono;
 extern crate systemstat;
 extern crate probes;
 // used in tray
-#[macro_use]
-extern crate chan;
-extern crate chan_signal;
-extern crate xcb;
+// #[macro_use]
+// extern crate chan;
+// extern crate chan_signal;
+// extern crate xcb;
 
 use gio::prelude::*;
 
@@ -22,7 +22,7 @@ mod util;
 mod config;
 mod bar;
 mod components;
-mod tray;
+// mod tray;
 
 pub static NAME: &str = "cakeybar";
 

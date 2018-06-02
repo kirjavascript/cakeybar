@@ -21,6 +21,7 @@ use super::gtk::{Box, Align, WidgetExt, StyleContextExt};
 use super::bar::Bar;
 use super::config::{ComponentConfig, Property};
 
+mod bandwidth;
 mod clock;
 mod container;
 mod cpu;
@@ -28,7 +29,7 @@ mod i3mode;
 mod i3window;
 pub mod i3workspace;
 mod image;
-mod network;
+mod ip;
 mod void;
 
 pub trait Component {
@@ -96,6 +97,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
     if let Some(&Property::String(ref component_type)) = component_type_option {
         // decide which component to load
         let component_init = match component_type.as_str() {
+            "bandwidth" => bandwidth::Bandwidth::init,
             "clock" => clock::Clock::init,
             "container" => container::Container::init,
             "cpu" => cpu::CPU::init,
@@ -103,7 +105,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "i3window" => i3window::I3Window::init,
             "i3workspace" => i3workspace::I3Workspace::init,
             "image" => image::Image::init,
-            "network" => network::Network::init,
+            "ip" => ip::IP::init,
             _ => void::Void::init,
         };
         // load component
