@@ -1,11 +1,11 @@
 use systemstat::{System, Platform};
-use systemstat::data::IpAddr;
+use systemstat::data::{IpAddr, Network as StatNetwork};
 
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 
-pub struct Network { }
+pub struct Network {}
 
 impl Component for Network {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
@@ -14,18 +14,30 @@ impl Component for Network {
         container.add(&label);
         label.show();
 
-        let interface = String::from(config.get_str_or("interface", "null"));
+        let interface = String::from(config.get_str_or("interface", "lo"));
+        let ipv6 = config.get_bool_or("ipv6", false);
 
         let sys = System::new();
 
         let label_tick_clone = label.clone();
         let tick = move || {
             if let Ok(interfaces) = sys.networks() {
-                // TODO: fix when offline, add ipv6
-                let find_interface = interfaces.iter().find(|x| x.0 == &interface);
-                if let Some((_name, iface)) = find_interface {
-                    if let IpAddr::V4(addr) = iface.addrs[0].addr {
-                        label_tick_clone.set_text(&format!("{}", addr));
+                let mut iterface_opt = interfaces.iter().find(|x| x.0 == &interface);
+                if let Some((_name, iface)) = iterface_opt {
+                    let ip_opt = Network::get_ip_from_network(iface, ipv6);
+                    if let Some(ip) = ip_opt {
+                        label_tick_clone.set_text(&ip);
+                    } else {
+                        // if we dont find addresses, see if ANY interface has them
+                        let other_opt = interfaces.iter().find(|x| {
+                            Network::get_ip_from_network(x.1, ipv6).is_some()
+                        });
+                        if let Some((_name, iface)) = other_opt {
+                            let ip_opt = Network::get_ip_from_network(iface, ipv6);
+                            if let Some(ip) = ip_opt {
+                                label_tick_clone.set_text(&ip);
+                            }
+                        }
                     }
                 }
             }
@@ -36,4 +48,24 @@ impl Component for Network {
         tick();
         gtk::timeout_add_seconds(interval as u32, tick);
     }
+
+
+}
+
+impl Network {
+     fn get_ip_from_network(interface: &StatNetwork, ipv6: bool) -> Option<String> {
+         for addr in interface.addrs.iter() {
+             if let IpAddr::V6(ip) = addr.addr {
+                 if ipv6 {
+                     return Some(format!("{}", ip));
+                 }
+             }
+             else if let IpAddr::V4(ip) = addr.addr {
+                 if !ipv6 {
+                     return Some(format!("{}", ip));
+                 }
+             }
+         }
+         None
+     }
 }

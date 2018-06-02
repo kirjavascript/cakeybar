@@ -1,4 +1,4 @@
-// initially copied from https://github.com/thatsmydoing/rusttray
+// initially taken from https://github.com/thatsmydoing/rusttray
 
 use chan;
 use chan_signal;

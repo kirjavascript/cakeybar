@@ -48,18 +48,18 @@ fn init(application: &gtk::Application, config: &config::Config) {
     //     let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
 
     //     if let Ok(reply) = xcb::query_tree(&conn, screen.root()).get_reply() {
-    //         let tray_opt = reply.children().iter().find(|child| {
+    //         let i3_opt = reply.children().iter().find(|child| {
     //              tray::tray::xcb_get_wm_name(&conn, **child).contains("i3")
     //         });
     //         let bar_opt = reply.children().iter().find(|child| {
     //             NAME == tray::tray::xcb_get_wm_name(&conn, **child)
     //         });
-    //         if let Some(bar) = bar_opt{
-    //             if let Some(tray) = tray_opt {
-    //                 println!("{:#?}", (tray, bar));
+    //         if let Some(bar) = bar_opt {
+    //             if let Some(i3) = i3_opt {
+    //                 println!("{:#?}", (i3, bar));
 
-    //                 xcb::configure_window_checked(&conn, *bar, &[
-    //                     (value_mask, *tray),
+    //                 xcb::configure_window_checked(&conn, *i3, &[
+    //                     (value_mask, *bar),
     //                     (value_mask, xcb::STACK_MODE_ABOVE),
     //                 ]);
 
@@ -107,7 +107,7 @@ fn main() {
     let config = config::parse_config(config_path);
 
     // load tray
-    tray::init();
+    // tray::init();
 
     // GTK application
 

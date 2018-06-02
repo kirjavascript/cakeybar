@@ -8,10 +8,10 @@ monitor = 0
 position = "bottom"
 layout = [ "logo", "workspaces", "mode", "title", "box1" ]
 
-# [bar.right]
-# monitor = 1
-# position = "bottom"
-# layout = [ "workspaces", "mode", "title", "box1" ]
+[bar.right]
+monitor = 1
+position = "bottom"
+layout = [ "workspaces", "mode", "title", "box1" ]
 
 [component.title]
 type = "i3window"
@@ -67,6 +67,7 @@ class = "icon"
 [component.network]
 type = "network"
 interface = "enp3s0"
+# ipv6 = true
 
 [component.cpu]
 type = "cpu"
