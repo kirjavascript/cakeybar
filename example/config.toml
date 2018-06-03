@@ -35,7 +35,7 @@ class = "gradient"
 
 [component.box1_top]
 type = "container"
-layout = [ "cpu", "pulse_icon", "bandwidth", "fire_icon", "ip"]
+layout = ["circuit_icon", "cpu", "pulse_icon", "bandwidth", "fire_icon", "ip"]
 halign = "end"
 [component.box1_bottom]
 type = "container"
@@ -92,3 +92,13 @@ class = "icon"
 type = "image"
 src = "./svg/pulse.svg"
 class = "icon"
+
+[component.circuit_icon]
+type = "image"
+src = "./svg/circuit-board.svg"
+class = "icon"
+
+# database
+# directory
+# gear
+#code

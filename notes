@@ -43,6 +43,7 @@ volume
 networ - ipv6 / v4 - autodetect interface
 notifications?
 label
+label#Label here for layout
 bandwidth upload
 
 config
