@@ -20,7 +20,7 @@ impl Component for CPU {
         // let mut system = System::new();
 
         // let label_clone = label.clone();
-        // let tick = move || {
+        let tick = move || {
         //     system.refresh_all();
         //     let processor_list = system.get_processor_list();
         //     if !processor_list.is_empty() {
@@ -31,8 +31,8 @@ impl Component for CPU {
         //     }
         //     // let text = format!("{}", processor.get_cpu_usage());
         //     // label_tick_clone.set_text(&text);
-        //     gtk::Continue(true)
-        // };
+            gtk::Continue(true)
+        };
 
         let interval = config.get_int_or("interval", 1);
         tick();
