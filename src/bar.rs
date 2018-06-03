@@ -47,6 +47,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         bar
     }
 
+
     fn init(&self, monitor: &gtk::Rectangle) {
 
         let window = Window::new(WindowType::Toplevel);
@@ -98,6 +99,5 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         // window.connect_enter_notify_event(move |_, _evt| {
         //     Inhibit(true)
         // });
-
     }
 }

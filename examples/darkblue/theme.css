@@ -35,14 +35,15 @@ label {
 
 #workspaces .visible {
     /* background-color: @dark; */
+    background-image: url("./icons/chevron.svg");
+    background-repeat: no-repeat;
 }
 #workspaces .urgent {
     color: red;
 }
 #workspaces .focused {
     color: white;
-    background-image: url("./icons/chevron.svg");
-    background-repeat: no-repeat;
+    background-color: @blue;
 }
 
 #mode {
