@@ -1,0 +1,55 @@
+@define-color blue #5A95eB;
+
+#left, #right {
+    min-height: 27px;
+    border-bottom: 2px solid @blue;
+    background-color: black;
+}
+
+#left_scroll, #right_scroll {
+    background-color: black;
+}
+
+label {
+    font-family: Hack;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#title {
+    margin-left: 300px;
+}
+
+#box1 label {
+    padding: 0 7px;
+
+    background-image: url("./icons/chevron.svg");
+    background-repeat: no-repeat;
+}
+
+#workspaces label {
+    margin: 0 1px;
+    padding: 0 8px;
+}
+
+#workspaces .visible {
+    /* background-color: @dark; */
+}
+#workspaces .urgent {
+    color: red;
+}
+#workspaces .focused {
+    color: white;
+    background-image: url("./icons/chevron.svg");
+    background-repeat: no-repeat;
+}
+
+#mode {
+    /* padding: 0 10px; */
+    color: white;
+}
+
+.icon {
+    padding-right: 7px;
+}

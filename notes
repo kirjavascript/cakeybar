@@ -45,6 +45,7 @@ notifications?
 label
 label#Label here for layout
 bandwidth upload
+workspace icons
 
 config
 ====
@@ -68,3 +69,5 @@ gtk? v2.0 will be electron
 
 https://alpha.wallhaven.cc/
 http://simpledesktops.com
+https://publicdomainvectors.org/en/search/cpu/date/svg/90/1
+https://icons8.com/icon/set/public%20domain/all
