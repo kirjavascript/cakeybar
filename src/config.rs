@@ -1,6 +1,5 @@
-extern crate toml;
-
-use self::toml::value::*;
+use toml;
+use toml::value::*;
 
 use std::fs::File;
 use std::io::prelude::*;
@@ -63,10 +62,18 @@ impl ComponentConfig {
             or
         }
     }
-    // get_arr (or vec![])
+    pub fn get_vec_or(&self, prop: &str, or: Vec<Property>) -> Vec<Property> {
+        let value_option = self.properties.get(prop);
+        if let Some(&Property::Array(ref val)) = value_option {
+            val.clone()
+        }
+        else {
+            or
+        }
+    }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Property {
     String(String),
     Integer(i64),
@@ -193,7 +200,6 @@ pub fn parse_config(filename: &str) -> Config {
     } else {
         Vec::new()
     };
-
 
     // root
 

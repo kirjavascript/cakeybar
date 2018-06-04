@@ -17,32 +17,34 @@ label {
     font-weight: 600;
 }
 
+#menu {
+    background-color: @blue;
+    padding: 0 8px;
+}
+
 #title {
     margin-left: 300px;
 }
 
 #box1 label {
     padding: 0 7px;
-
     background-image: url("./icons/chevron.svg");
     background-repeat: no-repeat;
 }
 
 #workspaces label {
-    margin: 0 1px;
     padding: 0 8px;
 }
 
 #workspaces .visible {
-    /* background-color: @dark; */
-    background-image: url("./icons/chevron.svg");
-    background-repeat: no-repeat;
+    border-style: inset;
+    padding-top: 3px;
+    border-bottom: 3px solid @blue;
 }
 #workspaces .urgent {
-    color: red;
+    background-color: red;
 }
 #workspaces .focused {
-    color: white;
     background-color: @blue;
 }
 

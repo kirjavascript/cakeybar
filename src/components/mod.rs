@@ -9,7 +9,7 @@
 // impl Component for Template {
 //     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
 //         let label = Label::new(None);
-//         Template::init_widget(&label, &config.name);
+//         Template::init_widget(&label, &config);
 //         label.set_text(&"test");
 //         container.add(&label);
 //         label.show();
@@ -30,6 +30,7 @@ mod i3window;
 pub mod i3workspace;
 mod image;
 mod ip;
+mod menu;
 mod void;
 
 pub trait Component {
@@ -106,6 +107,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "i3workspace" => i3workspace::I3Workspace::init,
             "image" => image::Image::init,
             "ip" => ip::IP::init,
+            "menu" => menu::Menu::init,
             _ => void::Void::init,
         };
         // load component

@@ -1,0 +1,17 @@
+#workspaces label {
+    margin: 0 4px;
+    padding: 0 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    color: transparent;
+}
+
+#workspaces :nth-child(1) label {
+    background-image: url("./icons/firefox.png");
+}
+#workspaces :nth-child(2) label {
+    background-image: url("./icons/terminal.png");
+}
+#workspaces :nth-child(3) label {
+    background-image: url("./icons/vim.png");
+}

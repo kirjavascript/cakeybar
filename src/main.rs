@@ -3,6 +3,7 @@ extern crate gtk;
 extern crate gdk;
 extern crate glib;
 extern crate clap;
+extern crate toml;
 // used in components
 extern crate i3ipc;
 extern crate chrono;

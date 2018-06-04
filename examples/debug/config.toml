@@ -1,7 +1,6 @@
 # default config example
 
 theme = "theme.css"
-scroll_workspace = true # TODO
 
 # bars
 
@@ -9,6 +8,7 @@ scroll_workspace = true # TODO
 monitor = 0
 position = "bottom"
 layout = [ "logo", "workspaces", "mode", "title", "box1" ]
+scroll_workspace = true # TODO
 
 [bar.right]
 monitor = 1

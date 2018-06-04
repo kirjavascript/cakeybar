@@ -1,17 +1,16 @@
 theme = "theme.css"
-scroll_workspace = true
 
 # bars
 
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "workspaces", "mode", "title", "box1" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1" ]
 
 [bar.right]
 monitor = 1
 position = "top"
-layout = [ "workspaces", "mode", "title", "box1" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1" ]
 
 # used for scrolling workspaces only
 [bar.right_scroll]
@@ -20,6 +19,17 @@ position = "bottom"
 [bar.left_scroll]
 monitor = 1
 position = "bottom"
+
+# menu
+
+[component.menu]
+type = "menu"
+label = "start"
+items = [
+    ["run termite", "termite"],
+    ["forest bg", "feh --bg-fill ~/backgrounds/forest.png --bg-fill ~/backgrounds/mac.jpg"],
+    ["mountain bg", "feh --bg-fill ~/backgrounds/white.png"],
+]
 
 # layout
 
@@ -33,7 +43,6 @@ class = "gradient"
 # valign = "end"
 
 # i3 stuff
-
 [component.title]
 type = "i3window"
 halign = "center"
