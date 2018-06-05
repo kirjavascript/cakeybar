@@ -22,6 +22,15 @@ label {
     padding: 0 8px;
 }
 
+#menu_popup {
+    background-color: black;
+    padding: 5px;
+}
+
+#menu_popup label {
+    padding: 5px;
+}
+
 #title {
     margin-left: 300px;
 }

@@ -110,8 +110,7 @@ impl I3Workspace {
                 });
 
 
-                let wrapper_clone = wrapper.clone();
-                gtk::timeout_add(10, move || {
+                gtk::timeout_add(10, enclose!(wrapper move || {
                     if let Ok(msg_result) = rx.try_recv() {
                         match msg_result {
                             Ok(_msg) => {
@@ -131,14 +130,14 @@ impl I3Workspace {
                                         let label = Label::new(None);
                                         set_label_attrs(&label, &workspace, show_name);
                                         let ebox = add_event_box(&label, workspace.name.clone());
-                                        wrapper_clone.add(&ebox);
+                                        wrapper.add(&ebox);
                                         Some(label)
                                     };
                                     if let Some(added) = added_new {
                                         labels.push(added);
                                     }
                                 }
-                                wrapper_clone.show_all();
+                                wrapper.show_all();
 
                                 // remove items
                                 let work_len = workspaces.len();
@@ -155,13 +154,13 @@ impl I3Workspace {
                             },
                             Err(err) => {
                                 // thread has stopped
-                                handle_err(err, &wrapper_clone, show_name, show_all, monitor_index);
+                                handle_err(err, &wrapper, show_name, show_all, monitor_index);
                                 return gtk::Continue(false);
                             },
                         };
                     }
                     gtk::Continue(true)
-                });
+                }));
             },
             Err(err) => {
                 // connection failed
@@ -176,11 +175,10 @@ impl I3Workspace {
 fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, monitor_index: i32) {
     #[cfg(debug_assertions)]
     eprintln!("{}, restarting thread", err);
-    let wrapper_clone = wrapper.clone();
-    gtk::timeout_add(100, move || {
-        I3Workspace::load_thread(&wrapper_clone, show_name, show_all, monitor_index);
+    gtk::timeout_add(100, enclose!(wrapper move || {
+        I3Workspace::load_thread(&wrapper, show_name, show_all, monitor_index);
         gtk::Continue(false)
-    });
+    }));
 }
 
 // i3 stuff

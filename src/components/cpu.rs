@@ -15,18 +15,17 @@ impl Component for CPU {
 
         let mut system = System::new();
 
-        let label_clone = label.clone();
-        let mut tick = move || {
+        let mut tick = enclose!(label move || {
             system.refresh_system();
             let processor_list = system.get_processor_list();
             if !processor_list.is_empty() {
                 let pro = &processor_list[0];
-                label_clone.set_text(format!("{:.2}%", pro.get_cpu_usage() * 100.).as_str());
+                label.set_text(format!("{:.2}%", pro.get_cpu_usage() * 100.).as_str());
             } else {
-                label_clone.set_text("0.00%");
+                label.set_text("0.00%");
             }
             gtk::Continue(true)
-        };
+        });
 
         let interval = config.get_int_or("interval", 5);
         tick();

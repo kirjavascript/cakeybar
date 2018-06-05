@@ -18,11 +18,10 @@ impl Component for Clock {
 
         label.set_text(&current_time(format.clone()));
 
-        let label_tick_clone = label.clone();
-        let tick = move || {
-            label_tick_clone.set_text(&current_time(format.clone()));
+        let tick = enclose!(label move || {
+            label.set_text(&current_time(format.clone()));
             gtk::Continue(true)
-        };
+        });
 
         let interval = config.get_int_or("interval", 1);
         gtk::timeout_add_seconds(interval as u32, tick);

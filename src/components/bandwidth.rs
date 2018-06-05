@@ -28,8 +28,7 @@ impl Component for Bandwidth {
         let interval = config.get_int_or("interval", 5) as u64;
 
         let mut recv = 0u64;
-        let label_tick_clone = label.clone();
-        let mut tick = move || {
+        let mut tick = enclose!(label move || {
             let bw = network::read();
             match bw {
                 Ok(info) => {
@@ -41,11 +40,11 @@ impl Component for Bandwidth {
                     if let Some((_name, interface)) = interface_opt {
                         let diff = interface.received - recv;
                         if recv != 0 {
-                            label_tick_clone.set_text(
+                            label.set_text(
                                 &bytes_to_string(diff / interval)
                             );
                         } else {
-                            label_tick_clone.set_text(&"0B/s");
+                            label.set_text(&"0B/s");
                         }
                         recv = interface.received;
                     }
@@ -55,7 +54,7 @@ impl Component for Bandwidth {
                 },
             }
             gtk::Continue(true)
-        };
+        });
 
         tick();
         gtk::timeout_add_seconds(interval as u32, tick);

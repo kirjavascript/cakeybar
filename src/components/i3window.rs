@@ -56,26 +56,24 @@ impl I3Window {
             };
         });
 
-        let label_clone = label.clone();
-        gtk::timeout_add(10, move || {
+        gtk::timeout_add(10, enclose!(label move || {
             if let Ok(msg_result) = rx.try_recv() {
                 match msg_result {
                     Ok(msg) => {
-                        label_clone.set_text(&msg.container.name.unwrap_or("".to_owned()));
+                        label.set_text(&msg.container.name.unwrap_or("".to_owned()));
                     },
                     Err(err) => {
                         #[cfg(debug_assertions)]
                         eprintln!("{}, restarting thread", err);
-                        let label_clone_clone = label_clone.clone();
-                        gtk::timeout_add(100, move || {
-                            I3Window::load_thread(&label_clone_clone);
+                        gtk::timeout_add(100, enclose!(label move || {
+                            I3Window::load_thread(&label);
                             gtk::Continue(false)
-                        });
+                        }));
                         return gtk::Continue(false);
                     },
                 };
             }
             gtk::Continue(true)
-        });
+        }));
     }
 }

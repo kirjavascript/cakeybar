@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "workspaces", "menu", "mode", "title", "box1" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1" ]
 
 [bar.right]
 monitor = 1
@@ -30,9 +30,9 @@ items = [
     ["run termite",
         "termite"],
     ["forest bg",
-        "feh --bg-fill ~/backgrounds/forest.png --bg-fill ~/backgrounds/mac.jpg"],
+        "feh --bg-fill /home/thom/backgrounds/forest.png --bg-fill /home/thom/backgrounds/mac.jpg"],
     ["mountain bg",
-        "feh --bg-fill ~/backgrounds/white.png"],
+        "feh --bg-fill /home/thom/backgrounds/white.png"],
 ]
 
 # layout

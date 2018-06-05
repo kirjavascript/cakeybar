@@ -55,34 +55,32 @@ impl I3Mode {
             };
         });
 
-        let label_clone = label.clone();
-        let tick = move || {
+        let tick = enclose!(label move || {
             if let Ok(msg_result) = rx.try_recv() {
                 match msg_result {
                     Ok(msg) => {
                         let is_default = msg.change == "default";
 
                         if is_default {
-                            label_clone.hide();
+                            label.hide();
                         } else {
-                            label_clone.show();
-                            label_clone.set_text(&msg.change);
+                            label.show();
+                            label.set_text(&msg.change);
                         }
                     },
                     Err(err) => {
                         #[cfg(debug_assertions)]
                         eprintln!("{}, restarting thread", err);
-                        let label_clone_clone = label_clone.clone();
-                        gtk::timeout_add(100, move || {
-                            I3Mode::load_thread(&label_clone_clone);
+                        gtk::timeout_add(100, enclose!(label move || {
+                            I3Mode::load_thread(&label);
                             gtk::Continue(false)
-                        });
+                        }));
                         return gtk::Continue(false);
                     },
                 };
             }
             gtk::Continue(true)
-        };
+        });
 
         gtk::timeout_add(10, tick);
     }

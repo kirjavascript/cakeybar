@@ -19,8 +19,7 @@ impl Component for IP {
 
         let sys = System::new();
 
-        let label_tick_clone = label.clone();
-        let tick = move || {
+        let tick = enclose!(label move || {
             if let Ok(interfaces) = sys.networks() {
                 let mut iterface_opt = if interface == "auto" {
                     interfaces.iter().find(|_| true)
@@ -30,7 +29,7 @@ impl Component for IP {
                 if let Some((_name, iface)) = iterface_opt {
                     let ip_opt = IP::get_ip_from_network(iface, ipv6);
                     if let Some(ip) = ip_opt {
-                        label_tick_clone.set_text(&ip);
+                        label.set_text(&ip);
                     } else {
                         // if we dont find addresses, see if ANY interface has them
                         let other_opt = interfaces.iter().find(|x| {
@@ -39,14 +38,14 @@ impl Component for IP {
                         if let Some((_name, iface)) = other_opt {
                             let ip_opt = IP::get_ip_from_network(iface, ipv6);
                             if let Some(ip) = ip_opt {
-                                label_tick_clone.set_text(&ip);
+                                label.set_text(&ip);
                             }
                         }
                     }
                 }
             }
             gtk::Continue(true)
-        };
+        });
 
         let interval = config.get_int_or("interval", 5);
         tick();

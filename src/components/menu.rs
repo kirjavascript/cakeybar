@@ -1,14 +1,15 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Label, EventBox, Window, WindowType};
+use gtk::{Label, EventBox, Window, WindowType, Orientation, WidgetExt};
 use gdk::{EventType, WindowExt, Rectangle};
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::process::Command;
+use std::{thread, str};
 
 use config::Property;
 
 pub struct Menu {
-    // items: Vec<(String, String)>,
     is_open: bool,
     bbox: Rectangle,
 }
@@ -49,22 +50,64 @@ impl Component for Menu {
 
         let menu = Rc::new(RefCell::new(
             Menu {
-                // items: items,
                 bbox: Rectangle { x: 0, y: 0, width: 0, height: 0 },
                 is_open: false,
             }
         ));
 
         let window = Window::new(WindowType::Popup);
-        window.set_default_size(100, 200);
+        window.set_default_size(10, 10);
         bar.application.add_window(&window);
-        window.move_(100,100);
-        // get bar position (for under/over)
-        //
-        // show window
+        // TODO: get bar position (for under/over)
+        // TODO: get alignment (set for text and popup position)
+
+        // add items to exec
+        let wrapper = gtk::Box::new(Orientation::Vertical, 0);
+        for (name, exec) in items {
+            let ebox = EventBox::new();
+            let label = Label::new(None);
+            label.set_text(&name);
+            ebox.add(&label);
+            wrapper.add(&ebox);
+
+            // run command on click
+            ebox.connect_button_press_event(enclose!((window, menu) move |_, _| {
+                thread::spawn(enclose!(exec move || {
+                    let exec_clone = exec.clone();
+                    let split: Vec<&str> = exec_clone.split(" ").collect();
+                    let output = Command::new(split.get(0).unwrap_or(&""))
+                        .args(&split[1..])
+                        .output();
+                    match output {
+                        Ok(out) => {
+                            let stderr = str::from_utf8(&out.stderr).unwrap_or("");
+                            if stderr != "" {
+                                eprintln!("{}", stderr);
+                            }
+                        },
+                        Err(err) => {
+                            eprintln!("{}: {}", err, exec);
+                        },
+                    }
+                }));
+
+                // toggle menu
+                menu.borrow_mut().toggle();
+                window.hide();
+                Inhibit(false)
+            }));
+        }
+        wrapper.show_all();
+        window.add(&wrapper);
+
+        // set window id
+        let window_id = config.get_str_or("window_id", "null");
+        if window_id != "null" {
+            WidgetExt::set_name(&wrapper, &window_id);
+            WidgetExt::set_name(&window, &window_id);
+        }
 
         // track widget bbox
-        // let menu_clone = menu.clone();
         ebox.connect_size_allocate(enclose!(menu move |_, rect| {
             menu.borrow_mut().bbox = *rect;
         }));
@@ -73,9 +116,10 @@ impl Component for Menu {
             if e.get_event_type() == EventType::ButtonPress {
                 menu.borrow_mut().toggle();
                 if menu.borrow().is_open {
-                    // let w = c.get_window().unwrap();
-                    // let (x, y, z) = w.get_origin();
-
+                    let bbox = menu.borrow().bbox;
+                    let w = c.get_window().unwrap();
+                    let (y, x, _z) = w.get_origin();
+                    window.move_(x, y + bbox.height);
                     window.show();
                 }
                 else {

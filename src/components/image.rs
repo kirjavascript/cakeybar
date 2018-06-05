@@ -15,11 +15,10 @@ impl Component for Image {
             container.add(&img);
 
             // wait a tick, otherwise we get negative height warnings
-            let img_clone = img.clone();
-            gtk::idle_add(move || {
-                img_clone.show();
+            gtk::idle_add(enclose!(img move || {
+                img.show();
                 gtk::Continue(false)
-            });
+            }));
         }
     }
 }
