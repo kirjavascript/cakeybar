@@ -12,7 +12,7 @@
    viewBox="0 0 85.1299 44.4797"
    version="1.1"
    id="svg28"
-   sodipodi:docname="logo2.svg"
+   sodipodi:docname="logo.svg"
    inkscape:version="0.92.2 2405546, 2018-03-11"
    inkscape:export-filename="/home/thom/dev/cakeybar/docs/logo.svg.png"
    inkscape:export-xdpi="96"
@@ -40,14 +40,14 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1049"
+     inkscape:window-height="1080"
      id="namedview30"
      showgrid="false"
-     inkscape:zoom="1.3493784"
-     inkscape:cx="91.056873"
-     inkscape:cy="21.300488"
-     inkscape:window-x="1920"
-     inkscape:window-y="29"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="-2.5602441"
+     inkscape:cy="120.75333"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg28" />
   <path
@@ -134,7 +134,7 @@
      xml:space="preserve"
      id="flowRoot815"
      style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.51181102;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke"
-     transform="matrix(0.51402646,0,0,0.51402646,-139.58891,-81.137597)"><flowRegion
+     transform="matrix(0.51402646,0,0,0.51402646,-139.73597,-80.645195)"><flowRegion
        id="flowRegion817"
        style="stroke-width:1.51181102;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke"><rect
          id="rect819"
@@ -145,7 +145,7 @@
          style="stroke-width:1.51181102;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke" /></flowRegion><flowPara
        id="flowPara821"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:none;stroke:#000000;stroke-width:1.51181102;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"><flowSpan
-         style="fill:#ffffff;fill-opacity:1;stroke:#0085bd;stroke-opacity:1"
+         style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-opacity:1"
          id="flowSpan957">cakey</flowSpan><flowSpan
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ff9ae3;fill-opacity:1;stroke:#ff9ae3;stroke-width:1.51181102;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke"
          id="flowSpan823">bar</flowSpan></flowPara></flowRoot></svg>
