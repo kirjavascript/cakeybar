@@ -59,30 +59,6 @@
     </linearGradient>
     <pattern
        inkscape:isstock="true"
-       inkscape:stockid="Checkerboard"
-       id="Checkerboard"
-       patternTransform="translate(0,0) scale(10,10)"
-       height="2"
-       width="2"
-       patternUnits="userSpaceOnUse"
-       inkscape:collect="always">
-      <rect
-         id="rect1847"
-         height="1"
-         width="1"
-         y="0"
-         x="0"
-         style="fill:black;stroke:none" />
-      <rect
-         id="rect1849"
-         height="1"
-         width="1"
-         y="1"
-         x="1"
-         style="fill:black;stroke:none" />
-    </pattern>
-    <pattern
-       inkscape:isstock="true"
        inkscape:stockid="Sand (bitmap)"
        id="pattern3305"
        height="256"
@@ -266,10 +242,10 @@
      inkscape:window-height="1049"
      id="namedview30"
      showgrid="false"
-     inkscape:zoom="1"
-     inkscape:cx="-14.710286"
-     inkscape:cy="58.581929"
-     inkscape:window-x="0"
+     inkscape:zoom="2"
+     inkscape:cx="102.2665"
+     inkscape:cy="121.43384"
+     inkscape:window-x="1920"
      inkscape:window-y="29"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg28" />
@@ -357,21 +333,21 @@
   <flowRoot
      xml:space="preserve"
      id="flowRoot815"
-     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#f6f6f6;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke;stroke-opacity:1;"
+     style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#f0f0f0;fill-opacity:1;stroke:#f0f0f0;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke;stroke-opacity:1;"
      transform="matrix(0.51402646,0,0,0.51402646,-139.82952,-81.642081)"><flowRegion
        id="flowRegion817"
-       style="stroke:#f6f6f6;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke;stroke-opacity:1;fill:#ffffff;fill-opacity:1;"><rect
+       style="stroke:#f0f0f0;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke;stroke-opacity:1;fill:#f0f0f0;fill-opacity:1;"><rect
          id="rect819"
          width="447.14285"
          height="222.85715"
          x="275.71429"
          y="182.51968"
-         style="stroke:#f6f6f6;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke;stroke-opacity:1;fill:#ffffff;fill-opacity:1;" /></flowRegion><flowPara
+         style="stroke:#f0f0f0;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;paint-order:markers fill stroke;stroke-opacity:1;fill:#f0f0f0;fill-opacity:1;" /></flowRegion><flowPara
        id="flowPara821"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;stroke:#f6f6f6;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke;fill-opacity:1;"><flowSpan
-         style="fill:#ffffff;fill-opacity:1;stroke:#f6f6f6;stroke-opacity:1;stroke-width:1.51175346;stroke-miterlimit:4;stroke-dasharray:none;"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f0f0f0;stroke:#f0f0f0;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke;fill-opacity:1;"><flowSpan
+         style="fill:#f0f0f0;fill-opacity:1;stroke:#f0f0f0;stroke-opacity:1;stroke-width:1.51175346;stroke-miterlimit:4;stroke-dasharray:none;"
          id="flowSpan957">cakey</flowSpan><flowSpan
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:#f6f6f6;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke;"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:40px;font-family:Inconsolata;-inkscape-font-specification:'Inconsolata, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f0f0f0;fill-opacity:1;stroke:#f0f0f0;stroke-width:1.51175346;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers fill stroke;"
          id="flowSpan823" /></flowPara></flowRoot>  <flowRoot
      xml:space="preserve"
      id="flowRoot815-3"
