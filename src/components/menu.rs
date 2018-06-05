@@ -1,7 +1,7 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label, EventBox, Window, WindowType, Orientation, WidgetExt};
-use gdk::{EventType, WindowExt, Rectangle};
+use gdk::{EventType, WindowExt, Rectangle, WindowTypeHint};
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::process::Command;
@@ -13,13 +13,6 @@ pub struct Menu {
     is_open: bool,
     bbox: Rectangle,
 }
-
-impl Menu {
-    fn toggle(&mut self) {
-        self.is_open = !self.is_open;
-    }
-}
-
 
 impl Component for Menu {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
@@ -57,6 +50,16 @@ impl Component for Menu {
 
         let window = Window::new(WindowType::Popup);
         window.set_default_size(10, 10);
+        // window.set_decorated(false);
+        // window.set_skip_pager_hint(false);
+        // window.set_skip_taskbar_hint(false);
+        // window.set_type_hint(WindowTypeHint::Utility);
+
+        // window.connect_focus_out_event(enclose!((window, menu) move |_, _| {
+        //     menu.borrow_mut().is_open = false;
+        //     window.hide();
+        //     Inhibit(false)
+        // }));
         bar.application.add_window(&window);
         // TODO: get bar position (for under/over)
         // TODO: get alignment (set for text and popup position)
@@ -92,7 +95,7 @@ impl Component for Menu {
                 }));
 
                 // toggle menu
-                menu.borrow_mut().toggle();
+                menu.borrow_mut().is_open = false;
                 window.hide();
                 Inhibit(false)
             }));
@@ -114,16 +117,18 @@ impl Component for Menu {
 
         ebox.connect_button_press_event(enclose!(window move |c, e| {
             if e.get_event_type() == EventType::ButtonPress {
-                menu.borrow_mut().toggle();
-                if menu.borrow().is_open {
+                if !menu.borrow().is_open {
                     let bbox = menu.borrow().bbox;
                     let w = c.get_window().unwrap();
                     let (y, x, _z) = w.get_origin();
-                    window.move_(x, y + bbox.height);
                     window.show();
+                    window.move_(x, y + bbox.height);
+                    // window.grab_focus();
+                    menu.borrow_mut().is_open = true;
                 }
                 else {
                     window.hide();
+                    menu.borrow_mut().is_open = false;
                 }
             }
             Inhibit(false)

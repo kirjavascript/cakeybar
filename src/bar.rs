@@ -55,7 +55,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
         // set base values
         window.set_title(super::NAME);
-        window.set_default_size(0, 2);
+        window.set_default_size(0, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
 
