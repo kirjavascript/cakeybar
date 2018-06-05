@@ -110,7 +110,7 @@ show_all = false # show workspaces from every window
 show_name = false # show full name or just index
 ```
 
-each `label` element in a worspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_name label .focused`
+each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_name label .focused`
 
 #### i3mode
 

@@ -24,7 +24,7 @@ position = "bottom"
 
 [component.menu]
 type = "menu"
-label = "start"
+# label = "start"
 window_id = "menu_popup"
 items = [
     ["run termite",

@@ -1,4 +1,4 @@
-@define-color blue #5A95eB;
+@define-color blue #4A75dB;
 
 #left, #right {
     min-height: 27px;
@@ -20,6 +20,11 @@ label {
 #menu {
     background-color: @blue;
     padding: 0 8px;
+    min-width: 28px;
+    background-image: url("./icons/tux.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% -10%;
 }
 
 #menu_popup {
