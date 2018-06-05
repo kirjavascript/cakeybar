@@ -90,7 +90,7 @@ fn main() {
              .short("c")
              .long("config")
              .value_name("FILE")
-             .help("Sets a custom config file")
+             .help("Specify a config path")
              .takes_value(true))
         .subcommand(SubCommand::with_name("monitors")
             .about("Shows information about monitors")

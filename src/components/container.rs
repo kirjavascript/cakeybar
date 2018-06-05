@@ -14,7 +14,7 @@ impl Component for Container {
             // get direction
             let direction = config.get_str_or("direction", "column");
             let direction = match direction {
-                "column" | "horiz" => Orientation::Horizontal,
+                "column" | "horizontal" => Orientation::Horizontal,
                 _ => Orientation::Vertical,
             };
 

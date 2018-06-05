@@ -1,4 +1,4 @@
-theme = "theme.css"
+theme = "/home/thom/dev/cakeybar/examples/darkblue/theme.css"
 
 # bars
 
@@ -58,7 +58,6 @@ show_name = false
 
 [component.mode]
 type = "i3mode"
-class = "gradient"
 
 # stats
 
