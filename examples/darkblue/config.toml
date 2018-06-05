@@ -1,4 +1,4 @@
-theme = "/home/thom/dev/cakeybar/examples/darkblue/theme.css"
+theme = "theme.css"
 
 # bars
 
@@ -69,7 +69,6 @@ interface = "enp3s0" # remove this for 'auto' mode
 [component.bandwidth]
 type = "bandwidth"
 interface = "enp3s0"
-# ipv6 = true
 
 [component.cpu]
 type = "cpu"
