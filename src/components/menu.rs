@@ -1,24 +1,27 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Label, EventBox};
+use gtk::{Label, EventBox, Window, WindowType};
+use gdk::{EventType, WindowExt, Rectangle};
 use std::cell::RefCell;
 use std::rc::Rc;
 
 use config::Property;
 
 pub struct Menu {
-    items: Vec<(String, String)>,
+    // items: Vec<(String, String)>,
     is_open: bool,
+    bbox: Rectangle,
 }
 
 impl Menu {
     fn toggle(&mut self) {
-        self.is_open == !self.is_open;
+        self.is_open = !self.is_open;
     }
 }
 
+
 impl Component for Menu {
-    fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);
         Menu::init_widget(&label, &config);
         let label_text = config.get_str_or("label", "");
@@ -45,21 +48,42 @@ impl Component for Menu {
             });
 
         let menu = Rc::new(RefCell::new(
-            Menu { items: items, is_open: false }
+            Menu {
+                // items: items,
+                bbox: Rectangle { x: 0, y: 0, width: 0, height: 0 },
+                is_open: false,
+            }
         ));
 
-        ebox.connect_button_press_event(move |_, _| {
-            // let value = !*menu_open.borrow();
-            // *menu_open.borrow_mut() = value;
-            // println!("{:#?}", value);
-            menu.borrow_mut().toggle();
-            println!("{:#?}", menu.borrow().is_open);
-            Inhibit(false)
-        });
-        // click event
-        //
+        let window = Window::new(WindowType::Popup);
+        window.set_default_size(100, 200);
+        bar.application.add_window(&window);
+        window.move_(100,100);
         // get bar position (for under/over)
         //
         // show window
+
+        // track widget bbox
+        // let menu_clone = menu.clone();
+        ebox.connect_size_allocate(enclose!(menu move |_, rect| {
+            menu.borrow_mut().bbox = *rect;
+        }));
+
+        ebox.connect_button_press_event(enclose!(window move |c, e| {
+            if e.get_event_type() == EventType::ButtonPress {
+                menu.borrow_mut().toggle();
+                if menu.borrow().is_open {
+                    // let w = c.get_window().unwrap();
+                    // let (x, y, z) = w.get_origin();
+
+                    window.show();
+                }
+                else {
+                    window.hide();
+                }
+            }
+            Inhibit(false)
+        }));
+
     }
 }

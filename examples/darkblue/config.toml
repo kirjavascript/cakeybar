@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "box1" ]
+layout = [ "workspaces", "menu", "mode", "title", "box1" ]
 
 [bar.right]
 monitor = 1
@@ -25,10 +25,14 @@ position = "bottom"
 [component.menu]
 type = "menu"
 label = "start"
+window_id = "menu_popup"
 items = [
-    ["run termite", "termite"],
-    ["forest bg", "feh --bg-fill ~/backgrounds/forest.png --bg-fill ~/backgrounds/mac.jpg"],
-    ["mountain bg", "feh --bg-fill ~/backgrounds/white.png"],
+    ["run termite",
+        "termite"],
+    ["forest bg",
+        "feh --bg-fill ~/backgrounds/forest.png --bg-fill ~/backgrounds/mac.jpg"],
+    ["mountain bg",
+        "feh --bg-fill ~/backgrounds/white.png"],
 ]
 
 # layout

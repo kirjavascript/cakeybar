@@ -20,6 +20,8 @@ use gio::prelude::*;
 
 use clap::{Arg, App, SubCommand};
 
+#[macro_use]
+mod macros;
 mod util;
 mod config;
 mod bar;
