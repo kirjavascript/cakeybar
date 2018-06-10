@@ -40,6 +40,11 @@ label {
     background-color: @blue;
 }
 
+#tray {
+    border: 1px solid red;
+    background-color: green;
+}
+
 #title {
     margin-left: 300px;
 }

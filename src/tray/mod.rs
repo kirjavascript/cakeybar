@@ -16,7 +16,6 @@ const EXIT_FAILED_CONNECT: i32 = 10;
 const EXIT_FAILED_SELECT: i32 = 11;
 
 pub fn as_subprocess() {
-    // TODO: check if system tray is running already
     if let Ok(path) = current_exe() {
         Command::new(path)
             .arg("-t")
@@ -42,7 +41,7 @@ pub fn main() -> i32 {
         let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg);
 
         if !manager.is_selection_available() {
-            println!("Another system tray is already running");
+            eprintln!("Another system tray is already running");
             return EXIT_FAILED_SELECT
         }
 

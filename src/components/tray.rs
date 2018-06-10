@@ -1,6 +1,6 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Label};
+use gtk::{Orientation};
 
 pub struct Tray { }
 
@@ -22,10 +22,24 @@ impl Tray{
     fn load(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let bg = config.get_str_or("background_color", "#000000");
         let icon_size = config.get_int_or("icon_size", 20);
+        let bg_hex = match u32::from_str_radix(&bg[1..], 16) {
+            Ok(val) => val,
+            Err(_) => 0,
+        };
 
-        gtk::idle_add(move || {
+        let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
+        Tray::init_widget(&wrapper, &config);
+        container.add(&wrapper);
+        wrapper.connect_size_allocate(move |_, rect| {
+            println!("{:#?}", rect);
+        });
+        wrapper.show();
+        wrapper.set_size_request(icon_size as i32, 5);
+
+        gtk::idle_add(enclose!(container move || {
+
             ::tray::as_subprocess();
             gtk::Continue(false)
-        });
+        }));
     }
 }

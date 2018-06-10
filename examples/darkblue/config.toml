@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "tray", "box1" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
 
 [bar.right]
 monitor = 1
@@ -26,7 +26,6 @@ position = "bottom"
 type = "tray"
 background_color = "#FF0000"
 icon_size = 20
-halign = "end"
 
 # menu
 
