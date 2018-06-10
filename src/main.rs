@@ -86,9 +86,6 @@ fn main() {
 
     let config = config::parse_config(config_path);
 
-    // load tray subprocess
-    // tray::as_subprocess();
-
     // GTK application
 
     // check version

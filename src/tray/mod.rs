@@ -16,7 +16,7 @@ const EXIT_FAILED_CONNECT: i32 = 10;
 const EXIT_FAILED_SELECT: i32 = 11;
 
 pub fn as_subprocess() {
-    // check if system tray is running already
+    // TODO: check if system tray is running already
     if let Ok(path) = current_exe() {
         Command::new(path)
             .arg("-t")
@@ -26,7 +26,11 @@ pub fn as_subprocess() {
 }
 
 pub fn main() -> i32 {
-    let signal = chan_signal::notify(&[chan_signal::Signal::INT, chan_signal::Signal::TERM]);
+    let signal = chan_signal::notify(&[
+        chan_signal::Signal::INT,
+        chan_signal::Signal::TERM,
+        chan_signal::Signal::KILL,
+    ]);
 
     let size = 20;
     let bg = 0x221122;

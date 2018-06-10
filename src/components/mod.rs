@@ -31,6 +31,7 @@ pub mod i3workspace;
 mod image;
 mod ip;
 mod menu;
+mod tray;
 mod void;
 
 pub trait Component {
@@ -108,6 +109,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "image" => image::Image::init,
             "ip" => ip::IP::init,
             "menu" => menu::Menu::init,
+            "tray" => tray::Tray::init,
             _ => void::Void::init,
         };
         // load component
