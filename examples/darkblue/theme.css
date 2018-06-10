@@ -36,6 +36,10 @@ label {
     padding: 5px;
 }
 
+#menu_popup label:focus {
+    background-color: @blue;
+}
+
 #title {
     margin-left: 300px;
 }

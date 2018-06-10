@@ -62,9 +62,9 @@ impl I3Window {
                     Ok(msg) => {
                         label.set_text(&msg.container.name.unwrap_or("".to_owned()));
                     },
-                    Err(err) => {
+                    Err(_err) => {
                         #[cfg(debug_assertions)]
-                        eprintln!("{}, restarting thread", err);
+                        eprintln!("{}, restarting thread", _err);
                         gtk::timeout_add(100, enclose!(label move || {
                             I3Window::load_thread(&label);
                             gtk::Continue(false)

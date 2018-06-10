@@ -121,8 +121,8 @@ fn main() {
     }
 
     let application = gtk::Application::new(
-        &format!("com.kirjava.{}", NAME),
-        gio::ApplicationFlags::empty(),
+            &format!("com.kirjava.{}", NAME),
+            gio::ApplicationFlags::empty(),
         )
         .expect("Initialization failed...");
 

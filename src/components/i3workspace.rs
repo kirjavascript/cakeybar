@@ -172,9 +172,9 @@ impl I3Workspace {
     }
 }
 
-fn handle_err(err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, monitor_index: i32) {
+fn handle_err(_err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, monitor_index: i32) {
     #[cfg(debug_assertions)]
-    eprintln!("{}, restarting thread", err);
+    eprintln!("{}, restarting thread", _err);
     gtk::timeout_add(100, enclose!(wrapper move || {
         I3Workspace::load_thread(&wrapper, show_name, show_all, monitor_index);
         gtk::Continue(false)

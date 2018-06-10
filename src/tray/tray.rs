@@ -180,22 +180,22 @@ impl<'a> Tray<'a> {
         //
 
         // restack window (fixes always on top bug)
-        if let Ok(reply) = xcb::query_tree(self.conn, screen.root()).get_reply() {
-            let children = reply.children();
-            let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
-            // find the first i3 window
-            for child in children {
-                let wm_name = xcb_get_wm_name(self.conn, *child);
-                if wm_name.contains("i3") {
-                    // put the window directly above it
-                    xcb::configure_window_checked(self.conn, self.window, &[
-                        (value_mask, *child),
-                        (value_mask, xcb::STACK_MODE_ABOVE),
-                    ]);
-                    break;
-                }
-            }
-        }
+        // if let Ok(reply) = xcb::query_tree(self.conn, screen.root()).get_reply() {
+        //     let children = reply.children();
+        //     let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
+        //     // find the first i3 window
+        //     for child in children {
+        //         let wm_name = xcb_get_wm_name(self.conn, *child);
+        //         if wm_name.contains("i3") {
+        //             // put the window directly above it
+        //             xcb::configure_window_checked(self.conn, self.window, &[
+        //                 (value_mask, *child),
+        //                 (value_mask, xcb::STACK_MODE_ABOVE),
+        //             ]);
+        //             break;
+        //         }
+        //     }
+        // }
 
         self.conn.flush();
     }

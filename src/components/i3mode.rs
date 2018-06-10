@@ -68,9 +68,9 @@ impl I3Mode {
                             label.set_text(&msg.change);
                         }
                     },
-                    Err(err) => {
+                    Err(_err) => {
                         #[cfg(debug_assertions)]
-                        eprintln!("{}, restarting thread", err);
+                        eprintln!("{}, restarting thread", _err);
                         gtk::timeout_add(100, enclose!(label move || {
                             I3Mode::load_thread(&label);
                             gtk::Continue(false)
