@@ -8,7 +8,7 @@ const SYSTEM_TRAY_REQUEST_DOCK: u32 = 0;
 const SYSTEM_TRAY_BEGIN_MESSAGE: u32 = 1;
 const SYSTEM_TRAY_CANCEL_MESSAGE: u32 = 2;
 
-pub struct Tray<'a> {
+pub struct Manager<'a> {
     conn: &'a xcb::Connection,
     atoms: &'a atom::Atoms<'a>,
     screen: usize,
@@ -20,15 +20,15 @@ pub struct Tray<'a> {
     finishing: bool,
 }
 
-impl<'a> Tray<'a> {
+impl<'a> Manager<'a> {
     pub fn new<'b>(
         conn: &'b xcb::Connection,
         atoms: &'b atom::Atoms,
         screen: usize,
         icon_size: u16,
         bg: u32
-    ) -> Tray<'b> {
-        Tray::<'b> {
+    ) -> Manager<'b> {
+        Manager::<'b> {
             conn: conn,
             atoms: atoms,
             screen: screen,
@@ -197,7 +197,39 @@ impl<'a> Tray<'a> {
         //     }
         // }
 
+        // attempt to stack gtk bar BELOW tray
+        // let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
+
+        // if let Ok(reply) = xcb::query_tree(&self.conn, screen.root()).get_reply() {
+        //     let i3_opt = reply.children().iter().find(|child| {
+        //          xcb_get_wm_name(&self.conn, **child).contains("i3")
+        //     });
+        //     let bar_opt = reply.children().iter().find(|child| {
+        //         ::NAME == xcb_get_wm_name(&self.conn, **child)
+        //     });
+        //     if let Some(bar) = bar_opt {
+        //         if let Some(i3) = i3_opt {
+        //             println!("{:#?}", (i3, bar));
+
+        //             xcb::configure_window_checked(&self.conn, *i3, &[
+        //                 (value_mask, *bar),
+        //                 (value_mask, xcb::STACK_MODE_ABOVE),
+        //             ]);
+
+        //             println!("{:#?}", "swapped");
+        //             self.conn.flush();
+        //         }
+        //     }
+        // }
+
         self.conn.flush();
+
+        // debug window order
+        // if let Ok(reply) = xcb::query_tree(&self.conn, screen.root()).get_reply() {
+        //     for i in reply.children() {
+        //         println!("{:#?} {}", xcb_get_wm_name(&self.conn, *i), i);
+        //     }
+        // }
     }
 
     pub fn set_property<T>(&self, name: xcb::Atom, type_: xcb::Atom, format: u8, data: &[T]) {
@@ -287,7 +319,7 @@ impl<'a> Tray<'a> {
                 // &HorizontalAlign::Right => screen.width_in_pixels() - width
 
             let x = 1440;
-            let y = 1056;
+            let y = 5;
             xcb::configure_window(self.conn, self.window, &[
                 (xcb::CONFIG_WINDOW_X as u16, x as u32),
                 (xcb::CONFIG_WINDOW_Y as u16, y as u32),
@@ -410,40 +442,40 @@ impl<'a> Tray<'a> {
     }
 }
 
-pub fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
-    let window: xcb::Window = id;
-    let long_length: u32 = 8;
-    let mut long_offset: u32 = 0;
-    let mut buf = Vec::new();
-    loop {
-        let cookie = xcb::get_property(
-            &conn,
-            false,
-            window,
-            xcb::ATOM_WM_NAME,
-            xcb::ATOM_STRING,
-            long_offset,
-            long_length,
-        );
-        match cookie.get_reply() {
-            Ok(reply) => {
-                let value: &[u8] = reply.value();
-                buf.extend_from_slice(value);
-                match reply.bytes_after() {
-                    0 => break,
-                    _ => {
-                        let len = reply.value_len();
-                        long_offset += len / 4;
-                    }
-                }
-            }
-            Err(err) => {
-                println!("{:?}", err);
-                break;
-            }
-        }
-    }
-    let result = String::from_utf8(buf).unwrap();
-    let results: Vec<&str> = result.split('\0').collect();
-    results[0].to_string()
-}
+// fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
+//     let window: xcb::Window = id;
+//     let long_length: u32 = 8;
+//     let mut long_offset: u32 = 0;
+//     let mut buf = Vec::new();
+//     loop {
+//         let cookie = xcb::get_property(
+//             &conn,
+//             false,
+//             window,
+//             xcb::ATOM_WM_NAME,
+//             xcb::ATOM_STRING,
+//             long_offset,
+//             long_length,
+//         );
+//         match cookie.get_reply() {
+//             Ok(reply) => {
+//                 let value: &[u8] = reply.value();
+//                 buf.extend_from_slice(value);
+//                 match reply.bytes_after() {
+//                     0 => break,
+//                     _ => {
+//                         let len = reply.value_len();
+//                         long_offset += len / 4;
+//                     }
+//                 }
+//             }
+//             Err(err) => {
+//                 println!("{:?}", err);
+//                 break;
+//             }
+//         }
+//     }
+//     let result = String::from_utf8(buf).unwrap();
+//     let results: Vec<&str> = result.split('\0').collect();
+//     results[0].to_string()
+// }

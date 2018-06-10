@@ -5,15 +5,27 @@ use chan_signal;
 use xcb;
 
 mod atom;
-pub mod tray;
+pub mod manager;
 
 use std::thread;
 use std::sync::Arc;
+use std::process::Command;
+use std::env::current_exe;
 
 const EXIT_FAILED_CONNECT: i32 = 10;
 const EXIT_FAILED_SELECT: i32 = 11;
 
-pub fn init() {
+pub fn as_subprocess() {
+    // check if system tray is running already
+    if let Ok(path) = current_exe() {
+        Command::new(path)
+            .arg("-t")
+            .spawn()
+            .expect("failed to launch tray");
+    }
+}
+
+pub fn main() -> i32 {
     let signal = chan_signal::notify(&[chan_signal::Signal::INT, chan_signal::Signal::TERM]);
 
     let size = 20;
@@ -23,9 +35,9 @@ pub fn init() {
         let conn = Arc::new(conn);
         let atoms = atom::Atoms::new(&conn);
 
-        let mut tray = tray::Tray::new(&conn, &atoms, preferred as usize, size, bg);
+        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg);
 
-        if !tray.is_selection_available() {
+        if !manager.is_selection_available() {
             println!("Another system tray is already running");
             return EXIT_FAILED_SELECT
         }
@@ -43,13 +55,13 @@ pub fn init() {
             });
         }
 
-        tray.create();
+        manager.create();
 
         loop {
             chan_select!(
                 rx.recv() -> event_opt => {
                     if let Some(event) = event_opt {
-                        if let Some(code) = tray.handle_event(event) {
+                        if let Some(code) = manager.handle_event(event) {
                             println!("{:?}", code);
                             return code
                         }
@@ -59,7 +71,7 @@ pub fn init() {
                     }
                 },
                 signal.recv() => {
-                    tray.finish();
+                    manager.finish();
                 }
                 );
         }
