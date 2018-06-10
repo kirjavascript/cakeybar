@@ -46,17 +46,14 @@ pub fn main() -> i32 {
         }
 
         let (tx, rx) = chan::sync(0);
-        {
-            let conn = conn.clone();
-            thread::spawn(move || {
-                loop {
-                    match conn.wait_for_event() {
-                        Some(event) => { tx.send(event); },
-                        None => { break; }
-                    }
+        thread::spawn(enclose!(conn move || {
+            loop {
+                match conn.wait_for_event() {
+                    Some(event) => { tx.send(event); },
+                    None => { break; }
                 }
-            });
-        }
+            }
+        }));
 
         manager.create();
 

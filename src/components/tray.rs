@@ -30,9 +30,9 @@ impl Tray{
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         Tray::init_widget(&wrapper, &config);
         container.add(&wrapper);
-        wrapper.connect_size_allocate(move |_, rect| {
-            println!("{:#?}", rect);
-        });
+        // wrapper.connect_size_allocate(move |_, rect| {
+        //     println!("{:#?}", rect);
+        // });
         wrapper.show();
         wrapper.set_size_request(icon_size as i32, 5);
 
