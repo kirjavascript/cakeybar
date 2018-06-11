@@ -5,6 +5,7 @@ use chan_signal;
 use xcb;
 
 mod atom;
+pub mod ipc;
 pub mod manager;
 
 use std::thread;
@@ -38,6 +39,8 @@ pub fn main() -> i32 {
         let conn = Arc::new(conn);
         let atoms = atom::Atoms::new(&conn);
 
+        let (tx_ipc, rx_ipc) = ipc::get_client();
+
         let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg);
 
         if !manager.is_selection_available() {
@@ -57,6 +60,7 @@ pub fn main() -> i32 {
 
         manager.create();
 
+                    tx_ipc.send("HELLO".to_string());
         loop {
             chan_select!(
                 rx.recv() -> event_opt => {
@@ -68,6 +72,11 @@ pub fn main() -> i32 {
                     }
                     else {
                         eprintln!("X connection is rip - killed by XKillClient(), maybe?");
+                    }
+                },
+                rx_ipc.recv() -> ipc_opt => {
+                    if let Some(ipc) = ipc_opt {
+                        println!("tray recv {:#?}", ipc);
                     }
                 },
                 signal.recv() => {

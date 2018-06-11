@@ -8,8 +8,8 @@ use std::os::unix::net::{UnixStream, UnixListener};
 use std::io::{Read, Write};
 use std::fs::remove_file;
 
-const SOCKET_PATH_SRV: &str = "/tmp/cakeytray-ipc/srv";
-const SOCKET_PATH_RCV: &str = "/tmp/cakeytray-ipc/rcv";
+const SOCKET_PATH_SRV: &str = "/tmp/cakeytray-ipc-srv";
+const SOCKET_PATH_RCV: &str = "/tmp/cakeytray-ipc-rcv";
 
 fn main() {
     let matches = App::new("poop")
@@ -37,29 +37,27 @@ fn main() {
 
     subprocess();
 
-    let listener = UnixListener::bind(SOCKET_PATH).unwrap();
+    let listener = UnixListener::bind(SOCKET_PATH_SRV).unwrap();
 
     for stream in listener.incoming() {
         match stream {
             Ok(mut stream) => {
-                // thread::spawn(move || {
                 let mut current = [0; 1];
                 let mut msg: Vec<u8> = Vec::new();
-                let mut flag = false;
+
+                let mut conn = UnixStream::connect(SOCKET_PATH_RCV).unwrap();
                 loop {
-                    flag = !flag;
-                    if flag {
-                        if let Ok(_) = stream.read(&mut current) {
-                            if current[0] == 0xA {
-                                let command = String::from_utf8(msg.clone()).unwrap();
-                                msg.clear();
-                                println!("first {:#?}", command);
-                            } else {
-                                msg.push(current[0]);
-                            }
+                    if let Ok(_) = stream.read(&mut current) {
+                        if current[0] == 0xA {
+                            let command = String::from_utf8(msg.clone()).unwrap();
+                            msg.clear();
+                            println!("first {:#?}", command);
+                    conn.write(b"wow\n");
+                        } else {
+                            msg.push(current[0]);
                         }
                     } else {
-                        stream.write(b"ACK\n");
+                        conn.write(b"wow\n");
                     }
                 }
             }
@@ -71,78 +69,41 @@ fn main() {
         }
     }
 
-    // let listener = TcpListener::bind("127.0.0.1:21337").unwrap();
-
-    // for stream in listener.incoming() {
-    //     match stream {
-    //         Ok(mut stream) => {
-    //             // println!("{:#?}", stream);
-    //             // let response = b"HELO";
-    //             // stream.write(response).expect("Response failed");
-
-    //             let mut current = [0; 1];
-    //             let mut msg: Vec<u8> = Vec::new();
-    //             loop {
-    //                 if let Ok(_) = stream.read(&mut current) {
-    //                     if current[0] == 0xA {
-    //                         let command = String::from_utf8(msg.clone()).unwrap();
-    //                         msg.clear();
-    //                         println!("first {:#?}", command);
-    //                         stream.write(b"ACK\n");
-    //                     } else {
-    //                         msg.push(current[0]);
-    //                     }
-
-    //                 } else {
-    //                     eprintln!("stream died");
-    //                     break;
-    //                 }
-    //             }
-    //         }
-    //         Err(e) => {
-    //             println!("Unable to connect: {}", e);
-    //         }
-    //     }
-    // }
-
 }
 
 fn second_main() {
     println!("{:#?}", "second process");
 
-    let mut stream = UnixStream::connect(SOCKET_PATH).unwrap();
-    // let mut response = String::new();
-    // stream.read_to_string(&mut response).unwrap();
-    // println!("{}", response);
+    let mut listener = UnixListener::bind(SOCKET_PATH_RCV).unwrap();
+    let mut conn = UnixStream::connect(SOCKET_PATH_SRV).unwrap();
+    conn.write(b"hello\n");
 
+    for stream in listener.incoming() {
+        match stream {
+            Ok(mut stream) => {
+                // thread::spawn(move || {
                 let mut current = [0; 1];
                 let mut msg: Vec<u8> = Vec::new();
-                let mut flag = true;
-    loop {
-        // match stream.write(b"hello world\n") {
-        //     Ok(_) => {
-        //         // println!("{:#?}", "sent message");
-        //     },
-        //     Err(err) => {
-        //         eprintln!("{:#?}", err);
-        //     },
-        // }
-
-        flag = !flag;
-        if flag {
-            if let Ok(_) = stream.read(&mut current) {
-                if current[0] == 0xA {
-                    let command = String::from_utf8(msg.clone()).unwrap();
-                    msg.clear();
-                    println!("first {:#?}", command);
-                } else {
-                    msg.push(current[0]);
+                loop {
+                    if let Ok(_) = stream.read(&mut current) {
+                        if current[0] == 0xA {
+                            let command = String::from_utf8(msg.clone()).unwrap();
+                            msg.clear();
+                            println!("second {:#?}", command);
+                            conn.write(b"wow3\n");
+                        } else {
+                            msg.push(current[0]);
+                        }
+                    }
                 }
             }
-        } else {
-            stream.write(b"ACK\n");
+            Err(err) => {
+                /* connection failed */
+                println!("err {:#?}", err);
+                break;
+            }
         }
-    }
+        }
 }
 
 

@@ -177,7 +177,11 @@ impl<'a> Manager<'a> {
         // xcb::change_window_attributes(self.conn, self.window, &[
         //     (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
         // ]);
-        //
+
+        // change bg pixel
+        // xcb::change_window_attributes(self.conn, self.window, &[
+        //     (xcb::CW_BACK_PIXEL, 0x221122),
+        // ]);
 
         // restack window (fixes always on top bug)
         // if let Ok(reply) = xcb::query_tree(self.conn, screen.root()).get_reply() {

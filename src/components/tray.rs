@@ -38,7 +38,10 @@ impl Tray {
         wrapper.set_size_request(icon_size as i32, 5);
 
         gtk::idle_add(enclose!(container move || {
+            let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
             ::tray::as_subprocess();
+
+            tx_ipc.send("component".to_string());
             gtk::Continue(false)
         }));
     }

@@ -33,6 +33,7 @@ icon_size = 20
 type = "menu"
 # label = "start"
 window_id = "menu_popup"
+# TODO: change to { name = "name", command = "poop" }
 items = [
     ["run termite",
         "termite"],
