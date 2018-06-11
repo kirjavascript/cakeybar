@@ -1,0 +1,11 @@
+[package]
+name = "ipc-test"
+version = "0.1.0"
+authors = ["kirjavascript <snkenjoi@gmail.com>"]
+
+[dependencies]
+clap = "2.31.2"
+# ipc = "0.2.0"
+# tokio = "0.1.7"
+# futures = "0.2.1"
+# parity-tokio-ipc = { git = "https://github.com/NikVolf/parity-tokio-ipc" }
