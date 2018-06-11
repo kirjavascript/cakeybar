@@ -3,18 +3,21 @@ use std::time::Duration;
 use std::os::unix::net::{UnixStream, UnixListener};
 use std::io::{Read, Write};
 use std::fs::remove_file;
+use std::sync::mpsc;
 use chan;
 use chan::{Sender, Receiver};
+
+// TODO: use less threads
 
 const SOCKET_PATH_SRV: &str = "/tmp/cakeytray-ipc-srv";
 const SOCKET_PATH_RCV: &str = "/tmp/cakeytray-ipc-rcv";
 
-pub fn get_server() -> (Sender<String>, Receiver<String>){
+pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
     // remove files from last time
     remove_file(SOCKET_PATH_SRV);
     remove_file(SOCKET_PATH_RCV);
 
-    let (tx_snd, rx_snd): (Sender<String>, Receiver<String>) = chan::sync(0);
+    let (tx_snd, rx_snd): (mpsc::Sender<String>, mpsc::Receiver<String>) = mpsc::channel();
     let (tx_rcv, rx_rcv): (Sender<String>, Receiver<String>) = chan::sync(0);
 
     thread::spawn(move || {
@@ -34,7 +37,7 @@ pub fn get_server() -> (Sender<String>, Receiver<String>){
                                     command.push_str("\n");
                                     msg.clear();
                                     println!("server {:#?}", command);
-                                    tx_snd.send(command);
+                                    tx_snd.send(command.trim().to_string());
                                 } else {
                                     msg.push(current[0]);
                                 }
@@ -87,7 +90,7 @@ pub fn get_client() -> (Sender<String>, Receiver<String>) {
                                     command.push_str("\n");
                                     msg.clear();
                                     println!("client {:#?}", command);
-                                    tx_snd.send(command);
+                                    tx_snd.send(command.trim().to_string());
                                 } else {
                                     msg.push(current[0]);
                                 }

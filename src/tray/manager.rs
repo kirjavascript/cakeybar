@@ -1,5 +1,6 @@
 use super::atom;
 use xcb;
+use chan::Sender;
 
 const CLIENT_MESSAGE: u8 = xcb::CLIENT_MESSAGE | 0x80; // 0x80 flag for client messages
 
@@ -18,6 +19,7 @@ pub struct Manager<'a> {
     children: Vec<xcb::Window>,
     timestamp: xcb::Timestamp,
     finishing: bool,
+    tx_ipc: Sender<String>,
 }
 
 impl<'a> Manager<'a> {
@@ -26,7 +28,8 @@ impl<'a> Manager<'a> {
         atoms: &'b atom::Atoms,
         screen: usize,
         icon_size: u16,
-        bg: u32
+        bg: u32,
+        tx_ipc: Sender<String>,
     ) -> Manager<'b> {
         Manager::<'b> {
             conn: conn,
@@ -38,6 +41,7 @@ impl<'a> Manager<'a> {
             children: vec![],
             timestamp: 0,
             finishing: false,
+            tx_ipc: tx_ipc,
         }
     }
 
@@ -317,6 +321,7 @@ impl<'a> Manager<'a> {
 
     pub fn reposition(&self) {
         let width = self.children.len() as u16 * self.icon_size;
+        self.tx_ipc.send(format!("{}", width));
         if width > 0 {
             // let setup = self.conn.get_setup();
             // let screen = setup.roots().nth(self.screen).unwrap();
