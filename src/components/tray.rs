@@ -18,7 +18,8 @@ impl Component for Tray {
         }
     }
 }
-impl Tray{
+
+impl Tray {
     fn load(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let bg = config.get_str_or("background_color", "#000000");
         let icon_size = config.get_int_or("icon_size", 20);
@@ -37,7 +38,6 @@ impl Tray{
         wrapper.set_size_request(icon_size as i32, 5);
 
         gtk::idle_add(enclose!(container move || {
-
             ::tray::as_subprocess();
             gtk::Continue(false)
         }));

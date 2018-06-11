@@ -32,7 +32,7 @@ pub fn main() -> i32 {
     ]);
 
     let size = 20;
-    let bg = 0x221122;
+    let bg = 0x0;
 
     if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
         let conn = Arc::new(conn);
