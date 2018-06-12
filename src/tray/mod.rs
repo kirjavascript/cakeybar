@@ -41,7 +41,7 @@ pub fn main() -> i32 {
 
         let (tx_ipc, rx_ipc) = ipc::get_client();
 
-        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg);
+        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg, tx_ipc);
 
         if !manager.is_selection_available() {
             eprintln!("Another system tray is already running");
@@ -74,8 +74,8 @@ pub fn main() -> i32 {
                     }
                 },
                 rx_ipc.recv() -> ipc_opt => {
-                    if let Some(ipc) = ipc_opt {
-                        println!("tray recv {:#?}", ipc);
+                    if let Some(msg) = ipc_opt {
+                        manager.handle_ipc_message(msg);
                     }
                 },
                 signal.recv() => {

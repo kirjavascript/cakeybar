@@ -14,10 +14,6 @@ https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 gtk->xcb
 https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-window
 
-19:04:04 <+nibblrjr> Kirjava: set override redirect on the GTK window (9 hours ago)
-19:04:04 <+nibblrjr> Kirjava: and try and stack it (9 hours ago)
-load tray as subprocess --tray to fix badly closing
-
 impl
 ====
 reload config / theme (theme should be easy)
@@ -40,7 +36,6 @@ dropdown menu
 container: clickable
 keyboard layout
 volume
-networ - ipv6 / v4 - autodetect interface
 notifications?
 label
 label#Label here for layout

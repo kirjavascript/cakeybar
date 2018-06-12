@@ -1,4 +1,5 @@
 use super::atom;
+use super::ipc::Message;
 use xcb;
 use chan::Sender;
 
@@ -19,7 +20,7 @@ pub struct Manager<'a> {
     children: Vec<xcb::Window>,
     timestamp: xcb::Timestamp,
     finishing: bool,
-    // tx_ipc: Sender<String>,
+    tx_ipc: Sender<Message>,
 }
 
 impl<'a> Manager<'a> {
@@ -29,7 +30,7 @@ impl<'a> Manager<'a> {
         screen: usize,
         icon_size: u16,
         bg: u32,
-        // tx_ipc: Sender<String>,
+        tx_ipc: Sender<Message>,
     ) -> Manager<'b> {
         Manager::<'b> {
             conn: conn,
@@ -41,7 +42,7 @@ impl<'a> Manager<'a> {
             children: vec![],
             timestamp: 0,
             finishing: false,
-            // tx_ipc: tx_ipc,
+            tx_ipc: tx_ipc,
         }
     }
 
@@ -321,17 +322,13 @@ impl<'a> Manager<'a> {
 
     pub fn reposition(&self) {
         let width = self.children.len() as u16 * self.icon_size;
-        // self.tx_ipc.send(format!("{}", width));
+        self.tx_ipc.send(Message::Width(width));
         if width > 0 {
             // let setup = self.conn.get_setup();
             // let screen = setup.roots().nth(self.screen).unwrap();
                 // &HorizontalAlign::Right => screen.width_in_pixels() - width
 
-            let x = 140;
-            let y = 3;
             xcb::configure_window(self.conn, self.window, &[
-                (xcb::CONFIG_WINDOW_X as u16, x as u32),
-                (xcb::CONFIG_WINDOW_Y as u16, y as u32),
                 (xcb::CONFIG_WINDOW_WIDTH as u16, width as u32),
                 (xcb::CONFIG_WINDOW_HEIGHT as u16, 20),
             ]);
@@ -362,6 +359,21 @@ impl<'a> Manager<'a> {
         ]);
         xcb::destroy_window(self.conn, self.window);
         self.conn.flush();
+    }
+
+    pub fn handle_ipc_message(&self, msg: Message) {
+        if self.finishing { return (); }
+        match msg {
+            Message::Move(x, y) => {
+                xcb::configure_window(self.conn, self.window, &[
+                    (xcb::CONFIG_WINDOW_X as u16, x),
+                    (xcb::CONFIG_WINDOW_Y as u16, y),
+                ]);
+                xcb::map_window(self.conn, self.window);
+                self.conn.flush();
+            },
+            _ => {},
+        }
     }
 
     pub fn handle_event(&mut self, event: xcb::GenericEvent) -> Option<i32> {

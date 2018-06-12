@@ -120,7 +120,7 @@ impl Component for Menu {
                 if !menu.borrow().is_open {
                     let bbox = menu.borrow().bbox;
                     let w = c.get_window().unwrap();
-                    let (y, x, _z) = w.get_origin();
+                    let (_z, x, y) = w.get_origin();
                     window.show();
                     window.move_(x, y + bbox.height);
                     // window.grab_focus();

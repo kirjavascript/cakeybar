@@ -1,6 +1,9 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Orientation};
+use gdk::{WindowExt};
+
+use ::tray::ipc::Message;
 
 pub struct Tray { }
 
@@ -31,29 +34,28 @@ impl Tray {
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         Tray::init_widget(&wrapper, &config);
         container.add(&wrapper);
-        // wrapper.connect_size_allocate(move |_, rect| {
-        //     println!("{:#?}", rect);
-        // });
         wrapper.show();
-        // wrapper.set_size_request(icon_size as i32, 5);
 
         gtk::idle_add(enclose!(wrapper move || {
             let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
             ::tray::as_subprocess();
 
-            tx_ipc.send(::tray::ipc::Message::Move(23,34));
-
-            // tx_ipc.send(format!("I{}", icon_size));
-            // tx_ipc.send(format!("B{}", bg_hex));
+            wrapper.connect_size_allocate(move |c, rect| {
+                let w = c.get_window().unwrap();
+                let (_zo, xo, yo) = w.get_origin();
+                let y = (yo + (rect.y + ((rect.height - (icon_size as i32))/2))) as u32;
+                let x = (xo + rect.x) as u32;
+                tx_ipc.send(Message::Move(x, y));
+            });
 
             gtk::timeout_add(10, enclose!(wrapper move || {
                 if let Ok(msg) = rx_ipc.try_recv() {
-                    // println!("component {:#?}", msg);
-                    // let width = msg.parse::<i32>().unwrap();
-                    // println!("{:#?}", width);
-                    // wrapper.set_size_request(width, 5);
-
-                    println!("{:#?}", msg);
+                    match msg {
+                        Message::Width(w) => {
+                            wrapper.set_size_request(w as i32, icon_size as i32);
+                        },
+                        _ => {},
+                    }
                 }
                 gtk::Continue(true)
             }));

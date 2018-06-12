@@ -17,7 +17,7 @@ const TEN_MS: u32 = 10000000;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Message {
-    Width(u32),
+    Width(u16),
     Move(u32, u32),
 }
 
@@ -45,7 +45,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
 
                                 let msg_rcv_opt: Result<Message, _> = deserialize(&msg);
                                 if let Ok(msg_rcv) = msg_rcv_opt {
-                                    println!("server {:#?}", msg_rcv);
+                                    // println!("server {:#?}", msg_rcv);
                                     tx_snd.send(msg_rcv);
                                     msg.clear();
                                 }
@@ -97,7 +97,7 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
 
                                 let msg_rcv_opt: Result<Message, _> = deserialize(&msg);
                                 if let Ok(msg_rcv) = msg_rcv_opt {
-                                    println!("client {:#?}", msg_rcv);
+                                    // println!("client {:#?}", msg_rcv);
                                     tx_snd.send(msg_rcv);
                                     msg.clear();
                                 }
