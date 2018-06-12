@@ -4,17 +4,22 @@ extern crate gdk;
 extern crate glib;
 extern crate clap;
 extern crate toml;
-// used in components
+// components
 extern crate i3ipc;
 extern crate chrono;
 extern crate systemstat;
 extern crate probes;
 extern crate sysinfo;
-// used in tray
+// tray
 #[macro_use]
 extern crate chan;
 extern crate chan_signal;
 extern crate xcb;
+// tray ipc
+extern crate bincode;
+#[macro_use]
+extern crate serde_derive;
+extern crate serde;
 
 use gio::prelude::*;
 

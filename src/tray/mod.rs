@@ -41,7 +41,7 @@ pub fn main() -> i32 {
 
         let (tx_ipc, rx_ipc) = ipc::get_client();
 
-        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg, tx_ipc);
+        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg);
 
         if !manager.is_selection_available() {
             eprintln!("Another system tray is already running");

@@ -2,9 +2,6 @@ use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Orientation};
 
-use std::thread;
-use std::time::Duration;
-
 pub struct Tray { }
 
 // mutable statics should be safe within the same thread
@@ -47,16 +44,16 @@ impl Tray {
             // tx_ipc.send(format!("I{}", icon_size));
             // tx_ipc.send(format!("B{}", bg_hex));
 
-            gtk::timeout_add(10, enclose!(wrapper move || {
-                if let Ok(msg) = rx_ipc.try_recv() {
-                    println!("component {:#?}", msg);
-                    let width = msg.parse::<i32>().unwrap();
-                    println!("{:#?}", width);
-                    wrapper.set_size_request(width, 5);
+            // gtk::timeout_add(10, enclose!(wrapper move || {
+            //     if let Ok(msg) = rx_ipc.try_recv() {
+            //         println!("component {:#?}", msg);
+            //         let width = msg.parse::<i32>().unwrap();
+            //         println!("{:#?}", width);
+            //         wrapper.set_size_request(width, 5);
 
-                }
-                gtk::Continue(true)
-            }));
+            //     }
+            //     gtk::Continue(true)
+            // }));
             gtk::Continue(false)
         }));
     }

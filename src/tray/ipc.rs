@@ -7,10 +7,19 @@ use std::sync::mpsc;
 use chan;
 use chan::{Sender, Receiver};
 
+use bincode::{serialize, deserialize};
+
 // TODO: use less threads
 
 const SOCKET_PATH_SRV: &str = "/tmp/cakeytray-ipc-srv";
 const SOCKET_PATH_RCV: &str = "/tmp/cakeytray-ipc-rcv";
+const TEN_MS: u32 = 10000000;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub enum Message {
+    Width(u32),
+    Move(u32, u32),
+}
 
 pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
     // remove files from last time
@@ -30,7 +39,7 @@ pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
                         let mut current = [0; 1];
                         let mut msg: Vec<u8> = Vec::new();
                         loop {
-                            thread::sleep(Duration::new(0, 10000000));
+                            thread::sleep(Duration::new(0, TEN_MS));
                             if let Ok(_) = stream.read(&mut current) {
                                 if current[0] == 0xA {
                                     let mut command = String::from_utf8(msg.clone()).unwrap();
@@ -47,7 +56,7 @@ pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
                     // send data
                     let mut conn = UnixStream::connect(SOCKET_PATH_RCV).unwrap();
                     loop {
-                        thread::sleep(Duration::new(0, 10000000));
+                        thread::sleep(Duration::new(0, TEN_MS));
                         if let Some(mut data) = rx_rcv.recv() {
                             data.push_str("\n");
                             conn.write(&data.into_bytes());
@@ -83,7 +92,7 @@ pub fn get_client() -> (Sender<String>, Receiver<String>) {
                         let mut current = [0; 1];
                         let mut msg: Vec<u8> = Vec::new();
                         loop {
-                            thread::sleep(Duration::new(0, 10000000));
+                            thread::sleep(Duration::new(0, TEN_MS));
                             if let Ok(_) = stream.read(&mut current) {
                                 if current[0] == 0xA {
                                     let mut command = String::from_utf8(msg.clone()).unwrap();
@@ -99,7 +108,7 @@ pub fn get_client() -> (Sender<String>, Receiver<String>) {
                     });
                     // send data
                     loop {
-                        thread::sleep(Duration::new(0, 10000000));
+                        thread::sleep(Duration::new(0, TEN_MS));
                         if let Some(mut data) = rx_rcv.recv() {
                             data.push_str("\n");
                             conn.write(&data.into_bytes());
