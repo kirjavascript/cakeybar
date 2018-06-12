@@ -178,6 +178,13 @@ impl<'a> Manager<'a> {
             &[0]
         );
 
+        // initially draw in some absurd place
+
+        xcb::configure_window(self.conn, self.window, &[
+            (xcb::CONFIG_WINDOW_X as u16, 0),
+            (xcb::CONFIG_WINDOW_Y as u16, 10_000),
+        ]);
+
         // adds resize event
         // xcb::change_window_attributes(self.conn, self.window, &[
         //     (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
