@@ -89,6 +89,17 @@ format = "%Y-%m-%d %H:%M:%S"
 
 [formatting guide](https://docs.rs/chrono/0.4.2/chrono/format/strftime/index.html)
 
+#### tray
+
+```toml
+[component.tray]
+type = "image"
+icon_size = 20
+background_color = "#FF0000"
+```
+
+only one system tray can be active at a time
+
 #### container
 
 ```toml
