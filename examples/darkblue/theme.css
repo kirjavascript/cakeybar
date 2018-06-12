@@ -41,8 +41,9 @@ label {
 }
 
 #tray {
-    border: 1px solid red;
-    background-color: green;
+    /* border: 1px solid red; */
+    /* background-color: green; */
+    margin: 0px 5px;
 }
 
 #title {

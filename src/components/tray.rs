@@ -31,10 +31,13 @@ impl Tray {
             Err(_) => 0,
         };
 
+        // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
-        Tray::init_widget(&wrapper, &config);
-        container.add(&wrapper);
-        wrapper.show();
+        let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
+        Tray::init_widget(&base_widget, &config);
+        base_widget.add(&wrapper);
+        container.add(&base_widget);
+        base_widget.show_all();
 
         gtk::idle_add(enclose!(wrapper move || {
             let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
