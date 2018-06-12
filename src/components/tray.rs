@@ -39,43 +39,40 @@ impl Tray {
         container.add(&base_widget);
         base_widget.show_all();
 
-        gtk::idle_add(enclose!((wrapper, base_widget) move || {
-            let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
-            ::tray::as_subprocess();
+        let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
+        ::tray::as_subprocess();
 
-            // send initial config
-            if bg_value != 0 {
-                tx_ipc.send(Message::BgColor(bg_value));
-            }
-            if icon_size != 20 {
-                tx_ipc.send(Message::IconSize(icon_size as u16));
-            }
+        // send initial config
+        if bg_value != 0 {
+            tx_ipc.send(Message::BgColor(bg_value));
+        }
+        if icon_size != 20 {
+            tx_ipc.send(Message::IconSize(icon_size as u16));
+        }
 
-            // send resize event
-            wrapper.connect_size_allocate(move |c, rect| {
-                let w = c.get_window().unwrap();
-                let (_zo, xo, yo) = w.get_origin();
-                let y = (yo + (rect.y + ((rect.height - (icon_size as i32))/2))) as u32;
-                let x = (xo + rect.x) as u32;
-                tx_ipc.send(Message::Move(x, y));
-            });
+        // send resize event
+        wrapper.connect_size_allocate(move |c, rect| {
+            let w = c.get_window().unwrap();
+            let (_zo, xo, yo) = w.get_origin();
+            let y = (yo + (rect.y + ((rect.height - (icon_size as i32))/2))) as u32;
+            let x = (xo + rect.x) as u32;
+            tx_ipc.send(Message::Move(x, y));
+        });
 
-            // receive events
-            gtk::timeout_add(10, enclose!((base_widget, wrapper) move || {
-                if let Ok(msg) = rx_ipc.try_recv() {
-                    match msg {
-                        Message::Width(w) => {
-                            wrapper.set_size_request(w as i32, icon_size as i32);
-                            // the next lines fix a background display bug
-                            base_widget.hide();
-                            base_widget.show();
-                        },
-                        _ => {},
-                    }
+        // receive events
+        gtk::timeout_add(10, enclose!((base_widget, wrapper) move || {
+            if let Ok(msg) = rx_ipc.try_recv() {
+                match msg {
+                    Message::Width(w) => {
+                        wrapper.set_size_request(w as i32, icon_size as i32);
+                        // the next lines fix a background display bug
+                        base_widget.hide();
+                        base_widget.show();
+                    },
+                    _ => {},
                 }
-                gtk::Continue(true)
-            }));
-            gtk::Continue(false)
+            }
+            gtk::Continue(true)
         }));
     }
 }

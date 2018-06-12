@@ -25,6 +25,7 @@ position = "bottom"
 [component.tray]
 type = "tray"
 # background_color = "#4A75dB"
+#0A83FD
 icon_size = 20
 
 # menu
@@ -33,14 +34,10 @@ icon_size = 20
 type = "menu"
 # label = "start"
 window_id = "menu_popup"
-# TODO: change to { name = "name", command = "poop" }
 items = [
-    ["run termite",
-        "termite"],
-    ["forest bg",
-        "feh --bg-fill /home/thom/backgrounds/forest.png --bg-fill /home/thom/backgrounds/mac.jpg"],
-    ["mountain bg",
-        "feh --bg-fill /home/thom/backgrounds/white.png"],
+    { label = "run termite", command = "termite" },
+    { label = "forest bg", command = "feh --bg-fill /home/thom/backgrounds/forest.png --bg-fill /home/thom/backgrounds/mac.jpg" },
+    { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
 ]
 
 # layout

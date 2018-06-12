@@ -30,9 +30,9 @@ impl Component for Menu {
         config.get_vec_or("items", vec![])
             .iter()
             .for_each(|x| {
-                if let Property::Array(val) = x {
-                    let name_opt = val.get(0);
-                    let exec_opt = val.get(1);
+                if let Property::Object(obj) = x {
+                    let name_opt = obj.get("label");
+                    let exec_opt = obj.get("command");
                     if let Some(Property::String(name)) = name_opt {
                         if let Some(Property::String(exec)) = exec_opt {
                             items.push((name.clone(), exec.clone()));

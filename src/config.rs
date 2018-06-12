@@ -79,6 +79,7 @@ pub enum Property {
     Integer(i64),
     Array(Vec<Property>),
     Boolean(bool),
+    Object(HashMap<String, Property>),
     Null,
 }
 
@@ -243,6 +244,13 @@ fn value_to_property(value: &Value) -> Property {
         &Value::Boolean(ref boolean) => Property::Boolean(
             *boolean
         ),
+        &Value::Table(ref table) => {
+            let mut properties: HashMap<String, Property> = HashMap::new();
+            table.iter().for_each(|(k, v)| {
+                properties.insert(k.to_string(), value_to_property(v));
+            });
+            Property::Object(properties)
+        },
         _ => Property::Null,
     }
 }
