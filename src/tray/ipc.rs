@@ -13,7 +13,7 @@ use bincode::{serialize, deserialize};
 
 const SOCKET_PATH_SRV: &str = "/tmp/cakeytray-ipc-srv";
 const SOCKET_PATH_RCV: &str = "/tmp/cakeytray-ipc-rcv";
-const TEN_MS: u32 = 10000000;
+const DELAY_MS: u64 = 10;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Message {
@@ -41,7 +41,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                         let mut current = [0; 1];
                         let mut msg: Vec<u8> = Vec::new();
                         loop {
-                            thread::sleep(Duration::new(0, TEN_MS));
+                            thread::sleep(Duration::from_millis(DELAY_MS));
                             if let Ok(_) = stream.read(&mut current) {
                                 msg.push(current[0]);
 
@@ -57,7 +57,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                     // send data
                     let mut conn = UnixStream::connect(SOCKET_PATH_RCV).unwrap();
                     loop {
-                        thread::sleep(Duration::new(0, TEN_MS));
+                        thread::sleep(Duration::from_millis(DELAY_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
                             conn.write(&bytes).unwrap();
@@ -93,7 +93,7 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                         let mut current = [0; 1];
                         let mut msg: Vec<u8> = Vec::new();
                         loop {
-                            thread::sleep(Duration::new(0, TEN_MS));
+                            thread::sleep(Duration::from_millis(DELAY_MS));
                             if let Ok(_) = stream.read(&mut current) {
                                 msg.push(current[0]);
 
@@ -108,7 +108,7 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                     });
                     // send data
                     loop {
-                        thread::sleep(Duration::new(0, TEN_MS));
+                        thread::sleep(Duration::from_millis(DELAY_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
                             conn.write(&bytes).unwrap();

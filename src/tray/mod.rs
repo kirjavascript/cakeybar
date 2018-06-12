@@ -34,7 +34,6 @@ pub fn main() -> i32 {
 
     // defaults
     let size = 20;
-    let bg = 0x0;
 
     if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
         let conn = Arc::new(conn);
@@ -42,7 +41,7 @@ pub fn main() -> i32 {
 
         let (tx_ipc, rx_ipc) = ipc::get_client();
 
-        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, size, bg, tx_ipc);
+        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, tx_ipc);
 
         if !manager.is_selection_available() {
             eprintln!("Another system tray is already running");

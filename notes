@@ -21,7 +21,6 @@ bindsym $mod+m exec -- --message
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 connect_focus on bar window
 fix scroll on trackpad
-fix first scroll going nowhere
 
 components
 ====
@@ -41,6 +40,8 @@ label
 label#Label here for layout
 bandwidth upload
 workspace icons
+completion
+gtk-demo
 
 config
 ====
