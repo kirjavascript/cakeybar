@@ -1,4 +1,4 @@
-@define-color blue #4A75dB;
+@define-color blue #0A83FD;
 
 #left, #right {
     min-height: 27px;
@@ -60,9 +60,10 @@ label {
 }
 
 #workspaces .visible {
-    border-style: inset;
-    padding-top: 3px;
-    border-bottom: 3px solid @blue;
+    /* border-style: inset; */
+    /* padding-top: 3px; */
+    /* border-bottom: 3px solid @blue; */
+    background-color: #0022CC;
 }
 #workspaces .urgent {
     background-color: red;

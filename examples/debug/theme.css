@@ -26,10 +26,15 @@ label {
 #box1 {
     /* font-weight: bold; */
     font-size: 14px;
+    padding-right: 5px;
 }
 
 #box1 label {
     padding-left: 5px;
+}
+
+#tray {
+    padding: 0px 5px;
 }
 
 #workspaces {

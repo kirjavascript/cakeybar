@@ -7,7 +7,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "bottom"
-layout = [ "logo", "workspaces", "mode", "title", "box1" ]
+layout = [ "logo", "workspaces", "tray", "mode", "title", "box1" ]
 scroll_workspace = true # TODO
 
 [bar.right]
@@ -56,6 +56,13 @@ show_name = true
 [component.mode]
 type = "i3mode"
 class = "gradient"
+
+# tray
+
+[component.tray]
+type = "tray"
+background_color = "#221122"
+icon_size = 20
 
 # stats
 

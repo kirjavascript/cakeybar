@@ -25,8 +25,8 @@ pub enum Message {
 
 pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
     // remove files from last time
-    remove_file(SOCKET_PATH_SRV).unwrap();
-    remove_file(SOCKET_PATH_RCV).unwrap();
+    remove_file(SOCKET_PATH_SRV).ok();
+    remove_file(SOCKET_PATH_RCV).ok();
 
     let (tx_snd, rx_snd): (mpsc::Sender<Message>, mpsc::Receiver<Message>) = mpsc::channel();
     let (tx_rcv, rx_rcv): (Sender<Message>, Receiver<Message>) = chan::sync(0);

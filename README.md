@@ -103,17 +103,6 @@ can be used to create more complex layouts or group components to share between 
 
 direction can be: `column | row` or `horizontal | vertical`
 
-#### i3workspace
-
-```toml
-[component.workspaces]
-type = "i3workspace"
-show_all = false # show workspaces from every window
-show_name = false # show full name or just index
-```
-
-each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_name label .focused`
-
 #### tray
 
 ```toml
@@ -124,6 +113,17 @@ background_color = "#FF0000"
 ```
 
 only one system tray can be active at a time
+
+#### i3workspace
+
+```toml
+[component.workspaces]
+type = "i3workspace"
+show_all = false # show workspaces from every window
+show_name = false # show full name or just index
+```
+
+each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_name label .focused`
 
 #### i3mode
 
