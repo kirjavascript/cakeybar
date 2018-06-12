@@ -24,9 +24,9 @@ impl Component for Tray {
 
 impl Tray {
     fn load(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
-        let bg = config.get_str_or("background_color", "#000000");
+        let bg_hex = config.get_str_or("background_color", "#000000");
         let icon_size = config.get_int_or("icon_size", 20);
-        let bg_hex = match u32::from_str_radix(&bg[1..], 16) {
+        let bg_value = match u32::from_str_radix(&bg_hex[1..], 16) {
             Ok(val) => val,
             Err(_) => 0,
         };
@@ -39,12 +39,14 @@ impl Tray {
         container.add(&base_widget);
         base_widget.show_all();
 
-        gtk::idle_add(enclose!(wrapper move || {
+        gtk::idle_add(enclose!((wrapper, base_widget) move || {
             let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
             ::tray::as_subprocess();
 
             // send initial config
-            tx_ipc.send(Message::BgColor(bg_hex));
+            if bg_value != 0 {
+                tx_ipc.send(Message::BgColor(bg_value));
+            }
             if icon_size != 20 {
                 tx_ipc.send(Message::IconSize(icon_size as u16));
             }
@@ -59,11 +61,14 @@ impl Tray {
             });
 
             // receive events
-            gtk::timeout_add(10, enclose!(wrapper move || {
+            gtk::timeout_add(10, enclose!((base_widget, wrapper) move || {
                 if let Ok(msg) = rx_ipc.try_recv() {
                     match msg {
                         Message::Width(w) => {
                             wrapper.set_size_request(w as i32, icon_size as i32);
+                            // the next lines fix a background display bug
+                            base_widget.hide();
+                            base_widget.show();
                         },
                         _ => {},
                     }

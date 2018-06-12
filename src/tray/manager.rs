@@ -362,10 +362,10 @@ impl<'a> Manager<'a> {
                 ]);
                 self.conn.flush();
             },
-            Message::BgColor(bg) => {
+            Message::BgColor(value) => {
                 xcb::unmap_window(self.conn, self.window);
                 xcb::change_window_attributes(self.conn, self.window, &[
-                    (xcb::CW_BACK_PIXEL, bg),
+                    (xcb::CW_BACK_PIXEL, value),
                 ]);
                 xcb::map_window(self.conn, self.window);
                 self.conn.flush();

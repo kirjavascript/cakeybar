@@ -25,8 +25,8 @@ pub enum Message {
 
 pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
     // remove files from last time
-    remove_file(SOCKET_PATH_SRV);
-    remove_file(SOCKET_PATH_RCV);
+    remove_file(SOCKET_PATH_SRV).unwrap();
+    remove_file(SOCKET_PATH_RCV).unwrap();
 
     let (tx_snd, rx_snd): (mpsc::Sender<Message>, mpsc::Receiver<Message>) = mpsc::channel();
     let (tx_rcv, rx_rcv): (Sender<Message>, Receiver<Message>) = chan::sync(0);
@@ -48,7 +48,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                                 let msg_rcv_opt: Result<Message, _> = deserialize(&msg);
                                 if let Ok(msg_rcv) = msg_rcv_opt {
                                     // println!("server {:#?}", msg_rcv);
-                                    tx_snd.send(msg_rcv);
+                                    tx_snd.send(msg_rcv).unwrap();
                                     msg.clear();
                                 }
                             }
@@ -60,7 +60,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                         thread::sleep(Duration::new(0, TEN_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
-                            conn.write(&bytes);
+                            conn.write(&bytes).unwrap();
                         }
                     }
                 },
@@ -82,7 +82,7 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
     let (tx_rcv, rx_rcv): (Sender<Message>, Receiver<Message>) = chan::sync(0);
 
     thread::spawn(move || {
-        let mut listener = UnixListener::bind(SOCKET_PATH_RCV).unwrap();
+        let listener = UnixListener::bind(SOCKET_PATH_RCV).unwrap();
         let mut conn = UnixStream::connect(SOCKET_PATH_SRV).unwrap();
 
         for stream in listener.incoming() {
@@ -111,7 +111,7 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                         thread::sleep(Duration::new(0, TEN_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
-                            conn.write(&bytes);
+                            conn.write(&bytes).unwrap();
                         }
                     }
                 },

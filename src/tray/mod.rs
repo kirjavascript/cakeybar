@@ -32,6 +32,7 @@ pub fn main() -> i32 {
         chan_signal::Signal::KILL,
     ]);
 
+    // defaults
     let size = 20;
     let bg = 0x0;
 
