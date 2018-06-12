@@ -24,7 +24,7 @@ position = "bottom"
 
 [component.tray]
 type = "tray"
-background_color = "#4A75dB"
+background_color = "#000000"
 icon_size = 20
 
 # menu

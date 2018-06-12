@@ -43,9 +43,13 @@ impl Tray {
             let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
             ::tray::as_subprocess();
 
+            // send initial config
             tx_ipc.send(Message::BgColor(bg_hex));
-            tx_ipc.send(Message::IconSize(icon_size as u16));
+            if icon_size != 20 {
+                tx_ipc.send(Message::IconSize(icon_size as u16));
+            }
 
+            // send resize event
             wrapper.connect_size_allocate(move |c, rect| {
                 let w = c.get_window().unwrap();
                 let (_zo, xo, yo) = w.get_origin();
@@ -54,6 +58,7 @@ impl Tray {
                 tx_ipc.send(Message::Move(x, y));
             });
 
+            // receive events
             gtk::timeout_add(10, enclose!(wrapper move || {
                 if let Ok(msg) = rx_ipc.try_recv() {
                     match msg {

@@ -321,7 +321,7 @@ impl<'a> Manager<'a> {
         if width > 0 {
             xcb::configure_window(self.conn, self.window, &[
                 (xcb::CONFIG_WINDOW_WIDTH as u16, width as u32),
-                (xcb::CONFIG_WINDOW_HEIGHT as u16, 20),
+                (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
             ]);
             xcb::map_window(self.conn, self.window);
         }
@@ -372,6 +372,14 @@ impl<'a> Manager<'a> {
             },
             Message::IconSize(size) => {
                 self.icon_size = size;
+                for (i, child) in self.children.iter().enumerate() {
+                    let window = *child;
+                    xcb::configure_window(self.conn, window, &[
+                        (xcb::CONFIG_WINDOW_WIDTH as u16, self.icon_size as u32),
+                        (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
+                        (xcb::CONFIG_WINDOW_X as u16, ((i as u16) * self.icon_size) as u32),
+                    ]);
+                }
                 self.reposition();
             },
             _ => {},
