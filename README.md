@@ -12,7 +12,7 @@ cakeybar is a customizable statusbar for your windowmanager
 * easy layout model
 * flexible theming with CSS
 * i3 components: mode, window, workspaces
-* system tray integration ( (mostly)[https://github.com/kirjavascript/cakeybar/issues/1] )
+* system tray integration ([mostly](https://github.com/kirjavascript/cakeybar/issues/1))
 * image support
 
 ## build/run
