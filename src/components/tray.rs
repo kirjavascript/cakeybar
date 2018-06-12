@@ -43,6 +43,9 @@ impl Tray {
             let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
             ::tray::as_subprocess();
 
+            tx_ipc.send(Message::BgColor(bg_hex));
+            tx_ipc.send(Message::IconSize(icon_size as u16));
+
             wrapper.connect_size_allocate(move |c, rect| {
                 let w = c.get_window().unwrap();
                 let (_zo, xo, yo) = w.get_origin();

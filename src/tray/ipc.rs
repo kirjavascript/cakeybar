@@ -19,6 +19,8 @@ const TEN_MS: u32 = 10000000;
 pub enum Message {
     Width(u16),
     Move(u32, u32),
+    BgColor(u32),
+    IconSize(u16),
 }
 
 pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){

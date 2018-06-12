@@ -62,6 +62,11 @@ pub fn main() -> i32 {
 
         loop {
             chan_select!(
+                rx_ipc.recv() -> ipc_opt => {
+                    if let Some(msg) = ipc_opt {
+                        manager.handle_ipc_message(msg);
+                    }
+                },
                 rx.recv() -> event_opt => {
                     if let Some(event) = event_opt {
                         if let Some(code) = manager.handle_event(event) {
@@ -71,11 +76,6 @@ pub fn main() -> i32 {
                     }
                     else {
                         eprintln!("X connection is rip - killed by XKillClient(), maybe?");
-                    }
-                },
-                rx_ipc.recv() -> ipc_opt => {
-                    if let Some(msg) = ipc_opt {
-                        manager.handle_ipc_message(msg);
                     }
                 },
                 signal.recv() => {

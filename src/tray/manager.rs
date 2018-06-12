@@ -183,11 +183,6 @@ impl<'a> Manager<'a> {
         //     (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
         // ]);
 
-        // change bg pixel
-        // xcb::change_window_attributes(self.conn, self.window, &[
-        //     (xcb::CW_BACK_PIXEL, 0x221122),
-        // ]);
-
         // restack window (fixes always on top bug)
         // if let Ok(reply) = xcb::query_tree(self.conn, screen.root()).get_reply() {
         //     let children = reply.children();
@@ -324,10 +319,6 @@ impl<'a> Manager<'a> {
         let width = self.children.len() as u16 * self.icon_size;
         self.tx_ipc.send(Message::Width(width));
         if width > 0 {
-            // let setup = self.conn.get_setup();
-            // let screen = setup.roots().nth(self.screen).unwrap();
-                // &HorizontalAlign::Right => screen.width_in_pixels() - width
-
             xcb::configure_window(self.conn, self.window, &[
                 (xcb::CONFIG_WINDOW_WIDTH as u16, width as u32),
                 (xcb::CONFIG_WINDOW_HEIGHT as u16, 20),
@@ -361,7 +352,7 @@ impl<'a> Manager<'a> {
         self.conn.flush();
     }
 
-    pub fn handle_ipc_message(&self, msg: Message) {
+    pub fn handle_ipc_message(&mut self, msg: Message) {
         if self.finishing { return (); }
         match msg {
             Message::Move(x, y) => {
@@ -369,8 +360,19 @@ impl<'a> Manager<'a> {
                     (xcb::CONFIG_WINDOW_X as u16, x),
                     (xcb::CONFIG_WINDOW_Y as u16, y),
                 ]);
+                self.conn.flush();
+            },
+            Message::BgColor(bg) => {
+                xcb::unmap_window(self.conn, self.window);
+                xcb::change_window_attributes(self.conn, self.window, &[
+                    (xcb::CW_BACK_PIXEL, bg),
+                ]);
                 xcb::map_window(self.conn, self.window);
                 self.conn.flush();
+            },
+            Message::IconSize(size) => {
+                self.icon_size = size;
+                self.reposition();
             },
             _ => {},
         }
@@ -437,17 +439,7 @@ impl<'a> Manager<'a> {
                 xcb::SELECTION_CLEAR => {
                     self.finish();
                 },
-                // // resize
-                // 150 => {
-                //     // force window in place
-                //     xcb::configure_window(self.conn, self.window, &[
-                //         (xcb::CONFIG_WINDOW_X as u16, 1440),
-                //         (xcb::CONFIG_WINDOW_Y as u16, 1056),
-                //     ]);
-                //     self.conn.flush();
-                // },
-                _ => {
-                }
+                _ => { }
             }
             None
     }
