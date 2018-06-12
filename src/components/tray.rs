@@ -41,19 +41,22 @@ impl Tray {
             let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
             ::tray::as_subprocess();
 
+            tx_ipc.send(::tray::ipc::Message::Move(23,34));
+
             // tx_ipc.send(format!("I{}", icon_size));
             // tx_ipc.send(format!("B{}", bg_hex));
 
-            // gtk::timeout_add(10, enclose!(wrapper move || {
-            //     if let Ok(msg) = rx_ipc.try_recv() {
-            //         println!("component {:#?}", msg);
-            //         let width = msg.parse::<i32>().unwrap();
-            //         println!("{:#?}", width);
-            //         wrapper.set_size_request(width, 5);
+            gtk::timeout_add(10, enclose!(wrapper move || {
+                if let Ok(msg) = rx_ipc.try_recv() {
+                    // println!("component {:#?}", msg);
+                    // let width = msg.parse::<i32>().unwrap();
+                    // println!("{:#?}", width);
+                    // wrapper.set_size_request(width, 5);
 
-            //     }
-            //     gtk::Continue(true)
-            // }));
+                    println!("{:#?}", msg);
+                }
+                gtk::Continue(true)
+            }));
             gtk::Continue(false)
         }));
     }

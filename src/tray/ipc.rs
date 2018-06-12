@@ -21,13 +21,13 @@ pub enum Message {
     Move(u32, u32),
 }
 
-pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
+pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
     // remove files from last time
     remove_file(SOCKET_PATH_SRV);
     remove_file(SOCKET_PATH_RCV);
 
-    let (tx_snd, rx_snd): (mpsc::Sender<String>, mpsc::Receiver<String>) = mpsc::channel();
-    let (tx_rcv, rx_rcv): (Sender<String>, Receiver<String>) = chan::sync(0);
+    let (tx_snd, rx_snd): (mpsc::Sender<Message>, mpsc::Receiver<Message>) = mpsc::channel();
+    let (tx_rcv, rx_rcv): (Sender<Message>, Receiver<Message>) = chan::sync(0);
 
     thread::spawn(move || {
         let listener = UnixListener::bind(SOCKET_PATH_SRV).unwrap();
@@ -41,14 +41,13 @@ pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
                         loop {
                             thread::sleep(Duration::new(0, TEN_MS));
                             if let Ok(_) = stream.read(&mut current) {
-                                if current[0] == 0xA {
-                                    let mut command = String::from_utf8(msg.clone()).unwrap();
-                                    command.push_str("\n");
+                                msg.push(current[0]);
+
+                                let msg_rcv_opt: Result<Message, _> = deserialize(&msg);
+                                if let Ok(msg_rcv) = msg_rcv_opt {
+                                    println!("server {:#?}", msg_rcv);
+                                    tx_snd.send(msg_rcv);
                                     msg.clear();
-                                    println!("server {:#?}", command);
-                                    tx_snd.send(command.trim().to_string());
-                                } else {
-                                    msg.push(current[0]);
                                 }
                             }
                         }
@@ -57,9 +56,9 @@ pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
                     let mut conn = UnixStream::connect(SOCKET_PATH_RCV).unwrap();
                     loop {
                         thread::sleep(Duration::new(0, TEN_MS));
-                        if let Some(mut data) = rx_rcv.recv() {
-                            data.push_str("\n");
-                            conn.write(&data.into_bytes());
+                        if let Some(data) = rx_rcv.recv() {
+                            let bytes = serialize(&data).unwrap();
+                            conn.write(&bytes);
                         }
                     }
                 },
@@ -75,10 +74,10 @@ pub fn get_server() -> (Sender<String>, mpsc::Receiver<String>){
     (tx_rcv, rx_snd)
 }
 
-pub fn get_client() -> (Sender<String>, Receiver<String>) {
+pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
 
-    let (tx_snd, rx_snd): (Sender<String>, Receiver<String>) = chan::sync(0);
-    let (tx_rcv, rx_rcv): (Sender<String>, Receiver<String>) = chan::sync(0);
+    let (tx_snd, rx_snd): (Sender<Message>, Receiver<Message>) = chan::sync(0);
+    let (tx_rcv, rx_rcv): (Sender<Message>, Receiver<Message>) = chan::sync(0);
 
     thread::spawn(move || {
         let mut listener = UnixListener::bind(SOCKET_PATH_RCV).unwrap();
@@ -94,14 +93,13 @@ pub fn get_client() -> (Sender<String>, Receiver<String>) {
                         loop {
                             thread::sleep(Duration::new(0, TEN_MS));
                             if let Ok(_) = stream.read(&mut current) {
-                                if current[0] == 0xA {
-                                    let mut command = String::from_utf8(msg.clone()).unwrap();
-                                    command.push_str("\n");
+                                msg.push(current[0]);
+
+                                let msg_rcv_opt: Result<Message, _> = deserialize(&msg);
+                                if let Ok(msg_rcv) = msg_rcv_opt {
+                                    println!("client {:#?}", msg_rcv);
+                                    tx_snd.send(msg_rcv);
                                     msg.clear();
-                                    println!("client {:#?}", command);
-                                    tx_snd.send(command.trim().to_string());
-                                } else {
-                                    msg.push(current[0]);
                                 }
                             }
                         }
@@ -109,9 +107,9 @@ pub fn get_client() -> (Sender<String>, Receiver<String>) {
                     // send data
                     loop {
                         thread::sleep(Duration::new(0, TEN_MS));
-                        if let Some(mut data) = rx_rcv.recv() {
-                            data.push_str("\n");
-                            conn.write(&data.into_bytes());
+                        if let Some(data) = rx_rcv.recv() {
+                            let bytes = serialize(&data).unwrap();
+                            conn.write(&bytes);
                         }
                     }
                 },
