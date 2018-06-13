@@ -19,8 +19,6 @@ use gdk::{
 
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::process::Command;
-use std::{thread, str};
 
 use config::Property;
 
@@ -90,25 +88,7 @@ impl Component for Menu {
 
             // run command on click
             ebox.connect_button_press_event(enclose!((window, menu) move |_, _| {
-                thread::spawn(enclose!(exec move || {
-                    let exec_clone = exec.clone();
-                    let split: Vec<&str> = exec_clone.split(" ").collect();
-                    let output = Command::new(split.get(0).unwrap_or(&""))
-                        .args(&split[1..])
-                        .output();
-                    match output {
-                        Ok(out) => {
-                            let stderr = str::from_utf8(&out.stderr).unwrap_or("");
-                            if stderr != "" {
-                                eprintln!("{}", stderr);
-                            }
-                        },
-                        Err(err) => {
-                            eprintln!("{}: {}", err, exec);
-                        },
-                    }
-                }));
-
+                ::util::run_command(exec.to_string());
                 // toggle menu
                 menu.borrow_mut().is_open = false;
                 window.hide();

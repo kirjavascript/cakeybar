@@ -10,9 +10,6 @@ use gtk::{
 
 // gtk context menu
 
-// use std::process::Command;
-// use std::{thread, str};
-
 use config::Property;
 
 pub struct Dropdown { }
@@ -46,11 +43,15 @@ impl Component for Dropdown {
 
         let menu = Menu::new();
 
-        items.iter().for_each(|(k, _v)| {
-            let item = MenuItem::new_with_label(k);
+        items.iter().for_each(|(key, value)| {
+            let item = MenuItem::new_with_label(key);
             menu.append(&item);
-            menu.show_all();
+            item.connect_activate(enclose!(value move |_| {
+                ::util::run_command(value.to_string());
+            }));
         });
+
+        menu.show_all();
 
         ebox.connect_button_release_event(enclose!(menu move |_c, _e| {
             menu.popup_easy(0, 0);
