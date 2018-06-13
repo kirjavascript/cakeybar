@@ -114,6 +114,19 @@ background_color = "#FF0000"
 
 only one system tray can be active at a time
 
+#### dropdown
+
+```toml
+[component.dropdown]
+type = "dropdown"
+items = [
+    { label = "web browser", command = "firefox" },
+    { label = "screenshot", command = "xfce4-screenshooter" },
+]
+```
+
+a gtk-context style dropdown menu
+
 #### i3workspace
 
 ```toml
