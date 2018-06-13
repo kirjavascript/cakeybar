@@ -25,6 +25,7 @@ mod bandwidth;
 mod clock;
 mod container;
 mod cpu;
+mod dropdown;
 mod i3mode;
 mod i3window;
 pub mod i3workspace;
@@ -103,6 +104,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "clock" => clock::Clock::init,
             "container" => container::Container::init,
             "cpu" => cpu::CPU::init,
+            "dropdown" => dropdown::Dropdown::init,
             "i3mode" => i3mode::I3Mode::init,
             "i3window" => i3window::I3Window::init,
             "i3workspace" => i3workspace::I3Workspace::init,

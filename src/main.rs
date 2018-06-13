@@ -33,7 +33,8 @@ mod bar;
 mod components;
 mod tray;
 
-pub static NAME: &str = "cakeybar";
+pub static NAME: &str = env!("CARGO_PKG_NAME");
+pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn init(application: &gtk::Application, config: &config::Config) {
     // load theme to screen
@@ -56,6 +57,7 @@ fn main() {
     // CLI config
 
     let matches = App::new(NAME)
+        .version(VERSION)
         .arg(Arg::with_name("config")
              .short("c")
              .long("config")

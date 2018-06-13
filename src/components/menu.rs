@@ -1,7 +1,22 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
-use gtk::{Label, EventBox, Window, WindowType, Orientation, WidgetExt};
-use gdk::{EventType, WindowExt, Rectangle}; // , WindowTypeHint
+use gtk::{
+    Label,
+    EventBox,
+    Window,
+    WindowType,
+    Orientation,
+    WidgetExt,
+};
+use gdk::{
+    EventType,
+    WindowExt,
+// WindowTypeHint,
+    Rectangle,
+};
+
+// 'start' style menu
+
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::process::Command;

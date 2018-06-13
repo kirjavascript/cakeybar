@@ -30,7 +30,7 @@ icon_size = 20
 # menu
 
 [component.menu]
-type = "menu"
+type = "dropdown"
 # label = "start"
 window_id = "menu_popup"
 items = [
