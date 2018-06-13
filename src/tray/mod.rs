@@ -32,9 +32,6 @@ pub fn main() -> i32 {
         chan_signal::Signal::KILL,
     ]);
 
-    // defaults
-    let size = 20;
-
     if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
         let conn = Arc::new(conn);
         let atoms = atom::Atoms::new(&conn);

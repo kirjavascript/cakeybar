@@ -15,7 +15,6 @@ pub struct Manager<'a> {
     atoms: &'a atom::Atoms<'a>,
     screen: usize,
     icon_size: u16,
-    bg: u32,
     window: xcb::Window,
     children: Vec<xcb::Window>,
     timestamp: xcb::Timestamp,
@@ -28,16 +27,13 @@ impl<'a> Manager<'a> {
         conn: &'b xcb::Connection,
         atoms: &'b atom::Atoms,
         screen: usize,
-        icon_size: u16,
-        bg: u32,
         tx_ipc: Sender<Message>,
     ) -> Manager<'b> {
         Manager::<'b> {
             conn: conn,
             atoms: atoms,
             screen: screen,
-            icon_size: icon_size,
-            bg: bg,
+            icon_size: 20,
             window: conn.generate_id(),
             children: vec![],
             timestamp: 0,
@@ -61,7 +57,7 @@ impl<'a> Manager<'a> {
             xcb::WINDOW_CLASS_INPUT_OUTPUT as u16,
             screen.root_visual(),
             &[
-                (xcb::CW_BACK_PIXEL, self.bg),
+                (xcb::CW_BACK_PIXEL, 0), // black
                 (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
                 (xcb::CW_OVERRIDE_REDIRECT, 1),
             ]
