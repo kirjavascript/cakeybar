@@ -4,8 +4,8 @@ use gtk::{
     Label,
     EventBox,
     WidgetExt,
-    Menu,
-    MenuItem,
+    Menu as GtkMenu,
+    MenuItem as GtkMenuItem,
 };
 
 // gtk context menu
@@ -13,6 +13,34 @@ use gtk::{
 use config::Property;
 
 pub struct Dropdown { }
+
+// #[derive(Debug)]
+// enum MenuItem {
+//     Command(String, String),
+//     Children(String, Vec<MenuItem>),
+// }
+
+// fn get_menu(items: Vec<Property>) -> Vec<MenuItem> {
+//     let mut menu_items: Vec<MenuItem> = Vec::new();
+//     items.iter().for_each(|item| {
+//         if let Property::Object(obj) = item {
+//             let name_opt = obj.get("label");
+//             let exec_opt = obj.get("command");
+//             let child_opt = obj.get("children");
+//             if let Some(Property::String(name)) = name_opt {
+//                 if let Some(Property::String(exec)) = exec_opt {
+//                     let command = MenuItem::Command(name.clone(), exec.clone());
+//                     menu_items.push(command);
+//                 } else if let Some(Property::Array(children)) = child_opt {
+//                     let submenu = get_menu(children.to_vec());
+//                     let children = MenuItem::Children(name.clone(), submenu);
+//                     menu_items.push(children);
+//                 }
+//             }
+//         }
+//     });
+//     menu_items
+// }
 
 impl Component for Dropdown {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
@@ -24,6 +52,9 @@ impl Component for Dropdown {
         ebox.add(&label);
         container.add(&ebox);
         ebox.show_all();
+
+        // let items = get_menu(config.get_vec_or("items", vec![]));
+        // println!("{:#?}", items);
 
         // get list of items
         let mut items: Vec<(String, String)> = Vec::new();
@@ -41,10 +72,10 @@ impl Component for Dropdown {
                 }
             });
 
-        let menu = Menu::new();
+        let menu = GtkMenu::new();
 
         items.iter().for_each(|(key, value)| {
-            let item = MenuItem::new_with_label(key);
+            let item = GtkMenuItem::new_with_label(key);
             menu.append(&item);
             item.connect_activate(enclose!(value move |_| {
                 ::util::run_command(value.to_string());

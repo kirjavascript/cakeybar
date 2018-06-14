@@ -35,8 +35,19 @@ type = "dropdown"
 window_id = "menu_popup"
 items = [
     { label = "run termite", command = "termite" },
-    { label = "forest bg", command = "feh --bg-fill /home/thom/backgrounds/forest.png --bg-fill /home/thom/backgrounds/mac.jpg" },
-    { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
+    { label = "terminal apps", children = [
+        { label = "pipes", command = "termite -e \"pipes\"" },
+        { label = "neofetch", command = "termite -e \"neofetch\"" },
+        { label = "cmatrix", command = "termite -e \"cmatrix\"" },
+        { label = "doge", command = "termite -e \"doge\"" },
+        { label = "nyancat", command = "termite -e \"nyancat\"" },
+        { label = "weather", command = "termite -e \"curl -s wttr.in/Manchester\"" },
+        { label = "nonsense", command = "termite -e \"genact\"" },
+    ] },
+    { label = "change background", children = [
+        { label = "forest bg", command = "feh --bg-fill /home/thom/backgrounds/forest.png --bg-fill /home/thom/backgrounds/mac.jpg" },
+        { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
+    ] },
 ]
 
 # layout
