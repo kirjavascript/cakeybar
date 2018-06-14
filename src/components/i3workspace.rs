@@ -26,14 +26,14 @@ impl Component for I3Workspace {
 
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);
-        I3Workspace::init_widget(&wrapper, config);
+        Self::init_widget(&wrapper, config);
 
         // add to container and show
         container.add(&wrapper);
         wrapper.show();
 
         // load thread
-        I3Workspace::load_thread(&wrapper, show_name, show_all, monitor_index);
+        Self::load_thread(&wrapper, show_name, show_all, monitor_index);
     }
 }
 

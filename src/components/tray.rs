@@ -34,7 +34,7 @@ impl Tray {
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
-        Tray::init_widget(&base_widget, &config);
+        Self::init_widget(&base_widget, &config);
         base_widget.add(&wrapper);
         container.add(&base_widget);
         base_widget.show_all();

@@ -9,7 +9,7 @@
 // impl Component for Template {
 //     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
 //         let label = Label::new(None);
-//         Template::init_widget(&label, &config);
+//         Self:init_widget(&label, &config);
 //         label.set_text(&"test");
 //         container.add(&label);
 //         label.show();

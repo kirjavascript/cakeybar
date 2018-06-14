@@ -122,6 +122,10 @@ type = "dropdown"
 items = [
     { label = "web browser", command = "firefox" },
     { label = "screenshot", command = "xfce4-screenshooter" },
+    { label = "background", children = [
+        { label = "forest", command = "feh --bg-fill forest.png" },
+        { label = "mountain", command = "feh --bg-fill mountain.png" },
+    ] },
 ]
 ```
 

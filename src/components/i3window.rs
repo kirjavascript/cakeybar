@@ -14,10 +14,10 @@ pub struct I3Window { }
 impl Component for I3Window {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar){
         let label = Label::new(None);
-        I3Window::init_widget(&label, config);
+        Self::init_widget(&label, config);
         container.add(&label);
         label.show();
-        I3Window::load_thread(&label);
+        Self::load_thread(&label);
     }
 }
 
@@ -66,7 +66,7 @@ impl I3Window {
                         #[cfg(debug_assertions)]
                         eprintln!("{}, restarting thread", _err);
                         gtk::timeout_add(100, enclose!(label move || {
-                            I3Window::load_thread(&label);
+                            Self::load_thread(&label);
                             gtk::Continue(false)
                         }));
                         return gtk::Continue(false);

@@ -19,7 +19,7 @@ impl Component for Container {
             };
 
             let wrapper = Box::new(direction, spacing);
-            Container::init_widget(&wrapper, config);
+            Self::init_widget(&wrapper, config);
             super::layout_to_container(&wrapper, layout, bar);
             container.add(&wrapper);
             wrapper.show();

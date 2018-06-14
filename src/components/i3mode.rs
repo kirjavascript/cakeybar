@@ -14,9 +14,9 @@ pub struct I3Mode { }
 impl Component for I3Mode {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar){
         let label = Label::new(None);
-        I3Mode::init_widget(&label, config);
+        Self::init_widget(&label, config);
         container.add(&label);
-        I3Mode::load_thread(&label);
+        Self::load_thread(&label);
     }
 }
 
@@ -72,7 +72,7 @@ impl I3Mode {
                         #[cfg(debug_assertions)]
                         eprintln!("{}, restarting thread", _err);
                         gtk::timeout_add(100, enclose!(label move || {
-                            I3Mode::load_thread(&label);
+                            Self::load_thread(&label);
                             gtk::Continue(false)
                         }));
                         return gtk::Continue(false);

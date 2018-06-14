@@ -20,7 +20,7 @@ fn bytes_to_string(bytes: u64) -> String {
 impl Component for Bandwidth {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
-        Bandwidth::init_widget(&label, config);
+        Self::init_widget(&label, config);
         container.add(&label);
         label.show();
 

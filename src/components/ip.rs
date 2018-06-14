@@ -10,7 +10,7 @@ pub struct IP {}
 impl Component for IP {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
-        IP::init_widget(&label, config);
+        Self::init_widget(&label, config);
         container.add(&label);
         label.show();
 
@@ -27,13 +27,13 @@ impl Component for IP {
                     interfaces.iter().find(|x| x.0 == &interface)
                 };
                 if let Some((_name, iface)) = iterface_opt {
-                    let ip_opt = IP::get_ip_from_network(iface, ipv6);
+                    let ip_opt = Self::get_ip_from_network(iface, ipv6);
                     if let Some(ip) = ip_opt {
                         label.set_text(&ip);
                     } else {
                         // if we dont find addresses, see if ANY interface has them
                         let other_opt = interfaces.iter().find(|x| {
-                            IP::get_ip_from_network(x.1, ipv6).is_some()
+                            Self::get_ip_from_network(x.1, ipv6).is_some()
                         });
                         if let Some((_name, iface)) = other_opt {
                             let ip_opt = IP::get_ip_from_network(iface, ipv6);

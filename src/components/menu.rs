@@ -30,7 +30,7 @@ pub struct Menu {
 impl Component for Menu {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);
-        Menu::init_widget(&label, &config);
+        Self::init_widget(&label, &config);
         let label_text = config.get_str_or("label", "");
         label.set_text(&label_text);
         let ebox = EventBox::new();

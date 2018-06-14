@@ -11,7 +11,7 @@ impl Component for Image {
             let img: GtkImage = GtkImage::new_from_file(
                 Path::new(src)
             );
-            Image::init_widget(&img, config);
+            Self::init_widget(&img, config);
             container.add(&img);
 
             // wait a tick, otherwise we get negative height warnings
