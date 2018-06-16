@@ -14,8 +14,6 @@ https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 gtk->xcb
 https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-window
 
-inherit stdio in thread
-
 impl
 ====
 reload config / theme (theme should be easy)
@@ -31,7 +29,7 @@ command (inverval, input)
 <api/>
 <webview>
 mpd ipc
-network get upload/download rate
+network get upload rate
 dmenu gtk::WindowType::Popup
 dropdown menu
 container: clickable
@@ -41,6 +39,7 @@ notifications?
 label
 label#Label here for layout
 bandwidth upload
+menu triggbers
 workspace icons
 completion
 gtk-demo
