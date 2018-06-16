@@ -91,7 +91,7 @@ pub fn main() -> i32 {
                         manager.show();
                     }
                 },
-                );
+            );
         }
     }
     else {

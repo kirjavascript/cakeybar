@@ -30,10 +30,10 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
                     // check if active window is fullscreen
                     let value: &[u32] = reply.value();
                     let fullscreen_atom = atoms.get(atom::_NET_WM_STATE_FULLSCREEN);
-                    if value.len() > 0 && value[0] == fullscreen_atom {
-                        return true;
-                    } else {
-                        return false;
+                    for v in value.iter() {
+                        if *v == fullscreen_atom {
+                            return true;
+                        }
                     }
                 },
                 Err(_err) => {},
