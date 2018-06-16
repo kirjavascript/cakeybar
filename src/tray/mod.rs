@@ -7,6 +7,7 @@ use xcb;
 mod atom;
 pub mod ipc;
 pub mod manager;
+mod util;
 
 use std::thread;
 use std::sync::Arc;
@@ -35,10 +36,14 @@ pub fn main() -> i32 {
     if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
         let conn = Arc::new(conn);
         let atoms = atom::Atoms::new(&conn);
+        let preferred = preferred as usize;
 
         let (tx_ipc, rx_ipc) = ipc::get_client();
 
-        let mut manager = manager::Manager::new(&conn, &atoms, preferred as usize, tx_ipc);
+        let setup = conn.get_setup();
+        let screen = setup.roots().nth(preferred).unwrap();
+
+        let mut manager = manager::Manager::new(&conn, &atoms, &screen, tx_ipc);
 
         if !manager.is_selection_available() {
             eprintln!("Another system tray is already running");
@@ -57,6 +62,8 @@ pub fn main() -> i32 {
 
         manager.create();
 
+        let fullscreen_tick = chan::tick_ms(100);
+
         loop {
             chan_select!(
                 rx_ipc.recv() -> ipc_opt => {
@@ -70,14 +77,20 @@ pub fn main() -> i32 {
                             println!("{:?}", code);
                             return code
                         }
-                    }
-                    else {
+                    } else {
                         eprintln!("X connection is rip - killed by XKillClient(), maybe?");
                     }
                 },
                 signal.recv() => {
                     manager.finish();
-                }
+                },
+                fullscreen_tick.recv() => {
+                    if util::check_fullscreen(&conn, &atoms, &screen) {
+                        manager.hide();
+                    } else {
+                        manager.show();
+                    }
+                },
                 );
         }
     }

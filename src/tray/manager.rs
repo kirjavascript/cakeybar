@@ -13,20 +13,21 @@ const SYSTEM_TRAY_CANCEL_MESSAGE: u32 = 2;
 pub struct Manager<'a> {
     conn: &'a xcb::Connection,
     atoms: &'a atom::Atoms<'a>,
-    screen: usize,
+    screen: &'a xcb::Screen<'a>,
     icon_size: u16,
     window: xcb::Window,
     children: Vec<xcb::Window>,
     timestamp: xcb::Timestamp,
     finishing: bool,
     tx_ipc: Sender<Message>,
+    hidden: bool,
 }
 
 impl<'a> Manager<'a> {
     pub fn new<'b>(
         conn: &'b xcb::Connection,
         atoms: &'b atom::Atoms,
-        screen: usize,
+        screen: &'b xcb::Screen,
         tx_ipc: Sender<Message>,
     ) -> Manager<'b> {
         Manager::<'b> {
@@ -39,23 +40,21 @@ impl<'a> Manager<'a> {
             timestamp: 0,
             finishing: false,
             tx_ipc: tx_ipc,
+            hidden: false,
         }
     }
 
     pub fn create(&self) {
-        let setup = self.conn.get_setup();
-        let screen = setup.roots().nth(self.screen).unwrap();
-
         xcb::create_window(
             &self.conn,
             xcb::COPY_FROM_PARENT as u8,
             self.window,
-            screen.root(),
+            self.screen.root(),
             0, 0,
             self.icon_size, self.icon_size,
             0,
             xcb::WINDOW_CLASS_INPUT_OUTPUT as u16,
-            screen.root_visual(),
+            self.screen.root_visual(),
             &[
                 (xcb::CW_BACK_PIXEL, 0), // black
                 (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
@@ -106,7 +105,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_NET_SYSTEM_TRAY_VISUAL),
             xcb::ATOM_VISUALID,
             32,
-            &[screen.root_visual()]
+            &[self.screen.root_visual()]
         );
 
         // skip showing in taskbar
@@ -264,19 +263,33 @@ impl<'a> Manager<'a> {
         let ok = owner == self.window;
         if ok {
             self.timestamp = timestamp;
-            let setup = self.conn.get_setup();
-            let screen = setup.roots().nth(self.screen).unwrap();
-
             let client_event = xcb::ClientMessageEvent::new(
                 32, // 32 bits (refers to data)
-                screen.root(),
+                self.screen.root(),
                 self.atoms.get(atom::MANAGER),
                 xcb::ClientMessageData::from_data32([timestamp, selection, self.window, 0, 0])
             );
-            xcb::send_event(self.conn, false, screen.root(), xcb::EVENT_MASK_STRUCTURE_NOTIFY, &client_event);
+            xcb::send_event(self.conn, false, self.screen.root(), xcb::EVENT_MASK_STRUCTURE_NOTIFY, &client_event);
             self.conn.flush();
         }
         ok
+    }
+
+    pub fn show(&mut self) {
+        if self.hidden {
+            self.hidden = false;
+            xcb::map_window(self.conn, self.window);
+            self.conn.flush();
+        }
+    }
+
+
+    pub fn hide(&mut self) {
+        if !self.hidden {
+            self.hidden = true;
+            xcb::unmap_window(self.conn, self.window);
+            self.conn.flush();
+        }
     }
 
     pub fn adopt(&mut self, window: xcb::Window) {
@@ -336,8 +349,7 @@ impl<'a> Manager<'a> {
 
     pub fn finish(&mut self) {
         self.finishing = true;
-        let setup = self.conn.get_setup();
-        let screen = setup.roots().nth(self.screen).unwrap();
+        let screen = self.screen;
         let root = screen.root();
 
         for child in self.children.iter() {
@@ -466,7 +478,7 @@ impl<'a> Manager<'a> {
     }
 }
 
-// fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
+// pub fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
 //     let window: xcb::Window = id;
 //     let long_length: u32 = 8;
 //     let mut long_offset: u32 = 0;

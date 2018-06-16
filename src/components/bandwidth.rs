@@ -38,7 +38,11 @@ impl Component for Bandwidth {
                         info.interfaces.iter().find(|x| x.0 == &interface)
                     };
                     if let Some((_name, interface)) = interface_opt {
-                        let diff = interface.received - recv;
+                        let diff = if interface.received >= recv {
+                            interface.received - recv
+                        } else {
+                            0
+                        };
                         if recv != 0 {
                             label.set_text(
                                 &bytes_to_string(diff / interval)
