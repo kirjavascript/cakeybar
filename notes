@@ -14,6 +14,12 @@ https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 gtk->xcb
 https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-window
 
+refactoring
+===
+make BarConfig and ComponentConfig use the same struct
+https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
+pub/sub for wm ipc to also fix fullscreen bug
+
 impl
 ====
 reload config / theme (theme should be easy)

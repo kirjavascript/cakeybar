@@ -1,0 +1,11 @@
+theme = "workspace-icons.css"
+
+# bars
+
+[bar.default]
+layout = [ "workspaces" ]
+
+[component.workspaces]
+type = "i3workspace"
+show_all = false
+show_name = true

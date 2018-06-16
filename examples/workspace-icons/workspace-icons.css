@@ -1,9 +1,13 @@
+#default {
+    min-height: 27px;
+}
+
 #workspaces label {
     margin: 0 4px;
-    padding: 0 10px;
+    padding: 0 10px 0 37px;
     background-size: contain;
     background-repeat: no-repeat;
-    color: transparent;
+    font-weight: bold;
 }
 
 #workspaces :nth-child(1) label {

@@ -163,7 +163,7 @@ type = "i3window"
 ```toml
 [component.download]
 type = "bandwidth"
-interface = "eth0" # optional
+interface = "eth0" # if omitted, uses the first device
 ```
 
 #### ip
@@ -171,7 +171,7 @@ interface = "eth0" # optional
 ```toml
 [component.ip_address]
 type = "ip"
-interface = "eth0" # optional
+interface = "eth0" # if omitted, uses the first device
 # ipv6 = true
 ```
 

@@ -1,4 +1,4 @@
-use super::{gdk, gtk};
+use {gdk, gtk};
 use gtk::prelude::*;
 use gtk::{
     Window,
@@ -8,9 +8,8 @@ use gtk::{
 };
 use gdk::ScrollDirection;
 
-use super::{util, NAME};
-use super::config::{BarConfig, Position, ComponentConfig};
-use super::components;
+use {util, NAME, components};
+use config::{BarConfig, Position, ComponentConfig};
 use components::i3workspace::scroll_workspace;
 
 #[derive(Debug)]
@@ -54,7 +53,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         self.application.add_window(&window);
 
         // set base values
-        window.set_title(super::NAME);
+        window.set_title(NAME);
         window.set_default_size(0, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
