@@ -74,7 +74,8 @@ pub trait Component {
 }
 
 pub fn load_components(container: &Box, bar: &Bar) {
-    layout_to_container(container, &bar.config.layout, bar);
+    let layout = Property::Array(bar.config.get_vec_or("layout", vec![]));
+    layout_to_container(container, &layout, bar);
 }
 
 fn layout_to_container(container: &Box, layout: &Property, bar: &Bar) {

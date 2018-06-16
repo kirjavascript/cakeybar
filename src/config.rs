@@ -10,28 +10,25 @@ use std::collections::HashMap;
 #[derive(Debug)]
 pub struct Config {
     pub theme: Option<String>,
-    pub bars: Vec<BarConfig>,
+    pub bars: Vec<ComponentConfig>,
     pub components: Vec<ComponentConfig>,
-}
-
-#[derive(Debug)]
-pub enum Position {
-    Top,
-    Bottom,
-}
-
-#[derive(Debug)]
-pub struct BarConfig {
-    pub name: String,
-    pub monitor_index: usize,
-    pub position: Position,
-    pub layout: Property,
 }
 
 #[derive(Debug)]
 pub struct ComponentConfig {
     pub name: String,
     pub properties: HashMap<String, Property>,
+}
+
+
+#[derive(Debug, Clone)]
+pub enum Property {
+    String(String),
+    Integer(i64),
+    Array(Vec<Property>),
+    Boolean(bool),
+    Object(HashMap<String, Property>),
+    Null,
 }
 
 impl ComponentConfig {
@@ -73,16 +70,6 @@ impl ComponentConfig {
     }
 }
 
-#[derive(Debug, Clone)]
-pub enum Property {
-    String(String),
-    Integer(i64),
-    Array(Vec<Property>),
-    Boolean(bool),
-    Object(HashMap<String, Property>),
-    Null,
-}
-
 // TODO: return Result<Config, Err> instead
 pub fn parse_config(filename: &str) -> Config {
     let config_dir = Path::new(filename).parent().unwrap();
@@ -117,7 +104,7 @@ pub fn parse_config(filename: &str) -> Config {
     };
     let theme_str = theme.map(|x| get_path(x, config_dir));
 
-    // get bars
+    // bar assertions
 
     let bar_option = parsed.get("bar");
 
@@ -142,72 +129,54 @@ pub fn parse_config(filename: &str) -> Config {
         exit(1i32);
     }
 
-    let bar_configs: Vec<BarConfig> = bars.iter().map(|&(key, value)| {
-        // position
-        let position = value.get("position").map(|x| x.as_str().unwrap_or(""));
-        let position = match position.unwrap_or("") {
-            "bottom" => Position::Bottom,
-            _ => Position::Top,
-        };
+    // getters
 
-        // monitor
-        let monitor_index = value.get("monitor").map(|x| x.as_integer().unwrap_or(0)).unwrap_or(0) as usize;
+    let get_table_config = |&(key, value): &(&String, &Value)| {
+        // get properties
+        let mut properties: HashMap<String, Property> = HashMap::new();
+        value.as_table().unwrap().iter().for_each(|(key, value)| {
+            let key_str = key.to_string();
+            properties.insert(key_str, value_to_property(value));
+        });
 
-        // layout
-        let layout = value.get("layout").map(value_to_property)
-            .unwrap_or(Property::Array(Vec::new()));
-
-        BarConfig {
-            name: key.to_string(),
-            monitor_index,
-            position,
-            layout,
+        // convert src prop to real path
+        if let Some(&mut Property::String(ref mut src)) = properties.get_mut("src") {
+            *src = get_path(src.to_string(), config_dir);
         }
-    }).collect();
 
-    // components
+        ComponentConfig {
+            name: key.to_string(),
+            properties,
+        }
+    };
 
-    let component_option = parsed.get("component");
 
-    let components = if let Some(Some(component_table)) = component_option.map(|d| d.as_table()) {
-        // get all component tables
-        let components: Vec<(&String, &Value)> = component_table
-            .iter()
-            .filter(|&(_k, v)| v.is_table())
-            .collect();
-        let component_configs: Vec<ComponentConfig> = components
-            .iter()
-            .map(|&(key, value)| {
-                // get properties
-                let mut properties: HashMap<String, Property> = HashMap::new();
-                value.as_table().unwrap().iter().for_each(|(key, value)| {
-                    let key_str = key.to_string();
-                    properties.insert(key_str, value_to_property(value));
-                });
+    let get_table_config_list = |name| -> Vec<ComponentConfig> {
+        let component_option = parsed.get(name);
 
-                // convert src prop to real path
-                if let Some(&mut Property::String(ref mut src)) = properties.get_mut("src") {
-                    *src = get_path(src.to_string(), config_dir);
-                }
+        if let Some(Some(component_table)) = component_option.map(|d| d.as_table()) {
+            // get all component tables
+            let components: Vec<(&String, &Value)> = component_table
+                .iter()
+                .filter(|&(_k, v)| v.is_table())
+                .collect();
+            let component_configs: Vec<ComponentConfig> = components
+                .iter()
+                .map(get_table_config)
+                .collect();
 
-                ComponentConfig {
-                    name: key.to_string(),
-                    properties,
-                }
-            })
-            .collect();
-
-        component_configs
-    } else {
-        Vec::new()
+            component_configs
+        } else {
+            Vec::new()
+        }
     };
 
     // root
 
     let config = Config {
         theme: theme_str,
-        bars: bar_configs,
-        components,
+        bars: get_table_config_list("bar"),
+        components: get_table_config_list("component"),
     };
 
     // #[cfg(debug_assertions)]

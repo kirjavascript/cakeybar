@@ -43,9 +43,10 @@ theme = "theme.css" # paths can be relative or absolute
 
 ```toml
 [bar.bar_name]
-monitor = 0 # optional
+monitor = 0
 position = "top" # "top" | "bottom"
 layout = [ "component", "names", "go", "here" ]
+scroll_workspace = false
 ```
 
 you can define as many bars as you like as long as they have unique ids. the id is also used as the CSS selector for that bar: `#bar_name`

@@ -15,7 +15,7 @@ pub struct I3Workspace { }
 impl Component for I3Workspace {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
 
-        let monitor_index = bar.config.monitor_index as i32;
+        let monitor_index = bar.config.get_int_or("monitor", 0) as i32;
 
         // get spacing
         let spacing = config.get_int_or("spacing", 0) as i32;

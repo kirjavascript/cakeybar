@@ -16,7 +16,6 @@ https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-
 
 refactoring
 ===
-make BarConfig and ComponentConfig use the same struct
 https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
 pub/sub for wm ipc to also fix fullscreen bug
 pub/sub indicate what events to start listening to

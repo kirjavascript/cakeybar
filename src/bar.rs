@@ -9,12 +9,12 @@ use gtk::{
 use gdk::ScrollDirection;
 
 use {util, NAME, components};
-use config::{BarConfig, Position, ComponentConfig};
+use config::{ComponentConfig};
 use components::i3workspace::scroll_workspace;
 
 #[derive(Debug)]
 pub struct Bar<'a, 'b, 'c> {
-    pub config: &'b BarConfig,
+    pub config: &'b ComponentConfig,
     pub components: &'c Vec<ComponentConfig>,
     pub application: &'a gtk::Application,
 }
@@ -22,20 +22,21 @@ pub struct Bar<'a, 'b, 'c> {
 impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
     pub fn new(
         application: &'a gtk::Application,
-        config: &'b BarConfig,
+        config: &'b ComponentConfig,
         components: &'c Vec<ComponentConfig>,
     ) -> Bar<'a, 'b, 'c> {
 
         let bar = Bar { config, application, components };
 
         let monitors = util::get_monitors();
-        let monitor_option = monitors.get(bar.config.monitor_index);
+        let monitor_index = bar.config.get_int_or("monitor", 0);
+        let monitor_option = monitors.get(monitor_index as usize);
 
         match monitor_option {
             None => {
                 eprintln!(
                     "warning: no monitor at index {}",
-                    bar.config.monitor_index,
+                    monitor_index,
                 );
             },
             Some(monitor) => {
@@ -64,27 +65,29 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         WidgetExt::set_name(&window, &self.config.name);
 
         // attach scrollevent
-        let monitor_index = self.config.monitor_index as i32;
+        let monitor_index = self.config.get_int_or("monitor", 0) as i32;
         let viewport = gtk::Viewport::new(None, None);
         // set gdk::EventMask::SCROLL_MASK and disable 'smooth' scrolling
         viewport.add_events(2097152);
         // when scrolling, change workspace
-        viewport.connect_scroll_event(move |_vp, e| {
-            let direction = e.get_direction();
-            let is_next = direction == ScrollDirection::Down;
-            // change workspace (i3)
-            scroll_workspace(is_next, monitor_index);
-            Inhibit(true)
-        });
+        if self.config.get_bool_or("scroll_workspace", true) {
+            viewport.connect_scroll_event(move |_vp, e| {
+                let direction = e.get_direction();
+                let is_next = direction == ScrollDirection::Down;
+                // change workspace (i3)
+                scroll_workspace(is_next, monitor_index);
+                Inhibit(true)
+            });
+        }
         viewport.set_shadow_type(gtk::ShadowType::None);
         viewport.add(&container);
         window.add(&viewport);
 
         // set position
         let x = monitor.x;
-        let y = match self.config.position {
-            Position::Bottom => monitor.y + (monitor.height / 2),
-            Position::Top => monitor.y,
+        let y = match self.config.get_str_or("position", "top") {
+            "bottom" => monitor.y + (monitor.height / 2),
+            _ => monitor.y,
         };
         window.move_(x, y);
 
