@@ -96,7 +96,7 @@ label {
     background-image: url("./icons/battery/high.svg");
 }
 #battery.high.plugged {
-    background-image: url("./icons/battery/high_charging.svg");
+    background-image: url("./icons/battery/full_charging.svg");
 }
 #battery.medium {
     background-image: url("./icons/battery/medium.svg");
