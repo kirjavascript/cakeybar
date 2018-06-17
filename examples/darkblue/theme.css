@@ -27,15 +27,6 @@ label {
     background-position: 50% -10%;
 }
 
-
-#battery {
-    color: gray;
-}
-
-#battery.charging {
-    color: white;
-}
-
 #menu_popup {
     background-color: black;
     padding: 5px;
@@ -50,7 +41,6 @@ label {
 }
 
 #tray {
-    /* background-color: @blue; */
     padding: 0px 5px;
 }
 
@@ -58,7 +48,7 @@ label {
     margin-left: 300px;
 }
 
-#box1 label {
+#box1 label:not(#battery) {
     padding: 0 7px;
     background-image: url("./icons/chevron.svg");
     background-repeat: no-repeat;
@@ -69,9 +59,6 @@ label {
 }
 
 #workspaces .visible {
-    /* border-style: inset; */
-    /* padding-top: 3px; */
-    /* border-bottom: 3px solid @blue; */
     background-color: #0022CC;
 }
 #workspaces .urgent {
@@ -89,4 +76,37 @@ label {
 
 .icon {
     padding-right: 7px;
+}
+
+
+/* battery config */
+#battery {
+    background-size: 17px 17px;
+    background-position: 27px 5px;
+    background-repeat: no-repeat;
+    padding-right: 27px;
+}
+#battery.full {
+    background-image: url("./icons/battery/full.svg");
+}
+#battery.full.plugged {
+    background-image: url("./icons/battery/full_charging.svg");
+}
+#battery.high {
+    background-image: url("./icons/battery/high.svg");
+}
+#battery.high.plugged {
+    background-image: url("./icons/battery/high_charging.svg");
+}
+#battery.medium {
+    background-image: url("./icons/battery/medium.svg");
+}
+#battery.medium.plugged {
+    background-image: url("./icons/battery/medium_charging.svg");
+}
+#battery.low {
+    background-image: url("./icons/battery/low.svg");
+}
+#battery.low.plugged {
+    background-image: url("./icons/battery/low_charging.svg");
 }

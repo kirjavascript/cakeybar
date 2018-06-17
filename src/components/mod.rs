@@ -59,7 +59,7 @@ pub trait Component {
         let class_str = config.get_str_or("class", "null");
         if class_str != "null"  {
             if let Some(ctx) = widget.get_style_context() {
-                StyleContextExt::add_class(&ctx, class_str);
+                ctx.add_class(class_str);
             }
         }
     }

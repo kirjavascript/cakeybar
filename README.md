@@ -175,7 +175,9 @@ battery = "BAT0"
 adapter = "AC"
 ```
 
-you can target the class `#battery.charging` when AC is plugged in
+you can target the class `#battery.plugged` when AC is plugged in
+
+classes for battery charge are: `full | high | medium | low`
 
 #### tray
 
