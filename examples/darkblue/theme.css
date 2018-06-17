@@ -27,6 +27,15 @@ label {
     background-position: 50% -10%;
 }
 
+
+#battery {
+    color: gray;
+}
+
+#battery.charging {
+    color: white;
+}
+
 #menu_popup {
     background-color: black;
     padding: 5px;

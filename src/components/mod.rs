@@ -22,6 +22,7 @@ use super::bar::Bar;
 use super::config::{ComponentConfig, Property};
 
 mod bandwidth;
+mod battery;
 mod clock;
 mod container;
 mod cpu;
@@ -102,6 +103,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
         // decide which component to load
         let component_init = match component_type.as_str() {
             "bandwidth" => bandwidth::Bandwidth::init,
+            "battery" => battery::Battery::init,
             "clock" => clock::Clock::init,
             "container" => container::Container::init,
             "cpu" => cpu::CPU::init,

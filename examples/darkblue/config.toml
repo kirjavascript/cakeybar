@@ -56,7 +56,7 @@ items = [
 type = "container"
 # direction = "row"
 # spacing = 5
-layout = [ "cpu", "cpu_icon", "bandwidth", "bw_icon", "ip", "ip_icon", "clock", "clock_icon"]
+layout = [ "battery", "cpu", "cpu_icon", "bandwidth", "bw_icon", "ip", "ip_icon", "clock", "clock_icon"]
 halign = "end"
 class = "gradient"
 # valign = "end"
@@ -75,6 +75,12 @@ show_name = false
 type = "i3mode"
 
 # stats
+
+[component.battery]
+type = "battery"
+battery = "BAT0"
+adapter = "AC"
+# ls -1 /sys/class/power_supply/ for device list (from polybar docs)
 
 [component.ip]
 type = "ip"

@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="docs/logo.svg.png" alt="cakeybar">
+    <img src="misc/logo.svg.png" alt="cakeybar">
     <br>
 </div>
 <br>
@@ -66,7 +66,7 @@ interval = 5
 
 the only required property for a component is **type**
 
-components can be styled with `#component_name` or `.class-name`
+components can be styled with `#component_name` and `.class-name`
 
 alignments can be: `start | end | center | fill`
 
@@ -104,16 +104,6 @@ can be used to create more complex layouts or group components to share between 
 
 direction can be: `column | row` or `horizontal | vertical`
 
-#### tray
-
-```toml
-[component.tray]
-type = "tray"
-icon_size = 20
-background_color = "#FF0000"
-```
-
-only one system tray can be active at a time
 
 #### dropdown
 
@@ -176,4 +166,24 @@ interface = "eth0" # if omitted, uses the first device
 # ipv6 = true
 ```
 
-... and some unfinished stuff
+#### battery
+
+```toml
+[component.battery]
+type = "battery"
+battery = "BAT0"
+adapter = "AC"
+```
+
+you can target the class `#battery.charging` when AC is plugged in
+
+#### tray
+
+```toml
+[component.tray]
+type = "tray"
+icon_size = 20
+background_color = "#FF0000"
+```
+
+only one system tray can be active at a time
