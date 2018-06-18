@@ -60,7 +60,10 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                         thread::sleep(Duration::from_millis(DELAY_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
-                            conn.write(&bytes).unwrap();
+                            let send_res = conn.write(&bytes);
+                            if let Err(err) = send_res {
+                                eprintln!("tray::ipc::get_server {:?}", err);
+                            }
                         }
                     }
                 },
@@ -111,7 +114,10 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                         thread::sleep(Duration::from_millis(DELAY_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
-                            conn.write(&bytes).unwrap();
+                            let send_res = conn.write(&bytes);
+                            if let Err(err) = send_res {
+                                eprintln!("tray::ipc::get_client {:?}", err);
+                            }
                         }
                     }
                 },
