@@ -50,6 +50,7 @@ fn init(application: &gtk::Application, config: &config::Config) {
             &config.components,
         );
     }
+
 }
 
 fn main() {

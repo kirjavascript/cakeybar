@@ -4,8 +4,6 @@
 </div>
 <br>
 
-**work in progress** this will break in anything except i3 atm
-
 cakeybar is a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
@@ -14,6 +12,8 @@ cakeybar is a customizable statusbar for your windowmanager
 * components for i3
 * system tray integration
 * image support
+
+**work in progress** currently only tested in i3
 
 ## build/run
 

@@ -13,6 +13,8 @@ wm stuff:
 https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 gtk->xcb
 https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-window
+bspwm
+https://crates.io/crates/bspc
 
 refactoring
 ===
@@ -33,8 +35,8 @@ position: absolute (gtkfixed)
 components
 ====
 conditional display / flexbox
-command (inverval, input)
-<api/>
+system command / read file
+ <api/>
 <webview>
 mpd ipc
 network get upload rate
