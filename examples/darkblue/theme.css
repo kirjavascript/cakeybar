@@ -50,8 +50,6 @@ label {
 
 #box1 label:not(#battery) {
     padding: 0 7px;
-    background-image: url("./icons/chevron.svg");
-    background-repeat: no-repeat;
 }
 
 #workspaces label {

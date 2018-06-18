@@ -20,6 +20,7 @@ https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
 pub/sub for wm ipc
 pub/sub indicate what events to start listening to
 i3window new workspace bug (rewrite in xcb)
+anonymous components
 
 impl
 ====
@@ -71,6 +72,7 @@ https://i.imgur.com/TePyRmw.png
 blue rope / plain background
 slanted workspace names with SVG
 gtk? v2.0 will be electron
+xml representation of the component view
 
 https://alpha.wallhaven.cc/
 http://simpledesktops.com

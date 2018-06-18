@@ -84,13 +84,13 @@ pub fn main() -> i32 {
                 signal.recv() => {
                     manager.finish();
                 },
-                fullscreen_tick.recv() => {
-                    if util::check_fullscreen(&conn, &atoms, &screen) {
-                        manager.hide();
-                    } else {
-                        manager.show();
-                    }
-                },
+                // fullscreen_tick.recv() => {
+                //     if util::check_fullscreen(&conn, &atoms, &screen) {
+                //         manager.hide();
+                //     } else {
+                //         manager.show();
+                //     }
+                // },
             );
         }
     }

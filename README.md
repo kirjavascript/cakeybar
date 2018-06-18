@@ -185,7 +185,8 @@ classes for battery charge are: `full | high | medium | low`
 [component.tray]
 type = "tray"
 icon_size = 20
-background_color = "#FF0000"
 ```
 
 only one system tray can be active at a time
+
+`background-color` needs to be set explicitly but otherwise styles work as normal

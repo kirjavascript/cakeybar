@@ -1,7 +1,7 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Orientation};
-use gdk::{WindowExt};
+use gdk::{WindowExt, RGBA};
 
 use ::tray::ipc::Message;
 
@@ -24,13 +24,6 @@ impl Component for Tray {
 
 impl Tray {
     fn load(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
-        let bg_hex = config.get_str_or("background_color", "#000000");
-        let icon_size = config.get_int_or("icon_size", 20);
-        let bg_value = match u32::from_str_radix(&bg_hex[1..], 16) {
-            Ok(val) => val,
-            Err(_) => 0,
-        };
-
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
@@ -39,13 +32,19 @@ impl Tray {
         container.add(&base_widget);
         base_widget.show_all();
 
+        // init
         let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
         ::tray::as_subprocess();
 
-        // send initial config
-        if bg_value != 0 {
-            tx_ipc.send(Message::BgColor(bg_value));
+        // get bg color
+        if let Some(ctx) = base_widget.get_style_context() {
+            let RGBA { red, green, blue, .. } = ctx.get_background_color(gtk::StateFlags::NORMAL);
+            let bg_color = (((red * 255.) as u32) << 16) + (((green * 255.) as u32) << 8) + (blue * 255.) as u32;
+            tx_ipc.send(Message::BgColor(bg_color));
         }
+
+        // set icon size
+        let icon_size = config.get_int_or("icon_size", 20);
         if icon_size != 20 {
             tx_ipc.send(Message::IconSize(icon_size as u16));
         }
