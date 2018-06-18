@@ -50,12 +50,12 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
     fn init(&self, monitor: &gtk::Rectangle) {
 
-        let window = Window::new(WindowType::Toplevel);
+        let window = Window::new(WindowType::Popup);
         self.application.add_window(&window);
 
         // set base values
         window.set_title(NAME);
-        window.set_default_size(0, 1);
+        window.set_default_size(monitor.width, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
 

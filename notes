@@ -15,6 +15,7 @@ gtk->xcb
 https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-window
 bspwm
 https://crates.io/crates/bspc
+_net_wm_strut
 
 refactoring
 ===
