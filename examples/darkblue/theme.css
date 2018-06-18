@@ -48,10 +48,6 @@ label {
     margin-left: 300px;
 }
 
-#box1 label:not(#battery) {
-    padding: 0 7px;
-}
-
 #workspaces label {
     padding: 0 8px;
 }
@@ -73,7 +69,7 @@ label {
 }
 
 .icon {
-    padding-right: 7px;
+    padding: 0 7px;
 }
 
 
