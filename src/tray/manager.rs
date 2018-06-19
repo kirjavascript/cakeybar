@@ -1,4 +1,4 @@
-use super::atom;
+use wm::atom;
 use super::ipc::Message;
 use xcb;
 use chan::Sender;

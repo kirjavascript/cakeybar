@@ -4,10 +4,10 @@ use chan;
 use chan_signal;
 use xcb;
 
-pub mod atom;
+use wm::{atom, util};
+
 pub mod ipc;
 pub mod manager;
-pub mod util;
 
 use std::thread;
 use std::sync::Arc;

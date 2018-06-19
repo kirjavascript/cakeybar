@@ -1,4 +1,4 @@
-use {gdk, gtk};
+use {gdk, gtk, wm};
 use gtk::prelude::*;
 use gtk::{
     Window,
@@ -19,6 +19,10 @@ pub struct Bar<'a, 'b, 'c> {
     pub components: &'c Vec<ComponentConfig>,
     pub application: &'a gtk::Application,
 }
+
+static mut INDEX: u32 = 0;
+
+fn get_index() -> u32 { unsafe { INDEX += 1; INDEX - 1 } }
 
 impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
     pub fn new(
@@ -54,6 +58,10 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let window = Window::new(WindowType::Toplevel);
         self.application.add_window(&window);
 
+        // set role (to target with xcb)
+        let window_role = format!("confectionary_{}", get_index());
+        window.set_role(&window_role);
+
         // set base values
         window.set_title(NAME);
         window.set_default_size(monitor.width, 1);
@@ -88,7 +96,8 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         {
             let position = self.config.get_str_or("position", "top").to_string();
             let &Rectangle { x, y, height, .. } = monitor;
-            window.connect_size_allocate(move |window, rect| {
+            // TODO: fix 0,0 bug non positioning bug
+            window.connect_size_allocate(enclose!(window_role move |window, rect| {
                 let xpos = x;
                 let ypos = match position.as_str() {
                     "bottom" => y + (height - rect.height),
@@ -96,12 +105,16 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                 };
                 if (xpos, ypos) != window.get_position() {
                     window.move_(xpos, ypos);
+                    // println!("{:#?}", rect.height);
+                    // wm::util::set_strut(window_role.clone());
                 }
-            });
+            }));
         }
 
         // show bar
         window.show_all();
+
+        // wm::util::set_strut(window_role.clone());
 
         // load components
         components::load_components(&container, &self);
@@ -111,4 +124,5 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         //     Inhibit(true)
         // });
     }
+
 }

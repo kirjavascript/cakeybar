@@ -1,4 +1,6 @@
-use super::{xcb, atom};
+use xcb;
+use wm::atom;
+use std::sync::Arc;
 
 pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xcb::Screen) -> bool {
     // get active window
@@ -44,10 +46,43 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
     false
 }
 
+pub fn set_strut(window_role: String) {
+    if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
+        let conn = Arc::new(conn);
+        let atoms = atom::Atoms::new(&conn);
+        let preferred = preferred as usize;
+        let setup = conn.get_setup();
+        let screen = setup.roots().nth(preferred).unwrap();
+        let window_role_atom = atoms.get(atom::WM_WINDOW_ROLE);
+
+        if let Ok(reply) = xcb::query_tree(&conn, screen.root()).get_reply() {
+            let w = reply.children().iter().find(|w| {
+                window_role == get_string(&conn, **w, window_role_atom)
+            });
+            println!("{:#?}", w);
+            // let bar_opt = reply.children().iter().find(|child| {
+            //     ::NAME == wm::util::xcb_get_wm_name(&conn, **child)
+            // });
+            // xcb::change_property(
+            //     conn,
+            //     xcb::PROP_MODE_APPEND as u8,
+            //     *bar_opt.unwrap(),
+            //     atoms.get(tray::atom::_NET_WM_STATE),
+            //     xcb::ATOM_ATOM,
+            //     32,
+            //     &[atoms.get(tray::atom::_net_wm_state_sticky)]
+            // );
+            conn.flush();
+        }
+    }
+
+}
+
+
 #[allow(dead_code)]
-pub fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
+pub fn get_string(conn: &xcb::Connection, id: u32, attr: u32) -> String {
     let window: xcb::Window = id;
-    let long_length: u32 = 8;
+    let long_length: u32 = 16;
     let mut long_offset: u32 = 0;
     let mut buf = Vec::new();
     loop {
@@ -55,11 +90,11 @@ pub fn xcb_get_wm_name(conn: &xcb::Connection, id: u32) -> String {
             &conn,
             false,
             window,
-            xcb::ATOM_WM_NAME,
+            attr,
             xcb::ATOM_STRING,
             long_offset,
             long_length,
-        );
+            );
         match cookie.get_reply() {
             Ok(reply) => {
                 let value: &[u8] = reply.value();
