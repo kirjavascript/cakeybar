@@ -13,9 +13,16 @@ wm stuff:
 https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 gtk->xcb
 https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-window
+
 bspwm
+=====
 https://crates.io/crates/bspc
-_net_wm_strut
+_net_wm_strut / connect size allocate / detect / refactor
+18:42:11 < nibblrjr> Kirjava: https://github.com/LemonBoy/bar/blob/master/lemonbar.c#L753 (9 hours ago)
+18:42:11 < nibblrjr> Kirjava: window.set_role (6 hours ago)
+18:42:15| nibblrjr> Kirjava: refactor i3window::scroll_workspace (3 hours ago)
+18:42:12 < nibblrjr> Kirjava: install racer (2 hours ago)
+18:42:12 < nibblrjr> Kirjava: test polybar tray in bspwm FIRST (2 hours ago)
 
 refactoring
 ===

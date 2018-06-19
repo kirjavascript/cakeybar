@@ -114,7 +114,6 @@ impl I3Workspace {
                     if let Ok(msg_result) = rx.try_recv() {
                         match msg_result {
                             Ok(_msg) => {
-                                // TODO: update UI by diffing for better perf
                                 // msg.change = WorkspaceChange
                                 // Focus Init Empty Urgent Rename Reload Restored Move Unknown
                                 let workspace_list = get_workspace_list(&mut connection);

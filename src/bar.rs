@@ -5,6 +5,7 @@ use gtk::{
     WindowType,
     Orientation,
     Box,
+    Rectangle,
 };
 use gdk::ScrollDirection;
 
@@ -48,9 +49,9 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
     }
 
 
-    fn init(&self, monitor: &gtk::Rectangle) {
+    fn init(&self, monitor: &Rectangle) {
 
-        let window = Window::new(WindowType::Popup);
+        let window = Window::new(WindowType::Toplevel);
         self.application.add_window(&window);
 
         // set base values
@@ -84,12 +85,20 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         window.add(&viewport);
 
         // set position
-        let x = monitor.x;
-        let y = match self.config.get_str_or("position", "top") {
-            "bottom" => monitor.y + (monitor.height / 2),
-            _ => monitor.y,
-        };
-        window.move_(x, y);
+        {
+            let position = self.config.get_str_or("position", "top").to_string();
+            let &Rectangle { x, y, height, .. } = monitor;
+            window.connect_size_allocate(move |window, rect| {
+                let xpos = x;
+                let ypos = match position.as_str() {
+                    "bottom" => y + (height - rect.height),
+                    _ => y,
+                };
+                if (xpos, ypos) != window.get_position() {
+                    window.move_(xpos, ypos);
+                }
+            });
+        }
 
         // show bar
         window.show_all();

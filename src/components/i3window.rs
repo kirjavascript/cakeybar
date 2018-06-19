@@ -17,13 +17,14 @@ impl Component for I3Window {
         Self::init_widget(&label, config);
         container.add(&label);
         label.show();
-        Self::load_thread(&label);
+        let trunc = config.get_int_or("truncate", 100);
+        Self::load_thread(&label, trunc as usize);
     }
 }
 
 #[allow(unused_must_use)]
 impl I3Window {
-    fn load_thread(label: &Label) {
+    fn load_thread(label: &Label, trunc: usize) {
         let (tx, rx) = mpsc::channel();
 
         thread::spawn(move || {
@@ -60,13 +61,19 @@ impl I3Window {
             if let Ok(msg_result) = rx.try_recv() {
                 match msg_result {
                     Ok(msg) => {
-                        label.set_text(&msg.container.name.unwrap_or("".to_owned()));
+                        let name = msg.container.name.clone().unwrap_or("".to_string());
+                        let name = if name.len() > trunc {
+                            format!("{}...", &name[..trunc])
+                        } else {
+                            format!("{}", name)
+                        };
+                        label.set_text(&name);
                     },
                     Err(_err) => {
                         #[cfg(debug_assertions)]
                         eprintln!("{}, restarting thread", _err);
                         gtk::timeout_add(100, enclose!(label move || {
-                            Self::load_thread(&label);
+                            Self::load_thread(&label, trunc);
                             gtk::Continue(false)
                         }));
                         return gtk::Continue(false);

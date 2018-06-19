@@ -179,6 +179,8 @@ you can target the class `#battery.plugged` when AC is plugged in
 
 classes for battery charge are: `full | high | medium | low`
 
+use `ls /sys/class/power_supply/` to see devices
+
 #### tray
 
 ```toml
@@ -187,6 +189,6 @@ type = "tray"
 icon_size = 20
 ```
 
-only one system tray can be active at a time
+`background-color` style needs to be set explicitly for it to work
 
-`background-color` needs to be set explicitly but otherwise styles work as normal
+only one system tray can be active at a time
