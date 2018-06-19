@@ -63,7 +63,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         window.set_role(&window_role);
 
         // set base values
-        window.set_title(NAME);
+        window.set_title("BORKBORK");
         window.set_default_size(monitor.width, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
@@ -103,18 +103,18 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                     "bottom" => y + (height - rect.height),
                     _ => y,
                 };
-                if (xpos, ypos) != window.get_position() {
+                // if (xpos, ypos) != window.get_position() {
                     window.move_(xpos, ypos);
                     // println!("{:#?}", rect.height);
-                    // wm::util::set_strut(window_role.clone());
-                }
+                    wm::util::set_strut(window_role.clone());
+                // }
             }));
         }
 
         // show bar
         window.show_all();
 
-        // wm::util::set_strut(window_role.clone());
+        wm::util::set_strut(window_role.clone());
 
         // load components
         components::load_components(&container, &self);

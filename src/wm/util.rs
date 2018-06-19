@@ -56,10 +56,15 @@ pub fn set_strut(window_role: String) {
         let window_role_atom = atoms.get(atom::WM_WINDOW_ROLE);
 
         if let Ok(reply) = xcb::query_tree(&conn, screen.root()).get_reply() {
-            let w = reply.children().iter().find(|w| {
-                window_role == get_string(&conn, **w, window_role_atom)
-            });
-            println!("{:#?}", w);
+            // title works...
+            // let w = reply.children().iter().find(|w| {
+            //     window_role == get_string(&conn, **w, window_role_atom)
+            // });
+            // println!("{:#?}", w);
+            // for w in reply.children().iter() {
+            //     let q = get_string(&conn, *w, window_role_atom);
+            //     println!("{:#?}", q);
+            // };
             // let bar_opt = reply.children().iter().find(|child| {
             //     ::NAME == wm::util::xcb_get_wm_name(&conn, **child)
             // });
