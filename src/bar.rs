@@ -8,6 +8,7 @@ use gtk::{
     Rectangle,
 };
 use gdk::ScrollDirection;
+use glib::translate::ToGlibPtr;
 
 use {util, NAME, components};
 use config::{ComponentConfig};
@@ -58,12 +59,8 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let window = Window::new(WindowType::Toplevel);
         self.application.add_window(&window);
 
-        // set role (to target with xcb)
-        let window_role = format!("confectionary_{}", get_index());
-        window.set_role(&window_role);
-
         // set base values
-        window.set_title("BORKBORK");
+        window.set_title(NAME);
         window.set_default_size(monitor.width, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
@@ -92,6 +89,10 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         viewport.add(&container);
         window.add(&viewport);
 
+        // set role (to target with xcb)
+        let window_role = format!("confectionary_{}", get_index());
+        window.set_role(&window_role);
+
         // set position
         {
             let position = self.config.get_str_or("position", "top").to_string();
@@ -106,7 +107,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                 // if (xpos, ypos) != window.get_position() {
                     window.move_(xpos, ypos);
                     // println!("{:#?}", rect.height);
-                    wm::util::set_strut(window_role.clone());
+                    // wm::util::set_strut(window_role.clone());
                 // }
             }));
         }
@@ -114,7 +115,10 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         // show bar
         window.show_all();
 
-        wm::util::set_strut(window_role.clone());
+        // let p: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
+        // println!("{:#?}", p);
+
+        // wm::util::set_strut(window_role.clone());
 
         // load components
         components::load_components(&container, &self);
