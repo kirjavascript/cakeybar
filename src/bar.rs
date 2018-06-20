@@ -63,7 +63,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         window.set_role(&window_role);
 
         // set base values
-        window.set_title("BORKBORK");
+        window.set_title(NAME);
         window.set_default_size(monitor.width, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);

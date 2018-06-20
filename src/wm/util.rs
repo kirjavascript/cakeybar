@@ -57,10 +57,10 @@ pub fn set_strut(window_role: String) {
 
         if let Ok(reply) = xcb::query_tree(&conn, screen.root()).get_reply() {
             // title works...
-            // let w = reply.children().iter().find(|w| {
-            //     window_role == get_string(&conn, **w, window_role_atom)
-            // });
-            // println!("{:#?}", w);
+            let w = reply.children().iter().find(|w| {
+                window_role == get_string(&conn, **w, window_role_atom)
+            });
+            println!("{:#?}", w);
             // for w in reply.children().iter() {
             //     let q = get_string(&conn, *w, window_role_atom);
             //     println!("{:#?}", q);
