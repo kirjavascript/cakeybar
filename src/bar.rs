@@ -15,7 +15,7 @@ use config::{ComponentConfig};
 use components::i3workspace::scroll_workspace;
 
 use std::ffi::CString;
-use std::os::raw::c_int};
+use std::os::raw::c_int;
 
 #[derive(Debug)]
 pub struct Bar<'a, 'b, 'c> {
