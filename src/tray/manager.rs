@@ -45,6 +45,7 @@ impl<'a> Manager<'a> {
     }
 
     pub fn create(&self) {
+
         xcb::create_window(
             &self.conn,
             xcb::COPY_FROM_PARENT as u8,

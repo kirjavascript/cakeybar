@@ -29,7 +29,6 @@ atoms!(
     WM_TAKE_FOCUS,
     WM_DELETE_WINDOW,
     WM_PROTOCOLS,
-    WM_WINDOW_ROLE,
     _COMPTON_SHADOW,
     MANAGER
 );

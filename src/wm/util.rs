@@ -1,6 +1,5 @@
 use xcb;
 use wm::atom;
-use std::sync::Arc;
 
 pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xcb::Screen) -> bool {
     // get active window
@@ -46,6 +45,8 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
     false
 }
 
+
+// use std::sync::Arc;
 // pub fn set_strut(window_role: String) {
 //     if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
 //         let conn = Arc::new(conn);
@@ -60,23 +61,6 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
 //             let w = reply.children().iter().find(|w| {
 //                 window_role == get_string(&conn, **w, window_role_atom)
 //             });
-//             println!("{:#?}", w);
-//             // for w in reply.children().iter() {
-//             //     let q = get_string(&conn, *w, window_role_atom);
-//             //     println!("{:#?}", q);
-//             // };
-//             // let bar_opt = reply.children().iter().find(|child| {
-//             //     ::NAME == wm::util::xcb_get_wm_name(&conn, **child)
-//             // });
-//             // xcb::change_property(
-//             //     conn,
-//             //     xcb::PROP_MODE_APPEND as u8,
-//             //     *bar_opt.unwrap(),
-//             //     atoms.get(tray::atom::_NET_WM_STATE),
-//             //     xcb::ATOM_ATOM,
-//             //     32,
-//             //     &[atoms.get(tray::atom::_net_wm_state_sticky)]
-//             // );
 //             conn.flush();
 //         }
 //     }
