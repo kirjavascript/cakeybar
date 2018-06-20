@@ -24,10 +24,6 @@ pub struct Bar<'a, 'b, 'c> {
     pub application: &'a gtk::Application,
 }
 
-static mut INDEX: u32 = 0;
-
-fn get_index() -> u32 { unsafe { INDEX += 1; INDEX - 1 } }
-
 impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
     pub fn new(
         application: &'a gtk::Application,
@@ -92,16 +88,13 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         viewport.add(&container);
         window.add(&viewport);
 
-        // set role (to target with xcb)
-        let window_role = format!("confectionary_{}", get_index());
-        window.set_role(&window_role);
 
         // set position
         {
             let position = self.config.get_str_or("position", "top").to_string();
             let &Rectangle { x, y, height, .. } = monitor;
             // TODO: fix 0,0 bug non positioning bug
-            window.connect_size_allocate(enclose!(window_role move |window, rect| {
+            window.connect_size_allocate(move |window, rect| {
                 let xpos = x;
                 let ypos = match position.as_str() {
                     "bottom" => y + (height - rect.height),
@@ -112,7 +105,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                     // println!("{:#?}", rect.height);
                     // wm::util::set_strut(window_role.clone());
                 // }
-            }));
+            });
         }
 
         // show bar
@@ -130,7 +123,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
             let format: c_int = 32;
             let mode: c_int = 0;
             let el: c_int = 4;
-            let s = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // left, right, top bottom
+            let s = [0, 0, 0, 0]; // left, right, top bottom
             let data_ptr: *const u8 = s.as_ptr();
             gdk_sys::gdk_property_change(
                 ptr, // window:

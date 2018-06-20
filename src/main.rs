@@ -3,7 +3,7 @@ extern crate gtk;
 extern crate gdk;
 extern crate gdk_sys;
 extern crate glib;
-extern crate libc;
+extern crate xcb;
 extern crate clap;
 extern crate toml;
 // components
