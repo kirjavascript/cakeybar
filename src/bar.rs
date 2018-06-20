@@ -8,11 +8,18 @@ use gtk::{
     Rectangle,
 };
 use gdk::ScrollDirection;
+use gdk_sys::gdk_property_change;
 use glib::translate::ToGlibPtr;
 
 use {util, NAME, components};
 use config::{ComponentConfig};
 use components::i3workspace::scroll_workspace;
+
+use xcb;
+use gdk_sys;
+
+use std::ffi::CString;
+use std::os::raw::{c_char, c_int};
 
 #[derive(Debug)]
 pub struct Bar<'a, 'b, 'c> {
@@ -115,7 +122,35 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         // show bar
         window.show_all();
 
-        // let p: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
+        let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
+
+        unsafe {
+            let _strut = CString::new("_NET_WM_STRUT").unwrap();
+            let  _cardinal = CString::new("CARDINAL").unwrap();
+            // let _strut_partial = CString::new("_NET_WM_STRUT_PARTIAL").unwrap();
+            let _strut = gdk_sys::gdk_atom_intern_static_string(_strut.as_ptr());
+            let _cardinal = gdk_sys::gdk_atom_intern_static_string(_cardinal.as_ptr());
+            // let _strut_partial = gdk_sys::gdk_atom_intern_static_string(_strut_partial.as_ptr());
+            let format: c_int = 32;
+            let mode: c_int = 0;
+            let el: c_int = 4;
+            let mut s = [0, 0, 0, 0];
+            let data_ptr: *const u8 = s.as_ptr();
+            gdk_property_change(
+                ptr, // window:
+                _strut, // property:
+                _cardinal, // type_:
+                format, // format:
+                mode, // mode:
+                data_ptr, // data:
+                el, // nelements:
+            );
+        }
+    // }
+    // topw.property_change("_NET_WM_STRUT","CARDINAL",32,gtk.gdk.PROP_MODE_REPLACE,
+    //         [0, 0, bar_size, 0])
+    // topw.property_change("_NET_WM_STRUT_PARTIAL","CARDINAL",32,gtk.gdk.PROP_MODE_REPLACE,
+// [0, 0, bar_size, 0, 0, 0, 0, 0, x, x+width-1, 0, 0])
         // println!("{:#?}", p);
 
         // wm::util::set_strut(window_role.clone());

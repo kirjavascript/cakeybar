@@ -1,7 +1,9 @@
 extern crate gio;
 extern crate gtk;
 extern crate gdk;
+extern crate gdk_sys;
 extern crate glib;
+extern crate xcb;
 extern crate clap;
 extern crate toml;
 // components
@@ -14,7 +16,6 @@ extern crate sysinfo;
 #[macro_use]
 extern crate chan;
 extern crate chan_signal;
-extern crate xcb;
 // tray ipc
 extern crate bincode;
 #[macro_use]

@@ -11,11 +11,13 @@ gdk = "^0"
 # gdk-pixbuf = "^0"
 # gtk-sys = "0.6.0"
 gtk = "^0"
+gdk-sys = "0.6.0"
 clap = "2.31.2"
 toml = "0.4"
 # pango = "^0"
 # cairo-rs = { version = "^0", features = ["png"] }
 i3ipc = "0.8.2"
+libc = "0.2"
 
 # stats
 systemstat = "0.1.2"

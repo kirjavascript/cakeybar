@@ -21,6 +21,7 @@ _net_wm_strut
 docs https://stackoverflow.com/questions/13455527/cant-change-net-wm-strut-partial-property
 Kirjava: https://github.com/LemonBoy/bar/blob/master/lemonbar.c#L753 (9 hours ago)
 18:42:15| nibblrjr> Kirjava: refactor i3window::scroll_workspace (3 hours ago)
+https://gist.github.com/johnlane/351adff97df196add08a#file-dockbar-gtk2-py-L68
 
 refactoring
 ===
@@ -41,7 +42,7 @@ position: absolute (gtkfixed)
 components
 ====
 conditional display / flexbox
-system command / read file
+system command / read file -> make migration to lemonbar easy
  <api/>
 <webview>
 mpd ipc
