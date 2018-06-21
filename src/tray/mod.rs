@@ -4,7 +4,7 @@ use chan;
 use chan_signal;
 use xcb;
 
-use wm::{atom, util};
+use wm::{atom, xcb_util};
 
 pub mod ipc;
 pub mod manager;
@@ -85,7 +85,7 @@ pub fn main() -> i32 {
                     manager.finish();
                 },
                 fullscreen_tick.recv() => {
-                    if util::check_fullscreen(&conn, &atoms, &screen) {
+                    if xcb_util::check_fullscreen(&conn, &atoms, &screen) {
                         manager.hide();
                     } else {
                         manager.show();

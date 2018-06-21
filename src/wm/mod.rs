@@ -1,2 +1,2 @@
 pub mod atom;
-pub mod util;
+pub mod xcb_util;

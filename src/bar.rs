@@ -15,6 +15,7 @@ use components::i3workspace::scroll_workspace;
 
 use std::ffi::CString;
 use std::os::raw::c_int;
+use std::process::Command;
 
 #[derive(Debug)]
 pub struct Bar<'a, 'b, 'c> {
@@ -94,15 +95,20 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let is_top = self.config.get_str_or("position", "top") == "top";
         {
             let &Rectangle { x, y, height, .. } = monitor;
-            // TODO: fix 0,0 bug non positioning bug
+            // TODO: fix 0,0 non positioning bug
             window.connect_size_allocate(move |window, rect| {
                 let xpos = x;
                 let ypos = if !is_top { y + (height - rect.height) } else { y };
                 // if (xpos, ypos) != window.get_position() {
                     window.move_(xpos, ypos);
-
-                    // println!("{:#?}", rect.height);
-                    // wm::util::set_strut(window_role.clone());
+                    // set bspwm padding
+                    let position = if is_top { "top" } else { "bottom" };
+                    let cmd = Command::new("bspc")
+                        .arg("config")
+                        .arg(format!("{}_padding", position))
+                        .arg(format!("{}", rect.height))
+                        .output()
+                        .ok();
                 // }
             });
         }
