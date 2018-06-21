@@ -4,7 +4,6 @@ use gtk::{
     Window,
     WindowType,
     Orientation,
-    Box,
     Rectangle,
 };
 use gdk::ScrollDirection;
@@ -65,7 +64,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         window.set_wmclass(NAME, NAME);
 
         // attach container
-        let container = Box::new(Orientation::Horizontal, 0);
+        let container = gtk::Box::new(Orientation::Horizontal, 0);
         WidgetExt::set_name(&container, &self.config.name);
         WidgetExt::set_name(&window, &self.config.name);
 
@@ -118,11 +117,10 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
             let cardinal = CString::new("CARDINAL").unwrap();
             let strut = gdk_sys::gdk_atom_intern(strut.as_ptr(), 0);
             let cardinal = gdk_sys::gdk_atom_intern(cardinal.as_ptr(), 0);
-            // let _strut_partial = CString::new("_NET_WM_STRUT_PARTIAL").unwrap();
-            // let _strut_partial = gdk_sys::gdk_atom_intern_static_string(_strut_partial.as_ptr());
-            let format: c_int = 32;
-            let mode: c_int = 0;
-            let s = [0, 0, 27, 0]; // left, right, top bottom
+            // _NET_WM_STRUT_PARTIAL
+            let format: c_int = 8; // number of bits (must be 8, 16 or 32)
+            let mode: c_int = 0; // PROP_MODE_REPLACE
+            let s = [0, 0, 27, 0]; // left, right, top, bottom
             let data_ptr: *const u8 = s.as_ptr();
             let el: c_int = s.len() as i32;
             gdk_sys::gdk_property_change(
