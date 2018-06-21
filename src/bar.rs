@@ -62,8 +62,8 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         window.set_default_size(monitor.width, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
-        window.stick();
         window.set_keep_above(true);
+        window.stick();
 
         // attach container
         let container = gtk::Box::new(Orientation::Horizontal, 0);
@@ -91,18 +91,16 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
 
         // set position
+        let is_top = self.config.get_str_or("position", "top") == "top";
         {
-            let position = self.config.get_str_or("position", "top").to_string();
             let &Rectangle { x, y, height, .. } = monitor;
             // TODO: fix 0,0 bug non positioning bug
             window.connect_size_allocate(move |window, rect| {
                 let xpos = x;
-                let ypos = match position.as_str() {
-                    "bottom" => y + (height - rect.height),
-                    _ => y,
-                };
+                let ypos = if !is_top { y + (height - rect.height) } else { y };
                 // if (xpos, ypos) != window.get_position() {
                     window.move_(xpos, ypos);
+
                     // println!("{:#?}", rect.height);
                     // wm::util::set_strut(window_role.clone());
                 // }
@@ -112,6 +110,24 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         // show bar
         window.show_all();
 
+        // load components
+        components::load_components(&container, &self);
+
+        // seems to do nothing in bspwm or i3
+        Bar::set_strut(&window, is_top, Rectangle {
+            x: monitor.x,
+            y: monitor.y,
+            width: monitor.width,
+            height: 27,
+        });
+
+        // TODO: windowEnter set ::focus
+        // window.connect_enter_notify_event(move |_, _evt| {
+        //     Inhibit(true)
+        // });
+    }
+
+    fn set_strut(window: &gtk::Window, is_top: bool, rect: Rectangle) {
         let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
 
         unsafe {
@@ -125,12 +141,19 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
             // strut
             let format: c_int = 16; // number of bits (must be 8, 16 or 32)
             let mode: c_int = 0; // PROP_MODE_REPLACE
-            let data = [
+            // get height bytes
+            let (lo, hi) = ((rect.height & 0xFF) as u8, (rect.height >> 8) as u8);
+            let data = if is_top {[
                 0, 0, // left
                 0, 0, // right
-                32, 0, // top
+                lo, hi, // top
                 0, 0, // bottom
-            ];
+            ]} else {[
+                0, 0, // left
+                0, 0, // right
+                0, 0, // top
+                lo, hi, // bottom
+            ]};
             let data_ptr: *const u8 = data.as_ptr();
             let el: c_int = 4 as i32;
             gdk_sys::gdk_property_change(
@@ -143,20 +166,36 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                 el, // nelements:
             );
             // partial
-            let data = [
+            let x1 = rect.x + rect.width - 1;
+            let (x0lo, x0hi) = ((rect.x & 0xFF) as u8, (rect.x >> 8) as u8);
+            let (x1lo, x1hi) = ((x1 & 0xFF) as u8, (x1 >> 8) as u8);
+            let data = if is_top {[
                 0, 0, // left
                 0, 0, // right
-                32, 0, // top
+                lo, hi, // top
                 0, 0, // bottom
                 0, 0, // start
                 0, 0, // end
                 0, 0, // start
                 0, 0, // end
-                0, 0, // start
-                127, 7, // end
+                x0lo, x0hi, // start
+                x1lo, x1hi, // end
                 0, 0, // start
                 0, 0, // end
-            ];
+            ]} else {[
+                0, 0, // left
+                0, 0, // right
+                0, 0, // top
+                lo, hi, // bottom
+                0, 0, // start
+                0, 0, // end
+                0, 0, // start
+                0, 0, // end
+                0, 0, // start
+                0, 0, // end
+                x0lo, x0hi, // start
+                x1lo, x1hi, // end
+            ]};
             // left, right, top, bottom
             let data_ptr: *const u8 = data.as_ptr();
             let el: c_int = 12 as i32;
@@ -169,22 +208,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                 data_ptr, // data:
                 el, // nelements:
             );
-    // # 0, 0, bar_size, 0 are the number of pixels to reserve along each edge of the
-    // # screen given in the order left, right, top, bottom. Here the size of the bar
-    // # is reserved at the top of the screen and the other edges are left alone.
-    // #
-    // # _NET_WM_STRUT_PARTIAL also supplies a further four pairs, each being a
-    // # start and end position for the strut (they don't need to occupy the entire
-    // # edge).
         }
-
-        // load components
-        components::load_components(&container, &self);
-
-        // TODO: windowEnter set ::focus
-        // window.connect_enter_notify_event(move |_, _evt| {
-        //     Inhibit(true)
-        // });
     }
 
 }
