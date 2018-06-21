@@ -4,7 +4,6 @@ use gtk::{
     Window,
     WindowType,
     Orientation,
-    Box,
     Rectangle,
 };
 use gdk::ScrollDirection;
@@ -63,9 +62,11 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         window.set_default_size(monitor.width, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
         window.set_wmclass(NAME, NAME);
+        window.stick();
+        window.set_keep_above(true);
 
         // attach container
-        let container = Box::new(Orientation::Horizontal, 0);
+        let container = gtk::Box::new(Orientation::Horizontal, 0);
         WidgetExt::set_name(&container, &self.config.name);
         WidgetExt::set_name(&window, &self.config.name);
 
@@ -114,15 +115,24 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
 
         unsafe {
+            // atoms
             let strut = CString::new("_NET_WM_STRUT").unwrap();
+            let partial = CString::new("_NET_WM_STRUT_PARTIAL").unwrap();
             let cardinal = CString::new("CARDINAL").unwrap();
-            let strut = gdk_sys::gdk_atom_intern_static_string(strut.as_ptr());
-            let cardinal = gdk_sys::gdk_atom_intern_static_string(cardinal.as_ptr());
-            let format: c_int = 32;
-            let mode: c_int = 0;
-            let el: c_int = 4;
-            let s = [0, 0, 32, 0]; // left, right, top, bottom
-            let data_ptr: *const u8 = s.as_ptr();
+            let strut = gdk_sys::gdk_atom_intern(strut.as_ptr(), 0);
+            let cardinal = gdk_sys::gdk_atom_intern(cardinal.as_ptr(), 0);
+            let partial = gdk_sys::gdk_atom_intern(partial.as_ptr(), 0);
+            // strut
+            let format: c_int = 16; // number of bits (must be 8, 16 or 32)
+            let mode: c_int = 0; // PROP_MODE_REPLACE
+            let data = [
+                0, 0, // left
+                0, 0, // right
+                32, 0, // top
+                0, 0, // bottom
+            ];
+            let data_ptr: *const u8 = data.as_ptr();
+            let el: c_int = 4 as i32;
             gdk_sys::gdk_property_change(
                 ptr, // window:
                 strut, // property:
@@ -132,15 +142,41 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                 data_ptr, // data:
                 el, // nelements:
             );
+            // partial
+            let data = [
+                0, 0, // left
+                0, 0, // right
+                32, 0, // top
+                0, 0, // bottom
+                0, 0, // start
+                0, 0, // end
+                0, 0, // start
+                0, 0, // end
+                0, 0, // start
+                127, 7, // end
+                0, 0, // start
+                0, 0, // end
+            ];
+            // left, right, top, bottom
+            let data_ptr: *const u8 = data.as_ptr();
+            let el: c_int = 12 as i32;
+            gdk_sys::gdk_property_change(
+                ptr, // window:
+                partial, // property:
+                cardinal, // type_:
+                format, // format:
+                mode, // mode:
+                data_ptr, // data:
+                el, // nelements:
+            );
+    // # 0, 0, bar_size, 0 are the number of pixels to reserve along each edge of the
+    // # screen given in the order left, right, top, bottom. Here the size of the bar
+    // # is reserved at the top of the screen and the other edges are left alone.
+    // #
+    // # _NET_WM_STRUT_PARTIAL also supplies a further four pairs, each being a
+    // # start and end position for the strut (they don't need to occupy the entire
+    // # edge).
         }
-    // }
-    // topw.property_change("_NET_WM_STRUT","CARDINAL",32,gtk.gdk.PROP_MODE_REPLACE,
-    //         [0, 0, bar_size, 0])
-    // topw.property_change("_NET_WM_STRUT_PARTIAL","CARDINAL",32,gtk.gdk.PROP_MODE_REPLACE,
-// [0, 0, bar_size, 0, 0, 0, 0, 0, x, x+width-1, 0, 0])
-        // println!("{:#?}", p);
-
-        // wm::util::set_strut(window_role.clone());
 
         // load components
         components::load_components(&container, &self);
