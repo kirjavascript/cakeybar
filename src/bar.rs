@@ -116,14 +116,12 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         unsafe {
             let strut = CString::new("_NET_WM_STRUT").unwrap();
             let cardinal = CString::new("CARDINAL").unwrap();
-            // let _strut_partial = CString::new("_NET_WM_STRUT_PARTIAL").unwrap();
             let strut = gdk_sys::gdk_atom_intern_static_string(strut.as_ptr());
             let cardinal = gdk_sys::gdk_atom_intern_static_string(cardinal.as_ptr());
-            // let _strut_partial = gdk_sys::gdk_atom_intern_static_string(_strut_partial.as_ptr());
             let format: c_int = 32;
             let mode: c_int = 0;
             let el: c_int = 4;
-            let s = [0, 0, 0, 0]; // left, right, top bottom
+            let s = [0, 0, 32, 0]; // left, right, top, bottom
             let data_ptr: *const u8 = s.as_ptr();
             gdk_sys::gdk_property_change(
                 ptr, // window:
