@@ -5,7 +5,7 @@ use glib::translate::ToGlibPtr;
 use std::ffi::CString;
 use std::os::raw::c_int;
 
-// seems ignored in bspwm or i3
+// seems ignored in bspwm, i3 and awesome. why did I write this?
 pub fn set_strut(window: &gtk::Window, is_top: bool, rect: Rectangle) {
     let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
 

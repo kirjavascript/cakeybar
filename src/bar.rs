@@ -12,7 +12,8 @@ use {util, NAME, components};
 use config::{ComponentConfig};
 use components::i3workspace::scroll_workspace;
 
-use std::process::Command;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct Bar<'a, 'b, 'c> {
@@ -91,23 +92,18 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         let is_top = self.config.get_str_or("position", "top") == "top";
         {
             let &Rectangle { x, y, height, .. } = monitor;
-            // TODO: fix 0,0 non positioning bug
-            window.connect_size_allocate(move |window, rect| {
+            let is_set = Rc::new(RefCell::new(false));
+            window.connect_size_allocate(enclose!(is_set move |window, rect| {
                 let xpos = x;
                 let ypos = if !is_top { y + (height - rect.height) } else { y };
-                // if (xpos, ypos) != window.get_position() {
+                if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
+                    *is_set.borrow_mut() = true;
+
+                    wm::bsp::set_padding(is_top, rect.height);
                     window.move_(xpos, ypos);
-                    // set bspwm padding
-                    let position = if is_top { "top" } else { "bottom" };
-                    // TODO: thread
-                    Command::new("bspc")
-                        .arg("config")
-                        .arg(format!("{}_padding", position))
-                        .arg(format!("{}", rect.height))
-                        .output()
-                        .ok();
-                // }
-            });
+                    // set_strut crashes here :/
+                }
+            }));
         }
 
         // TODO: windowEnter set ::focus

@@ -14,11 +14,7 @@ cakeybar is a customizable statusbar for your windowmanager
 
 **work in progress** testing in i3/bspwm
 
-## build/run
-
-```rust
-cargo build --release
-```
+## running
 
 ```rust
 cargo run --release -- -h
@@ -189,6 +185,4 @@ type = "tray"
 icon_size = 20
 ```
 
-`background-color` style needs to be set explicitly for it to work
-
-only one system tray can be active at a time
+the `background-color` style needs to be set explicitly for it to work
