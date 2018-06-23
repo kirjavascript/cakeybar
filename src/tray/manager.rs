@@ -181,62 +181,8 @@ impl<'a> Manager<'a> {
             (xcb::CONFIG_WINDOW_Y as u16, 10_000),
         ]);
 
-        // adds resize event
-        // xcb::change_window_attributes(self.conn, self.window, &[
-        //     (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
-        // ]);
-
-        // restack window (fixes always on top bug)
-        // if let Ok(reply) = xcb::query_tree(self.conn, screen.root()).get_reply() {
-        //     let children = reply.children();
-        //     let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
-        //     // find the first i3 window
-        //     for child in children {
-        //         let wm_name = xcb_get_wm_name(self.conn, *child);
-        //         if wm_name.contains("i3") {
-        //             // put the window directly above it
-        //             xcb::configure_window_checked(self.conn, self.window, &[
-        //                 (value_mask, *child),
-        //                 (value_mask, xcb::STACK_MODE_ABOVE),
-        //             ]);
-        //             break;
-        //         }
-        //     }
-        // }
-
-        // attempt to stack gtk bar BELOW tray
-        // let value_mask = (xcb::CONFIG_WINDOW_STACK_MODE | xcb::CONFIG_WINDOW_SIBLING) as u16;
-
-        // if let Ok(reply) = xcb::query_tree(&self.conn, screen.root()).get_reply() {
-        //     let i3_opt = reply.children().iter().find(|child| {
-        //          xcb_get_wm_name(&self.conn, **child).contains("i3")
-        //     });
-        //     let bar_opt = reply.children().iter().find(|child| {
-        //         ::NAME == xcb_get_wm_name(&self.conn, **child)
-        //     });
-        //     if let Some(bar) = bar_opt {
-        //         if let Some(i3) = i3_opt {
-        //             println!("{:#?}", (i3, bar));
-
-        //             xcb::configure_window_checked(&self.conn, *i3, &[
-        //                 (value_mask, *bar),
-        //                 (value_mask, xcb::STACK_MODE_ABOVE),
-        //             ]);
-
-        //             println!("{:#?}", "swapped");
-        //             self.conn.flush();
-        //         }
-        //     }
-        // }
-
         self.conn.flush();
 
-        // debug window order
-        // if let Ok(reply) = xcb::query_tree(&self.conn, screen.root()).get_reply() {
-        //     for i in reply.children() {
-        //         println!("{:#?} {}", xcb_get_wm_name(&self.conn, *i), i);
-        //     }
-        // }
     }
 
     pub fn set_property<T>(&self, name: xcb::Atom, type_: xcb::Atom, format: u8, data: &[T]) {

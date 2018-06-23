@@ -1,2 +1,3 @@
 pub mod atom;
-pub mod xcb_util;
+pub mod xcb;
+pub mod gtk;

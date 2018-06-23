@@ -3,8 +3,7 @@
 use chan;
 use chan_signal;
 use xcb;
-
-use wm::{atom, xcb_util};
+use wm;
 
 pub mod ipc;
 pub mod manager;
@@ -35,7 +34,7 @@ pub fn main() -> i32 {
 
     if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
         let conn = Arc::new(conn);
-        let atoms = atom::Atoms::new(&conn);
+        let atoms = wm::atom::Atoms::new(&conn);
         let preferred = preferred as usize;
 
         let (tx_ipc, rx_ipc) = ipc::get_client();
@@ -85,7 +84,7 @@ pub fn main() -> i32 {
                     manager.finish();
                 },
                 fullscreen_tick.recv() => {
-                    if xcb_util::check_fullscreen(&conn, &atoms, &screen) {
+                    if wm::xcb::check_fullscreen(&conn, &atoms, &screen) {
                         manager.hide();
                     } else {
                         manager.show();
