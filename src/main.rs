@@ -44,15 +44,16 @@ fn init(application: &gtk::Application, config: &config::Config) {
         &Some(ref src) => util::load_theme(src),
         &None => {/* default theme */},
     }
+    let wm_util = wm::WMUtil::new();
     // load bars
     for bar_config in config.bars.iter() {
         let _ = bar::Bar::new(
             &application,
             &bar_config,
             &config.components,
+            &wm_util,
         );
     }
-
 }
 
 fn main() {

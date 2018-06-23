@@ -10,26 +10,27 @@ use gdk::{ScrollDirection};
 
 use {util, NAME, components};
 use config::{ComponentConfig};
-use components::i3workspace::scroll_workspace;
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
 #[derive(Debug)]
-pub struct Bar<'a, 'b, 'c> {
-    pub config: &'b ComponentConfig,
-    pub components: &'c Vec<ComponentConfig>,
+pub struct Bar<'a> {
+    pub config: &'a ComponentConfig,
+    pub components: &'a Vec<ComponentConfig>,
     pub application: &'a gtk::Application,
+    pub wm_util: &'a wm::WMUtil,
 }
 
-impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
+impl<'a> Bar< 'a> {
     pub fn new(
         application: &'a gtk::Application,
-        config: &'b ComponentConfig,
-        components: &'c Vec<ComponentConfig>,
-    ) -> Bar<'a, 'b, 'c> {
+        config: &'a ComponentConfig,
+        components: &'a Vec<ComponentConfig>,
+        wm_util: &'a wm::WMUtil,
+    ) -> Bar<'a> {
 
-        let bar = Bar { config, application, components };
+        let bar = Bar { config, application, components, wm_util };
 
         let monitors = util::get_monitors();
         let monitor_index = bar.config.get_int_or("monitor", 0);
@@ -49,7 +50,6 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
 
         bar
     }
-
 
     fn init(&self, monitor: &Rectangle) {
 
@@ -76,13 +76,13 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
         viewport.add_events(2097152);
         // when scrolling, change workspace
         if self.config.get_bool_or("scroll_workspace", true) {
-            viewport.connect_scroll_event(move |_vp, e| {
+            let &Bar { wm_util, .. } = self;
+            viewport.connect_scroll_event(enclose!(wm_util move |_vp, e| {
                 let direction = e.get_direction();
                 let is_next = direction == ScrollDirection::Down;
-                // change workspace (i3)
-                scroll_workspace(is_next, monitor_index);
+                wm_util.scroll_workspace(is_next, monitor_index);
                 Inhibit(true)
-            });
+            }));
         }
         viewport.set_shadow_type(gtk::ShadowType::None);
         viewport.add(&container);
@@ -98,7 +98,7 @@ impl<'a, 'b, 'c> Bar<'a, 'b, 'c> {
                 let ypos = if !is_top { y + (height - rect.height) } else { y };
                 if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
                     *is_set.borrow_mut() = true;
-
+                    // TODO: check bspwm
                     wm::bsp::set_padding(is_top, rect.height);
                     window.move_(xpos, ypos);
                     // set_strut crashes here :/

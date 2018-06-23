@@ -16,6 +16,9 @@ https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-
 https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
 https://github.com/pw4ever/awesome-wm-config#setup
 
+with_borrow
+18:16:17 <+j`ey> https://hastebin.com/pifozukexi.swift
+
 bspwm
 =====
 refactor i3window::scroll_workspace (3 hours ago)
@@ -23,6 +26,7 @@ refactor bar.rs
 
 refactoring
 ===
+proper warning / error - ansiterm
 https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
 pub/sub for wm ipc
 pub/sub indicate what events to start listening to
@@ -32,7 +36,6 @@ anonymous components
 impl
 ====
 reload config / theme (theme should be easy)
-proper warning / error
 bindsym $mod+m exec -- --message
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 connect_focus on bar window
@@ -79,7 +82,7 @@ https://i.imgur.com/TF69nPa.png
 https://i.imgur.com/TePyRmw.png
 blue rope / plain background
 slanted workspace names with SVG
-gtk? v2.0 will be electron
+electronbar
 xml representation of the component view
 
 https://alpha.wallhaven.cc/
