@@ -15,7 +15,7 @@ pub struct I3Workspace { }
 
 impl Component for I3Workspace {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
-        if _bar.wm_util.get_wm_type() != wm::WMType::I3 {
+        if bar.wm_util.get_wm_type() != wm::WMType::I3 {
             return
         }
 
