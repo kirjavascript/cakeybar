@@ -6,6 +6,7 @@ use gdk::{Screen, ScreenExt};
 use i3ipc::{I3Connection, I3EventListener, Subscription};
 use i3ipc::reply::{Workspace, Workspaces};
 use i3ipc::event::{Event};
+use wm;
 
 use std::thread;
 use std::sync::mpsc;
@@ -14,6 +15,9 @@ pub struct I3Workspace { }
 
 impl Component for I3Workspace {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
+        if _bar.wm_util.get_wm_type() != wm::WMType::I3 {
+            return
+        }
 
         let monitor_index = bar.config.get_int_or("monitor", 0) as i32;
 

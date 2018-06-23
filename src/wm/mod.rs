@@ -9,7 +9,7 @@ use components::i3workspace::scroll_workspace;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
     I3,
     Unknown,
@@ -30,7 +30,7 @@ impl WMUtil {
 
     pub fn new() -> Self {
         let data = Rc::new(RefCell::new(Data {
-            wm_type: Self::get_wm_type(),
+            wm_type: Self::init_get_wm_type(),
         }));
 
         WMUtil { data }
@@ -40,12 +40,15 @@ impl WMUtil {
         WMUtil { data: self.data.clone() }
     }
 
-    fn get_wm_type() -> WMType {
+    fn init_get_wm_type() -> WMType {
         if let Ok(_) = I3Connection::connect() {
             return WMType::I3
         }
 
         WMType::Unknown
+    }
+    pub fn get_wm_type(&self) -> WMType {
+        self.data.borrow().wm_type.clone()
     }
 
     pub fn scroll_workspace(&self, forward: bool, monitor_index: i32) {

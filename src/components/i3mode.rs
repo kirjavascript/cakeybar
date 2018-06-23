@@ -5,6 +5,7 @@ use gtk::{Label};
 use i3ipc::I3EventListener;
 use i3ipc::Subscription;
 use i3ipc::event::Event;
+use wm;
 
 use std::thread;
 use std::sync::mpsc;
@@ -13,6 +14,9 @@ pub struct I3Mode { }
 
 impl Component for I3Mode {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar){
+        if _bar.wm_util.get_wm_type() != wm::WMType::I3 {
+            return
+        }
         let label = Label::new(None);
         Self::init_widget(&label, config);
         container.add(&label);
