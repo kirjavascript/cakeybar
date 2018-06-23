@@ -73,7 +73,7 @@ pub fn main() -> i32 {
                 rx.recv() -> event_opt => {
                     if let Some(event) = event_opt {
                         if let Some(code) = manager.handle_event(event) {
-                            info!("tray {:?}", code);
+                            info!("tray exited with code {:?}", code);
                             return code
                         }
                     } else {

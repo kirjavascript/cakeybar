@@ -62,13 +62,13 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);
                             if let Err(err) = send_res {
-                                warn!("tray::ipc::get_server {:?}", err);
+                                warn!("{:?}", err);
                             }
                         }
                     }
                 },
                 Err(err) => {
-                    error!("tray::ipc::get_server {:#?}", err);
+                    error!("{:#?}", err);
                     break;
                 }
             }
@@ -115,13 +115,13 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);
                             if let Err(err) = send_res {
-                                warn!("tray::ipc::get_client {:?}", err);
+                                warn!("{:?}", err);
                             }
                         }
                     }
                 },
                 Err(err) => {
-                    error!("tray::ipc::get_client {:#?}", err);
+                    error!("{:#?}", err);
                     break;
                 },
             }
