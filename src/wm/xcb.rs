@@ -48,7 +48,7 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
 // debug window order
 // if let Ok(reply) = xcb::query_tree(&self.conn, screen.root()).get_reply() {
 //     for i in reply.children() {
-//         println!("{:#?} {}", xcb_get_wm_name(&self.conn, *i), i);
+//         info!("{:#?} {}", xcb_get_wm_name(&self.conn, *i), i);
 //     }
 // }
 

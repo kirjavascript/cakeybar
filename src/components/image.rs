@@ -15,7 +15,7 @@ impl Component for Image {
             container.add(&img);
 
             // wait a tick, otherwise we get negative height warnings
-            gtk::idle_add(enclose!(img move || {
+            gtk::idle_add(clone!(img move || {
                 img.show();
                 gtk::Continue(false)
             }));

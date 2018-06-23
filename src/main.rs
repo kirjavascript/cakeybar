@@ -6,6 +6,7 @@ extern crate glib;
 extern crate xcb;
 extern crate clap;
 extern crate toml;
+extern crate ansi_term;
 // components
 extern crate i3ipc;
 extern crate chrono;
@@ -101,7 +102,7 @@ fn main() {
 
     // check version
     if let Some(err) = gtk::check_version(3, 22, 0) {
-        eprintln!("{} (requires 3.22+)", err);
+        warn!("{} (requires 3.22+)", err);
     }
 
     let application = gtk::Application::new(

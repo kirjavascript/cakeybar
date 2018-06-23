@@ -68,7 +68,7 @@ impl Component for Menu {
         // window.set_skip_taskbar_hint(false);
         // window.set_type_hint(WindowTypeHint::Utility);
 
-        // window.connect_focus_out_event(enclose!((window, menu) move |_, _| {
+        // window.connect_focus_out_event(clone!((window, menu) move |_, _| {
         //     menu.borrow_mut().is_open = false;
         //     window.hide();
         //     Inhibit(false)
@@ -87,7 +87,7 @@ impl Component for Menu {
             wrapper.add(&ebox);
 
             // run command on click
-            ebox.connect_button_press_event(enclose!((window, menu) move |_, _| {
+            ebox.connect_button_press_event(clone!((window, menu) move |_, _| {
                 ::util::run_command(exec.to_string());
                 // toggle menu
                 menu.borrow_mut().is_open = false;
@@ -106,11 +106,11 @@ impl Component for Menu {
         }
 
         // track widget bbox
-        ebox.connect_size_allocate(enclose!(menu move |_, rect| {
+        ebox.connect_size_allocate(clone!(menu move |_, rect| {
             menu.borrow_mut().bbox = *rect;
         }));
 
-        ebox.connect_button_press_event(enclose!(window move |c, e| {
+        ebox.connect_button_press_event(clone!(window move |c, e| {
             if e.get_event_type() == EventType::ButtonPress {
                 if !menu.borrow().is_open {
                     let bbox = menu.borrow().bbox;

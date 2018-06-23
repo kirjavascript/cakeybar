@@ -17,7 +17,7 @@ impl Component for Tray {
             Tray::load(container, config, bar);
         }
         else {
-            eprintln!("Tray component is already loaded");
+            warn!("Tray component is already loaded");
         }
     }
 }
@@ -59,7 +59,7 @@ impl Tray {
         });
 
         // receive events
-        gtk::timeout_add(10, enclose!((base_widget, wrapper) move || {
+        gtk::timeout_add(10, clone!((base_widget, wrapper) move || {
             if let Ok(msg) = rx_ipc.try_recv() {
                 match msg {
                     Message::Width(w) => {

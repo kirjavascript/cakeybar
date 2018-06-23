@@ -1,9 +1,6 @@
 use super::gdk::{Screen, ScreenExt, Rectangle};
 use super::gtk::{CssProvider, CssProviderExt, StyleContext};
 
-use std::process::Command;
-use std::{thread, str};
-
 pub fn get_monitors() -> Vec<Rectangle> {
     let screen = Screen::get_default().unwrap();
     let mut monitors = Vec::new();
@@ -34,12 +31,15 @@ pub fn load_theme(path: &str) {
     let provider = CssProvider::new();
     match provider.load_from_path(path) {
         Ok(_) => StyleContext::add_provider_for_screen(&screen, &provider, 0),
-        Err(e) => println!("Error parsing stylesheet:\n{}", e),
+        Err(e) => {error!("parsing stylesheet:\n{}", e);},
     };
 }
 
+use std::process::Command;
+use std::{thread, str};
+
 pub fn run_command(exec: String) {
-    thread::spawn(enclose!(exec move || {
+    thread::spawn(clone!(exec move || {
         let exec_clone = exec.clone();
         let split: Vec<&str> = exec_clone.split(" ").collect();
         let output = Command::new(split.get(0).unwrap_or(&""))
@@ -49,11 +49,11 @@ pub fn run_command(exec: String) {
             Ok(out) => {
                 let stderr = str::from_utf8(&out.stderr).unwrap_or("");
                 if stderr != "" {
-                    eprintln!("{}", stderr);
+                    warn!("{}", stderr);
                 }
             },
             Err(err) => {
-                eprintln!("{}: {}", err, exec);
+                warn!("{}: {}", err, exec);
             },
         }
     }));

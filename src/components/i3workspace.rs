@@ -114,7 +114,7 @@ impl I3Workspace {
                 });
 
 
-                gtk::timeout_add(10, enclose!(wrapper move || {
+                gtk::timeout_add(10, clone!(wrapper move || {
                     if let Ok(msg_result) = rx.try_recv() {
                         match msg_result {
                             Ok(_msg) => {
@@ -177,8 +177,8 @@ impl I3Workspace {
 
 fn handle_err(_err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, monitor_index: i32) {
     #[cfg(debug_assertions)]
-    eprintln!("{}, restarting thread", _err);
-    gtk::timeout_add(100, enclose!(wrapper move || {
+    info!("{}, restarting thread", _err);
+    gtk::timeout_add(100, clone!(wrapper move || {
         I3Workspace::load_thread(&wrapper, show_name, show_all, monitor_index);
         gtk::Continue(false)
     }));
@@ -194,7 +194,7 @@ pub fn run_command(string: &str) {
                 .expect("something went wrong running an i3 command");
         },
         Err(err) => {
-            eprintln!("{}", err);
+            error!("running i3 command {}", err);
         },
     }
 }
@@ -234,7 +234,7 @@ pub fn scroll_workspace(is_next: bool, monitor_index: i32) {
             }
         },
         Err(err) => {
-            eprintln!("{}", err);
+            error!("getting i3 connection {}", err);
         },
     }
 }

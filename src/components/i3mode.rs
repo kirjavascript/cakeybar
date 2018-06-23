@@ -59,7 +59,7 @@ impl I3Mode {
             };
         });
 
-        let tick = enclose!(label move || {
+        let tick = clone!(label move || {
             if let Ok(msg_result) = rx.try_recv() {
                 match msg_result {
                     Ok(msg) => {
@@ -74,8 +74,8 @@ impl I3Mode {
                     },
                     Err(_err) => {
                         #[cfg(debug_assertions)]
-                        eprintln!("{}, restarting thread", _err);
-                        gtk::timeout_add(100, enclose!(label move || {
+                        info!("{}, restarting thread", _err);
+                        gtk::timeout_add(100, clone!(label move || {
                             Self::load_thread(&label);
                             gtk::Continue(false)
                         }));

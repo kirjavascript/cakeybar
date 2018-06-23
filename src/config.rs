@@ -77,7 +77,7 @@ pub fn parse_config(filename: &str) -> Config {
     // get file
     let file_result = File::open(filename);
     if let Err(e) = file_result {
-        eprintln!("{}: {}", filename, e);
+        error!("{}: {}", filename, e);
         exit(2i32);
     }
 
@@ -90,7 +90,7 @@ pub fn parse_config(filename: &str) -> Config {
     let parsed_result = contents.parse::<toml::Value>();
 
     if let Err(e) = parsed_result {
-        eprintln!("{}: {}", filename, e);
+        error!("{}: {}", filename, e);
         exit(1i32);
     }
 
@@ -109,14 +109,14 @@ pub fn parse_config(filename: &str) -> Config {
     let bar_option = parsed.get("bar");
 
     if bar_option.is_none() {
-        eprintln!("{}: no bars specified", filename);
+        error!("{}: no bars specified", filename);
         exit(1i32);
     }
 
     let bar_table_option = parsed.get("bar").unwrap().as_table();
 
     if bar_table_option.is_none() {
-        eprintln!("{}: bar needs to be a table like [bar.name]", filename);
+        error!("{}: bar needs to be a table like [bar.name]", filename);
         exit(1i32);
     }
 
@@ -125,7 +125,7 @@ pub fn parse_config(filename: &str) -> Config {
     let bars: Vec<(&String, &Value)> = bar_table.iter().filter(|&(_k, v)| v.is_table()).collect();
 
     if bars.len() == 0 {
-        eprintln!("{}: no bars defined (bars need a name like [bar.name])", filename);
+        error!("{}: no bars defined (bars need a name like [bar.name])", filename);
         exit(1i32);
     }
 
@@ -193,7 +193,7 @@ fn get_path(file: String, directory: &Path) -> String {
         directory.join(&file_path)
     }.canonicalize();
     if file_path.is_err() {
-        eprintln!("{}: {:?}", &file, file_path.err().unwrap());
+        error!("{}: {:?}", &file, file_path.err().unwrap());
         exit(2i32);
     }
     file_path.unwrap().as_path().to_str().unwrap_or("").to_string()

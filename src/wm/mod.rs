@@ -22,15 +22,22 @@ pub struct WMUtil {
 
 #[derive(Debug)]
 struct Data {
-    pub wm_type: WMType,
+    wm_type: WMType,
 }
 
 
 impl WMUtil {
 
     pub fn new() -> Self {
+        let i3conn = I3Connection::connect();
+        let wm_type = if let Ok(_) = i3conn {
+            WMType::I3
+        } else {
+            WMType::Unknown
+        };
+
         let data = Rc::new(RefCell::new(Data {
-            wm_type: Self::init_get_wm_type(),
+            wm_type,
         }));
 
         WMUtil { data }
@@ -40,13 +47,6 @@ impl WMUtil {
         WMUtil { data: self.data.clone() }
     }
 
-    fn init_get_wm_type() -> WMType {
-        if let Ok(_) = I3Connection::connect() {
-            return WMType::I3
-        }
-
-        WMType::Unknown
-    }
     pub fn get_wm_type(&self) -> WMType {
         self.data.borrow().wm_type.clone()
     }

@@ -21,12 +21,12 @@ with_borrow
 
 bspwm
 =====
-refactor i3window::scroll_workspace (3 hours ago)
-refactor bar.rs
 
 refactoring
 ===
 proper warning / error - ansiterm
+refactor i3 components
+refactor bar.rs set_padding
 https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
 pub/sub for wm ipc
 pub/sub indicate what events to start listening to

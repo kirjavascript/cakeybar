@@ -47,7 +47,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
 
                                 let msg_rcv_opt: Result<Message, _> = deserialize(&msg);
                                 if let Ok(msg_rcv) = msg_rcv_opt {
-                                    // println!("server {:#?}", msg_rcv);
+                                    // info!("server {:#?}", msg_rcv);
                                     tx_snd.send(msg_rcv).unwrap();
                                     msg.clear();
                                 }
@@ -62,14 +62,13 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);
                             if let Err(err) = send_res {
-                                eprintln!("tray::ipc::get_server {:?}", err);
+                                warn!("tray::ipc::get_server {:?}", err);
                             }
                         }
                     }
                 },
                 Err(err) => {
-                    /* connection failed */
-                    println!("err {:#?}", err);
+                    error!("tray::ipc::get_server {:#?}", err);
                     break;
                 }
             }
@@ -102,7 +101,7 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
 
                                 let msg_rcv_opt: Result<Message, _> = deserialize(&msg);
                                 if let Ok(msg_rcv) = msg_rcv_opt {
-                                    // println!("client {:#?}", msg_rcv);
+                                    // info!("client {:#?}", msg_rcv);
                                     tx_snd.send(msg_rcv);
                                     msg.clear();
                                 }
@@ -116,14 +115,13 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);
                             if let Err(err) = send_res {
-                                eprintln!("tray::ipc::get_client {:?}", err);
+                                warn!("tray::ipc::get_client {:?}", err);
                             }
                         }
                     }
                 },
                 Err(err) => {
-                    /* connection failed */
-                    println!("err {:#?}", err);
+                    error!("tray::ipc::get_client {:#?}", err);
                     break;
                 },
             }

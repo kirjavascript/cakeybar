@@ -45,12 +45,12 @@ pub fn main() -> i32 {
         let mut manager = manager::Manager::new(&conn, &atoms, &screen, tx_ipc);
 
         if !manager.is_selection_available() {
-            eprintln!("Another system tray is already running");
+            warn!("Another system tray is already running");
             return EXIT_FAILED_SELECT
         }
 
         let (tx, rx) = chan::sync(0);
-        thread::spawn(enclose!(conn move || {
+        thread::spawn(clone!(conn move || {
             loop {
                 match conn.wait_for_event() {
                     Some(event) => { tx.send(event); },
@@ -73,11 +73,11 @@ pub fn main() -> i32 {
                 rx.recv() -> event_opt => {
                     if let Some(event) = event_opt {
                         if let Some(code) = manager.handle_event(event) {
-                            println!("{:?}", code);
+                            info!("tray {:?}", code);
                             return code
                         }
                     } else {
-                        eprintln!("X connection is rip - killed by XKillClient(), maybe?");
+                        error!("X connection is rip - killed by XKillClient(), maybe?");
                     }
                 },
                 signal.recv() => {
@@ -94,7 +94,7 @@ pub fn main() -> i32 {
         }
     }
     else {
-        println!("Could not connect to X server!");
+        error!("Could not connect to X server!");
         return EXIT_FAILED_CONNECT
     }
 }

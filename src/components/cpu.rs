@@ -15,7 +15,7 @@ impl Component for CPU {
 
         let mut system = System::new();
 
-        let mut tick = enclose!(label move || {
+        let mut tick = clone!(label move || {
             system.refresh_system();
             let processor_list = system.get_processor_list();
             if !processor_list.is_empty() {

@@ -59,7 +59,7 @@ impl Component for Dropdown {
 
         menu.show_all();
 
-        ebox.connect_button_release_event(enclose!(menu move |_c, _e| {
+        ebox.connect_button_release_event(clone!(menu move |_c, _e| {
             menu.popup_easy(0, 0);
             Inhibit(false)
         }));
@@ -74,7 +74,7 @@ impl Dropdown {
                 MenuItem::Command(label, command) => {
                     let item = GtkMenuItem::new_with_label(label);
                     menu.append(&item);
-                    item.connect_activate(enclose!(command move |_| {
+                    item.connect_activate(clone!(command move |_| {
                         ::util::run_command(command.to_string());
                     }));
                 },

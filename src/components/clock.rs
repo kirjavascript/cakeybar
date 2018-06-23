@@ -18,7 +18,7 @@ impl Component for Clock {
 
         label.set_text(&current_time(format.clone()));
 
-        let tick = enclose!(label move || {
+        let tick = clone!(label move || {
             label.set_text(&current_time(format.clone()));
             gtk::Continue(true)
         });

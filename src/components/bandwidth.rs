@@ -28,7 +28,7 @@ impl Component for Bandwidth {
         let interval = config.get_int_or("interval", 5) as u64;
 
         let mut recv = 0u64;
-        let mut tick = enclose!(label move || {
+        let mut tick = clone!(label move || {
             let bw = network::read();
             match bw {
                 Ok(info) => {
@@ -54,7 +54,7 @@ impl Component for Bandwidth {
                     }
                 },
                 Err(err) => {
-                    eprintln!("{}", err);
+                    error!("bandwidth: {}", err);
                 },
             }
             gtk::Continue(true)

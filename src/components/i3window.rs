@@ -61,7 +61,7 @@ impl I3Window {
             };
         });
 
-        gtk::timeout_add(10, enclose!(label move || {
+        gtk::timeout_add(10, clone!(label move || {
             if let Ok(msg_result) = rx.try_recv() {
                 match msg_result {
                     Ok(msg) => {
@@ -75,8 +75,8 @@ impl I3Window {
                     },
                     Err(_err) => {
                         #[cfg(debug_assertions)]
-                        eprintln!("{}, restarting thread", _err);
-                        gtk::timeout_add(100, enclose!(label move || {
+                        info!("{}, restarting thread", _err);
+                        gtk::timeout_add(100, clone!(label move || {
                             Self::load_thread(&label, trunc);
                             gtk::Continue(false)
                         }));

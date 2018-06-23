@@ -29,7 +29,7 @@ impl Component for Battery {
         let battery = config.get_str_or("battery", "BAT0").to_string();
         let charge_full = get_value(battery.clone(), "charge_full").unwrap_or("0".to_string()).parse::<u64>();
 
-        let tick = enclose!(label move || {
+        let tick = clone!(label move || {
             let plugged = get_value(adapter.clone(), "online").unwrap_or("0".to_string()) == "1".to_string();
 
 

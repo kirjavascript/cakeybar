@@ -364,7 +364,7 @@ impl<'a> Manager<'a> {
                         xcb::cast_event(&event)
                     };
                     if !self.take_selection(event.time()) {
-                        println!("Could not take ownership of tray selection. Maybe another tray is also running?");
+                        warn!("Could not take ownership of tray selection. Maybe another tray is also running?");
                         return Some(super::EXIT_FAILED_SELECT)
                     }
                 },

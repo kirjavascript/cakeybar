@@ -22,7 +22,7 @@ pub struct Bar<'a> {
     pub wm_util: &'a wm::WMUtil,
 }
 
-impl<'a> Bar< 'a> {
+impl<'a> Bar<'a> {
     pub fn new(
         application: &'a gtk::Application,
         config: &'a ComponentConfig,
@@ -38,9 +38,9 @@ impl<'a> Bar< 'a> {
 
         match monitor_option {
             None => {
-                eprintln!(
-                    "warning: no monitor at index {}",
-                    monitor_index,
+                warn!(
+                    "no monitor at index {}",
+                    monitor_index
                 );
             },
             Some(monitor) => {
@@ -77,7 +77,7 @@ impl<'a> Bar< 'a> {
         // when scrolling, change workspace
         if self.config.get_bool_or("scroll_workspace", true) {
             let &Bar { wm_util, .. } = self;
-            viewport.connect_scroll_event(enclose!(wm_util move |_vp, e| {
+            viewport.connect_scroll_event(clone!(wm_util move |_vp, e| {
                 let direction = e.get_direction();
                 let is_next = direction == ScrollDirection::Down;
                 wm_util.scroll_workspace(is_next, monitor_index);
@@ -93,7 +93,7 @@ impl<'a> Bar< 'a> {
         {
             let &Rectangle { x, y, height, .. } = monitor;
             let is_set = Rc::new(RefCell::new(false));
-            window.connect_size_allocate(enclose!(is_set move |window, rect| {
+            window.connect_size_allocate(clone!(is_set move |window, rect| {
                 let xpos = x;
                 let ypos = if !is_top { y + (height - rect.height) } else { y };
                 if !*is_set.borrow() || (xpos, ypos) != window.get_position() {

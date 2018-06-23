@@ -19,7 +19,7 @@ impl Component for IP {
 
         let sys = System::new();
 
-        let tick = enclose!(label move || {
+        let tick = clone!(label move || {
             if let Ok(interfaces) = sys.networks() {
                 let mut iterface_opt = if interface == "auto" {
                     interfaces.iter().find(|_| true)
