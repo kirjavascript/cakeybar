@@ -190,11 +190,10 @@ pub fn run_command(string: &str) {
     let connection_result = I3Connection::connect();
     match connection_result {
         Ok(mut connection) => {
-            connection.run_command(string)
-                .expect("something went wrong running an i3 command");
+            connection.run_command(string).ok();
         },
         Err(err) => {
-            error!("running i3 command {}", err);
+            error!("{}", err);
         },
     }
 }

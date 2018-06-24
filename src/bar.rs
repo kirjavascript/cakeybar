@@ -55,6 +55,7 @@ impl<'a> Bar<'a> {
 
         let window = Window::new(WindowType::Toplevel);
         self.application.add_window(&window);
+        let &Bar { wm_util, .. } = self;
 
         // set base values
         window.set_title(NAME);
@@ -76,7 +77,6 @@ impl<'a> Bar<'a> {
         viewport.add_events(2097152);
         // when scrolling, change workspace
         if self.config.get_bool_or("scroll_workspace", true) {
-            let &Bar { wm_util, .. } = self;
             viewport.connect_scroll_event(clone!(wm_util move |_vp, e| {
                 let direction = e.get_direction();
                 let is_next = direction == ScrollDirection::Down;
@@ -93,14 +93,14 @@ impl<'a> Bar<'a> {
         {
             let &Rectangle { x, y, height, .. } = monitor;
             let is_set = Rc::new(RefCell::new(false));
-            window.connect_size_allocate(clone!(is_set move |window, rect| {
+            window.connect_size_allocate(clone!((is_set, wm_util)
+                                                move |window, rect| {
                 let xpos = x;
                 let ypos = if !is_top { y + (height - rect.height) } else { y };
                 if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
                     *is_set.borrow_mut() = true;
-                    // TODO: check bspwm
-                    wm::bsp::set_padding(is_top, rect.height);
                     window.move_(xpos, ypos);
+                    wm_util.set_padding(is_top, rect.height);
                     // set_strut crashes here :/
                 }
             }));

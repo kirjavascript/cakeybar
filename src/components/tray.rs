@@ -17,7 +17,7 @@ impl Component for Tray {
             Tray::load(container, config, bar);
         }
         else {
-            warn!("Tray component is already loaded");
+            warn!("tray component is already loaded");
         }
     }
 }

@@ -11,16 +11,13 @@ system tray:
 https://standards.freedesktop.org/systemtray-spec/systemtray-spec-latest.html#idm139990069470464
 wm stuff:
 https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
-gtk->xcb
-https://stackoverflow.com/questions/1879326/how-can-i-retrieve-window-id-of-gtk-window
 https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
 https://github.com/pw4ever/awesome-wm-config#setup
 
 with_borrow
 18:16:17 <+j`ey> https://hastebin.com/pifozukexi.swift
 
-bspwm
-=====
+awesome-client
 
 refactoring
 ===

@@ -45,7 +45,7 @@ pub fn main() -> i32 {
         let mut manager = manager::Manager::new(&conn, &atoms, &screen, tx_ipc);
 
         if !manager.is_selection_available() {
-            warn!("Another system tray is already running");
+            warn!("another system tray is already running");
             return EXIT_FAILED_SELECT
         }
 
@@ -73,7 +73,7 @@ pub fn main() -> i32 {
                 rx.recv() -> event_opt => {
                     if let Some(event) = event_opt {
                         if let Some(code) = manager.handle_event(event) {
-                            info!("tray exited with code {:?}", code);
+                            info!("system tray exited with code {}", code);
                             return code
                         }
                     } else {
@@ -94,7 +94,7 @@ pub fn main() -> i32 {
         }
     }
     else {
-        error!("Could not connect to X server!");
+        error!("could not connect to X server!");
         return EXIT_FAILED_CONNECT
     }
 }

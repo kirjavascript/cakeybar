@@ -18,8 +18,7 @@ macro_rules! message {
     ($c:ident, $m:expr, $p:expr) => {
         use $crate::ansi_term::Colour::{$c, Fixed};
         let padding = String::from_utf8(vec![b' '; 12 - $m.len()]).unwrap();
-        eprint!("{}{} ", padding, $c.bold().paint($m));
-        $p;
+        eprint!("{}{} {}", padding, $c.bold().paint($m), $p);
         let file_line = format!("{}:{}", file!(), line!());
         eprintln!(" {}", Fixed(240).paint(file_line));
     };
@@ -27,29 +26,29 @@ macro_rules! message {
 #[macro_export]
 macro_rules! error {
     ( $x:expr, $( $y:expr ),* ) => {
-        message!(Red, "error", eprint!($x, $($y),*));
+        message!(Red, "error", format!($x, $($y),*));
     };
     ( $x:expr ) => {
-        message!(Red, "error", eprint!($x));
+        message!(Red, "error", format!($x));
     };
 }
 
 #[macro_export]
 macro_rules! warn {
     ( $x:expr, $( $y:expr ),* ) => {
-        message!(Yellow, "warning", eprint!($x, $($y),*));
+        message!(Yellow, "warning", format!($x, $($y),*));
     };
     ( $x:expr ) => {
-        message!(Yellow, "warning", eprint!($x));
+        message!(Yellow, "warning", format!($x));
     };
 }
 
 #[macro_export]
 macro_rules! info {
     ( $x:expr, $( $y:expr ),* ) => {
-        message!(Cyan, "info", eprint!($x, $($y),*));
+        message!(Green, "info", format!($x, $($y),*));
     };
     ( $x:expr ) => {
-        message!(Cyan, "info", eprint!($x));
+        message!(Green, "info", format!($x));
     };
 }

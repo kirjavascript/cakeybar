@@ -13,3 +13,15 @@ pub fn set_padding(is_top: bool, padding: i32) {
             .ok();
     });
 }
+
+use std::env;
+use std::os::unix::net::{UnixStream};
+use std::io::Error;
+
+pub fn connect() -> Result<UnixStream, Error> {
+// https://github.com/marionauta/bspc/blob/master/src/main.rs
+    let stream_file = env::var("BSPWM_SOCKET")
+        .unwrap_or_else(|_| "/tmp/bspwm{}_0_0-socket".to_string());
+
+    UnixStream::connect(stream_file)
+}

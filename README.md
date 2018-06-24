@@ -8,7 +8,6 @@ cakeybar is a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
 * flexible theming with CSS
-* components for i3
 * system tray integration
 * more rice than feudal japan
 
