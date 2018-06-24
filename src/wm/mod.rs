@@ -2,18 +2,30 @@ pub mod atom;
 pub mod xcb;
 pub mod gtk;
 pub mod bsp;
+pub mod i3;
+pub mod events;
 
+use self::events::{Event, EventStream};
 use i3ipc::I3Connection;
-use components::i3workspace;
+use components::i3workspace; // TODO: remove
 
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::fmt;
+
+// use bidule::Stream;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
-    I3,
+    I3, // (connection)
     Bsp,
     Unknown,
+}
+
+impl fmt::Display for WMType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", format!("{:?}", &self).to_lowercase())
+    }
 }
 
 #[derive(Debug)]
@@ -24,12 +36,19 @@ pub struct WMUtil {
 #[derive(Debug)]
 struct Data {
     wm_type: WMType,
+    // events: EventStream,
+    // events: Sink<Event>
 }
-
 
 impl WMUtil {
 
     pub fn new() -> Self {
+        // let events: Stream<Event> = Stream::new();
+        // events.subscribe(|sig| {
+        //     error!("signal: {:?}", sig);
+        // });
+        // i3::listen(events);
+
         let i3conn = I3Connection::connect();
         let wm_type = if let Ok(_) = i3conn {
             WMType::I3
@@ -40,19 +59,19 @@ impl WMUtil {
         };
 
         if wm_type != WMType::Unknown {
-            let wm_name = format!("{:?}", wm_type);
-            info!("detected {}wm", wm_name.to_lowercase());
+            info!("detected {}wm", wm_type);
         }
 
         let data = Rc::new(RefCell::new(Data {
             wm_type,
+            // events,
         }));
 
-        WMUtil { data }
+        Self { data }
     }
 
     pub fn clone(&self) -> Self {
-        WMUtil { data: self.data.clone() }
+        Self { data: self.data.clone() }
     }
 
     pub fn get_wm_type(&self) -> WMType {

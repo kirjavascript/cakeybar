@@ -20,8 +20,9 @@ use std::io::Error;
 
 pub fn connect() -> Result<UnixStream, Error> {
 // https://github.com/marionauta/bspc/blob/master/src/main.rs
+//https://github.com/baskerville/bspwm/blob/336095739e2de94109e55e544c806770316c822c/doc/bspwm.1.asciidoc
     let stream_file = env::var("BSPWM_SOCKET")
-        .unwrap_or_else(|_| "/tmp/bspwm{}_0_0-socket".to_string());
+        .unwrap_or("/tmp/bspwm{}_0_0-socket".to_string());
 
     UnixStream::connect(stream_file)
 }
