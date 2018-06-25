@@ -7,7 +7,10 @@ use wm::events::Event;
 use std::thread;
 use std::sync::mpsc;
 
-pub fn listen() {
+use futures::Future;
+use parallel_event_emitter::*;
+
+pub fn listen(wm_util: &::wm::WMUtil) {
 
     let (tx, rx) = mpsc::channel();
 
@@ -41,19 +44,16 @@ pub fn listen() {
         };
     });
 
-    gtk::timeout_add(10, move || {
+    gtk::timeout_add(10, clone!(wm_util move || {
         if let Ok(msg_result) = rx.try_recv() {
             match msg_result {
                 Ok(msg) => {
-                    // let is_default = msg.change == "default";
-
-                    // if is_default {
-                    //     label.hide();
-                    // } else {
-                    //     label.show();
-                    //     label.set_text(&msg.change);
-                    // }
-                    // stream.send(&Event::Window(msg.change));
+                    wm_util.data
+                        .borrow_mut()
+                        .events
+                        .emit_value(Event::Mode, msg.change)
+                        .wait()
+                        .unwrap();
                 },
                 Err(err) => {
                     info!("{}, restarting thread", err.to_lowercase());
@@ -66,5 +66,5 @@ pub fn listen() {
             };
         }
         gtk::Continue(true)
-    });
+    }));
 }

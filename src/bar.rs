@@ -14,7 +14,6 @@ use config::{ComponentConfig};
 use std::cell::RefCell;
 use std::rc::Rc;
 
-#[derive(Debug)]
 pub struct Bar<'a> {
     pub config: &'a ComponentConfig,
     pub components: &'a Vec<ComponentConfig>,

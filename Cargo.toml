@@ -14,6 +14,8 @@ clap = "2.31.2"
 toml = "0.4"
 i3ipc = "0.8.2"
 ansi_term = "0.11"
+futures = "0.1"
+parallel-event-emitter = "0.2.4"
 
 # stats
 systemstat = "0.1.2"

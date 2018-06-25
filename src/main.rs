@@ -7,6 +7,8 @@ extern crate xcb;
 extern crate clap;
 extern crate toml;
 extern crate ansi_term;
+extern crate futures;
+extern crate parallel_event_emitter;
 // components
 extern crate i3ipc;
 extern crate chrono;

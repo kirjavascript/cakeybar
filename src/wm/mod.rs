@@ -5,7 +5,7 @@ pub mod bsp;
 pub mod i3;
 pub mod events;
 
-use self::events::{Event, EventStream};
+use self::events::Event;
 use i3ipc::I3Connection;
 use components::i3workspace; // TODO: remove
 
@@ -13,7 +13,8 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
 
-// use bidule::Stream;
+use futures::Future;
+use parallel_event_emitter::*;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
@@ -28,27 +29,18 @@ impl fmt::Display for WMType {
     }
 }
 
-#[derive(Debug)]
 pub struct WMUtil {
-    data: Rc<RefCell<Data>>,
+    pub data: Rc<RefCell<Data>>,
 }
 
-#[derive(Debug)]
-struct Data {
-    wm_type: WMType,
-    // events: EventStream,
-    // events: Sink<Event>
+pub struct Data {
+    pub wm_type: WMType,
+    pub events: ParallelEventEmitter<Event>,
 }
 
 impl WMUtil {
 
     pub fn new() -> Self {
-        // let events: Stream<Event> = Stream::new();
-        // events.subscribe(|sig| {
-        //     error!("signal: {:?}", sig);
-        // });
-        // i3::listen(events);
-
         let i3conn = I3Connection::connect();
         let wm_type = if let Ok(_) = i3conn {
             WMType::I3
@@ -62,12 +54,43 @@ impl WMUtil {
             info!("detected {}wm", wm_type);
         }
 
+        let mut events = ParallelEventEmitter::new();
+
         let data = Rc::new(RefCell::new(Data {
             wm_type,
-            // events,
+            events,
         }));
 
-        Self { data }
+        let util = Self { data };
+
+        match util.get_wm_type() {
+            WMType::I3 => {
+                i3::listen(&util);
+            },
+            _ => {},
+        }
+
+
+
+    // _bar.wm_util.data.borrow_mut().events.add_listener_value(wm::events::Event::Foo, clone!(label move |arg: Option<i32>| {
+    //     println!("Hello, World! {:?}", arg);
+    //     label.set_text(&"omg");
+    //     label.show();
+    //     Ok(())
+    // }));
+
+
+    // events.emit(Event::Foo).wait().unwrap();
+    // events.emit(Event::Bar).wait().unwrap();
+
+        // gtk::timeout_add(1000, clone!(wm_util move || {
+
+        //     wm_util.data.borrow_mut().events
+        //         .emit_value(wm::events::Event::Foo, 42).wait().unwrap();
+
+        //     gtk::Continue(true)
+        // }));
+        util
     }
 
     pub fn clone(&self) -> Self {
