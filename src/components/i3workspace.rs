@@ -9,9 +9,6 @@ use i3ipc::reply::{Workspace, Workspaces};
 use wm;
 use wm::events::Event;
 
-use std::thread;
-use std::sync::mpsc;
-
 use std::cell::RefCell;
 use std::rc::Rc;
 
