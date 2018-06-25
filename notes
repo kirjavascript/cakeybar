@@ -16,9 +16,9 @@ awesome-client
 refactoring
 ===
 https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
-pub/sub indicate what events to start listening to
 i3window new workspace bug (rewrite in xcb)
 anonymous components
+wm restart event restart tray
 
 impl
 ====
