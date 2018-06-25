@@ -5,13 +5,16 @@ use gdk::{Screen, ScreenExt};
 
 use i3ipc::{I3Connection, I3EventListener, Subscription};
 use i3ipc::reply::{Workspace, Workspaces};
-use i3ipc::event::{Event};
+// use i3ipc::event::{Event};
 use wm;
+use wm::events::Event;
 
 use std::thread;
 use std::sync::mpsc;
 
 pub struct I3Workspace { }
+
+// Workspaces
 
 impl Component for I3Workspace {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
@@ -37,152 +40,74 @@ impl Component for I3Workspace {
         wrapper.show();
 
         // load thread
-        Self::load_thread(&wrapper, show_name, show_all, monitor_index);
-    }
-}
+        // Self::load_thread(&wrapper, show_name, show_all, monitor_index);
 
-#[allow(unused_must_use)]
-impl I3Workspace {
-    fn load_thread(
-        wrapper: &Box,
-        show_name: bool,
-        show_all: bool,
-        monitor_index: i32,
-    ) {
-        // get monitor details
         let (has_name, monitor_name) = get_monitor_name(monitor_index);
 
-        // i3 connection
-        let connection_result = I3Connection::connect();
-        match connection_result {
-            Ok(mut connection) => {
 
-                // remove children of widget from previous thread
+        let mut connection = I3Connection::connect().unwrap();
+        let workspace_list = get_workspace_list(&mut connection);
+        let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
 
-                for child in wrapper.get_children().iter() {
-                    wrapper.remove(child);
-                }
+        // create initial UI
 
-                let workspace_list = get_workspace_list(&mut connection);
-                let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
+        let mut labels: Vec<Label> = Vec::new();
 
-                // create initial UI
+        for workspace in workspaces.iter() {
+            let label = Label::new(None);
+            set_label_attrs(&label, &workspace, show_name);
+            let ebox = add_event_box(&label, workspace.name.clone());
+            wrapper.add(&ebox);
+            labels.push(label);
+        }
+        wrapper.show_all();
 
-                let mut labels: Vec<Label> = Vec::new();
+        // listen for events
+        bar.wm_util.data.borrow_mut()
+            .events.add_listener(Event::Workspace, clone!(wrapper
+                move || {
+                    let mut connection = I3Connection::connect().unwrap();
+                    let workspace_list = get_workspace_list(&mut connection);
+                    let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
 
-                for workspace in workspaces.iter() {
-                    let label = Label::new(None);
-                    set_label_attrs(&label, &workspace, show_name);
-                    let ebox = add_event_box(&label, workspace.name.clone());
-                    wrapper.add(&ebox);
-                    labels.push(label);
-                }
-                wrapper.show_all();
-
-                // listen for workspace events in another thread
-
-                let (tx, rx) = mpsc::channel();
-
-                thread::spawn(move || {
-                    let listener_result = I3EventListener::connect();
-                    match listener_result {
-                        Ok(mut listener) => {
-                            let subs = [Subscription::Workspace];
-                            listener.subscribe(&subs).unwrap();
-
-                            for event in listener.listen() {
-                                match event {
-                                    Ok(message) => {
-                                        match message {
-                                            Event::WorkspaceEvent(e) => tx.send(Ok(e)),
-                                            _ => unreachable!(),
-                                        };
-                                    },
-                                    Err(err) => {
-                                        // listener is rip
-                                        tx.send(Err(format!("{}", err)));
-                                        break;
-                                    },
-                                };
-                            }
-                        },
-                        Err(err) => {
-                            // socket failed to connect
-                            tx.send(Err(format!("{}", err)));
-                        },
-                    };
-                });
-
-
-                gtk::timeout_add(10, clone!(wrapper move || {
-                    if let Ok(msg_result) = rx.try_recv() {
-                        match msg_result {
-                            Ok(_msg) => {
-                                // msg.change = WorkspaceChange
-                                // Focus Init Empty Urgent Rename Reload Restored Move Unknown
-                                let workspace_list = get_workspace_list(&mut connection);
-                                let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
-
-                                for (i, workspace) in workspaces.iter().enumerate() {
-                                    let added_new = if let Some(label) = labels.get_mut(i) {
-                                        // if a label already exists
-                                        set_label_attrs(&label, &workspace, show_name);
-                                        None
-                                    } else {
-                                        // if adding a new label
-                                        let label = Label::new(None);
-                                        set_label_attrs(&label, &workspace, show_name);
-                                        let ebox = add_event_box(&label, workspace.name.clone());
-                                        wrapper.add(&ebox);
-                                        Some(label)
-                                    };
-                                    if let Some(added) = added_new {
-                                        labels.push(added);
-                                    }
-                                }
-                                wrapper.show_all();
-
-                                // remove items
-                                let work_len = workspaces.len();
-                                let label_len = labels.len();
-                                if label_len > work_len {
-                                    labels.splice(work_len.., vec![]).for_each(|w| {
-                                        if let Some(parent) = w.get_parent() {
-                                            // nuke the event box
-                                            parent.destroy();
-                                        }
-                                    });
-                                }
-
-                            },
-                            Err(err) => {
-                                // thread has stopped
-                                handle_err(err, &wrapper, show_name, show_all, monitor_index);
-                                return gtk::Continue(false);
-                            },
+                    for (i, workspace) in workspaces.iter().enumerate() {
+                        let added_new = if let Some(label) = labels.get_mut(i) {
+                            // if a label already exists
+                            set_label_attrs(&label, &workspace, show_name);
+                            None
+                        } else {
+                            // if adding a new label
+                            let label = Label::new(None);
+                            set_label_attrs(&label, &workspace, show_name);
+                            let ebox = add_event_box(&label, workspace.name.clone());
+                            wrapper.add(&ebox);
+                            Some(label)
                         };
+                        if let Some(added) = added_new {
+                            labels.push(added);
+                        }
                     }
-                    gtk::Continue(true)
-                }));
-            },
-            Err(err) => {
-                // connection failed
-                let err_str = format!("{}", err);
-                handle_err(err_str, wrapper, show_name, show_all, monitor_index);
-            },
-        };
+                    wrapper.show_all();
+
+                    // remove items
+                    let work_len = workspaces.len();
+                    let label_len = labels.len();
+                    if label_len > work_len {
+                        labels.splice(work_len.., vec![]).for_each(|w| {
+                            if let Some(parent) = w.get_parent() {
+                                // nuke the event box
+                                parent.destroy();
+                            }
+                        });
+                    }
+
+                    Ok(())
+                }
+            )).unwrap();
 
     }
 }
 
-fn handle_err(_err: String, wrapper: &gtk::Box, show_name: bool, show_all: bool, monitor_index: i32) {
-    #[cfg(debug_assertions)]
-    info!("{}, restarting thread", _err);
-    gtk::timeout_add(100, clone!(wrapper move || {
-        I3Workspace::load_thread(&wrapper, show_name, show_all, monitor_index);
-        gtk::Continue(false)
-    }));
-}
 
 // i3 stuff
 
@@ -193,7 +118,7 @@ pub fn run_command(string: &str) {
             connection.run_command(string).ok();
         },
         Err(err) => {
-            error!("{}", err);
+            error!("running i3 command {}", err);
         },
     }
 }

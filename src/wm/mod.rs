@@ -13,7 +13,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
 
-use futures::Future;
 use parallel_event_emitter::*;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -54,7 +53,7 @@ impl WMUtil {
             info!("detected {}wm", wm_type);
         }
 
-        let mut events = ParallelEventEmitter::new();
+        let events = ParallelEventEmitter::new();
 
         let data = Rc::new(RefCell::new(Data {
             wm_type,
@@ -70,26 +69,6 @@ impl WMUtil {
             _ => {},
         }
 
-
-
-    // _bar.wm_util.data.borrow_mut().events.add_listener_value(wm::events::Event::Foo, clone!(label move |arg: Option<i32>| {
-    //     println!("Hello, World! {:?}", arg);
-    //     label.set_text(&"omg");
-    //     label.show();
-    //     Ok(())
-    // }));
-
-
-    // events.emit(Event::Foo).wait().unwrap();
-    // events.emit(Event::Bar).wait().unwrap();
-
-        // gtk::timeout_add(1000, clone!(wm_util move || {
-
-        //     wm_util.data.borrow_mut().events
-        //         .emit_value(wm::events::Event::Foo, 42).wait().unwrap();
-
-        //     gtk::Continue(true)
-        // }));
         util
     }
 
@@ -119,5 +98,4 @@ impl WMUtil {
         }
     }
 
-    // pub fn subscribe()
 }

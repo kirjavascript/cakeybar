@@ -62,9 +62,9 @@ halign = "end"
 class = "gradient"
 # valign = "end"
 
-# i3 stuff
+# wm stuff
 [component.title]
-type = "i3window"
+type = "window"
 halign = "center"
 
 [component.workspaces]
@@ -73,7 +73,7 @@ show_all = false
 show_name = false
 
 [component.mode]
-type = "i3mode"
+type = "mode"
 
 # stats
 

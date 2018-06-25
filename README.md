@@ -129,20 +129,20 @@ show_name = false # show full name or just index
 
 each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_name label .focused`
 
-#### i3mode
+#### mode
 
 ```toml
-[component.mode]
-type = "i3mode"
+[component.current_mode]
+type = "mode"
 ```
 
 will be hidden in the default mode
 
-#### i3window
+#### window
 
 ```toml
-[component.window]
-type = "i3window"
+[component.window_title]
+type = "window"
 ```
 
 #### bandwidth

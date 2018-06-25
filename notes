@@ -1,11 +1,8 @@
 halp
 ====
-https://github.com/jaagr/polybar
-https://github.com/myfreeweb/unixbar
 css:
 https://developer.gnome.org/gtk3/stable/theming.html
 https://developer.gnome.org/gtk3/stable/chap-css-properties.html
-https://github.com/antoyo/mg/blob/master/src/app/status_bar.rs#L82-L87
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
 system tray:
 https://standards.freedesktop.org/systemtray-spec/systemtray-spec-latest.html#idm139990069470464
@@ -14,18 +11,11 @@ https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
 https://github.com/pw4ever/awesome-wm-config#setup
 
-with_borrow
-18:16:17 <+j`ey> https://hastebin.com/pifozukexi.swift
-
 awesome-client
 
 refactoring
 ===
-proper warning / error - ansiterm
-refactor i3 components
-refactor bar.rs set_padding
 https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
-pub/sub for wm ipc
 pub/sub indicate what events to start listening to
 i3window new workspace bug (rewrite in xcb)
 anonymous components

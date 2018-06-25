@@ -43,7 +43,7 @@ halign = "end"
 # i3 stuff
 
 [component.title]
-type = "i3window"
+type = "window"
 halign = "center"
 
 [component.workspaces]
@@ -52,7 +52,7 @@ show_all = false
 show_name = true
 
 [component.mode]
-type = "i3mode"
+type = "mode"
 class = "gradient"
 
 # tray

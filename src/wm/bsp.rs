@@ -16,7 +16,7 @@ pub fn set_padding(is_top: bool, padding: i32) {
 
 use std::env;
 use std::os::unix::net::{UnixStream};
-use std::io::{Error, Write, Read};
+use std::io::{Error};//, Write, Read
 
 pub fn connect() -> Result<UnixStream, Error> {
 // https://github.com/marionauta/bspc/blob/master/src/main.rs

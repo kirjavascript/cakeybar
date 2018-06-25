@@ -27,14 +27,14 @@ mod clock;
 mod container;
 mod cpu;
 mod dropdown;
-mod i3mode;
-mod i3window;
 pub mod i3workspace;
 mod image;
 mod ip;
 mod menu;
+mod mode;
 mod tray;
 mod void;
+mod window;
 
 pub trait Component {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar);
@@ -108,13 +108,13 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "container" => container::Container::init,
             "cpu" => cpu::CPU::init,
             "dropdown" => dropdown::Dropdown::init,
-            "i3mode" => i3mode::I3Mode::init,
-            "i3window" => i3window::I3Window::init,
             "i3workspace" => i3workspace::I3Workspace::init,
             "image" => image::Image::init,
             "ip" => ip::IP::init,
             "menu" => menu::Menu::init,
+            "mode" => mode::Mode::init,
             "tray" => tray::Tray::init,
+            "window" => window::Window::init,
             _ => void::Void::init,
         };
         // load component
