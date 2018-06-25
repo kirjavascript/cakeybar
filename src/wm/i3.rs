@@ -1,6 +1,5 @@
 use gtk;
-use i3ipc::I3EventListener;
-use i3ipc::Subscription;
+use i3ipc::{I3Connection, I3EventListener, Subscription};
 use i3ipc::event::{Event as I3Event};
 use wm::events::Event;
 
@@ -95,7 +94,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                     }
                 },
                 Err(err) => {
-                    info!("{}, restarting thread", err.to_lowercase());
+                    warn!("{}, restarting thread", err.to_lowercase());
                     gtk::timeout_add(100, move || {
                         // listen(&stream);
                         gtk::Continue(false)
