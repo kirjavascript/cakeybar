@@ -95,10 +95,10 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                 },
                 Err(err) => {
                     warn!("{}, restarting thread", err.to_lowercase());
-                    gtk::timeout_add(100, move || {
-                        // listen(&stream);
+                    gtk::timeout_add(100, clone!(wm_util move || {
+                        listen(&wm_util);
                         gtk::Continue(false)
-                    });
+                    }));
                     return gtk::Continue(false);
                 },
             };
