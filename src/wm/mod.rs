@@ -5,7 +5,7 @@ pub mod bsp;
 pub mod i3;
 pub mod events;
 
-use self::events::Event;
+use self::events::{Event, EventEmitter};
 use i3ipc::I3Connection;
 use components::i3workspace; // TODO: remove
 
@@ -35,6 +35,7 @@ pub struct WMUtil {
 pub struct Data {
     pub wm_type: WMType,
     pub events: ParallelEventEmitter<Event>,
+    pub _events: EventEmitter,
 }
 
 impl WMUtil {
@@ -54,10 +55,23 @@ impl WMUtil {
         }
 
         let events = ParallelEventEmitter::new();
+        let mut _events = EventEmitter::new();
+
+        _events.add_listener(Event::Window, || {
+            info!("window");
+        });
+        _events.add_listener(Event::Mode, || {
+            info!("Mode");
+        });
+
+        _events.emit(Event::Window);
+        _events.emit(Event::Window);
+        _events.emit(Event::Mode);
 
         let data = Rc::new(RefCell::new(Data {
             wm_type,
             events,
+            _events,
         }));
 
         let util = Self { data };

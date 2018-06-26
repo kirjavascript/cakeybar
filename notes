@@ -20,6 +20,7 @@ i3window new workspace bug (rewrite in xcb)
 anonymous components
 wm restart event restart tray
 gtk thread issue
+IPC get_server connect to RCV unwrap()
 
 impl
 ====
