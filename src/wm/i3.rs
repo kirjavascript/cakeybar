@@ -1,5 +1,5 @@
 use gtk;
-use i3ipc::{I3Connection, I3EventListener, Subscription};
+use i3ipc::{I3EventListener, Subscription};
 use i3ipc::event::{Event as I3Event};
 use wm::events::{Event, EventValue};
 
@@ -43,7 +43,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                     tx.send(Ok(I3Msg::Workspace))
                                 },
                                 _ => unreachable!(),
-                            };
+                            }.ok();
                         },
                         Err(err) => {
                             // listener is rip
@@ -66,12 +66,10 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                 Ok(msg) => {
                     match msg {
                         I3Msg::Mode(value) => {
-                            // wm_util.data
-                            //     .borrow_mut()
-                            //     .events
-                            //     .emit_value(Event::Mode, value)
-                            //     .wait()
-                            //     .unwrap();
+                            wm_util.emit_value(
+                                Event::Mode,
+                                EventValue::String(value),
+                            );
                         },
                         I3Msg::Window(value) => {
                             wm_util.emit_value(
@@ -80,12 +78,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                             );
                         },
                         I3Msg::Workspace => {
-                            // wm_util.data
-                            //     .borrow_mut()
-                            //     .events
-                            //     .emit(Event::Workspace)
-                            //     .wait()
-                            //     .unwrap();
+                            wm_util.emit(Event::Workspace);
                         },
                     }
                 },

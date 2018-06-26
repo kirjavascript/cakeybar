@@ -3,9 +3,8 @@ use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
 use gdk::{Screen, ScreenExt};
 
-use i3ipc::{I3Connection, I3EventListener, Subscription};
+use i3ipc::{I3Connection};
 use i3ipc::reply::{Workspace, Workspaces};
-// use i3ipc::event::{Event};
 use wm;
 use wm::events::Event;
 
@@ -65,48 +64,45 @@ impl Component for I3Workspace {
         wrapper.show_all();
 
         // listen for events
-        // bar.wm_util.data.borrow_mut()
-        //     .events.add_listener(Event::Workspace, clone!((wrapper, labels)
-        //         move || {
-        //             let mut connection = I3Connection::connect().unwrap();
-        //             let workspace_list = get_workspace_list(&mut connection);
-        //             let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
+        bar.wm_util.add_listener(Event::Workspace, clone!((wrapper, labels)
+            move |_| {
+                let mut connection = I3Connection::connect().unwrap();
+                let workspace_list = get_workspace_list(&mut connection);
+                let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
 
-        //             for (i, workspace) in workspaces.iter().enumerate() {
-        //                 let added_new = if let Some(label) = labels.borrow_mut().get_mut(i) {
-        //                     // if a label already exists
-        //                     set_label_attrs(&label, &workspace, show_name);
-        //                     None
-        //                 } else {
-        //                     // if adding a new label
-        //                     let label = Label::new(None);
-        //                     set_label_attrs(&label, &workspace, show_name);
-        //                     let ebox = add_event_box(&label, workspace.name.clone());
-        //                     wrapper.add(&ebox);
-        //                     Some(label)
-        //                 };
-        //                 if let Some(added) = added_new {
-        //                     labels.borrow_mut().push(added);
-        //                 }
-        //             }
-        //             wrapper.show_all();
+                for (i, workspace) in workspaces.iter().enumerate() {
+                    let added_new = if let Some(label) = labels.borrow_mut().get_mut(i) {
+                        // if a label already exists
+                        set_label_attrs(&label, &workspace, show_name);
+                        None
+                    } else {
+                        // if adding a new label
+                        let label = Label::new(None);
+                        set_label_attrs(&label, &workspace, show_name);
+                        let ebox = add_event_box(&label, workspace.name.clone());
+                        wrapper.add(&ebox);
+                        Some(label)
+                    };
+                    if let Some(added) = added_new {
+                        labels.borrow_mut().push(added);
+                    }
+                }
+                wrapper.show_all();
 
-        //             // remove items
-        //             let work_len = workspaces.len();
-        //             let label_len = labels.borrow().len();
-        //             if label_len > work_len {
-        //                 let mut labels = labels.borrow_mut();
-        //                 labels.splice(work_len.., vec![]).for_each(|w| {
-        //                     if let Some(parent) = w.get_parent() {
-        //                         // nuke the event box
-        //                         parent.destroy();
-        //                     }
-        //                 });
-        //             }
-
-        //             Ok(())
-        //         }
-        //     )).unwrap();
+                // remove items
+                let work_len = workspaces.len();
+                let label_len = labels.borrow().len();
+                if label_len > work_len {
+                    let mut labels = labels.borrow_mut();
+                    labels.splice(work_len.., vec![]).for_each(|w| {
+                        if let Some(parent) = w.get_parent() {
+                            // nuke the event box
+                            parent.destroy();
+                        }
+                    });
+                }
+            }
+        ));
 
     }
 }

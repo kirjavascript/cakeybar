@@ -12,7 +12,6 @@ use components::i3workspace; // TODO: remove
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
-use std::hash::Hash;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
@@ -28,12 +27,12 @@ impl fmt::Display for WMType {
 }
 
 pub struct WMUtil {
-    pub data: Rc<RefCell<Data>>,
+    data: Rc<RefCell<Data>>,
 }
 
 pub struct Data {
-    pub wm_type: WMType,
-    pub events: EventEmitter<Event, EventValue>,
+    wm_type: WMType,
+    events: EventEmitter<Event, EventValue>,
 }
 
 impl WMUtil {
@@ -52,7 +51,7 @@ impl WMUtil {
             info!("detected {}wm", wm_type);
         }
 
-        let mut events = EventEmitter::new();
+        let events = EventEmitter::new();
 
         let data = Rc::new(RefCell::new(Data {
             wm_type,
