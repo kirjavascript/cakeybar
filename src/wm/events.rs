@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-#[derive(Debug, Hash, PartialEq, Eq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq)]
 pub enum Event {
     Window,
     Mode,
@@ -33,10 +33,18 @@ impl<T, V> EventEmitter<T, V> where T: Hash + Eq, V: Clone {
         }
     }
 
-    pub fn emit(&self, event: T, value: Option<V>) {
+    pub fn emit(&self, event: T) {
         if let Some(callbacks) = self.listeners.get(&event) {
             for callback in callbacks {
-                callback(value.clone());
+                callback(None);
+            }
+        }
+    }
+
+    pub fn emit_value(&self, event: T, value: V) {
+        if let Some(callbacks) = self.listeners.get(&event) {
+            for callback in callbacks {
+                callback(Some(value.clone()));
             }
         }
     }

@@ -13,8 +13,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
 
-use parallel_event_emitter::*;
-
 #[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
     I3, // (connection)
@@ -34,8 +32,7 @@ pub struct WMUtil {
 
 pub struct Data {
     pub wm_type: WMType,
-    pub events: ParallelEventEmitter<Event>,
-    pub _events: EventEmitter<Event, EventValue>,
+    pub events: EventEmitter<Event, EventValue>,
 }
 
 impl WMUtil {
@@ -54,24 +51,22 @@ impl WMUtil {
             info!("detected {}wm", wm_type);
         }
 
-        let events = ParallelEventEmitter::new();
-        let mut _events = EventEmitter::new();
+        let mut events = EventEmitter::new();
 
-        _events.add_listener(Event::Window, |e| {
+        events.add_listener(Event::Window, |e| {
             info!("window {:?}", e);
         });
-        _events.add_listener(Event::Mode, |_| {
+        events.add_listener(Event::Mode, |_| {
             info!("Mode");
         });
 
-        _events.emit(Event::Window, Some(EventValue::String("hello".to_string())));
-        _events.emit(Event::Window, None);
-        _events.emit(Event::Mode, None);
+        events.emit_value(Event::Window, EventValue::String("hello".to_string()));
+        events.emit(Event::Window);
+        events.emit(Event::Mode);
 
         let data = Rc::new(RefCell::new(Data {
             wm_type,
             events,
-            _events,
         }));
 
         let util = Self { data };

@@ -1,12 +1,10 @@
 use gtk;
 use i3ipc::{I3Connection, I3EventListener, Subscription};
 use i3ipc::event::{Event as I3Event};
-use wm::events::Event;
+use wm::events::{Event, EventValue};
 
 use std::thread;
 use std::sync::mpsc;
-
-use futures::Future;
 
 enum I3Msg {
     Mode(String),
@@ -68,28 +66,28 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                 Ok(msg) => {
                     match msg {
                         I3Msg::Mode(value) => {
-                            wm_util.data
-                                .borrow_mut()
-                                .events
-                                .emit_value(Event::Mode, value)
-                                .wait()
-                                .unwrap();
+                            // wm_util.data
+                            //     .borrow_mut()
+                            //     .events
+                            //     .emit_value(Event::Mode, value)
+                            //     .wait()
+                            //     .unwrap();
                         },
                         I3Msg::Window(value) => {
-                            wm_util.data
-                                .borrow_mut()
-                                .events
-                                .emit_value(Event::Window, value)
-                                .wait()
-                                .unwrap();
+                            // wm_util.data
+                            //     .borrow_mut()
+                            //     .events
+                            //     .emit_value(Event::Window, value)
+                            //     .wait()
+                            //     .unwrap();
                         },
                         I3Msg::Workspace => {
-                            wm_util.data
-                                .borrow_mut()
-                                .events
-                                .emit(Event::Workspace)
-                                .wait()
-                                .unwrap();
+                            // wm_util.data
+                            //     .borrow_mut()
+                            //     .events
+                            //     .emit(Event::Workspace)
+                            //     .wait()
+                            //     .unwrap();
                         },
                     }
                 },
