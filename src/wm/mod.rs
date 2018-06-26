@@ -5,7 +5,7 @@ pub mod bsp;
 pub mod i3;
 pub mod events;
 
-use self::events::{Event, EventEmitter};
+use self::events::{Event, EventValue, EventEmitter};
 use i3ipc::I3Connection;
 use components::i3workspace; // TODO: remove
 
@@ -35,7 +35,7 @@ pub struct WMUtil {
 pub struct Data {
     pub wm_type: WMType,
     pub events: ParallelEventEmitter<Event>,
-    pub _events: EventEmitter,
+    pub _events: EventEmitter<Event, EventValue>,
 }
 
 impl WMUtil {
@@ -57,16 +57,16 @@ impl WMUtil {
         let events = ParallelEventEmitter::new();
         let mut _events = EventEmitter::new();
 
-        _events.add_listener(Event::Window, || {
-            info!("window");
+        _events.add_listener(Event::Window, |e| {
+            info!("window {:?}", e);
         });
-        _events.add_listener(Event::Mode, || {
+        _events.add_listener(Event::Mode, |_| {
             info!("Mode");
         });
 
-        _events.emit(Event::Window);
-        _events.emit(Event::Window);
-        _events.emit(Event::Mode);
+        _events.emit(Event::Window, Some(EventValue::String("hello".to_string())));
+        _events.emit(Event::Window, None);
+        _events.emit(Event::Mode, None);
 
         let data = Rc::new(RefCell::new(Data {
             wm_type,
@@ -93,6 +93,8 @@ impl WMUtil {
     pub fn get_wm_type(&self) -> WMType {
         self.data.borrow().wm_type.clone()
     }
+
+    // misc
 
     pub fn scroll_workspace(&self, forward: bool, monitor_index: i32) {
         match self.data.borrow().wm_type {

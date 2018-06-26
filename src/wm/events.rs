@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::hash::Hash;
 
 #[derive(Debug, Hash, PartialEq, Eq, Clone)]
 pub enum Event {
@@ -7,19 +8,24 @@ pub enum Event {
     Workspace,
 }
 
-pub struct EventEmitter {
-    listeners: HashMap<Event, Vec<Box<Fn()>>>,
+#[derive(Debug, Clone)]
+pub enum EventValue {
+    String(String),
 }
 
-impl EventEmitter {
+pub struct EventEmitter<T: Hash + Eq, V: Clone> {
+    listeners: HashMap<T, Vec<Box<Fn(Option<V>)>>>,
+}
+
+impl<T, V> EventEmitter<T, V> where T: Hash + Eq, V: Clone {
     pub fn new() -> Self {
         Self {
             listeners: HashMap::new(),
         }
     }
 
-    pub fn add_listener<F: 'static>(&mut self, event: Event, callback: F)
-        where F: Fn() {
+    pub fn add_listener<F: 'static>(&mut self, event: T, callback: F)
+        where F: Fn(Option<V>) {
         if self.listeners.contains_key(&event) {
             self.listeners.get_mut(&event).unwrap().push(Box::new(callback));
         } else {
@@ -27,11 +33,12 @@ impl EventEmitter {
         }
     }
 
-    pub fn emit(&self, event: Event) {
+    pub fn emit(&self, event: T, value: Option<V>) {
         if let Some(callbacks) = self.listeners.get(&event) {
             for callback in callbacks {
-                callback();
+                callback(value.clone());
             }
         }
     }
+    // emit_value
 }
