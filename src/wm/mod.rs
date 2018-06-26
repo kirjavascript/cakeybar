@@ -12,6 +12,7 @@ use components::i3workspace; // TODO: remove
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
+use std::hash::Hash;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
@@ -53,17 +54,6 @@ impl WMUtil {
 
         let mut events = EventEmitter::new();
 
-        events.add_listener(Event::Window, |e| {
-            info!("window {:?}", e);
-        });
-        events.add_listener(Event::Mode, |_| {
-            info!("Mode");
-        });
-
-        events.emit_value(Event::Window, EventValue::String("hello".to_string()));
-        events.emit(Event::Window);
-        events.emit(Event::Mode);
-
         let data = Rc::new(RefCell::new(Data {
             wm_type,
             events,
@@ -87,6 +77,21 @@ impl WMUtil {
 
     pub fn get_wm_type(&self) -> WMType {
         self.data.borrow().wm_type.clone()
+    }
+
+    // events
+
+    pub fn add_listener<F: 'static>(&self, event: Event, callback: F)
+        where F: Fn(Option<EventValue>) {
+        self.data.borrow_mut().events.add_listener(event, callback);
+    }
+
+    pub fn emit(&self, event: Event) {
+        self.data.borrow().events.emit(event);
+    }
+
+    pub fn emit_value(&self, event: Event, value: EventValue) {
+        self.data.borrow().events.emit_value(event, value);
     }
 
     // misc

@@ -48,5 +48,4 @@ impl<T, V> EventEmitter<T, V> where T: Hash + Eq, V: Clone {
             }
         }
     }
-    // emit_value
 }

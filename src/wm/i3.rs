@@ -74,12 +74,10 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                             //     .unwrap();
                         },
                         I3Msg::Window(value) => {
-                            // wm_util.data
-                            //     .borrow_mut()
-                            //     .events
-                            //     .emit_value(Event::Window, value)
-                            //     .wait()
-                            //     .unwrap();
+                            wm_util.emit_value(
+                                Event::Window,
+                                EventValue::String(value),
+                            );
                         },
                         I3Msg::Workspace => {
                             // wm_util.data
