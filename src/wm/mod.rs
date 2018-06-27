@@ -74,6 +74,8 @@ impl WMUtil {
         Self { data: self.data.clone() }
     }
 
+    // getters
+
     pub fn get_wm_type(&self) -> WMType {
         self.data.borrow().wm_type.clone()
     }
@@ -93,7 +95,7 @@ impl WMUtil {
         self.data.borrow().events.emit_value(event, value);
     }
 
-    // misc
+    // wm actions
 
     pub fn scroll_workspace(&self, forward: bool, monitor_index: i32) {
         match self.data.borrow().wm_type {

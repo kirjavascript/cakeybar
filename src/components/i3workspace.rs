@@ -39,7 +39,6 @@ impl Component for I3Workspace {
         wrapper.show();
 
         // load thread
-        // Self::load_thread(&wrapper, show_name, show_all, monitor_index);
 
         let (has_name, monitor_name) = get_monitor_name(monitor_index);
 

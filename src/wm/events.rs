@@ -1,5 +1,4 @@
-use std::collections::HashMap;
-use std::hash::Hash;
+// data
 
 #[derive(Debug, Hash, Eq, PartialEq)]
 pub enum Event {
@@ -12,6 +11,11 @@ pub enum Event {
 pub enum EventValue {
     String(String),
 }
+
+// impl
+
+use std::collections::HashMap;
+use std::hash::Hash;
 
 pub struct EventEmitter<T: Hash + Eq, V: Clone> {
     listeners: HashMap<T, Vec<Box<Fn(Option<V>)>>>,
