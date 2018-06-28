@@ -61,7 +61,7 @@ pub fn main() -> i32 {
 
         manager.create();
 
-        let fullscreen_tick = chan::tick_ms(1000);
+        let fullscreen_tick = chan::tick_ms(100);
 
         loop {
             chan_select!(
