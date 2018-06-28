@@ -62,7 +62,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);
                             if let Err(err) = send_res {
-                                warn!("{:?}", err);
+                                warn!("{}", err);
                             }
                         }
                     }

@@ -18,8 +18,9 @@ refactoring
 https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
 i3window new workspace bug (rewrite in xcb)
 anonymous components
-wm restart event restart tray
+wm restart event restack tray
 IPC get_server connect to RCV unwrap()
+fix util::run_command
 
 impl
 ====

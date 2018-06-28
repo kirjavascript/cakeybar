@@ -149,7 +149,10 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_NET_WM_STATE),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::_NET_WM_STATE_STICKY)]
+            &[
+                self.atoms.get(atom::_NET_WM_STATE_STICKY),
+                self.atoms.get(atom::_NET_WM_STATE_ABOVE),
+            ]
         );
 
         // make decorationless

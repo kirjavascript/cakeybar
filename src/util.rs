@@ -1,5 +1,5 @@
-use super::gdk::{Screen, ScreenExt, Rectangle};
-use super::gtk::{CssProvider, CssProviderExt, StyleContext};
+use gdk::{Screen, ScreenExt, Rectangle};
+use gtk::{CssProvider, CssProviderExt, StyleContext};
 
 pub fn get_monitors() -> Vec<Rectangle> {
     let screen = Screen::get_default().unwrap();

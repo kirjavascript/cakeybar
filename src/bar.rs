@@ -93,16 +93,17 @@ impl<'a> Bar<'a> {
             let &Rectangle { x, y, height, .. } = monitor;
             let is_set = Rc::new(RefCell::new(false));
             window.connect_size_allocate(clone!((is_set, wm_util)
-                                                move |window, rect| {
-                let xpos = x;
-                let ypos = if !is_top { y + (height - rect.height) } else { y };
-                if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
-                    *is_set.borrow_mut() = true;
-                    window.move_(xpos, ypos);
-                    wm_util.set_padding(is_top, rect.height);
-                    // set_strut crashes here :/
+                move |window, rect| {
+                    let xpos = x;
+                    let ypos = if !is_top { y + (height - rect.height) } else { y };
+                    if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
+                        *is_set.borrow_mut() = true;
+                        window.move_(xpos, ypos);
+                        wm_util.set_padding(is_top, rect.height);
+                        // set_strut crashes here :/
+                    }
                 }
-            }));
+            ));
         }
 
         // TODO: windowEnter set ::focus
