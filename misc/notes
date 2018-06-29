@@ -19,6 +19,7 @@ https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
 i3window new workspace bug (rewrite in xcb)
 anonymous components
 wm restart event restack tray
+tray IPC is slow because it's 10ms per byte not per message >_<
 IPC get_server connect to RCV unwrap()
 fix util::run_command
 
