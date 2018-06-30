@@ -41,7 +41,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                         let mut current = [0; 1];
                         let mut msg: Vec<u8> = Vec::new();
                         loop {
-                            thread::sleep(Duration::from_millis(DELAY_MS));
+                            // stream.read appears to block
                             if let Ok(_) = stream.read(&mut current) {
                                 msg.push(current[0]);
 
@@ -95,7 +95,6 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                         let mut current = [0; 1];
                         let mut msg: Vec<u8> = Vec::new();
                         loop {
-                            thread::sleep(Duration::from_millis(DELAY_MS));
                             if let Ok(_) = stream.read(&mut current) {
                                 msg.push(current[0]);
 
