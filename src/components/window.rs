@@ -26,7 +26,7 @@ impl Component for Window {
                             });
                         format!("{}…", name)
                     } else {
-                        format!("{}", name)
+                        name
                     };
                     label.set_text(&name);
                 }
