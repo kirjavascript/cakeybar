@@ -55,7 +55,6 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                     // send data
                     let mut conn = UnixStream::connect(SOCKET_PATH_RCV).unwrap();
                     loop {
-                        // thread::sleep(Duration::from_millis(DELAY_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);

@@ -6,7 +6,6 @@ pub mod i3;
 pub mod events;
 
 use self::events::{Event, EventValue, EventEmitter};
-use i3ipc::I3Connection;
 use components::i3workspace; // TODO: remove
 
 use std::cell::RefCell;
@@ -15,7 +14,7 @@ use std::fmt;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
-    I3, // (connection)
+    I3,
     Bsp,
     Unknown,
 }
@@ -30,7 +29,7 @@ pub struct WMUtil {
     data: Rc<RefCell<Data>>,
 }
 
-pub struct Data {
+struct Data {
     wm_type: WMType,
     events: EventEmitter<Event, EventValue>,
 }
@@ -38,8 +37,7 @@ pub struct Data {
 impl WMUtil {
 
     pub fn new() -> Self {
-        let i3conn = I3Connection::connect();
-        let wm_type = if let Ok(_) = i3conn {
+        let wm_type = if let Ok(_) = i3::connect() {
             WMType::I3
         } else if let Ok(_) = bsp::connect() {
             WMType::Bsp
