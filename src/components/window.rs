@@ -17,8 +17,14 @@ impl Component for Window {
         bar.wm_util.add_listener(Event::Window, clone!(label
             move |event_opt| {
                 if let Some(EventValue::String(name)) = event_opt {
-                    let name = if name.len() > trunc {
-                        format!("{}...", &name[..trunc])
+                    let name = if name.chars().count() > trunc {
+                        let name = name
+                            .char_indices()
+                            .filter(|x| x.0 <= trunc)
+                            .fold("".to_string(), |acc, cur| {
+                                acc + &cur.1.to_string()
+                            });
+                        format!("{}…", name)
                     } else {
                         format!("{}", name)
                     };

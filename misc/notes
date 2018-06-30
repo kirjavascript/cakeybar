@@ -19,6 +19,7 @@ https://github.com/elast0ny/shared_memory-rs/tree/release-0.8.0 for IPC
 i3window new workspace bug (rewrite in xcb)
 wm restart event restack tray
 IPC get_server connect to RCV unwrap()
+kill tray when bar dies (100% CPU)
 fix util::run_command
 
 impl

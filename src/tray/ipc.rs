@@ -1,5 +1,4 @@
 use std::thread;
-use std::time::Duration;
 use std::os::unix::net::{UnixStream, UnixListener};
 use std::io::{Read, Write};
 use std::fs::remove_file;
@@ -13,7 +12,6 @@ use bincode::{serialize, deserialize};
 
 const SOCKET_PATH_SRV: &str = "/tmp/cakeytray-ipc-srv";
 const SOCKET_PATH_RCV: &str = "/tmp/cakeytray-ipc-rcv";
-const DELAY_MS: u64 = 10;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub enum Message {
@@ -57,7 +55,7 @@ pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){
                     // send data
                     let mut conn = UnixStream::connect(SOCKET_PATH_RCV).unwrap();
                     loop {
-                        thread::sleep(Duration::from_millis(DELAY_MS));
+                        // thread::sleep(Duration::from_millis(DELAY_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);
@@ -109,7 +107,7 @@ pub fn get_client() -> (Sender<Message>, Receiver<Message>) {
                     });
                     // send data
                     loop {
-                        thread::sleep(Duration::from_millis(DELAY_MS));
+                        // thread::sleep(Duration::from_millis(DELAY_MS));
                         if let Some(data) = rx_rcv.recv() {
                             let bytes = serialize(&data).unwrap();
                             let send_res = conn.write(&bytes);
