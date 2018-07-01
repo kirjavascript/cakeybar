@@ -1,7 +1,10 @@
-use {gtk, gdk_sys};
-use gtk::{Rectangle, WidgetExt};
-use glib::translate::ToGlibPtr;
+use {gtk, gdk_sys, gdk};
+use gtk::{
+    Rectangle,
+    WidgetExt,
+};
 
+use glib::translate::ToGlibPtr;
 use std::ffi::CString;
 use std::os::raw::c_int;
 

@@ -93,7 +93,10 @@ fn main() {
 
     // get config
 
-    let default_path = format!("~/.config/{}/config.toml", NAME); // TODO: xdg
+    let default_path = format!("{}/config.toml", util::get_config_dir());
+
+    println!("{:#?}", default_path);
+
     let config_path = matches.value_of("config").unwrap_or(&default_path);
 
     let config = config::parse_config(config_path);

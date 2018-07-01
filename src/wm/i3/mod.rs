@@ -10,8 +10,6 @@ pub fn connect() -> Result<I3Connection, EstablishError> {
     I3Connection::connect()
 }
 
-///
-
 // mod gtk {
 //     use gdk::{Screen, ScreenExt};
 //     pub fn get_monitor_name(monitor_index: i32) -> (bool, String) {
