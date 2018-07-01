@@ -8,8 +8,6 @@ use chan::{Sender, Receiver};
 
 use bincode::{serialize, deserialize};
 
-// TODO: use less threads
-
 const SOCKET_PATH_SRV: &str = "/tmp/cakeytray-ipc-srv";
 const SOCKET_PATH_RCV: &str = "/tmp/cakeytray-ipc-rcv";
 

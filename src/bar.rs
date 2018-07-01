@@ -79,7 +79,7 @@ impl<'a> Bar<'a> {
             viewport.connect_scroll_event(clone!(wm_util move |_vp, e| {
                 let direction = e.get_direction();
                 let is_next = direction == ScrollDirection::Down;
-                wm_util.scroll_workspace(is_next, monitor_index);
+                wm_util.cycle_workspace(is_next, monitor_index);
                 Inhibit(true)
             }));
         }

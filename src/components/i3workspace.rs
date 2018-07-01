@@ -3,9 +3,10 @@ use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
 
 use i3ipc::{I3Connection};
-use i3ipc::reply::{Workspace, Workspaces};
+use i3ipc::reply::{Workspace};
 use wm;
 use wm::events::Event;
+use wm::i3::{get_workspace_list, get_workspaces, run_command};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -104,86 +105,6 @@ impl Component for I3Workspace {
 
     }
 }
-
-
-// i3 stuff
-
-pub fn run_command(string: &str) {
-    let connection_result = I3Connection::connect();
-    match connection_result {
-        Ok(mut connection) => {
-            connection.run_command(string).ok();
-        },
-        Err(err) => {
-            error!("running i3 command {}", err);
-        },
-    }
-}
-
-pub fn scroll_workspace(is_next: bool, monitor_index: i32) {
-    let connection_result = I3Connection::connect();
-    match connection_result {
-        Ok(mut connection) => {
-
-            // get monitor name / details
-            let (has_name, monitor_name) = wm::gtk::get_monitor_name(monitor_index);
-
-            // get workspace details
-            let workspace_list = get_workspace_list(&mut connection);
-            let mut workspaces = get_workspaces(&workspace_list, false, has_name, monitor_name.clone());
-            // so we can search backwards
-            if !is_next {
-                workspaces.reverse();
-            }
-
-            // get focused workspace
-            let focused_opt = workspaces.iter().find(|x| x.focused);
-            if let Some(focused) = focused_opt {
-                // get next one
-                let next_opt = workspaces.iter().find(|x| {
-                    if is_next {
-                        x.num > focused.num
-                    } else {
-                        x.num < focused.num
-                    }
-                });
-                if let Some(next) = next_opt {
-                    let command = format!("workspace {}", next.name);
-                    connection.run_command(&command)
-                        .expect("something went wrong running an i3 command");
-                }
-            }
-        },
-        Err(err) => {
-            error!("getting i3 connection {}", err);
-        },
-    }
-}
-
-fn get_workspace_list(connection: &mut I3Connection) -> Vec<Workspace> {
-    connection.get_workspaces()
-        .unwrap_or(Workspaces { workspaces: Vec::new()})
-        .workspaces
-}
-
-fn get_workspaces<'a>(workspace_list: &'a Vec<Workspace>, show_all: bool, has_name: bool, monitor_name: String) -> Vec<&'a Workspace> {
-    let mut workspaces: Vec<&Workspace> = workspace_list
-        .iter()
-        .filter(|w| {
-            if !show_all && has_name {
-                w.output == monitor_name
-            } else {
-                true
-            }
-        })
-    .collect();
-
-    // sort by number
-    workspaces.sort_by(|a, b| a.num.cmp(&b.num));
-    workspaces
-}
-
-// UI stuff
 
 fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
     move |s, b| {

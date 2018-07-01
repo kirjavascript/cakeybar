@@ -6,7 +6,6 @@ pub mod i3;
 pub mod events;
 
 use self::events::{Event, EventValue, EventEmitter};
-use components::i3workspace; // TODO: remove
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -95,10 +94,10 @@ impl WMUtil {
 
     // wm actions
 
-    pub fn scroll_workspace(&self, forward: bool, monitor_index: i32) {
+    pub fn cycle_workspace(&self, forward: bool, monitor_index: i32) {
         match self.data.borrow().wm_type {
             WMType::I3 => {
-                i3workspace::scroll_workspace(forward, monitor_index);
+                i3::cycle_workspace(forward, monitor_index);
             },
             _ => {},
         }
