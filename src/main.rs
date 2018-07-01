@@ -42,7 +42,7 @@ pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 fn init(application: &gtk::Application, config: &config::Config) {
     // load theme to screen
     match &config.theme {
-        &Some(ref src) => util::load_theme(src),
+        &Some(ref src) => wm::gtk::load_theme(src),
         &None => {/* default theme */},
     }
     let wm_util = wm::WMUtil::new();
@@ -82,7 +82,7 @@ fn main() {
 
     // show monitor debug
     if matches.is_present("monitors") {
-        util::show_monitor_debug();
+        wm::gtk::show_monitor_debug();
         return ();
     }
     // load tray
@@ -94,8 +94,6 @@ fn main() {
     // get config
 
     let default_path = format!("{}/config.toml", util::get_config_dir());
-
-    println!("{:#?}", default_path);
 
     let config_path = matches.value_of("config").unwrap_or(&default_path);
 

@@ -8,7 +8,7 @@ use gtk::{
 };
 use gdk::{ScrollDirection};
 
-use {util, NAME, components};
+use {NAME, components};
 use config::{ComponentConfig};
 
 use std::cell::RefCell;
@@ -31,7 +31,7 @@ impl<'a> Bar<'a> {
 
         let bar = Bar { config, application, components, wm_util };
 
-        let monitors = util::get_monitors();
+        let monitors = wm::gtk::get_monitors();
         let monitor_index = bar.config.get_int_or("monitor", 0);
         let monitor_option = monitors.get(monitor_index as usize);
 
