@@ -1,7 +1,6 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
-use gdk::{Screen, ScreenExt};
 
 use i3ipc::{I3Connection};
 use i3ipc::reply::{Workspace, Workspaces};
@@ -40,7 +39,7 @@ impl Component for I3Workspace {
 
         // load thread
 
-        let (has_name, monitor_name) = get_monitor_name(monitor_index);
+        let (has_name, monitor_name) = wm::gtk::get_monitor_name(monitor_index);
 
 
         let mut connection = I3Connection::connect().unwrap();
@@ -127,7 +126,7 @@ pub fn scroll_workspace(is_next: bool, monitor_index: i32) {
         Ok(mut connection) => {
 
             // get monitor name / details
-            let (has_name, monitor_name) = get_monitor_name(monitor_index);
+            let (has_name, monitor_name) = wm::gtk::get_monitor_name(monitor_index);
 
             // get workspace details
             let workspace_list = get_workspace_list(&mut connection);
@@ -159,14 +158,6 @@ pub fn scroll_workspace(is_next: bool, monitor_index: i32) {
             error!("getting i3 connection {}", err);
         },
     }
-}
-
-fn get_monitor_name(monitor_index: i32) -> (bool, String) {
-    let screen = Screen::get_default().unwrap();
-    let monitor_name_opt = screen.get_monitor_plug_name(monitor_index);
-    let has_name = monitor_name_opt.is_some();
-    let monitor_name = monitor_name_opt.unwrap_or("poop".to_string());
-    (has_name, monitor_name)
 }
 
 fn get_workspace_list(connection: &mut I3Connection) -> Vec<Workspace> {
