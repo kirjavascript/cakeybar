@@ -126,6 +126,7 @@ impl WMUtil {
             WMType::Bsp => {
                 bsp::set_padding(is_top, padding);
             },
+            // don't need to do this in i3
             _ => {},
         }
     }

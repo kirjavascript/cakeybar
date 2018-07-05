@@ -14,7 +14,6 @@ pub fn connect() -> Result<I3Connection, EstablishError> {
     I3Connection::connect()
 }
 
-
 pub fn run_command(string: &str) {
     match connect() {
         Ok(mut connection) => {

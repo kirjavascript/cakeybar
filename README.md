@@ -8,8 +8,8 @@ cakeybar is a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
 * flexible theming with CSS
-* windowmanager agnostic design
 * system tray integration
+* windowmanager neutral design
 * more rice than feudal japan
 
 **work in progress** testing in i3/bspwm
@@ -122,13 +122,13 @@ a gtk-context style dropdown menu
 #### i3workspace
 
 ```toml
-[component.workspaces]
+[component.workspace_list]
 type = "i3workspace"
 show_all = false # show workspaces from every window
 show_name = false # show full name or just index
 ```
 
-each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_name label .focused`
+each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_list label .focused`
 
 #### mode
 
