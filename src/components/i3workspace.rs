@@ -38,10 +38,8 @@ impl Component for I3Workspace {
         container.add(&wrapper);
         wrapper.show();
 
-        // load thread
 
         let (has_name, monitor_name) = wm::gtk::get_monitor_name(monitor_index);
-
 
         let mut connection = I3Connection::connect().unwrap();
         let workspace_list = get_workspace_list(&mut connection);

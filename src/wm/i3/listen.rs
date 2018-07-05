@@ -1,6 +1,7 @@
 use gtk;
 use i3ipc::{I3EventListener, Subscription};
 use i3ipc::event::{Event as I3Event};
+use wm::i3;
 use wm::events::{Event, EventValue};
 
 use std::thread;
@@ -78,7 +79,14 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                             );
                         },
                         I3Msg::Workspace => {
-                            wm_util.emit(Event::Workspace);
+                            if let Ok(mut connection) = i3::connect() {
+                                wm_util.emit_value(
+                                    Event::Workspace,
+                                    EventValue::Workspaces(
+                                        i3::_get_workspaces(&mut connection)
+                                    ),
+                                );
+                            }
                         },
                     }
                 },

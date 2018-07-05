@@ -7,6 +7,7 @@ pub mod events;
 pub mod workspace;
 
 use self::events::{Event, EventValue, EventEmitter};
+use self::workspace::Workspace;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -94,6 +95,20 @@ impl WMUtil {
     }
 
     // wm actions
+
+    pub fn get_workspaces(&self) -> Option<Vec<Workspace>> {
+        match self.data.borrow().wm_type {
+            WMType::I3 => {
+                match i3::connect() {
+                    Ok(mut connection) => {
+                        Some(i3::_get_workspaces(&mut connection))
+                    },
+                    Err(_) => None
+                }
+            },
+            _ => None
+        }
+    }
 
     pub fn cycle_workspace(&self, forward: bool, monitor_index: i32) {
         match self.data.borrow().wm_type {

@@ -1,6 +1,6 @@
 use i3ipc::reply::{Workspace as I3Workspace};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Workspace {
     pub number: i32,
     pub name: String,

@@ -30,7 +30,9 @@ pub fn _get_workspaces(connection: &mut I3Connection) -> Vec<Workspace> {
     let mut i3workspaces = connection.get_workspaces()
         .unwrap_or(I3Workspaces { workspaces: Vec::new()})
         .workspaces;
+    // sort by number
     i3workspaces.sort_by(|a, b| a.num.cmp(&b.num));
+    // convert to generic workspace
     let workspaces = i3workspaces
         .iter()
         .map(i3_to_generic)
@@ -101,8 +103,10 @@ pub fn cycle_workspace(is_next: bool, monitor_index: i32) {
                 });
                 if let Some(next) = next_opt {
                     let command = format!("workspace {}", next.name);
-                    connection.run_command(&command)
-                        .expect("something went wrong running an i3 command");
+                    let command_res = connection.run_command(&command);
+                    if let Err(_) = command_res {
+                        error!("i3: Something went wrong switching workspaces");
+                    }
                 }
             }
         },

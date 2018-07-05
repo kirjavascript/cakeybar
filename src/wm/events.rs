@@ -1,3 +1,5 @@
+use wm::workspace::Workspace;
+
 // data
 
 #[derive(Debug, Hash, Eq, PartialEq)]
@@ -10,6 +12,7 @@ pub enum Event {
 #[derive(Debug, Clone)]
 pub enum EventValue {
     String(String),
+    Workspaces(Vec<Workspace>),
 }
 
 // impl
