@@ -4,6 +4,7 @@ pub mod gtk;
 pub mod bsp;
 pub mod i3;
 pub mod events;
+pub mod workspace;
 
 use self::events::{Event, EventValue, EventEmitter};
 

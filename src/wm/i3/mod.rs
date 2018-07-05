@@ -1,6 +1,7 @@
 mod listen;
 
 use wm;
+use wm::workspace::{Workspace, i3_to_generic};
 
 // reexported public interface
 pub use self::listen::listen;
@@ -25,24 +26,27 @@ pub fn run_command(string: &str) {
     }
 }
 
-// workspaces
+pub fn _get_workspaces(connection: &mut I3Connection) -> Vec<Workspace> {
+    let mut i3workspaces = connection.get_workspaces()
+        .unwrap_or(I3Workspaces { workspaces: Vec::new()})
+        .workspaces;
+    i3workspaces.sort_by(|a, b| a.num.cmp(&b.num));
+    let workspaces = i3workspaces
+        .iter()
+        .map(i3_to_generic)
+        .collect::<Vec<Workspace>>();
 
-// type Either<T, U> = Result<T, U>;
+    workspaces
+}
 
-// mod prelim {
-//     pub fn get_workspaces() {
-
-//     }
-// }
-
+#[deprecated]
 pub fn get_workspace_list(connection: &mut I3Connection) -> Vec<I3Workspace> {
     connection.get_workspaces()
         .unwrap_or(I3Workspaces { workspaces: Vec::new()})
         .workspaces
 }
 
-// TODO: remove show_all -> filter in i3workspace instead
-
+#[deprecated]
 pub fn get_workspaces<'a>(workspace_list: &'a Vec<I3Workspace>, show_all: bool, has_name: bool, monitor_name: String) -> Vec<&'a I3Workspace> {
     let mut workspaces: Vec<&I3Workspace> = workspace_list
         .iter()
@@ -64,12 +68,21 @@ pub fn cycle_workspace(is_next: bool, monitor_index: i32) {
     match connect() {
         Ok(mut connection) => {
 
-            // get monitor name / details
-            let (has_name, monitor_name) = wm::gtk::get_monitor_name(monitor_index);
+            // get monitor name
+            let name_opt = wm::gtk::_get_monitor_name(monitor_index);
 
             // get workspace details
-            let workspace_list = get_workspace_list(&mut connection);
-            let mut workspaces = get_workspaces(&workspace_list, false, has_name, monitor_name.clone());
+            let workspaces = _get_workspaces(&mut connection);
+            let mut workspaces = workspaces
+                .iter()
+                .filter(|w| {
+                    match name_opt {
+                        Some(ref name) => *name == w.output,
+                        None => true,
+                    }
+                })
+                .collect::<Vec<&Workspace>>();
+
             // so we can search backwards
             if !is_next {
                 workspaces.reverse();
@@ -81,9 +94,9 @@ pub fn cycle_workspace(is_next: bool, monitor_index: i32) {
                 // get next one
                 let next_opt = workspaces.iter().find(|x| {
                     if is_next {
-                        x.num > focused.num
+                        x.number > focused.number
                     } else {
-                        x.num < focused.num
+                        x.number < focused.number
                     }
                 });
                 if let Some(next) = next_opt {

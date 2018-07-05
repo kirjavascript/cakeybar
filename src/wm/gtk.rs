@@ -31,13 +31,18 @@ pub fn get_monitors() -> Vec<Rectangle> {
     monitors
 }
 
-// TODO: return Option instead >_>
+#[deprecated]
 pub fn get_monitor_name(monitor_index: i32) -> (bool, String) {
     let screen = Screen::get_default().unwrap();
     let monitor_name_opt = screen.get_monitor_plug_name(monitor_index);
     let has_name = monitor_name_opt.is_some();
     let monitor_name = monitor_name_opt.unwrap_or("poop".to_string());
     (has_name, monitor_name)
+}
+
+pub fn _get_monitor_name(monitor_index: i32) -> Option<String> {
+    let screen = Screen::get_default().unwrap();
+    screen.get_monitor_plug_name(monitor_index)
 }
 
 pub fn get_dimensions() -> (i32, i32) {
