@@ -83,9 +83,11 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                 wm_util.emit_value(
                                     Event::Workspace,
                                     EventValue::Workspaces(
-                                        i3::_get_workspaces(&mut connection)
+                                        i3::get_workspaces(&mut connection)
                                     ),
                                 );
+                            } else {
+                                wm_util.emit(Event::Workspace);
                             }
                         },
                     }

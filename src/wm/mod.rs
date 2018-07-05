@@ -101,7 +101,7 @@ impl WMUtil {
             WMType::I3 => {
                 match i3::connect() {
                     Ok(mut connection) => {
-                        Some(i3::_get_workspaces(&mut connection))
+                        Some(i3::get_workspaces(&mut connection))
                     },
                     Err(_) => None
                 }
@@ -109,6 +109,8 @@ impl WMUtil {
             _ => None
         }
     }
+
+    // pub fn focus_workspace
 
     pub fn cycle_workspace(&self, forward: bool, monitor_index: i32) {
         match self.data.borrow().wm_type {

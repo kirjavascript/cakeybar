@@ -2,11 +2,10 @@ use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
 
-use i3ipc::{I3Connection};
-use i3ipc::reply::{Workspace};
 use wm;
-use wm::events::Event;
-use wm::i3::{get_workspace_list, get_workspaces, run_command};
+use wm::events::{Event, EventValue};
+use wm::workspace::Workspace;
+use wm::i3::{run_command}; // TODO: remove
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -17,10 +16,6 @@ pub struct I3Workspace { }
 
 impl Component for I3Workspace {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
-        if bar.wm_util.get_wm_type() != wm::WMType::I3 {
-            return
-        }
-
         let monitor_index = bar.config.get_int_or("monitor", 0) as i32;
 
         // get spacing
@@ -39,11 +34,10 @@ impl Component for I3Workspace {
         wrapper.show();
 
 
-        let (has_name, monitor_name) = wm::gtk::get_monitor_name(monitor_index);
+        let name_opt = wm::gtk::get_monitor_name(monitor_index);
 
-        let mut connection = I3Connection::connect().unwrap();
-        let workspace_list = get_workspace_list(&mut connection);
-        let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
+        let workspaces = bar.wm_util.get_workspaces().unwrap_or(vec![]);
+        let workspaces = filter_by_name(&workspaces, show_all, &name_opt);
 
         // create initial UI
 
@@ -62,41 +56,42 @@ impl Component for I3Workspace {
 
         // listen for events
         bar.wm_util.add_listener(Event::Workspace, clone!((wrapper, labels)
-            move |_| {
-                let mut connection = I3Connection::connect().unwrap();
-                let workspace_list = get_workspace_list(&mut connection);
-                let workspaces = get_workspaces(&workspace_list, show_all, has_name, monitor_name.clone());
+            move |workspaces_opt| {
+                if let Some(EventValue::Workspaces(workspaces)) = workspaces_opt {
 
-                for (i, workspace) in workspaces.iter().enumerate() {
-                    let added_new = if let Some(label) = labels.borrow_mut().get_mut(i) {
-                        // if a label already exists
-                        set_label_attrs(&label, &workspace, show_name);
-                        None
-                    } else {
-                        // if adding a new label
-                        let label = Label::new(None);
-                        set_label_attrs(&label, &workspace, show_name);
-                        let ebox = add_event_box(&label, workspace.name.clone());
-                        wrapper.add(&ebox);
-                        Some(label)
-                    };
-                    if let Some(added) = added_new {
-                        labels.borrow_mut().push(added);
-                    }
-                }
-                wrapper.show_all();
+                    let mut workspaces = filter_by_name(&workspaces, show_all, &name_opt);
 
-                // remove items
-                let work_len = workspaces.len();
-                let label_len = labels.borrow().len();
-                if label_len > work_len {
-                    let mut labels = labels.borrow_mut();
-                    labels.splice(work_len.., vec![]).for_each(|w| {
-                        if let Some(parent) = w.get_parent() {
-                            // nuke the event box
-                            parent.destroy();
+                    for (i, workspace) in workspaces.iter().enumerate() {
+                        let added_new = if let Some(label) = labels.borrow_mut().get_mut(i) {
+                            // if a label already exists
+                            set_label_attrs(&label, &workspace, show_name);
+                            None
+                        } else {
+                            // if adding a new label
+                            let label = Label::new(None);
+                            set_label_attrs(&label, &workspace, show_name);
+                            let ebox = add_event_box(&label, workspace.name.clone());
+                            wrapper.add(&ebox);
+                            Some(label)
+                        };
+                        if let Some(added) = added_new {
+                            labels.borrow_mut().push(added);
                         }
-                    });
+                    }
+                    wrapper.show_all();
+
+                    // remove items
+                    let work_len = workspaces.len();
+                    let label_len = labels.borrow().len();
+                    if label_len > work_len {
+                        let mut labels = labels.borrow_mut();
+                        labels.splice(work_len.., vec![]).for_each(|w| {
+                            if let Some(parent) = w.get_parent() {
+                                // nuke the event box
+                                parent.destroy();
+                            }
+                        });
+                    }
                 }
             }
         ));
@@ -116,7 +111,7 @@ fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
     if show_name {
         label.set_label(&workspace.name);
     } else {
-        label.set_label(&workspace.num.to_string());
+        label.set_label(&workspace.number.to_string());
     };
     // style
     if let Some(ctx) = label.get_style_context() {
@@ -136,4 +131,20 @@ fn add_event_box(label: &Label, workspace_name: String) -> EventBox {
         Inhibit(false)
     });
     ebox
+}
+
+fn filter_by_name<'a>(workspaces: &'a Vec<Workspace>, show_all: bool, name_opt: &Option<String>) -> Vec<&'a Workspace> {
+    workspaces
+        .iter()
+        .filter(|w| {
+            if show_all {
+                true
+            } else {
+                match name_opt {
+                    Some(ref name) => *name == w.output,
+                    None => true,
+                }
+            }
+        })
+        .collect::<Vec<&Workspace>>()
 }
