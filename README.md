@@ -119,11 +119,11 @@ items = [
 
 a gtk-context style dropdown menu
 
-#### i3workspace
+#### workspaces
 
 ```toml
 [component.workspace_list]
-type = "i3workspace"
+type = "workspaces"
 show_all = false # show workspaces from every window
 show_name = false # show full name or just index
 ```
