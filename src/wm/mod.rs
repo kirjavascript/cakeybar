@@ -110,7 +110,15 @@ impl WMUtil {
         }
     }
 
-    // pub fn focus_workspace
+    pub fn focus_workspace(&self, workspace_name: &String) {
+        match self.data.borrow().wm_type {
+            WMType::I3 => {
+                let command = format!("workspace {}", workspace_name);
+                i3::run_command(&command);
+            },
+            _ => {},
+        }
+    }
 
     pub fn cycle_workspace(&self, forward: bool, monitor_index: i32) {
         match self.data.borrow().wm_type {

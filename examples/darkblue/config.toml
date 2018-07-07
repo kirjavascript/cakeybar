@@ -68,7 +68,7 @@ type = "window"
 halign = "center"
 
 [component.workspaces]
-type = "i3workspace"
+type = "workspaces"
 show_all = false
 show_name = false
 

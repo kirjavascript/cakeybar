@@ -5,16 +5,15 @@ use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextEx
 use wm;
 use wm::events::{Event, EventValue};
 use wm::workspace::Workspace;
-use wm::i3::{run_command}; // TODO: remove
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub struct I3Workspace { }
+pub struct Workspaces { }
 
 // Workspaces
 
-impl Component for I3Workspace {
+impl Component for Workspaces {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
         let monitor_index = bar.config.get_int_or("monitor", 0) as i32;
 
@@ -33,7 +32,6 @@ impl Component for I3Workspace {
         container.add(&wrapper);
         wrapper.show();
 
-
         let name_opt = wm::gtk::get_monitor_name(monitor_index);
 
         let workspaces = bar.wm_util.get_workspaces().unwrap_or(vec![]);
@@ -45,17 +43,23 @@ impl Component for I3Workspace {
              Vec::new()
         ));
 
+        let &Bar { wm_util, .. } = bar;
+
         for workspace in workspaces.iter() {
             let label = Label::new(None);
             set_label_attrs(&label, &workspace, show_name);
-            let ebox = add_event_box(&label, workspace.name.clone());
+            let ebox = add_event_box(
+                &label,
+                workspace.name.clone(),
+                wm_util.clone(),
+            );
             wrapper.add(&ebox);
             labels.borrow_mut().push(label);
         }
         wrapper.show_all();
 
         // listen for events
-        bar.wm_util.add_listener(Event::Workspace, clone!((wrapper, labels)
+        wm_util.add_listener(Event::Workspace, clone!((wrapper, labels, wm_util)
             move |workspaces_opt| {
                 if let Some(EventValue::Workspaces(workspaces)) = workspaces_opt {
 
@@ -70,7 +74,11 @@ impl Component for I3Workspace {
                             // if adding a new label
                             let label = Label::new(None);
                             set_label_attrs(&label, &workspace, show_name);
-                            let ebox = add_event_box(&label, workspace.name.clone());
+                            let ebox = add_event_box(
+                                &label,
+                                workspace.name.clone(),
+                                wm_util.clone(),
+                            );
                             wrapper.add(&ebox);
                             Some(label)
                         };
@@ -122,12 +130,11 @@ fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
     }
 }
 
-fn add_event_box(label: &Label, workspace_name: String) -> EventBox {
+fn add_event_box(label: &Label, name: String, wm_util: wm::WMUtil) -> EventBox {
     let ebox = EventBox::new();
     ebox.add(label);
     ebox.connect_button_press_event(move |_, _| {
-        let command = format!("workspace {}", workspace_name);
-        run_command(&command);
+        wm_util.focus_workspace(&name);
         Inhibit(false)
     });
     ebox
@@ -146,5 +153,5 @@ fn filter_by_name<'a>(workspaces: &'a Vec<Workspace>, show_all: bool, name_opt: 
                 }
             }
         })
-        .collect::<Vec<&Workspace>>()
+    .collect::<Vec<&Workspace>>()
 }

@@ -6,6 +6,6 @@ theme = "workspace-icons.css"
 layout = [ "workspaces" ]
 
 [component.workspaces]
-type = "i3workspace"
+type = "workspaces"
 show_all = false
 show_name = true
