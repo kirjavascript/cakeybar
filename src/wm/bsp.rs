@@ -5,15 +5,14 @@ use std::os::unix::net::{UnixStream};
 use std::io::{Error, Write, Read};
 
 pub fn connect() -> Result<UnixStream, Error> {
-// https://github.com/marionauta/bspc/blob/master/src/main.rs
     let stream_file = env::var("BSPWM_SOCKET").unwrap_or("/tmp/bspwm_0_0-socket".to_string());
 
     UnixStream::connect(stream_file)
 }
 
-pub fn run_command(string: &str) -> Result<String, Error> {
+pub fn run_command(string: String) -> Result<String, Error> {
     let mut stream = connect()?;
-    let mut cmd = string.split(" ").collect::<Vec<&str>>().join("\0");
+    let mut cmd = string.replace(" ", "\0");
     cmd.push_str("\0");
 
     stream.write(cmd.as_bytes()).unwrap();
@@ -26,5 +25,5 @@ pub fn run_command(string: &str) -> Result<String, Error> {
 pub fn set_padding(is_top: bool, padding: i32) {
     let position = if is_top { "top" } else { "bottom" };
 
-    run_command(&format!("config {}_padding {}", position, padding)).ok();
+    run_command(format!("config {}_padding {}", position, padding)).ok();
 }
