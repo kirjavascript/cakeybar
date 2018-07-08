@@ -127,6 +127,10 @@ impl WMUtil {
                 let command = format!("workspace {}", workspace_name);
                 i3::run_command(&command);
             },
+            WMType::Bsp => {
+                let command = format!("desktop -f {}", workspace_name);
+                bsp::run_command(command).ok();
+            },
             _ => {},
         }
     }

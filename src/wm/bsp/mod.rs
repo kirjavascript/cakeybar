@@ -15,12 +15,13 @@ pub fn connect() -> Result<UnixStream, Error> {
     UnixStream::connect(stream_file)
 }
 
-// TODO: multimonitor
-
+// TODO: multimonitor support
+//
 //https://github.com/baskerville/bspwm/blob/336095739e2de94109e55e544c806770316c822c/doc/bspwm.1.asciidoc
 //
 // bspc wm -D
 // bspc -D any.local.focused
+// bspc desktop -f {}.local
 
 // util
 
@@ -57,16 +58,38 @@ pub fn set_padding(is_top: bool, padding: i32) {
     run_command(format!("config {}_padding {}", position, padding)).ok();
 }
 
-pub fn cycle_workspace(forward: bool) {
-    let direction = if forward { "next" } else { "prev" };
-
-    // TODO: get list of desktops and current
+pub fn cycle_workspace(is_next: bool) {
     if let Ok(mut stream) = connect() {
 
-        // cycle the "current" monitor
-        write_message(&mut stream, format!("desktop -f {}.local", direction)).ok();
-    }
+        let mut workspaces = get_workspaces(&mut stream);
 
+        // TODO: multimonitor missing here
+
+        // TODO: dedupe
+
+        // so we can search backwards
+        if !is_next {
+            workspaces.reverse();
+        }
+
+        // get focused workspace
+        let focused_opt = workspaces.iter().find(|x| x.focused);
+        if let Some(focused) = focused_opt {
+            // get next one
+            let next_opt = workspaces.iter().find(|x| {
+                if is_next {
+                    x.number > focused.number
+                } else {
+                    x.number < focused.number
+                }
+            });
+            if let Some(next) = next_opt {
+                let command = format!("desktop -f {}", next.name);
+                // TODO: refactor to not use read_to_string and reuse the connection
+                run_command(command).ok();
+            }
+        }
+    }
 }
 
 // WMeDP1:oI:OII:fIII:fIV:fV:fVI:fVII:fVIII:fIX:fX:LT:TT:G
