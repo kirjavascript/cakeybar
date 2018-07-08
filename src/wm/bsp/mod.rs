@@ -15,6 +15,8 @@ pub fn connect() -> Result<UnixStream, Error> {
     UnixStream::connect(stream_file)
 }
 
+// TODO: multimonitor
+
 //https://github.com/baskerville/bspwm/blob/336095739e2de94109e55e544c806770316c822c/doc/bspwm.1.asciidoc
 //
 // bspc wm -D
@@ -69,7 +71,7 @@ pub fn cycle_workspace(forward: bool) {
 
 // WMeDP1:oI:OII:fIII:fIV:fV:fVI:fVII:fVIII:fIX:fX:LT:TT:G
 pub fn parse_workspaces(string: String) -> Vec<Workspace> {
-    let mut monitors = string.trim().split("\n").collect::<Vec<&str>>();
+    let monitors = string.trim().split("\n").collect::<Vec<&str>>();
     let mut workspaces: Vec<Workspace> = Vec::new();
 
     for monitor in monitors {
@@ -83,23 +85,21 @@ pub fn parse_workspaces(string: String) -> Vec<Workspace> {
         }
 
         if let Some(name) = tokens.get(0) {
-            let output = &name[2..];
+            let output = &name[2..]; // ignores 'WM'
             &tokens[1..].iter().enumerate().for_each(|(i, token)| {
                 let mut token_clone = token.clone();
                 let (head, tail) = token_clone.split_at_mut(1);
-                match head.chars().next() {
-                    Some('u') | Some('U') | Some('o') | Some('O') => {
-                        workspaces.push(Workspace {
-                            number: i as i32 + 1,
-                            name: tail.to_string(),
-                            // TODO: get which monitor is focused
-                            visible: head == "U" || head == "O",
-                            focused: head == "U" || head == "O",
-                            urgent: head == "u" || head == "U",
-                            output: output.to_string(),
-                        });
-                    },
-                    _ => {},
+                if head == "u" || head == "U" || head == "o" || head == "O" || head == "F" {
+                    let uppercase = head.chars().next().unwrap().is_uppercase();
+                    workspaces.push(Workspace {
+                        number: i as i32 + 1,
+                        name: tail.to_string(),
+                        // TODO: get which monitor is focused
+                        visible: uppercase,
+                        focused: uppercase,
+                        urgent: head == "u" || head == "U",
+                        output: output.to_string(),
+                    });
                 }
             });
         }

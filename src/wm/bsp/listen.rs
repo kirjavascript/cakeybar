@@ -1,16 +1,17 @@
-// use gtk;
+use gtk;
 
 use std::thread;
-// use std::sync::mpsc;
+use std::sync::mpsc;
 
 // use std::os::unix::net::{UnixStream};
 use std::io::{Read}; // Error, Write,
 
 use wm::bsp;
+use wm::events::{Event, EventValue};
 
-pub fn listen(_wm_util: &::wm::WMUtil) {
+pub fn listen(wm_util: &::wm::WMUtil) {
 
-    // let (tx, rx) = mpsc::channel();
+    let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
         match bsp::connect() {
@@ -22,7 +23,7 @@ pub fn listen(_wm_util: &::wm::WMUtil) {
                 loop {
                     if let Ok(_) = stream.read(&mut current) {
                         if current[0] == 10 {
-                            info!("TODO: {:?}", String::from_utf8(msg.clone()));
+                            tx.send(Ok(String::from_utf8(msg.clone()))).unwrap();
                             msg.clear();
                         } else {
                             msg.push(current[0]);
@@ -30,29 +31,36 @@ pub fn listen(_wm_util: &::wm::WMUtil) {
                     }
                 }
             },
-            Err(e) => {
-                error!("{:?}", e);
+            Err(err) => {
+                tx.send(Err(format!("{}", err))).unwrap();
             },
         }
     });
 
-    // gtk::timeout_add(10, clone!(wm_util move || {
-    //     if let Ok(msg_result) = rx.try_recv() {
-    //         match msg_result {
-    //             Ok(msg) => {
-    //                 match msg {
-    //                 }
-    //             },
-    //             Err(err) => {
-    //                 warn!("{}, restarting thread", err.to_lowercase());
-    //                 gtk::timeout_add(100, clone!(wm_util move || {
-    //                     listen(&wm_util);
-    //                     gtk::Continue(false)
-    //                 }));
-    //                 return gtk::Continue(false);
-    //             },
-    //         };
-    //     }
-    //     gtk::Continue(true)
-    // }));
+    gtk::timeout_add(10, clone!(wm_util move || {
+        if let Ok(msg_result) = rx.try_recv() {
+            match msg_result {
+                Ok(msg) => {
+                    if let Ok(msg) = msg {
+                        if msg.starts_with("W") {
+                            let workspaces = bsp::parse_workspaces(msg);
+                            wm_util.emit_value(
+                                Event::Workspace,
+                                EventValue::Workspaces(workspaces),
+                            );
+                        }
+                    }
+                },
+                Err(err) => {
+                    warn!("{}, restarting thread", err.to_lowercase());
+                    gtk::timeout_add(100, clone!(wm_util move || {
+                        listen(&wm_util);
+                        gtk::Continue(false)
+                    }));
+                    return gtk::Continue(false);
+                },
+            };
+        }
+        gtk::Continue(true)
+    }));
 }
