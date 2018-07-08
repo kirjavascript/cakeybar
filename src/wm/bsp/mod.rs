@@ -2,6 +2,8 @@ mod listen;
 
 pub use self::listen::listen;
 
+use wm::workspace::Workspace;
+
 use std::env;
 use std::os::unix::net::{UnixStream};
 use std::io::{Error, Write, Read};
@@ -29,7 +31,42 @@ pub fn query_message(stream: &mut UnixStream, string: String) -> Result<String, 
     Ok(response)
 }
 
+pub fn get_workspaces(stream: &mut UnixStream) {
+    if let Ok(response) = query_message(stream, "wm -g".to_string()) {
+        // info!("{:?}", response);
+        let response = String::from("WMeDP1:oI:OII:fIII:fIV:fV:fVI:fVII:fVIII:fIX:fX:LT:TT:G\nWMeDP2:oI:OII:fIII:fIV:fV:fVI:fVII:fVIII:fIX:fX:LT:TT:G\n");
+        let mut monitors = response.trim().split("\n").collect::<Vec<&str>>();
+
+        for monitor in monitors {
+            let mut text: String = monitor.to_string();
+            let mut tokens: Vec<String> = Vec::new();
+            loop {
+                if let Some(loc) = text.find(":") {
+                    let mut text_clone = text.clone();
+                    let (head, tail) = text_clone.split_at_mut(loc + 1);
+                    text = tail.to_string();
+                    tokens.push(head.trim_matches(':').to_string());
+                } else {
+                    break;
+                }
+            }
+
+            if let Some(name) = tokens.get(0) {
+                let output = &name[2..];
+                &tokens[1..].iter().enumerate().for_each(|(i, t)| {
+                    let (head, tail) = t.split_at_mut(1);
+                    println!("{:#?}", (head, tail));
+                });
+            }
+        }
+
+    }
+}
+
 // WMeDP1:oI:OII:fIII:fIV:fV:fVI:fVII:fVIII:fIX:fX:LT:TT:G
+// bspc subscribe desktop monitor report
+// bspc wm -D
+// bspc -D any.local.focused
 
 // connect and send
 
