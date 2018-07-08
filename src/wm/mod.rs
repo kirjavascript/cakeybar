@@ -112,8 +112,7 @@ impl WMUtil {
             WMType::Bsp => {
                 match bsp::connect() {
                     Ok(mut connection) => {
-                        bsp::get_workspaces(&mut connection);
-                        None
+                        Some(bsp::get_workspaces(&mut connection))
                     },
                     Err(_) => None
                 }
