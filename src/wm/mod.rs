@@ -63,6 +63,9 @@ impl WMUtil {
             WMType::I3 => {
                 i3::listen(&util);
             },
+            WMType::Bsp => {
+                bsp::listen(&util);
+            },
             _ => {},
         }
 
@@ -124,6 +127,9 @@ impl WMUtil {
         match self.data.borrow().wm_type {
             WMType::I3 => {
                 i3::cycle_workspace(forward, monitor_index);
+            },
+            WMType::Bsp => {
+                bsp::cycle_workspace(forward);
             },
             _ => {},
         }
