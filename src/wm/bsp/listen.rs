@@ -3,7 +3,6 @@ use gtk;
 use std::thread;
 use std::sync::mpsc;
 
-// use std::os::unix::net::{UnixStream};
 use std::io::{Read}; // Error, Write,
 
 use wm::bsp;
@@ -16,18 +15,23 @@ pub fn listen(wm_util: &::wm::WMUtil) {
     thread::spawn(move || {
         match bsp::connect() {
             Ok(mut stream) => {
-                bsp::write_message(&mut stream, "subscribe desktop monitor report".to_string()).ok();
+                bsp::write_message(&mut stream, "subscribe monitor report".to_string()).ok();
 
                 let mut current = [0; 1];
                 let mut msg: Vec<u8> = Vec::new();
                 loop {
-                    if let Ok(_) = stream.read(&mut current) {
-                        if current[0] == 10 {
-                            tx.send(Ok(String::from_utf8(msg.clone()))).unwrap();
-                            msg.clear();
-                        } else {
-                            msg.push(current[0]);
-                        }
+                    match stream.read(&mut current) {
+                        Ok(_) => {
+                            if current[0] == 10 {
+                                tx.send(Ok(String::from_utf8(msg.clone()))).unwrap();
+                                msg.clear();
+                            } else {
+                                msg.push(current[0]);
+                            }
+                        },
+                        Err(err) => {
+                            tx.send(Err(format!("{}", err))).unwrap();
+                        },
                     }
                 }
             },

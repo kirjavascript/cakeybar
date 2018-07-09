@@ -59,6 +59,8 @@ impl WMUtil {
 
         let util = Self { data };
 
+        xcb::listen(&util);
+
         match util.get_wm_type() {
             WMType::I3 => {
                 i3::listen(&util);

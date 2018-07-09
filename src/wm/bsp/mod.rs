@@ -65,7 +65,7 @@ pub fn cycle_workspace(is_next: bool) {
 
         // TODO: multimonitor missing here
 
-        // TODO: dedupe
+        // TODO: dedupe (get_next_name)
 
         // so we can search backwards
         if !is_next {

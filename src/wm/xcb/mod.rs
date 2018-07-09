@@ -1,3 +1,7 @@
+mod listen;
+
+pub use self::listen::listen;
+
 use xcb;
 use wm::atom;
 

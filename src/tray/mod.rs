@@ -32,15 +32,15 @@ pub fn main() -> i32 {
         chan_signal::Signal::KILL,
     ]);
 
-    if let Ok((conn, preferred)) = xcb::Connection::connect(None) {
+    if let Ok((conn, screen_num)) = xcb::Connection::connect(None) {
         let conn = Arc::new(conn);
         let atoms = wm::atom::Atoms::new(&conn);
-        let preferred = preferred as usize;
+        let screen_num = screen_num as usize;
 
         let (tx_ipc, rx_ipc) = ipc::get_client();
 
         let setup = conn.get_setup();
-        let screen = setup.roots().nth(preferred).unwrap();
+        let screen = setup.roots().nth(screen_num).unwrap();
 
         let mut manager = manager::Manager::new(&conn, &atoms, &screen, tx_ipc);
 

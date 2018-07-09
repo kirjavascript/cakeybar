@@ -33,7 +33,7 @@ externally mapped command to trigger key input mode
 components
 ====
 conditional display / flexbox
-system command / read file -> make migration to lemonbar easy
+system command / read file -> make migration to lemonbar easy - classes for return code
  <api/>
 <webview>
 mpd ipc
