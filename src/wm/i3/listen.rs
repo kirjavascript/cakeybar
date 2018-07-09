@@ -9,7 +9,6 @@ use std::sync::mpsc;
 
 enum I3Msg {
     Mode(String),
-    Window(String),
     Workspace,
 }
 
@@ -23,7 +22,6 @@ pub fn listen(wm_util: &::wm::WMUtil) {
             Ok(mut listener) => {
                 let subs = [
                     Subscription::Mode,
-                    Subscription::Window,
                     Subscription::Workspace,
                 ];
                 listener.subscribe(&subs).unwrap();
@@ -34,10 +32,6 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                             match message {
                                 I3Event::ModeEvent(e) => {
                                     tx.send(Ok(I3Msg::Mode(e.change)))
-                                },
-                                I3Event::WindowEvent(e) => {
-                                    let name = e.container.name.unwrap_or("".to_string());
-                                    tx.send(Ok(I3Msg::Window(name)))
                                 },
                                 I3Event::WorkspaceEvent(_e) => {
                                     // Focus Init Empty Urgent Rename Reload Restored Move Unknown
@@ -69,12 +63,6 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                         I3Msg::Mode(value) => {
                             wm_util.emit_value(
                                 Event::Mode,
-                                EventValue::String(value),
-                            );
-                        },
-                        I3Msg::Window(value) => {
-                            wm_util.emit_value(
-                                Event::Window,
                                 EventValue::String(value),
                             );
                         },

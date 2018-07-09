@@ -31,6 +31,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                         },
                         Err(err) => {
                             tx.send(Err(format!("{}", err))).unwrap();
+                            break;
                         },
                     }
                 }

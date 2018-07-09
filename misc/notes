@@ -15,11 +15,11 @@ awesome-client
 
 refactoring
 ===
-i3window new workspace bug (rewrite in xcb)
 wm restart event restack tray
 IPC get_server connect to RCV unwrap()
 kill tray when bar dies (100% CPU)
 fix util::run_command
+fix tray fullscreen latency with events
 
 impl
 ====
@@ -62,7 +62,7 @@ type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
-osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline
+osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline / hexagons
 crosspost on unixporn / r/rust
 startup clit image
 https://i.imgur.com/oe8pbEz.png

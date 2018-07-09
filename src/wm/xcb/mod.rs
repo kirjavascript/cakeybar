@@ -49,6 +49,44 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
     false
 }
 
+pub fn get_string(conn: &xcb::Connection, id: u32, attr: u32) -> String {
+    let window: xcb::Window = id;
+    let long_length: u32 = 16;
+    let mut long_offset: u32 = 0;
+    let mut buf = Vec::new();
+    loop {
+        let cookie = xcb::get_property(
+            &conn,
+            false,
+            window,
+            attr,
+            xcb::ATOM_STRING,
+            long_offset,
+            long_length,
+            );
+        match cookie.get_reply() {
+            Ok(reply) => {
+                let value: &[u8] = reply.value();
+                buf.extend_from_slice(value);
+                match reply.bytes_after() {
+                    0 => break,
+                    _ => {
+                        let len = reply.value_len();
+                        long_offset += len / 4;
+                    }
+                }
+            }
+            Err(err) => {
+                error!("{:?}", err);
+                break;
+            }
+        }
+    }
+    let result = String::from_utf8(buf).unwrap();
+    let results: Vec<&str> = result.split('\0').collect();
+    results[0].to_string()
+}
+
 // debug window order
 // if let Ok(reply) = xcb::query_tree(&self.conn, screen.root()).get_reply() {
 //     for i in reply.children() {
@@ -78,43 +116,6 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
 
 // }
 
-// pub fn get_string(conn: &xcb::Connection, id: u32, attr: u32) -> String {
-//     let window: xcb::Window = id;
-//     let long_length: u32 = 16;
-//     let mut long_offset: u32 = 0;
-//     let mut buf = Vec::new();
-//     loop {
-//         let cookie = xcb::get_property(
-//             &conn,
-//             false,
-//             window,
-//             attr,
-//             xcb::ATOM_STRING,
-//             long_offset,
-//             long_length,
-//             );
-//         match cookie.get_reply() {
-//             Ok(reply) => {
-//                 let value: &[u8] = reply.value();
-//                 buf.extend_from_slice(value);
-//                 match reply.bytes_after() {
-//                     0 => break,
-//                     _ => {
-//                         let len = reply.value_len();
-//                         long_offset += len / 4;
-//                     }
-//                 }
-//             }
-//             Err(err) => {
-//                 println!("{:?}", err);
-//                 break;
-//             }
-//         }
-//     }
-//     let result = String::from_utf8(buf).unwrap();
-//     let results: Vec<&str> = result.split('\0').collect();
-//     results[0].to_string()
-// }
 //
 // adds resize event
 // xcb::change_window_attributes(self.conn, self.window, &[
