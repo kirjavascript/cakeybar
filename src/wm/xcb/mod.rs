@@ -82,9 +82,7 @@ pub fn get_string(conn: &xcb::Connection, id: u32, attr: u32) -> String {
             }
         }
     }
-    let result = String::from_utf8(buf).unwrap();
-    let results: Vec<&str> = result.split('\0').collect();
-    results[0].to_string()
+    format!("{}", String::from_utf8_lossy(&buf))
 }
 
 // debug window order

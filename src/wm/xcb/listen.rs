@@ -7,7 +7,7 @@ use std::sync::mpsc;
 use wm;
 use wm::events::{Event, EventValue};
 
-// TODO: UTF-8
+// TODO: encoding, high CPU, init
 
 pub fn listen(wm_util: &::wm::WMUtil) {
 
