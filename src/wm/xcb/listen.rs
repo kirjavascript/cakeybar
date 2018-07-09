@@ -8,6 +8,8 @@ use wm;
 use wm::events::{Event, EventValue};
 
 // TODO: non utf8 name, init, firefox tab change
+//
+// subscribe and unsubscrive from active windows
 
 pub fn listen(wm_util: &::wm::WMUtil) {
 
@@ -34,6 +36,8 @@ pub fn listen(wm_util: &::wm::WMUtil) {
             let _wm_name = atoms.get(wm::atom::_NET_WM_NAME);
             let _utf8_string = atoms.get(wm::atom::UTF8_STRING);
 
+            // get current window (or 0 for now)
+
             loop {
                 match conn.wait_for_event() {
                     Some(event) => {
@@ -50,6 +54,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                     || event_atom == _visible_name
                                     || event_atom == _wm_name;
 
+
                                 if is_title {
                                     let cookie = xcb::get_property(
                                         &conn,
@@ -65,6 +70,10 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                         Ok(reply) => {
                                             let value: &[u32] = reply.value();
                                             let window = value[0];
+
+                                if event_atom == _active_window {
+                                    // unsubscribe and subscribe again
+                                }
                                             if window == 0 {
                                                 tx.send(Ok(
                                                     "".to_string()
