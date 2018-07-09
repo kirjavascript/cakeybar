@@ -7,7 +7,7 @@ use std::sync::mpsc;
 use wm;
 use wm::events::{Event, EventValue};
 
-// TODO: encoding, high CPU, init
+// TODO: non utf8 name, init, firefox tab change
 
 pub fn listen(wm_util: &::wm::WMUtil) {
 
@@ -32,6 +32,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
             let _current_desktop = atoms.get(wm::atom::_NET_CURRENT_DESKTOP);
             let _visible_name = atoms.get(wm::atom::_NET_WM_VISIBLE_NAME);
             let _wm_name = atoms.get(wm::atom::_NET_WM_NAME);
+            let _utf8_string = atoms.get(wm::atom::UTF8_STRING);
 
             loop {
                 match conn.wait_for_event() {
@@ -72,7 +73,8 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                                 let title = wm::xcb::get_string(
                                                     &conn,
                                                     window,
-                                                    xcb::ATOM_WM_NAME,
+                                                    _utf8_string,
+                                                    _wm_name,
                                                 );
                                                 tx.send(Ok(
                                                     title.trim().to_string()

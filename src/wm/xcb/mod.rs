@@ -49,7 +49,7 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
     false
 }
 
-pub fn get_string(conn: &xcb::Connection, id: u32, attr: u32) -> String {
+pub fn get_string(conn: &xcb::Connection, id: u32, _type: u32, attr: u32) -> String {
     let window: xcb::Window = id;
     let long_length: u32 = 16;
     let mut long_offset: u32 = 0;
@@ -60,7 +60,7 @@ pub fn get_string(conn: &xcb::Connection, id: u32, attr: u32) -> String {
             false,
             window,
             attr,
-            xcb::ATOM_STRING,
+            _type, // xcb::ATOM_STRING
             long_offset,
             long_length,
             );
@@ -82,6 +82,7 @@ pub fn get_string(conn: &xcb::Connection, id: u32, attr: u32) -> String {
             }
         }
     }
+
     format!("{}", String::from_utf8_lossy(&buf))
 }
 
