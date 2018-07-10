@@ -34,7 +34,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
 
             let mut current_window = xcb::NONE;
 
-            let mut get_title = |is_active: bool| {
+            let mut get_title = |is_active_event: bool| {
                 let cookie = xcb::get_property(
                     &conn,
                     false,
@@ -50,7 +50,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                         let value: &[u32] = reply.value();
                         let window = value[0];
 
-                        if is_active && current_window != window {
+                        if is_active_event && current_window != window {
                             // unsubscribe old window
                             if current_window != xcb::NONE {
                                 xcb::change_window_attributes_checked(&conn, current_window, &[
@@ -101,14 +101,14 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                     xcb::cast_event(&event)
                                 };
                                 let event_atom = event.atom();
-                                let is_active = event_atom == _active_window;
-                                let is_title = is_active
+                                let is_active_event = event_atom == _active_window;
+                                let is_title = is_active_event
                                     || event_atom == _current_desktop
                                     || event_atom == _visible_name
                                     || event_atom == _wm_name;
 
                                 if is_title {
-                                    get_title(is_active);
+                                    get_title(is_active_event);
                                 }
                             },
                             _ => { },

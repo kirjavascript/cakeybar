@@ -2,6 +2,7 @@ use gtk;
 use i3ipc::{I3EventListener, Subscription};
 use i3ipc::event::{Event as I3Event};
 use wm::i3;
+use wm::workspace::Workspace;
 use wm::events::{Event, EventValue};
 
 use std::thread;
@@ -9,7 +10,7 @@ use std::sync::mpsc;
 
 enum I3Msg {
     Mode(String),
-    Workspace,
+    Workspace(Vec<Workspace>),
 }
 
 pub fn listen(wm_util: &::wm::WMUtil) {
@@ -31,14 +32,19 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                         Ok(message) => {
                             match message {
                                 I3Event::ModeEvent(e) => {
-                                    tx.send(Ok(I3Msg::Mode(e.change)))
+                                    tx.send(Ok(I3Msg::Mode(e.change))).ok();
                                 },
                                 I3Event::WorkspaceEvent(_e) => {
                                     // Focus Init Empty Urgent Rename Reload Restored Move Unknown
-                                    tx.send(Ok(I3Msg::Workspace))
+
+                                    if let Ok(mut connection) = i3::connect() {
+                                        tx.send(Ok(I3Msg::Workspace(
+                                            i3::get_workspaces(&mut connection)
+                                        ))).ok();
+                                    }
                                 },
                                 _ => unreachable!(),
-                            }.ok();
+                            };
                         },
                         Err(err) => {
                             // listener is rip
@@ -66,17 +72,11 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                 EventValue::String(value),
                             );
                         },
-                        I3Msg::Workspace => {
-                            if let Ok(mut connection) = i3::connect() {
-                                wm_util.emit_value(
-                                    Event::Workspace,
-                                    EventValue::Workspaces(
-                                        i3::get_workspaces(&mut connection)
-                                    ),
-                                );
-                            } else {
-                                wm_util.emit(Event::Workspace);
-                            }
+                        I3Msg::Workspace(value) => {
+                            wm_util.emit_value(
+                                Event::Workspace,
+                                EventValue::Workspaces(value),
+                            );
                         },
                     }
                 },
