@@ -3,7 +3,10 @@
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
+    border-right: 2px solid @blue;
+    border-left: 2px solid @blue;
     background-color: black;
+    margin: 0 31px;
 }
 
 #left_scroll, #right_scroll {
