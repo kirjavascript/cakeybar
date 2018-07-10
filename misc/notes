@@ -20,6 +20,7 @@ IPC get_server connect to RCV unwrap()
 kill tray when bar dies (100% CPU)
 fix util::run_command
 fix tray fullscreen latency with events
+atoms::get("_NET_WM_POOP")
 
 impl
 ====
