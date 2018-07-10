@@ -6,7 +6,8 @@ use gtk::{
     Orientation,
     Rectangle,
 };
-use gdk::{ScrollDirection};
+use gdk::{ScrollDirection, ScreenExt};
+use cairo;
 
 use {NAME, components};
 use config::{ComponentConfig};
@@ -55,6 +56,12 @@ impl<'a> Bar<'a> {
         let window = Window::new(WindowType::Toplevel);
         self.application.add_window(&window);
         let &Bar { wm_util, .. } = self;
+
+        // transparency
+        set_visual(&window, &None);
+        window.connect_screen_changed(set_visual);
+        window.connect_draw(draw);
+        window.set_app_paintable(true);
 
         // set base values
         window.set_title(NAME);
@@ -127,4 +134,19 @@ impl<'a> Bar<'a> {
     }
 
 
+}
+fn set_visual(window: &Window, _screen: &Option<gdk::Screen>) {
+    if let Some(screen) = window.get_screen() {
+        if let Some(visual) = screen.get_rgba_visual() {
+            window.set_visual(&visual); // crucial for transparency
+        }
+    }
+}
+
+fn draw(_window: &Window, ctx: &cairo::Context) -> Inhibit {
+    // crucial for transparency
+    ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0);
+    ctx.set_operator(cairo::enums::Operator::Screen);
+    ctx.paint();
+    Inhibit(false)
 }

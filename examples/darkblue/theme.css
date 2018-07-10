@@ -42,10 +42,12 @@ label {
 
 #tray {
     padding: 0px 5px;
+    /* background-color: black; */
 }
 
 #title {
     margin-left: 300px;
+    /* background-color: red; */
 }
 
 #workspaces label {

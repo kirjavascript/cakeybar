@@ -16,10 +16,10 @@
 //     }
 // }
 
-use super::{gtk, glib};
-use super::gtk::{Box, Align, WidgetExt, StyleContextExt};
-use super::bar::Bar;
-use super::config::{ComponentConfig, Property};
+use {gtk, glib};
+use gtk::{Box, Align, WidgetExt, StyleContextExt};
+use bar::Bar;
+use config::{ComponentConfig, Property};
 
 mod bandwidth;
 mod battery;
