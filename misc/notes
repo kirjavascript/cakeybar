@@ -15,6 +15,7 @@ awesome-client
 
 refactoring
 ===
+fix subscribing to window change events
 wm restart event restack tray
 IPC get_server connect to RCV unwrap()
 kill tray when bar dies (100% CPU)
@@ -62,7 +63,7 @@ type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
-osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline / hexagons
+osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline / hexagons (visualizer)
 crosspost on unixporn / r/rust
 startup clit image
 https://i.imgur.com/oe8pbEz.png
