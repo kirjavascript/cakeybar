@@ -25,6 +25,7 @@ pub struct ComponentConfig {
 pub enum Property {
     String(String),
     Integer(i64),
+    Float(f64),
     Array(Vec<Property>),
     Boolean(bool),
     Object(HashMap<String, Property>),
@@ -36,8 +37,7 @@ impl ComponentConfig {
         let value_option = self.properties.get(prop);
         if let Some(&Property::Integer(ref val)) = value_option {
             *val
-        }
-        else {
+        } else {
             or
         }
     }
@@ -45,8 +45,7 @@ impl ComponentConfig {
         let value_option = self.properties.get(prop);
         if let Some(&Property::Boolean(ref val)) = value_option {
             *val
-        }
-        else {
+        } else {
             or
         }
     }
@@ -54,8 +53,7 @@ impl ComponentConfig {
         let value_option = self.properties.get(prop);
         if let Some(&Property::String(ref val)) = value_option {
             val.as_str()
-        }
-        else {
+        } else {
             or
         }
     }
@@ -63,8 +61,7 @@ impl ComponentConfig {
         let value_option = self.properties.get(prop);
         if let Some(&Property::Array(ref val)) = value_option {
             val.clone()
-        }
-        else {
+        } else {
             or
         }
     }
@@ -206,6 +203,9 @@ fn value_to_property(value: &Value) -> Property {
         ),
         &Value::Integer(ref int) => Property::Integer(
             *int
+        ),
+        &Value::Float(ref float) => Property::Float(
+            *float
         ),
         &Value::Array(ref arr) => Property::Array(
             arr.iter().map(value_to_property).collect()

@@ -53,15 +53,25 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                         if is_active_event && current_window != window {
                             // unsubscribe old window
                             if current_window != xcb::NONE {
-                                xcb::change_window_attributes_checked(&conn, current_window, &[
-                                    (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_NO_EVENT),
-                                ]);
+                                xcb::change_window_attributes_checked(
+                                    &conn,
+                                    current_window,
+                                    &[(
+                                        xcb::CW_EVENT_MASK,
+                                        xcb::EVENT_MASK_NO_EVENT,
+                                    )],
+                                );
                             }
                             // subscribe to new one
                             if window != xcb::NONE {
-                                xcb::change_window_attributes_checked(&conn, window, &[
-                                    (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
-                                ]);
+                                xcb::change_window_attributes_checked(
+                                    &conn,
+                                    window,
+                                    &[(
+                                        xcb::CW_EVENT_MASK,
+                                        xcb::EVENT_MASK_PROPERTY_CHANGE,
+                                    )],
+                                );
                             }
                             current_window = window;
                         }
@@ -120,7 +130,6 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                     }
                 }
             }
-            warn!("this should never happen?");
         }
         else {
             tx.send(Err(format!("could not connect to X server"))).unwrap();

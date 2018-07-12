@@ -10,18 +10,23 @@ wm stuff:
 https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
 https://github.com/pw4ever/awesome-wm-config#setup
-
 awesome-client
 
-refactoring
+refactoring / bugs
 ===
-fix subscribing to window change events
 wm restart event restack tray
-IPC get_server connect to RCV unwrap()
 kill tray when bar dies (100% CPU)
 fix util::run_command
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
+
+// get fixed position
+// let fixed = config.get_vec_or("fixed", vec![]);
+// let fixed = if let Some(Property::Float(x)) = fixed.get(0) {
+//     if let Some(Property::Float(y)) = fixed.get(1) {
+//         Some((x, y))
+//     } else { None }
+// } else { None };
 
 impl
 ====

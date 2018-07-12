@@ -18,6 +18,20 @@ impl Component for Container {
                 _ => Orientation::Vertical,
             };
 
+            // get fixed position
+            // let fixed = config.get_vec_or("fixed", vec![]);
+            // let fixed = if let Some(Property::Float(x)) = fixed.get(0) {
+            //     if let Some(Property::Float(y)) = fixed.get(1) {
+            //         Some((x, y))
+            //     } else { None }
+            // } else { None };
+
+            // if let Some(fixed) {
+
+            // } else {
+
+            // }
+
             let wrapper = Box::new(direction, spacing);
             Self::init_widget(&wrapper, config);
             super::layout_to_container(&wrapper, layout, bar);

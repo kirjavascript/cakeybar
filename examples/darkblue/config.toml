@@ -36,6 +36,7 @@ type = "dropdown"
 window_id = "menu_popup"
 items = [
     { label = "run termite", command = "termite" },
+    { label = "hello", command = "echo \"hello\"" },
     { label = "terminal apps", children = [
         { label = "pipes", command = "termite -e \"pipes\"" },
         { label = "neofetch", command = "termite -e \"neofetch\"" },
@@ -63,10 +64,11 @@ class = "gradient"
 # valign = "end"
 
 # wm stuff
+
 [component.title]
 type = "window"
-halign = "center"
 # fixed = [ 0.5, 0.5 ]
+halign = "center"
 
 [component.workspaces]
 type = "workspaces"

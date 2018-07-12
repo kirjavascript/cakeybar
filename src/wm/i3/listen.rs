@@ -27,6 +27,8 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                 ];
                 listener.subscribe(&subs).unwrap();
 
+                let mut connection = i3::connect();
+
                 for event in listener.listen() {
                     match event {
                         Ok(message) => {
@@ -37,10 +39,12 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                 I3Event::WorkspaceEvent(_e) => {
                                     // Focus Init Empty Urgent Rename Reload Restored Move Unknown
 
-                                    if let Ok(mut connection) = i3::connect() {
+                                    if let Ok(ref mut connection) = connection {
                                         tx.send(Ok(I3Msg::Workspace(
-                                            i3::get_workspaces(&mut connection)
+                                            i3::get_workspaces(connection)
                                         ))).ok();
+                                    } else if let Err(ref err) = connection {
+                                        error!("{} (try restarting i3)", err);
                                     }
                                 },
                                 _ => unreachable!(),

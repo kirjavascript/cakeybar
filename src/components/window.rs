@@ -9,6 +9,7 @@ pub struct Window { }
 impl Component for Window {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
         let label = Label::new(None);
+
         Self::init_widget(&label, config);
         container.add(&label);
         label.show();
