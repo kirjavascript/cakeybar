@@ -1,3 +1,4 @@
+extern crate libc;
 extern crate cairo;
 extern crate gio;
 extern crate gtk;

@@ -1,4 +1,4 @@
-use {gdk, gtk, wm};
+use {gdk, gtk, wm, cairo};
 use gtk::prelude::*;
 use gtk::{
     Window,
@@ -7,7 +7,6 @@ use gtk::{
     Rectangle,
 };
 use gdk::{ScrollDirection, ScreenExt};
-use cairo;
 
 use {NAME, components};
 use config::{ComponentConfig};
