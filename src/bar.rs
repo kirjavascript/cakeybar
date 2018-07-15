@@ -110,10 +110,19 @@ impl<'a> Bar<'a> {
             }
         ));
 
-        // TODO: windowEnter set ::focus
-        // window.connect_enter_notify_event(move |_, _evt| {
-        //     Inhibit(true)
-        // });
+        // set .focused
+        window.connect_enter_notify_event(clone!(container move |_, _| {
+            if let Some(ctx) = container.get_style_context() {
+                StyleContextExt::add_class(&ctx, "focused");
+            }
+            Inhibit(false)
+        }));
+        window.connect_leave_notify_event(clone!(container move |_, _| {
+            if let Some(ctx) = container.get_style_context() {
+                StyleContextExt::remove_class(&ctx, "focused");
+            }
+            Inhibit(false)
+        }));
 
         // show bar
         window.show_all();

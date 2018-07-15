@@ -3,7 +3,10 @@
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
-    /* background-color: black; */
+}
+
+#left .focused, #right .focused {
+    background-color: black;
 }
 
 #left_scroll, #right_scroll {
@@ -41,7 +44,7 @@ label {
 }
 
 #tray {
-    padding: 0px 5px;
+    padding-right: 7px;
     /* background-color: black; */
 }
 
