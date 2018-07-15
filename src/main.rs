@@ -110,13 +110,12 @@ fn main() {
 
     let application = gtk::Application::new(
             &format!("com.kirjava.{}", NAME),
-            gio::ApplicationFlags::empty(),
+            gio::ApplicationFlags::NON_UNIQUE,
         )
         .expect("Initialization failed...");
 
     application.connect_startup(move |app| {
         init(&app, &config);
-
     });
     application.connect_activate(|_| {});
 

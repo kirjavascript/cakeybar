@@ -33,7 +33,7 @@ reload config / theme (theme should be easy)
 bindsym $mod+m exec -- --message
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 connect_focus on bar window
-position: absolute (gtkfixed)
+position: absolute (gtkfixed) / -> <T: ContainerExt>
 externally mapped command to trigger key input mode
 
 components
@@ -56,7 +56,9 @@ bandwidth upload
 menu triggbers
 workspace icons
 completion
+keylock notifier
 gtk-demo
+modal
 
 config
 ====
@@ -70,7 +72,6 @@ https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable
 ===
 osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline / hexagons (visualizer)
 crosspost on unixporn / r/rust
-startup clit image
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
 https://i.imgur.com/TF69nPa.png

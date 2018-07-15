@@ -88,13 +88,13 @@ adapter = "AC"
 
 [component.ip]
 type = "ip"
-interface = "wlp58s0"
+# interface = "wlp58s0"
+interface = "enp3s0"
 # ipv6 = true
 
 [component.bandwidth]
 type = "bandwidth"
-# interface = "enp3s0"
-interface = "wlp58s0"
+interface = "enp3s0"
 
 [component.cpu]
 type = "cpu"
