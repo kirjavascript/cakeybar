@@ -49,7 +49,7 @@ pub fn cycle_workspace(forward: bool, monitor_index: i32) {
                 &workspaces,
                 forward,
                 monitor_index,
-                );
+            );
 
             if let Some(next) = next_opt {
                 let command = format!("workspace {}", next.name);

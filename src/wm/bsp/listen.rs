@@ -15,7 +15,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
     thread::spawn(move || {
         match bsp::connect() {
             Ok(mut stream) => {
-                bsp::write_message(&mut stream, "subscribe monitor report".to_string()).ok();
+                bsp::write_message(&mut stream, "subscribe report".to_string()).ok();
 
                 let mut current = [0; 1];
                 let mut msg: Vec<u8> = Vec::new();

@@ -32,7 +32,6 @@ impl
 reload config / theme (theme should be easy)
 bindsym $mod+m exec -- --message
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
-connect_focus on bar window
 position: absolute (gtkfixed) / -> <T: ContainerExt>
 externally mapped command to trigger key input mode
 
