@@ -15,8 +15,6 @@ pub fn connect() -> Result<UnixStream, Error> {
     UnixStream::connect(stream_file)
 }
 
-// TODO: multimonitor support
-//
 //https://github.com/baskerville/bspwm/blob/336095739e2de94109e55e544c806770316c822c/doc/bspwm.1.asciidoc
 //
 // bspc wm -D
@@ -93,13 +91,26 @@ pub fn cycle_workspace(is_next: bool) {
 }
 
 // WMeDP1:oI:OII:fIII:fIV:fV:fVI:fVII:fVIII:fIX:fX:LT:TT:G
+// WMDVI-I-1:OI:fII:oIII:fIV:fV:fVI:fVII:fVIII:fIX:fX:LT:TT:G:mDVI-D-0:ODesktop:LT:TT:G s
 pub fn parse_workspaces(string: String) -> Vec<Workspace> {
-    let monitors = string.trim().split("\n").collect::<Vec<&str>>();
     let mut workspaces: Vec<Workspace> = Vec::new();
 
+    let string = &string[1..].trim();
+    let indices: Vec<(usize, &str)> = string.match_indices(&['m', 'M'][..]).collect();
+    let monitors = indices.iter().enumerate().map(|(i, (start, status))| {
+        let end_opt =  indices.get(i + 1).map(|x| x.0);
+        let slice = if let Some(end) = end_opt {
+            &string[start+1..end]
+        } else {
+            &string[start+1..]
+        };
+        (*status, slice)
+    }).collect::<Vec<(&str, &str)>>();
+
     for monitor in monitors {
-        let mut text: String = monitor.to_string();
+        let mut text: String = monitor.1.to_string();
         let mut tokens: Vec<String> = Vec::new();
+        let mon_is_active: bool = monitor.0 == "M";
         while let Some(loc) = text.find(":") {
             let mut text_clone = text.clone();
             let (head, tail) = text_clone.split_at_mut(loc + 1);
@@ -108,7 +119,7 @@ pub fn parse_workspaces(string: String) -> Vec<Workspace> {
         }
 
         if let Some(name) = tokens.get(0) {
-            let output = &name[2..]; // ignores 'WM'
+            let output = &name[..];
             &tokens[1..].iter().enumerate().for_each(|(i, token)| {
                 let mut token_clone = token.clone();
                 let (head, tail) = token_clone.split_at_mut(1);
@@ -117,9 +128,8 @@ pub fn parse_workspaces(string: String) -> Vec<Workspace> {
                     workspaces.push(Workspace {
                         number: i as i32 + 1,
                         name: tail.to_string(),
-                        // TODO: get which monitor is focused
                         visible: uppercase,
-                        focused: uppercase,
+                        focused: uppercase && mon_is_active,
                         urgent: head == "u" || head == "U",
                         output: output.to_string(),
                     });
