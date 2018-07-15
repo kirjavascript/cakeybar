@@ -40,47 +40,22 @@ pub fn get_workspaces(connection: &mut I3Connection) -> Vec<Workspace> {
     workspaces
 }
 
-pub fn cycle_workspace(is_next: bool, monitor_index: i32) {
+pub fn cycle_workspace(forward: bool, monitor_index: i32) {
     match connect() {
         Ok(mut connection) => {
-
-            // get monitor name
-            let name_opt = wm::gtk::get_monitor_name(monitor_index);
-
-            // get workspace details
             let workspaces = get_workspaces(&mut connection);
-            let mut workspaces = workspaces
-                .iter()
-                .filter(|w| {
-                    match name_opt {
-                        Some(ref name) => *name == w.output,
-                        None => true,
-                    }
-                })
-                .collect::<Vec<&Workspace>>();
 
-            // so we can search backwards
-            if !is_next {
-                workspaces.reverse();
-            }
+            let next_opt = wm::workspace::get_next(
+                &workspaces,
+                forward,
+                monitor_index,
+                );
 
-            // get focused workspace
-            let focused_opt = workspaces.iter().find(|x| x.focused);
-            if let Some(focused) = focused_opt {
-                // get next one
-                let next_opt = workspaces.iter().find(|x| {
-                    if is_next {
-                        x.number > focused.number
-                    } else {
-                        x.number < focused.number
-                    }
-                });
-                if let Some(next) = next_opt {
-                    let command = format!("workspace {}", next.name);
-                    let command_res = connection.run_command(&command);
-                    if let Err(_) = command_res {
-                        error!("i3: Something went wrong switching workspaces");
-                    }
+            if let Some(next) = next_opt {
+                let command = format!("workspace {}", next.name);
+                let command_res = connection.run_command(&command);
+                if let Err(_) = command_res {
+                    error!("i3: Something went wrong switching workspaces");
                 }
             }
         },

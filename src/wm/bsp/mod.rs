@@ -2,6 +2,7 @@ mod listen;
 
 pub use self::listen::listen;
 
+use wm;
 use wm::workspace::Workspace;
 
 use std::env;
@@ -16,10 +17,6 @@ pub fn connect() -> Result<UnixStream, Error> {
 }
 
 //https://github.com/baskerville/bspwm/blob/336095739e2de94109e55e544c806770316c822c/doc/bspwm.1.asciidoc
-//
-// bspc wm -D
-// bspc -D any.local.focused
-// bspc desktop -f {}.local
 
 // util
 
@@ -56,36 +53,20 @@ pub fn set_padding(is_top: bool, padding: i32) {
     run_command(format!("config {}_padding {}", position, padding)).ok();
 }
 
-pub fn cycle_workspace(is_next: bool) {
+pub fn cycle_workspace(forward: bool, monitor_index: i32) {
     if let Ok(mut stream) = connect() {
+        let workspaces = get_workspaces(&mut stream);
 
-        let mut workspaces = get_workspaces(&mut stream);
+        let next_opt = wm::workspace::get_next(
+            &workspaces,
+            forward,
+            monitor_index,
+        );
 
-        // TODO: multimonitor missing here
-
-        // TODO: dedupe (get_next_name)
-
-        // so we can search backwards
-        if !is_next {
-            workspaces.reverse();
-        }
-
-        // get focused workspace
-        let focused_opt = workspaces.iter().find(|x| x.focused);
-        if let Some(focused) = focused_opt {
-            // get next one
-            let next_opt = workspaces.iter().find(|x| {
-                if is_next {
-                    x.number > focused.number
-                } else {
-                    x.number < focused.number
-                }
-            });
-            if let Some(next) = next_opt {
-                let command = format!("desktop -f {}", next.name);
-                // TODO: refactor to not use read_to_string and reuse the connection
-                run_command(command).ok();
-            }
+        if let Some(next) = next_opt {
+            let command = format!("desktop -f {}", next.name);
+            // TODO: reuse the connection
+            run_command(command).ok();
         }
     }
 }

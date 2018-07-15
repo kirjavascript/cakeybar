@@ -144,7 +144,7 @@ impl WMUtil {
                 i3::cycle_workspace(forward, monitor_index);
             },
             WMType::Bsp => {
-                bsp::cycle_workspace(forward);
+                bsp::cycle_workspace(forward, monitor_index);
             },
             _ => {},
         }

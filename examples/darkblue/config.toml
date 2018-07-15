@@ -73,7 +73,7 @@ halign = "center"
 [component.workspaces]
 type = "workspaces"
 show_all = false
-show_name = false
+show_name = true
 
 [component.mode]
 type = "mode"
