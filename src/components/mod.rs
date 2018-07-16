@@ -45,6 +45,13 @@ pub trait Component {
             + glib::value::SetValue {
         // set name
         widget.set_name(&config.name);
+        // class
+        let class_str = config.get_str_or("class", "null");
+        if class_str != "null"  {
+            if let Some(ctx) = widget.get_style_context() {
+                ctx.add_class(class_str);
+            }
+        }
         // align
         let halign_str = config.get_str_or("halign", "null");
         if halign_str != "null" {
@@ -56,18 +63,11 @@ pub trait Component {
             WidgetExt::set_valign(widget, Self::get_alignment(valign_str));
             WidgetExt::set_vexpand(widget, true);
         }
-        // class
-        let class_str = config.get_str_or("class", "null");
-        if class_str != "null"  {
-            if let Some(ctx) = widget.get_style_context() {
-                ctx.add_class(class_str);
-            }
-        }
         // let fixed = gtk::Fixed::new();
         // fixed.add(widget);
         // fixed.move_(widget, 150, 150);
         // fixed.show();
-        container.add(&fixed);
+        container.add(widget);
     }
 
     fn get_alignment(align: &str) -> Align {
