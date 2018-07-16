@@ -12,7 +12,6 @@ fn current_time(format: String) -> String {
 impl Component for Clock {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
-        Self::init_widget(&label, config);
 
         let format = config.get_str_or("format", "%Y-%m-%d %H:%M:%S").to_string();
 
@@ -26,8 +25,8 @@ impl Component for Clock {
         let interval = config.get_int_or("interval", 1);
         gtk::timeout_add_seconds(interval as u32, tick);
 
-        container.add(&label);
         label.show();
 
+        Self::init_widget(&label, container, config);
     }
 }

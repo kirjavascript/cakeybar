@@ -26,10 +26,9 @@ impl Component for Workspaces {
 
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);
-        Self::init_widget(&wrapper, config);
 
         // add to container and show
-        container.add(&wrapper);
+        Self::init_widget(&wrapper, container, config);
         wrapper.show();
 
         let name_opt = wm::gtk::get_monitor_name(monitor_index);

@@ -19,7 +19,7 @@ pub struct Bar<'a> {
     pub config: &'a ComponentConfig,
     pub components: &'a Vec<ComponentConfig>,
     pub wm_util: &'a wm::WMUtil,
-    pub window: Box<Window>,
+    // pub window: Box<Window>,
 }
 
 impl<'a> Bar<'a> {
@@ -116,7 +116,7 @@ impl<'a> Bar<'a> {
             application,
             components,
             wm_util,
-            window: Box::new(window),
+            // window: Box::new(window),
         };
 
         // load components

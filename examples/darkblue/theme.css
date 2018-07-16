@@ -17,7 +17,7 @@ label {
     font-weight: 600;
 }
 
-#menu {
+#menu label {
     background-color: @blue;
     padding: 0 8px;
     min-width: 28px;
@@ -48,11 +48,6 @@ label {
 #title {
     margin-left: 300px;
     /* background-color: red; */
-}
-
-#workspaces {
-    margin: 5px;
-    color: red;
 }
 
 #workspaces label {

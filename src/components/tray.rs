@@ -27,10 +27,9 @@ impl Tray {
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
-        Self::init_widget(&base_widget, &config);
         base_widget.add(&wrapper);
-        container.add(&base_widget);
         base_widget.show_all();
+        Self::init_widget(&base_widget, container, &config);
 
         // init
         let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();

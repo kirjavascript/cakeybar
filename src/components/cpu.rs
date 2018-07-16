@@ -9,8 +9,7 @@ pub struct CPU { }
 impl Component for CPU {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
-        Self::init_widget(&label, config);
-        container.add(&label);
+        Self::init_widget(&label, container, config);
         label.show();
 
         let mut system = System::new();

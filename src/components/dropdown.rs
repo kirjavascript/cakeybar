@@ -45,13 +45,12 @@ fn get_menu(items: Vec<Property>) -> Vec<MenuItem> {
 impl Component for Dropdown {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
-        Self::init_widget(&label, &config);
         let label_text = config.get_str_or("label", "");
         label.set_text(&label_text);
         let ebox = EventBox::new();
         ebox.add(&label);
-        container.add(&ebox);
         ebox.show_all();
+        Self::init_widget(&ebox, container, config);
 
         let menu_items = get_menu(config.get_vec_or("items", vec![]));
 

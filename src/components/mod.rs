@@ -9,15 +9,14 @@
 // impl Component for Template {
 //     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
 //         let label = Label::new(None);
-//         Self:init_widget(&label, &config);
 //         label.set_text(&"test");
-//         container.add(&label);
 //         label.show();
+//         Self:init_widget(&label, container, config);
 //     }
 // }
 
 use {gtk, glib};
-use gtk::{Box, Align, WidgetExt, StyleContextExt};
+use gtk::{Box, Align, WidgetExt, StyleContextExt, ContainerExt};
 use bar::Bar;
 use config::{ComponentConfig, Property};
 
@@ -39,7 +38,8 @@ mod workspaces;
 
 pub trait Component {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar);
-    fn init_widget<T>(widget: &T, config: &ComponentConfig)
+
+    fn init_widget<T>(widget: &T, container: &Box, config: &ComponentConfig)
         where T: gtk::IsA<gtk::Widget>
             + gtk::IsA<gtk::Object>
             + glib::value::SetValue {
@@ -63,7 +63,13 @@ pub trait Component {
                 ctx.add_class(class_str);
             }
         }
+        // let fixed = gtk::Fixed::new();
+        // fixed.add(widget);
+        // fixed.move_(widget, 150, 150);
+        // fixed.show();
+        container.add(&fixed);
     }
+
     fn get_alignment(align: &str) -> Align {
         match align {
             "start" => Align::Start,

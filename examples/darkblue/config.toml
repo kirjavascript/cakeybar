@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1", "tray", "clock" ]
 scroll_workspace = false
 
 [bar.right]

@@ -10,8 +10,7 @@ impl Component for Window {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
         let label = Label::new(None);
 
-        Self::init_widget(&label, config);
-        container.add(&label);
+        Self::init_widget(&label, container, config);
         label.show();
         let trunc = config.get_int_or("truncate", 100) as usize;
 

@@ -8,8 +8,7 @@ pub struct Mode { }
 impl Component for Mode {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
         let label = Label::new(None);
-        Self::init_widget(&label, config);
-        container.add(&label);
+        Self::init_widget(&label, container, config);
 
         bar.wm_util.add_listener(Event::Mode, clone!(label
             move |event_opt| {

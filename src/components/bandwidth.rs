@@ -20,8 +20,7 @@ fn bytes_to_string(bytes: u64) -> String {
 impl Component for Bandwidth {
     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
         let label = Label::new(None);
-        Self::init_widget(&label, config);
-        container.add(&label);
+        Self::init_widget(&label, container, config);
         label.show();
 
         let interface = String::from(config.get_str_or("interface", "auto"));
