@@ -128,13 +128,12 @@ impl<'a> Bar<'a> {
     fn set_visual(window: &Window, _screen: &Option<gdk::Screen>) {
         if let Some(screen) = window.get_screen() {
             if let Some(visual) = screen.get_rgba_visual() {
-                window.set_visual(&visual); // crucial for transparency
+                window.set_visual(&visual);
             }
         }
     }
 
     fn draw(_window: &Window, ctx: &cairo::Context) -> Inhibit {
-        // crucial for transparency
         ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0);
         ctx.set_operator(cairo::enums::Operator::Screen);
         ctx.paint();

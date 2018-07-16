@@ -3,10 +3,7 @@
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
-}
-
-#left .focused, #right .focused {
-    background-color: black;
+    /* background-color: black; */
 }
 
 #left_scroll, #right_scroll {
@@ -51,6 +48,11 @@ label {
 #title {
     margin-left: 300px;
     /* background-color: red; */
+}
+
+#workspaces {
+    margin: 5px;
+    color: red;
 }
 
 #workspaces label {

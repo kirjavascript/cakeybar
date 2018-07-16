@@ -36,6 +36,7 @@ mod void;
 mod window;
 mod workspaces;
 
+
 pub trait Component {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar);
     fn init_widget<T>(widget: &T, config: &ComponentConfig)
@@ -74,28 +75,6 @@ pub trait Component {
     }
 }
 
-pub fn load_components(container: &Box, bar: &Bar) {
-    let layout = Property::Array(bar.config.get_vec_or("layout", vec![]));
-    layout_to_container(container, &layout, bar);
-}
-
-fn layout_to_container(container: &Box, layout: &Property, bar: &Bar) {
-    if let &Property::Array(ref arr) = layout {
-        // iterate over layout
-        arr.iter().for_each(|name_prop| {
-            if let &Property::String(ref name) = name_prop {
-                // get config for layout fragment
-                let component_config = bar.components.iter().find(|x| {
-                    &x.name == name
-                });
-                if let Some(config) = component_config {
-                    load_component(container, config, bar);
-                }
-            }
-        });
-    }
-}
-
 fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
     // get type
     let component_type_option = config.properties.get("type");
@@ -120,4 +99,26 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
         // load component
         component_init(container, config, bar);
     }
+}
+
+fn layout_to_container(container: &Box, layout: &Property, bar: &Bar) {
+    if let &Property::Array(ref arr) = layout {
+        // iterate over layout
+        arr.iter().for_each(|name_prop| {
+            if let &Property::String(ref name) = name_prop {
+                // get config for layout fragment
+                let component_config = bar.components.iter().find(|x| {
+                    &x.name == name
+                });
+                if let Some(config) = component_config {
+                    load_component(container, config, bar);
+                }
+            }
+        });
+    }
+}
+
+pub fn load_components(container: &Box, bar: &Bar) {
+    let layout = Property::Array(bar.config.get_vec_or("layout", vec![]));
+    layout_to_container(container, &layout, bar);
 }
