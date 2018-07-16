@@ -47,15 +47,26 @@ fn init(application: &gtk::Application, config: &config::Config) {
         &Some(ref src) => wm::gtk::load_theme(src),
         &None => {/* default theme */},
     }
+
+    let monitors = wm::gtk::get_monitors();
     let wm_util = wm::WMUtil::new();
+
     // load bars
     for bar_config in config.bars.iter() {
-        let _ = bar::Bar::new(
-            &application,
-            &bar_config,
-            &config.components,
-            &wm_util,
-        );
+        let monitor_index = bar_config.get_int_or("monitor", 0);
+        let monitor_option = monitors.get(monitor_index as usize);
+
+        if let Some(monitor) = monitor_option {
+            let _ = bar::Bar::new(
+                &application,
+                &bar_config,
+                &config.components,
+                &wm_util,
+                monitor,
+            );
+        } else {
+            warn!("no monitor at index {}", monitor_index);
+        }
     }
 }
 
