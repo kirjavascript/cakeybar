@@ -18,14 +18,7 @@ wm restart event restack tray
 kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
-
 // get fixed position
-// let fixed = config.get_vec_or("fixed", vec![]);
-// let fixed = if let Some(Property::Float(x)) = fixed.get(0) {
-//     if let Some(Property::Float(y)) = fixed.get(1) {
-//         Some((x, y))
-//     } else { None }
-// } else { None };
 
 impl
 ====

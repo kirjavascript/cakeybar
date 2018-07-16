@@ -52,22 +52,35 @@ pub trait Component {
                 ctx.add_class(class_str);
             }
         }
-        // align
-        let halign_str = config.get_str_or("halign", "null");
-        if halign_str != "null" {
-            WidgetExt::set_halign(widget, Self::get_alignment(halign_str));
-            WidgetExt::set_hexpand(widget, true);
-        }
-        let valign_str = config.get_str_or("valign", "null");
-        if valign_str != "null" {
-            WidgetExt::set_valign(widget, Self::get_alignment(valign_str));
-            WidgetExt::set_vexpand(widget, true);
-        }
-        // let fixed = gtk::Fixed::new();
-        // fixed.add(widget);
-        // fixed.move_(widget, 150, 150);
-        // fixed.show();
-        container.add(widget);
+        // get layout
+        // let fixed = config.get_vec_or("fixed", vec![]);
+        // let fixed = if let Some(Property::Float(x)) = fixed.get(0) {
+        //     if let Some(Property::Float(y)) = fixed.get(1) {
+        //         Some((x, y))
+        //     } else { None }
+        // } else { None };
+
+        // if let Some((x, y)) = fixed {
+        //     // fixed position
+        //     let fixed = gtk::Fixed::new();
+        //     fixed.add(widget);
+        //     fixed.move_(widget, 0, 0);
+        //     fixed.show();
+        //     container.add(&fixed);
+        // } else {
+            // normal layout alignment
+            let halign_str = config.get_str_or("halign", "null");
+            if halign_str != "null" {
+                WidgetExt::set_halign(widget, Self::get_alignment(halign_str));
+                WidgetExt::set_hexpand(widget, true);
+            }
+            let valign_str = config.get_str_or("valign", "null");
+            if valign_str != "null" {
+                WidgetExt::set_valign(widget, Self::get_alignment(valign_str));
+                WidgetExt::set_vexpand(widget, true);
+            }
+            container.add(widget);
+        // }
     }
 
     fn get_alignment(align: &str) -> Align {

@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "box1", "tray", "clock" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
 scroll_workspace = false
 
 [bar.right]
@@ -67,7 +67,7 @@ class = "gradient"
 
 [component.title]
 type = "window"
-# fixed = [ 0.5, 0.5 ]
+fixed = [ 0.5, 0.5 ]
 halign = "center"
 
 [component.workspaces]
