@@ -1,9 +1,10 @@
 @define-color blue #0A83FD;
+@define-color darkblue #0022CC;
 
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
-    /* background-color: black; */
+    background-color: black;
 }
 
 #left_scroll, #right_scroll {
@@ -46,7 +47,8 @@ label {
 }
 
 #title {
-    margin-left: 300px;
+    margin-right: 200px;
+    background-color: red;
 }
 
 #workspaces label {
@@ -54,7 +56,7 @@ label {
 }
 
 #workspaces .visible {
-    background-color: #0022CC;
+    background-color: @darkblue;
 }
 #workspaces .urgent {
     background-color: red;

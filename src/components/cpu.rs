@@ -7,9 +7,9 @@ use sysinfo::{ProcessorExt, SystemExt, System};
 pub struct CPU { }
 
 impl Component for CPU {
-    fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);
-        Self::init_widget(&label, container, config);
+        Self::init_widget(&label, container, config, bar);
         label.show();
 
         let mut system = System::new();

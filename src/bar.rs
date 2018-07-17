@@ -4,9 +4,10 @@ use gtk::{
     Window,
     WindowType,
     Orientation,
+    Overlay,
     Rectangle,
 };
-use gdk::{ScrollDirection, ScreenExt};
+use gdk::{ ScrollDirection, ScreenExt };
 
 use {NAME, components};
 use config::{ComponentConfig};
@@ -19,7 +20,7 @@ pub struct Bar<'a> {
     pub config: &'a ComponentConfig,
     pub components: &'a Vec<ComponentConfig>,
     pub wm_util: &'a wm::WMUtil,
-    // pub window: Box<Window>,
+    pub overlay: Box<Overlay>,
 }
 
 impl<'a> Bar<'a> {
@@ -47,10 +48,13 @@ impl<'a> Bar<'a> {
         window.connect_draw(Self::draw);
         window.set_app_paintable(true);
 
-        // attach container
+        // init container
         let container = gtk::Box::new(Orientation::Horizontal, 0);
         WidgetExt::set_name(&container, &config.name);
         WidgetExt::set_name(&window, &config.name);
+
+        // create overlay
+        let overlay = Overlay::new();
 
         // attach scrollevent
         let monitor_index = config.get_int_or("monitor", 0) as i32;
@@ -67,7 +71,10 @@ impl<'a> Bar<'a> {
             }));
         }
         viewport.set_shadow_type(gtk::ShadowType::None);
-        viewport.add(&container);
+
+        // connect everything up
+        overlay.add(&container);
+        viewport.add(&overlay);
         window.add(&viewport);
 
         // set position
@@ -101,8 +108,20 @@ impl<'a> Bar<'a> {
             Inhibit(false)
         }));
 
-        // show bar
+        // show window
         window.show_all();
+
+        // create Bar
+        let bar = Bar {
+            config,
+            application,
+            components,
+            wm_util,
+            overlay: Box::new(overlay),
+        };
+
+        // load components
+        components::load_components(&container, &bar);
 
         wm::gtk::set_strut(&window, is_top, Rectangle {
             x: monitor.x,
@@ -110,17 +129,6 @@ impl<'a> Bar<'a> {
             width: monitor.width,
             height: window.get_size().1,
         });
-
-        let bar = Bar {
-            config,
-            application,
-            components,
-            wm_util,
-            // window: Box::new(window),
-        };
-
-        // load components
-        components::load_components(&container, &bar);
 
         bar
     }

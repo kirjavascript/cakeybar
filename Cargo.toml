@@ -1,7 +1,10 @@
 [package]
 name = "cakeybar"
 version = "0.1.0"
-authors = ["kirjavascript <snkenjoi@gmail.com>"]
+
+# [dependencies.gtk]
+# version = "^0"
+# features = ["v3_22"]
 
 [dependencies]
 chrono = "0.4"

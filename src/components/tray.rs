@@ -23,13 +23,13 @@ impl Component for Tray {
 }
 
 impl Tray {
-    fn load(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
+    fn load(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
         base_widget.add(&wrapper);
         base_widget.show_all();
-        Self::init_widget(&base_widget, container, &config);
+        Self::init_widget(&base_widget, container, config, bar);
 
         // init
         let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();

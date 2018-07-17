@@ -34,7 +34,7 @@ impl Component for Menu {
         label.set_text(&label_text);
         let ebox = EventBox::new();
         ebox.add(&label);
-        Self::init_widget(&ebox, container, config);
+        Self::init_widget(&ebox, container, config, bar);
         ebox.show_all();
 
         // get list of items
