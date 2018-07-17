@@ -75,7 +75,7 @@ pub trait Component {
         // set layout type
         if is_fixed {
             bar.overlay.add_overlay(widget);
-            // bar.overlay.set_overlay_pass_through(widget, true);
+            bar.overlay.set_overlay_pass_through(widget, true);
         } else {
             container.add(widget);
         }
