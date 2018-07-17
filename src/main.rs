@@ -119,10 +119,8 @@ fn main() {
         warn!("{} (requires 3.22+)", err);
     }
 
-    let app_name = format!("com.kirjava.{}", NAME);
-
     let application = gtk::Application::new(
-            "com.kirjava.cakeybar",
+            format!("com.kirjava.{}", NAME).as_str(),
             gio::ApplicationFlags::NON_UNIQUE,
         )
         .expect("Initialization failed...");
