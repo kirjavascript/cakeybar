@@ -37,9 +37,7 @@ impl Tray {
 
         // get bg color
         if let Some(ctx) = base_widget.get_style_context() {
-            if let Ok(property) = ctx.get_property("background-color") {
-                println!("{:#?}", property.type_());
-            }
+            #[allow(deprecated)] // ctx.get_property doesn't work
             let RGBA { red, green, blue, .. } = ctx.get_background_color(gtk::StateFlags::NORMAL);
             let bg_color = (((red * 255.) as u32) << 16) + (((green * 255.) as u32) << 8) + (blue * 255.) as u32;
             tx_ipc.send(Message::BgColor(bg_color));

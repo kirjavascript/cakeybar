@@ -48,7 +48,7 @@ fn init(application: &gtk::Application, config: &config::Config) {
         &None => {/* default theme */},
     }
 
-    let monitors = wm::gtk::get_monitors();
+    let monitors = wm::gtk::get_monitor_geometry();
     let wm_util = wm::WMUtil::new();
 
     // load bars
