@@ -40,20 +40,17 @@ pub fn get_monitor_name(monitor_index: i32) -> Option<String> {
     monitor.get_model()
 }
 
-pub fn get_dimensions() -> (i32, i32) {
-    #[allow(deprecated)]
-    let (width, height) = (Screen::width(), Screen::height());
-    (width, height)
-}
-
 pub fn show_monitor_debug() {
     gtk::init().ok();
-    let (width, height) = get_dimensions();
-    println!("Screen: {}x{}", width, height);
-    let monitors = get_monitor_geometry();
-    for (i, mon) in monitors.iter().enumerate() {
-        let &Rectangle { x, y, width, height } = mon;
-        println!("Monitor {}: {}x{} x: {} y: {}", i, width, height, x, y);
+    let display = Display::get_default().unwrap();
+    for i in 0..display.get_n_monitors() {
+        if let Some(monitor) = display.get_monitor(i) {
+            let geometry = monitor.get_geometry();
+            let Rectangle { x, y, width, height } = geometry;
+            let model = monitor.get_model().unwrap_or("".to_string());
+            println!("Monitor {}: {} @ {}x{} x: {} y: {}",
+                i, model, width, height, x, y);
+        }
     }
 }
 
