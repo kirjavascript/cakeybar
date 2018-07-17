@@ -50,6 +50,7 @@ workspace icons
 completion
 keylock notifier
 gtk-demo
+gtk-widget-factory
 modal
 workspace multiple rows
 
