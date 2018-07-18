@@ -8,7 +8,9 @@ use gtk::{
 };
 use gdk::{
     Screen,
-    ScreenExt,
+    Display,
+    DisplayExt,
+    MonitorExt,
 };
 
 pub fn load_theme(path: &str) {
@@ -22,33 +24,33 @@ pub fn load_theme(path: &str) {
 
 // monitor stuff
 
-pub fn get_monitors() -> Vec<Rectangle> {
-    let screen = Screen::get_default().unwrap();
+pub fn get_monitor_geometry() -> Vec<Rectangle> {
+    let display = Display::get_default().unwrap();
     let mut monitors = Vec::new();
-    for i in 0..screen.get_n_monitors() {
-        monitors.push(screen.get_monitor_geometry(i));
+    for i in 0..display.get_n_monitors() {
+        let monitor = display.get_monitor(i).unwrap();
+        monitors.push(monitor.get_geometry())
     }
     monitors
 }
 
 pub fn get_monitor_name(monitor_index: i32) -> Option<String> {
-    let screen = Screen::get_default().unwrap();
-    screen.get_monitor_plug_name(monitor_index)
-}
-
-pub fn get_dimensions() -> (i32, i32) {
-    let (width, height) = (Screen::width(), Screen::height());
-    (width, height)
+    let display = Display::get_default()?;
+    let monitor = display.get_monitor(monitor_index)?;
+    monitor.get_model()
 }
 
 pub fn show_monitor_debug() {
     gtk::init().ok();
-    let (width, height) = get_dimensions();
-    println!("Screen: {}x{}", width, height);
-    let monitors = get_monitors();
-    for (i, mon) in monitors.iter().enumerate() {
-        let &Rectangle { x, y, width, height } = mon;
-        println!("Monitor {}: {}x{} x: {} y: {}", i, width, height, x, y);
+    let display = Display::get_default().unwrap();
+    for i in 0..display.get_n_monitors() {
+        if let Some(monitor) = display.get_monitor(i) {
+            let geometry = monitor.get_geometry();
+            let Rectangle { x, y, width, height } = geometry;
+            let model = monitor.get_model().unwrap_or("".to_string());
+            println!("Monitor {}: {} @ {}x{} x: {} y: {}",
+                i, model, width, height, x, y);
+        }
     }
 }
 

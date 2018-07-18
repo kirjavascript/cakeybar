@@ -23,13 +23,13 @@ impl Component for Tray {
 }
 
 impl Tray {
-    fn load(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
+    fn load(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
         base_widget.add(&wrapper);
         base_widget.show_all();
-        Self::init_widget(&base_widget, container, &config);
+        Self::init_widget(&base_widget, container, config, bar);
 
         // init
         let (tx_ipc, rx_ipc) = ::tray::ipc::get_server();
@@ -37,6 +37,7 @@ impl Tray {
 
         // get bg color
         if let Some(ctx) = base_widget.get_style_context() {
+            #[allow(deprecated)] // ctx.get_property doesn't work
             let RGBA { red, green, blue, .. } = ctx.get_background_color(gtk::StateFlags::NORMAL);
             let bg_color = (((red * 255.) as u32) << 16) + (((green * 255.) as u32) << 8) + (blue * 255.) as u32;
             tx_ipc.send(Message::BgColor(bg_color));

@@ -19,9 +19,9 @@ fn get_value(device: String, query: &str) -> Result<String, Error> {
 }
 
 impl Component for Battery {
-    fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);
-        Self::init_widget(&label, container, config);
+        Self::init_widget(&label, container, config, bar);
         label.show();
 
         let adapter = config.get_str_or("adapter", "AC").to_string();

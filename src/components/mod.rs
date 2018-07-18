@@ -7,16 +7,16 @@
 // pub struct Template { }
 //
 // impl Component for Template {
-//     fn init(container: &gtk::Box, config: &ComponentConfig, _bar: &Bar) {
+//     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
 //         let label = Label::new(None);
 //         label.set_text(&"test");
 //         label.show();
-//         Self:init_widget(&label, container, config);
+//         Self:init_widget(&label, container, config, bar);
 //     }
 // }
 
 use {gtk, glib};
-use gtk::{Box, Align, WidgetExt, StyleContextExt, ContainerExt};
+use gtk::{Box, Align, WidgetExt, StyleContextExt, ContainerExt, OverlayExt};
 use bar::Bar;
 use config::{ComponentConfig, Property};
 
@@ -39,8 +39,12 @@ mod workspaces;
 pub trait Component {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar);
 
-    fn init_widget<T>(widget: &T, container: &Box, config: &ComponentConfig)
-        where T: gtk::IsA<gtk::Widget>
+    fn init_widget<T>(
+        widget: &T,
+        container: &Box,
+        config: &ComponentConfig,
+        bar: &Bar,
+    ) where T: gtk::IsA<gtk::Widget>
             + gtk::IsA<gtk::Object>
             + glib::value::SetValue {
         // set name
@@ -52,35 +56,39 @@ pub trait Component {
                 ctx.add_class(class_str);
             }
         }
-        // get layout
+        let is_fixed = config.get_bool_or("fixed", false);
+        // set alignment
+        let halign_str = config.get_str_or("halign", "null");
+        if halign_str != "null" {
+            WidgetExt::set_halign(widget, Self::get_alignment(halign_str));
+            if !is_fixed {
+                WidgetExt::set_hexpand(widget, true);
+            }
+        }
+        let valign_str = config.get_str_or("valign", "null");
+        if valign_str != "null" {
+            WidgetExt::set_valign(widget, Self::get_alignment(valign_str));
+            if !is_fixed {
+                WidgetExt::set_vexpand(widget, true);
+            }
+        }
+        // set layout type
+        if is_fixed {
+            bar.overlay.add_overlay(widget);
+            if config.get_bool_or("pass_through", true) {
+                bar.overlay.set_overlay_pass_through(widget, true);
+            }
+        } else {
+            container.add(widget);
+        }
+
+        // position = "fixed"
         // let fixed = config.get_vec_or("fixed", vec![]);
         // let fixed = if let Some(Property::Float(x)) = fixed.get(0) {
         //     if let Some(Property::Float(y)) = fixed.get(1) {
         //         Some((x, y))
         //     } else { None }
         // } else { None };
-
-        // if let Some((x, y)) = fixed {
-        //     // fixed position
-        //     let fixed = gtk::Fixed::new();
-        //     fixed.add(widget);
-        //     fixed.move_(widget, 0, 0);
-        //     fixed.show();
-        //     container.add(&fixed);
-        // } else {
-            // normal layout alignment
-            let halign_str = config.get_str_or("halign", "null");
-            if halign_str != "null" {
-                WidgetExt::set_halign(widget, Self::get_alignment(halign_str));
-                WidgetExt::set_hexpand(widget, true);
-            }
-            let valign_str = config.get_str_or("valign", "null");
-            if valign_str != "null" {
-                WidgetExt::set_valign(widget, Self::get_alignment(valign_str));
-                WidgetExt::set_vexpand(widget, true);
-            }
-            container.add(widget);
-        // }
     }
 
     fn get_alignment(align: &str) -> Align {

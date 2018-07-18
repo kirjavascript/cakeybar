@@ -67,8 +67,7 @@ class = "gradient"
 
 [component.title]
 type = "window"
-fixed = [ 0.5, 0.5 ]
-halign = "center"
+fixed = true
 
 [component.workspaces]
 type = "workspaces"

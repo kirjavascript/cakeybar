@@ -52,6 +52,7 @@ keylock notifier
 gtk3-demo
 gtk3-widget-factory
 modal
+workspace multiple rows
 
 config
 ====
