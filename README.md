@@ -58,6 +58,7 @@ type = "image"
 class = "class-name"
 halign = "center"
 valign = "fill"
+fixed = false
 interval = 5
 ```
 
@@ -66,6 +67,8 @@ the only required property for a component is **type**
 components can be styled with `#component_name` and `.class-name`
 
 alignments can be: `start | end | center | fill`
+
+the `fixed` property changes the component position from relative to absolute
 
 interval is the update interval (for components that have one) in seconds
 

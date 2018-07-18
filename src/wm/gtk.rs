@@ -48,8 +48,10 @@ pub fn show_monitor_debug() {
             let geometry = monitor.get_geometry();
             let Rectangle { x, y, width, height } = geometry;
             let model = monitor.get_model().unwrap_or("".to_string());
-            println!("Monitor {}: {} @ {}x{} x: {} y: {}",
-                i, model, width, height, x, y);
+            println!(
+                "Monitor {}: {} @ {}x{} x: {} y: {}",
+                i, model, width, height, x, y
+            );
         }
     }
 }

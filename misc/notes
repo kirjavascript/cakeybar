@@ -18,7 +18,8 @@ wm restart event restack tray
 kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
-// get fixed position
+change _ to - in config
+disable compton shadow on bar
 
 impl
 ====
