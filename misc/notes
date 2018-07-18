@@ -49,8 +49,8 @@ menu triggbers
 workspace icons
 completion
 keylock notifier
-gtk-demo
-gtk-widget-factory
+gtk3-demo
+gtk3-widget-factory
 modal
 
 config
