@@ -12,18 +12,17 @@ https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
 https://github.com/pw4ever/awesome-wm-config#setup
 awesome-client
 
-refactoring / bugs
+wm refactoring
 ===
 wm restart event restack tray
 kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
-// get fixed position
 
 impl
 ====
+bindsym $mod+m exec -- --message / accellerators
 reload config / theme (theme should be easy)
-bindsym $mod+m exec -- --message
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 position: absolute (gtkfixed) / -> <T: ContainerExt>
 externally mapped command to trigger key input mode
@@ -32,27 +31,25 @@ components
 ====
 conditional display / flexbox
 system command / read file -> make migration to lemonbar easy - classes for return code
- <api/>
+<api/>
 <webview>
+bandwidth upload
+remote ip
 mpd ipc
-network get upload rate
 dmenu gtk::WindowType::Popup
-dropdown menu
 container: clickable
 keyboard layout
 volume / equalizer
 notifications?
 label
 label#Label here for layout
-bandwidth upload
-menu triggbers
-workspace icons
 completion
 keylock notifier
 gtk3-demo
 gtk3-widget-factory
 modal
 workspace multiple rows
+gmail
 
 config
 ====
