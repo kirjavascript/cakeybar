@@ -38,8 +38,8 @@ impl<'a> Bar<'a> {
         window.set_title(NAME);
         window.set_default_size(monitor.width, 1);
         window.set_type_hint(gdk::WindowTypeHint::Dock);
-        // #[allow(deprecated)]
-        // window.set_wmclass(NAME, NAME);
+        #[allow(deprecated)]
+        window.set_wmclass(NAME, NAME);
         window.set_keep_above(true);
         window.stick();
 
