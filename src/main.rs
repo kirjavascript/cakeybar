@@ -59,8 +59,8 @@ fn init(application: &gtk::Application, config: &config::Config) {
         if let Some(monitor) = monitor_option {
             let _ = bar::Bar::new(
                 &application,
+                &config,
                 &bar_config,
-                &config.components,
                 &wm_util,
                 monitor,
             );

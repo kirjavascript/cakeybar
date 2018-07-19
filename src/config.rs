@@ -3,7 +3,7 @@ use toml::value::*;
 
 use std::fs::File;
 use std::io::prelude::*;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::exit;
 use std::collections::HashMap;
 
@@ -12,6 +12,7 @@ pub struct Config {
     pub theme: Option<String>,
     pub bars: Vec<ComponentConfig>,
     pub components: Vec<ComponentConfig>,
+    pub config_dir: PathBuf,
 }
 
 #[derive(Debug)]
@@ -174,6 +175,7 @@ pub fn parse_config(filename: &str) -> Config {
         theme: theme_str,
         bars: get_table_config_list("bar"),
         components: get_table_config_list("component"),
+        config_dir: config_dir.to_path_buf(),
     };
 
     // #[cfg(debug_assertions)]

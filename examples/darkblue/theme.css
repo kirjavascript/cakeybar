@@ -1,6 +1,13 @@
 @define-color blue #0A83FD;
 @define-color darkblue #0022CC;
 
+label {
+    font-family: Hack;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+}
+
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
@@ -9,13 +16,6 @@
 
 #left_scroll, #right_scroll {
     background-color: black;
-}
-
-label {
-    font-family: Hack;
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
 }
 
 #menu label {

@@ -134,7 +134,7 @@ fn layout_to_container(container: &Box, layout: &Property, bar: &Bar) {
         arr.iter().for_each(|name_prop| {
             if let &Property::String(ref name) = name_prop {
                 // get config for layout fragment
-                let component_config = bar.components.iter().find(|x| {
+                let component_config = bar.app_config.components.iter().find(|x| {
                     &x.name == name
                 });
                 if let Some(config) = component_config {
