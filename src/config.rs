@@ -4,7 +4,6 @@ use toml::value::*;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
-use std::process::exit;
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -69,30 +68,22 @@ impl ComponentConfig {
 }
 
 // TODO: return Result<Config, Err> instead
-pub fn parse_config(filename: &str) -> Config {
-    let config_dir = Path::new(filename).parent().unwrap();
+pub fn parse_config(filename: &str) -> Result<Config, String> {
+    let config_dir = Path::new(filename).parent()
+        .ok_or("getting config directory")?;
 
     // get file
-    let file_result = File::open(filename);
-    if let Err(e) = file_result {
-        error!("{}: {}", filename, e);
-        exit(2i32);
-    }
+    let mut file_result = File::open(filename)
+        .map_err(|x| x.to_string())?;
 
     let mut contents = String::new();
-    file_result.unwrap()
+    file_result
         .read_to_string(&mut contents)
         .expect("something went wrong reading the config");
 
     // parse file
-    let parsed_result = contents.parse::<toml::Value>();
-
-    if let Err(e) = parsed_result {
-        error!("{}: {}", filename, e);
-        exit(1i32);
-    }
-
-    let parsed = parsed_result.unwrap();
+    let parsed = contents.parse::<toml::Value>()
+        .map_err(|x| x.to_string())?;
 
     // theme
 
@@ -104,27 +95,22 @@ pub fn parse_config(filename: &str) -> Config {
 
     // bar assertions
 
-    let bar_option = parsed.get("bar");
+    parsed.get("bar").ok_or(format!("{}: no bars specified", filename))?;
 
-    if bar_option.is_none() {
-        error!("{}: no bars specified", filename);
-        exit(1i32);
-    }
-
-    let bar_table_option = parsed.get("bar").unwrap().as_table();
-
-    if bar_table_option.is_none() {
-        error!("{}: bar needs to be a table like [bar.name]", filename);
-        exit(1i32);
-    }
-
-    let bar_table = bar_table_option.unwrap();
+    let bar_table = parsed.get("bar")
+        .unwrap()
+        .as_table()
+        .ok_or(
+            format!("{}: bar needs to be a table like [bar.name]", filename)
+        )?;
 
     let bars: Vec<(&String, &Value)> = bar_table.iter().filter(|&(_k, v)| v.is_table()).collect();
 
     if bars.len() == 0 {
-        error!("{}: no bars defined (bars need a name like [bar.name])", filename);
-        exit(1i32);
+        return Err(format!(
+            "{}: no bars defined (bars need a name like [bar.name])",
+            filename,
+        ));
     }
 
     // getters
@@ -181,7 +167,7 @@ pub fn parse_config(filename: &str) -> Config {
     // #[cfg(debug_assertions)]
     // println!("{:#?}", config);
 
-    config
+    Ok(config)
 }
 
 fn get_path(file: String, directory: &Path) -> String {
@@ -193,9 +179,10 @@ fn get_path(file: String, directory: &Path) -> String {
     }.canonicalize();
     if file_path.is_err() {
         error!("{}: {:?}", &file, file_path.err().unwrap());
-        exit(2i32);
+        String::from("")
+    } else {
+        file_path.unwrap().as_path().to_str().unwrap_or("").to_string()
     }
-    file_path.unwrap().as_path().to_str().unwrap_or("").to_string()
 }
 
 fn value_to_property(value: &Value) -> Property {

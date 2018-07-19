@@ -110,26 +110,33 @@ fn main() {
 
     let config_path = matches.value_of("config").unwrap_or(&default_path);
 
-    let config = config::parse_config(config_path);
+    let config_res = config::parse_config(config_path);
 
-    // GTK application
+    if let Ok(config) = config_res {
 
-    // check version
-    if let Some(err) = gtk::check_version(3, 22, 0) {
-        warn!("{} (requires 3.22+)", err);
+        // GTK application
+
+        // check version
+        if let Some(err) = gtk::check_version(3, 22, 0) {
+            warn!("{} (requires 3.22+)", err);
+        }
+
+        let application = gtk::Application::new(
+                format!("com.kirjava.{}", NAME).as_str(),
+                gio::ApplicationFlags::NON_UNIQUE,
+            )
+            .expect("Initialization failed...");
+
+        application.connect_startup(move |app| {
+            init(&app, &config);
+        });
+        application.connect_activate(|_| {});
+
+        application.run(&Vec::new()); // dont pass any arguments to GTK
+
+    } else if let Err(msg) = config_res {
+        error!("{}", msg);
     }
 
-    let application = gtk::Application::new(
-            format!("com.kirjava.{}", NAME).as_str(),
-            gio::ApplicationFlags::NON_UNIQUE,
-        )
-        .expect("Initialization failed...");
-
-    application.connect_startup(move |app| {
-        init(&app, &config);
-    });
-    application.connect_activate(|_| {});
-
-    application.run(&Vec::new()); // dont pass any arguments to GTK
 
 }
