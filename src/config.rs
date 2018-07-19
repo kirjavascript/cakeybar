@@ -33,8 +33,8 @@ pub enum Property {
 }
 
 impl Config {
-    pub fn get_path(&self, file: &str) -> String {
-        get_path(file.to_string(), &self.config_dir)
+    pub fn get_path(&self, filename: &str) -> String {
+        get_path(filename.to_string(), &self.config_dir)
     }
 }
 
@@ -82,9 +82,7 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
         .map_err(|x| x.to_string())?;
 
     let mut contents = String::new();
-    file_result
-        .read_to_string(&mut contents)
-        .expect("something went wrong reading the config");
+    file_result.read_to_string(&mut contents).map_err(|x| x.to_string())?;
 
     // parse file
     let parsed = contents.parse::<toml::Value>()
