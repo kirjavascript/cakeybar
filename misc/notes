@@ -20,8 +20,6 @@ fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
 change _ to - in config
 disable compton shadow on bar
-return result from config
-move src into image
 
 impl
 ====

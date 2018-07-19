@@ -32,6 +32,12 @@ pub enum Property {
     Null,
 }
 
+impl Config {
+    pub fn get_path(&self, file: &str) -> String {
+        get_path(file.to_string(), &self.config_dir)
+    }
+}
+
 impl ComponentConfig {
     pub fn get_int_or(&self, prop: &str, or: i64) -> i64 {
         let value_option = self.properties.get(prop);
@@ -67,7 +73,6 @@ impl ComponentConfig {
     }
 }
 
-// TODO: return Result<Config, Err> instead
 pub fn parse_config(filename: &str) -> Result<Config, String> {
     let config_dir = Path::new(filename).parent()
         .ok_or("getting config directory")?;
@@ -95,10 +100,8 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
 
     // bar assertions
 
-    parsed.get("bar").ok_or(format!("{}: no bars specified", filename))?;
-
     let bar_table = parsed.get("bar")
-        .unwrap()
+        .ok_or(format!("{}: no bars specified", filename))?
         .as_table()
         .ok_or(
             format!("{}: bar needs to be a table like [bar.name]", filename)
@@ -122,11 +125,6 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
             let key_str = key.to_string();
             properties.insert(key_str, value_to_property(value));
         });
-
-        // convert src prop to real path
-        if let Some(&mut Property::String(ref mut src)) = properties.get_mut("src") {
-            *src = get_path(src.to_string(), config_dir);
-        }
 
         ComponentConfig {
             name: key.to_string(),
@@ -172,16 +170,19 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
 
 fn get_path(file: String, directory: &Path) -> String {
     let file_path = Path::new(&file);
-    let file_path = if file_path.is_absolute() {
+    let file_path_res = if file_path.is_absolute() {
         file_path.to_path_buf()
     } else {
         directory.join(&file_path)
     }.canonicalize();
-    if file_path.is_err() {
-        error!("{}: {:?}", &file, file_path.err().unwrap());
+
+    if let Err(err) = file_path_res {
+        error!("{}: {:?}", &file, err.to_string());
         String::from("")
+    } else if let Ok(file_path) = file_path_res {
+        file_path.as_path().to_str().unwrap_or("").to_string()
     } else {
-        file_path.unwrap().as_path().to_str().unwrap_or("").to_string()
+        unreachable!();
     }
 }
 
