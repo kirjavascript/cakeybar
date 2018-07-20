@@ -4,7 +4,7 @@
 </div>
 <br>
 
-cakeybar is a customizable statusbar for your windowmanager
+**cakeybar** is a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
 * expressive theming with CSS
