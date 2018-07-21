@@ -157,9 +157,9 @@ pub fn disable_shadow(window: &gtk::Window) {
         let cardinal = gdk_sys::gdk_atom_intern(cardinal.as_ptr(), 0);
         let format: c_int = 32;
         let mode: c_int = 0;
-        let data = [0];
+        let data = [0, 0, 0, 0];
         let data_ptr: *const u8 = data.as_ptr();
-        let el: c_int = 4;
+        let el: c_int = 1;
         gdk_sys::gdk_property_change(
             ptr, // window:
             shadow, // property:
