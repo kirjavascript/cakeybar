@@ -134,7 +134,7 @@ pub fn set_strut(window: &gtk::Window, is_top: bool, rect: Rectangle) {
         ]};
         // left, right, top, bottom
         let data_ptr: *const u8 = data.as_ptr();
-        let el: c_int = 1 as i32;
+        let el: c_int = 12 as i32;
         gdk_sys::gdk_property_change(
             ptr, // window:
             partial, // property:
