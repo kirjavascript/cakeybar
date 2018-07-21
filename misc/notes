@@ -19,14 +19,12 @@ kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
 change _ to - in config
-disable compton shadow on bar
 
 impl
 ====
 bindsym $mod+m exec -- --message / accellerators
 reload config / theme (theme should be easy)
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
-position: absolute (gtkfixed) / -> <T: ContainerExt>
 externally mapped command to trigger key input mode
 
 components

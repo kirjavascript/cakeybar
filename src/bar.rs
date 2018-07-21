@@ -124,6 +124,8 @@ impl<'a> Bar<'a> {
         // load components
         components::load_components(&container, &bar);
 
+        wm::gtk::disable_shadow(&window);
+
         wm::gtk::set_strut(&window, is_top, Rectangle {
             x: monitor.x,
             y: monitor.y,

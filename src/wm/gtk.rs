@@ -134,10 +134,35 @@ pub fn set_strut(window: &gtk::Window, is_top: bool, rect: Rectangle) {
         ]};
         // left, right, top, bottom
         let data_ptr: *const u8 = data.as_ptr();
-        let el: c_int = 12 as i32;
+        let el: c_int = 1 as i32;
         gdk_sys::gdk_property_change(
             ptr, // window:
             partial, // property:
+            cardinal, // type_:
+            format, // format:
+            mode, // mode:
+            data_ptr, // data:
+            el, // nelements:
+        );
+    }
+}
+
+pub fn disable_shadow(window: &gtk::Window) {
+    let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
+
+    unsafe {
+        let shadow = CString::new("_COMPTON_SHADOW").unwrap();
+        let cardinal = CString::new("CARDINAL").unwrap();
+        let shadow = gdk_sys::gdk_atom_intern(shadow.as_ptr(), 0);
+        let cardinal = gdk_sys::gdk_atom_intern(cardinal.as_ptr(), 0);
+        let format: c_int = 32;
+        let mode: c_int = 0;
+        let data = [0];
+        let data_ptr: *const u8 = data.as_ptr();
+        let el: c_int = 4;
+        gdk_sys::gdk_property_change(
+            ptr, // window:
+            shadow, // property:
             cardinal, // type_:
             format, // format:
             mode, // mode:
