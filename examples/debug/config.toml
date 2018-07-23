@@ -6,7 +6,6 @@ theme = "theme.css"
 monitor = 0
 position = "bottom"
 layout = [ "logo", "workspaces", "tray", "mode", "title", "box1" ]
-scroll_workspace = true # TODO
 
 [bar.right]
 monitor = 1

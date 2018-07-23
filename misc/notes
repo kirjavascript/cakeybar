@@ -15,6 +15,7 @@ awesome-client
 wm refactoring
 ===
 wm restart event restack tray
+get sigint in gtk
 kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
