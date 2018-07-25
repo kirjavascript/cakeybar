@@ -23,6 +23,7 @@ impl Component for Clock {
         });
 
         let interval = config.get_int_or("interval", 1);
+        tick();
         gtk::timeout_add_seconds(interval as u32, tick);
 
         label.show();

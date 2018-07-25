@@ -18,9 +18,10 @@ pub fn run_command(command: String) {
         let command = CString::new(command).unwrap();
         match CString::new(command) {
             Ok(command) => {
-                let mode = CString::new("r").unwrap();
-                let cmd_ptr: *const c_char = command.as_bytes_with_nul().as_ptr() as _;
-                let mode_ptr: *const c_char = mode.as_bytes_with_nul().as_ptr() as _;
+                let mode = b"r\0";
+                let command = command.as_bytes_with_nul();
+                let cmd_ptr: *const c_char = command.as_ptr() as _;
+                let mode_ptr: *const c_char = mode.as_ptr() as _;
                 unsafe {
                     let stream = libc::popen(cmd_ptr, mode_ptr);
                     if !stream.is_null() {
@@ -34,6 +35,7 @@ pub fn run_command(command: String) {
                             }
                         }
                     }
+                    libc::pclose(stream);
                 }
             },
             Err(err) => {

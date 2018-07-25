@@ -1,11 +1,15 @@
 theme = "theme.css"
 
+[component.test]
+type = "script"
+exec = "date"
+
 # bars
 
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
+layout = [ "test", "menu", "workspaces", "mode", "title", "box1", "tray" ]
 scroll_workspace = false
 
 [bar.right]
@@ -47,7 +51,7 @@ items = [
         { label = "nonsense", command = "termite -e \"genact\"" },
     ] },
     { label = "change background", children = [
-        { label = "forest bg", command = "feh --bg-fill /home/thom/backgrounds/forest.png --bg-fill /home/thom/backgrounds/mac.jpg" },
+        { label = "forest bg", command = "feh --bg-fill \"/home/thom/backgrounds/forest.png\" --bg-fill \"/home/thom/backgrounds/mac.jpg\"" },
         { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
     ] },
 ]

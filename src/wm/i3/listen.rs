@@ -44,7 +44,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                             i3::get_workspaces(connection)
                                         ))).ok();
                                     } else if let Err(ref err) = connection {
-                                        error!("{} (try reloading i3)", err);
+                                        error!("{} (try reloading i3 config)", err);
                                     }
                                 },
                                 _ => unreachable!(),

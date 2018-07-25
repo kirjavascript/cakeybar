@@ -30,6 +30,7 @@ mod image;
 mod ip;
 mod menu;
 mod mode;
+mod script;
 mod tray;
 mod void;
 mod window;
@@ -118,6 +119,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "ip" => ip::IP::init,
             "menu" => menu::Menu::init,
             "mode" => mode::Mode::init,
+            "script" => script::Script::init,
             "tray" => tray::Tray::init,
             "window" => window::Window::init,
             "workspaces" => workspaces::Workspaces::init,
