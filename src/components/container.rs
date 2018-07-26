@@ -22,6 +22,8 @@ impl Component for Container {
             super::layout_to_container(&wrapper, layout, bar);
             Self::init_widget(&wrapper, container, config, bar);
             wrapper.show();
+        } else {
+            warn!("#{} missing layout", config.name);
         }
     }
 }

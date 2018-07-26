@@ -190,3 +190,11 @@ icon_size = 20
 ```
 
 the `background-color` style needs to be set explicitly for it to work
+
+### script
+
+```toml
+[component.load_averages]
+type = "script"
+src = "uptime | sed -r \"s/.*average: (.*)$/\\1/\""
+```

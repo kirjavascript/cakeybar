@@ -20,6 +20,7 @@ kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
 change _ to - in config
+ipc - wm_util event - ipc show #eq
 
 impl
 ====

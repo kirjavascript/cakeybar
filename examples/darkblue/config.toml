@@ -1,15 +1,11 @@
 theme = "theme.css"
 
-[component.test]
-type = "script"
-exec = "date"
-
 # bars
 
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "test", "menu", "workspaces", "mode", "title", "box1", "tray" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
 scroll_workspace = false
 
 [bar.right]
@@ -41,6 +37,7 @@ window_id = "menu_popup"
 items = [
     { label = "run termite", command = "termite" },
     { label = "hello", command = "echo \"hello\"" },
+    { label = "pcmanfm", command = "pcmanfm" },
     { label = "terminal apps", children = [
         { label = "pipes", command = "termite -e \"pipes\"" },
         { label = "neofetch", command = "termite -e \"neofetch\"" },
