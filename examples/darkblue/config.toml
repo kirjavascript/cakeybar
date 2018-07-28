@@ -73,7 +73,19 @@ type = "mode"
 type = "container"
 # direction = "row"
 # spacing = 5
-layout = [ "disk", "battery", "cpu", "cpu-icon", "bandwidth", "bw-icon", "ip", "ip-icon", "clock", "clock-icon"]
+layout = [
+    "battery",
+    "cpu",
+    "cpu-icon",
+    "bandwidth",
+    "bw-icon",
+    "disk",
+    "disk-icon",
+    "ip",
+    "ip-icon",
+    "clock",
+    "clock-icon",
+]
 halign = "end"
 class = "gradient"
 # valign = "end"
@@ -81,7 +93,7 @@ class = "gradient"
 # stats
 [component.disk]
 type = "disk"
-mounts = ["", ""]
+mounts = ["/"]
 
 [component.battery]
 type = "battery"
@@ -111,6 +123,11 @@ format = "%Y-%m-%d %H:%M:%S"
 [component.cpu-icon]
 type = "image"
 src = "./icons/cpu.svg"
+class = "icon"
+
+[component.disk-icon]
+type = "image"
+src = "./icons/disk.svg"
 class = "icon"
 
 [component.bw-icon]

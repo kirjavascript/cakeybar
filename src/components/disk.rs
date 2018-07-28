@@ -2,6 +2,7 @@ use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 use util::format_bytes;
+use config::Property;
 
 use sysinfo::{DiskExt, SystemExt, System};
 
@@ -14,6 +15,23 @@ impl Component for Disk {
         wrapper.show();
         let mut system = System::new();
 
+        let mounts = config.get_vec_or("mounts", vec![])
+            .iter()
+            .fold(vec![], |mut acc, cur| {
+                if let Property::String(s) = cur {
+                    acc.push(s.clone());
+                }
+                acc
+            });
+
+        let should_include = move |s: &str| {
+            if mounts.len() == 0 || mounts.contains(&&s.to_string()) {
+                true
+            } else {
+                false
+            }
+        };
+
         let mut tick = clone!(wrapper move || {
             system.refresh_disk_list();
             // remove old labels from wrapper
@@ -22,19 +40,16 @@ impl Component for Disk {
             }
 
             for disk in system.get_disks() {
-                // let text = format!(
-                //     "{:?} {:?} {:?} {}/{}",
-                //     disk.get_type(),
-                //     disk.get_name(),
-                //     disk.get_mount_point(),
-                //     format_bytes(disk.get_available_space()),
-                //     format_bytes(disk.get_total_space()),
-                // );
-                let text = format!("{}", format_bytes(disk.get_available_space()));
-                let label = Label::new(None);
-                label.set_text(&text);
-                label.show();
-                wrapper.add(&label);
+                if let Some(mount_point) = disk.get_mount_point().to_str() {
+                    if should_include(mount_point) {
+                        // TODO: other info
+                        let text = format!("{}", format_bytes(disk.get_available_space()));
+                        let label = Label::new(None);
+                        label.set_text(&text);
+                        label.show();
+                        wrapper.add(&label);
+                    }
+                }
             }
             gtk::Continue(true)
         });
