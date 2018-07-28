@@ -63,7 +63,7 @@ impl<'a> Bar<'a> {
         // set gdk::EventMask::SCROLL_MASK and disable 'smooth' scrolling
         viewport.add_events(2097152);
         // when scrolling, change workspace
-        if config.get_bool_or("scroll_workspace", true) {
+        if config.get_bool_or("scroll-workspace", true) {
             viewport.connect_scroll_event(clone!(wm_util move |_vp, e| {
                 let direction = e.get_direction();
                 let is_next = direction == ScrollDirection::Down;

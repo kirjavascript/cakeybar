@@ -44,7 +44,7 @@ impl Tray {
         }
 
         // set icon size
-        let icon_size = config.get_int_or("icon_size", 20);
+        let icon_size = config.get_int_or("icon-size", 20);
         if icon_size != 20 {
             tx_ipc.send(Message::IconSize(icon_size as u16));
         }

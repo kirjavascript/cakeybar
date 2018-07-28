@@ -14,7 +14,7 @@ impl Component for Script {
         if let Some(&Property::String(ref src)) = config.properties.get("src") {
 
             let (tx, rx) = mpsc::channel();
-            let interval = config.get_int_or("interval", 5);
+            let interval = config.get_int_or("interval", 5).max(1);
 
             thread::spawn(clone!((src, interval) move || {
                 loop {
@@ -39,9 +39,9 @@ impl Component for Script {
             let label = Label::new(None);
             gtk::timeout_add_seconds(1, clone!((label, src) move || {
                 if let Ok((stdout, stderr)) = rx.try_recv() {
-                    label.set_text(&stdout);
+                    label.set_text(&stdout.trim());
                     if stderr.len() > 0 {
-                        error!("{}: {}", src, stderr);
+                        error!("{}: {}", src, stderr.trim());
                     }
                 }
                 gtk::Continue(true)

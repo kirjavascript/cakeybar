@@ -21,8 +21,8 @@ impl Component for Workspaces {
         let spacing = config.get_int_or("spacing", 0) as i32;
 
         // misc config
-        let show_all = config.get_bool_or("show_all", false);
-        let show_name = config.get_bool_or("show_name", false);
+        let show_all = config.get_bool_or("show-all", false);
+        let show_name = config.get_bool_or("show-name", false);
 
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);

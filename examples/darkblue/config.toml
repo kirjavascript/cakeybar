@@ -6,19 +6,19 @@ theme = "theme.css"
 monitor = 0
 position = "top"
 layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
-scroll_workspace = false
+scroll-workspace = false
 
 [bar.right]
 monitor = 1
 position = "top"
 layout = [ "menu", "workspaces", "mode", "title", "box1" ]
-scroll_workspace = false
+scroll-workspace = false
 
 # creates a 1px bar at the bottom - used for scrolling workspaces only
-[bar.right_scroll]
+[bar.right-scroll]
 monitor = 0
 position = "bottom"
-[bar.left_scroll]
+[bar.left-scroll]
 monitor = 1
 position = "bottom"
 
@@ -26,14 +26,14 @@ position = "bottom"
 
 [component.tray]
 type = "tray"
-icon_size = 20
+icon-size = 20
 
 # menu
 
 [component.menu]
 type = "dropdown"
 # label = "start"
-window_id = "menu_popup"
+window-id = "menu_popup"
 items = [
     { label = "run termite", command = "termite" },
     { label = "hello", command = "echo \"hello\"" },
@@ -59,7 +59,7 @@ items = [
 type = "container"
 # direction = "row"
 # spacing = 5
-layout = [ "battery", "cpu", "cpu_icon", "bandwidth", "bw_icon", "ip", "ip_icon", "clock", "clock_icon"]
+layout = [ "battery", "cpu", "cpu-icon", "bandwidth", "bw-icon", "ip", "ip-icon", "clock", "clock-icon"]
 halign = "end"
 class = "gradient"
 # valign = "end"
@@ -72,8 +72,8 @@ fixed = true
 
 [component.workspaces]
 type = "workspaces"
-show_all = false
-show_name = false
+show-all = false
+show-name = false
 
 [component.mode]
 type = "mode"
@@ -105,22 +105,22 @@ format = "%Y-%m-%d %H:%M:%S"
 
 # icons
 
-[component.cpu_icon]
+[component.cpu-icon]
 type = "image"
 src = "./icons/cpu.svg"
 class = "icon"
 
-[component.bw_icon]
+[component.bw-icon]
 type = "image"
 src = "./icons/bandwidth.svg"
 class = "icon"
 
-[component.ip_icon]
+[component.ip-icon]
 type = "image"
 src = "./icons/ip.svg"
 class = "icon"
 
-[component.clock_icon]
+[component.clock-icon]
 type = "image"
 src = "./icons/clock.svg"
 class = "icon"

@@ -11,7 +11,7 @@ label {
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
-    background-color: black;
+    /* background-color: black; */
 }
 
 #left_scroll, #right_scroll {

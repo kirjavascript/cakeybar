@@ -53,7 +53,7 @@ you can define as many bars as you like as long as they have unique ids. the id 
 #### common properties
 
 ```toml
-[component.component_name]
+[component.component-name]
 type = "image"
 class = "class-name"
 halign = "center"
@@ -64,7 +64,7 @@ interval = 5
 
 the only required property for a component is **type**
 
-components can be styled with `#component_name` and `.class-name`
+components can be styled with `#component-name` and `.class-name`
 
 alignments can be: `start | end | center | fill`
 
@@ -191,7 +191,7 @@ icon_size = 20
 
 the `background-color` style needs to be set explicitly for it to work
 
-### script
+#### script
 
 ```toml
 [component.load_averages]

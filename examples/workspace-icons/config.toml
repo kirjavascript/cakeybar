@@ -7,5 +7,5 @@ layout = [ "workspaces" ]
 
 [component.workspaces]
 type = "workspaces"
-show_all = false
-show_name = true
+show-all = false
+show-name = true

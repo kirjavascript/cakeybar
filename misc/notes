@@ -20,19 +20,18 @@ kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
 change _ to - in config
-ipc - wm_util event - ipc show #eq
 
 impl
 ====
 bindsym $mod+m exec -- --message / accellerators
 reload config / theme (theme should be easy)
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
-externally mapped command to trigger key input mode
+ipc - wm_util event - ipc show #eq #more .class_too - reload
 
 components
 ====
 conditional display / flexbox
-system command / read file -> make migration to lemonbar easy - classes for return code
+script - classes for return code
 <api/>
 <webview>
 bandwidth upload
