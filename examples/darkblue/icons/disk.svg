@@ -12,11 +12,11 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    id="svg5378"
    sodipodi:docname="disk.svg"
-   viewBox="0 0 14.440928 15.999697"
+   viewBox="0 0 11.552742 12.799757"
    version="1.1"
    inkscape:version="0.92.2 2405546, 2018-03-11"
-   width="14.495"
-   height="15.999686">
+   width="11.596"
+   height="12.799748">
   <defs
      id="defs3">
     <linearGradient
@@ -121,17 +121,17 @@
      id="base"
      bordercolor="#666666"
      inkscape:pageshadow="2"
-     inkscape:window-y="29"
+     inkscape:window-y="0"
      pagecolor="#ffffff"
-     inkscape:window-height="1050"
+     inkscape:window-height="1080"
      inkscape:window-maximized="0"
-     inkscape:zoom="1.4142136"
+     inkscape:zoom="5.6568544"
      inkscape:window-x="1920"
      showgrid="false"
      borderopacity="1.0"
      inkscape:current-layer="layer1"
-     inkscape:cx="-158.7081"
-     inkscape:cy="-51.486096"
+     inkscape:cx="-11.667567"
+     inkscape:cy="-14.076785"
      inkscape:window-width="1920"
      inkscape:pageopacity="0.0"
      inkscape:document-units="mm"
@@ -145,10 +145,10 @@
      id="layer1"
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     transform="translate(-371.95523,-605.67703)">
+     transform="translate(-373.40473,-607.277)">
     <g
        id="g6097"
-       transform="matrix(0.32604089,0,0,0.32604089,278.72543,439.17474)">
+       transform="matrix(0.26083271,0,0,0.26083271,298.81548,474.07517)">
       <ellipse
          id="path6079"
          style="fill:#2e3436;filter:url(#filter6093)"

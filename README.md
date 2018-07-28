@@ -8,10 +8,9 @@
 
 * multibar/multimonitor support
 * expressive theming with CSS
-* system tray integration
 * windowmanager neutral design
+* system tray integration
 * more rice than feudal japan
-* nothing to do with blockchain
 
 *work in progress* testing in i3/bspwm
 
@@ -24,7 +23,7 @@
 git clone https://github.com/kirjavascript/cakeybar.git
 cd cakeybar
 
-# install rustup
+# install rustup (if you don't have cargo)
 curl https://sh.rustup.rs -sSf | sh
 
 # run example
@@ -36,7 +35,6 @@ cargo run --release -- -c examples/darkblue/config.toml
 [toml](https://github.com/toml-lang/toml) is used in 'normal' config files and CSS is used for theming
 
 [CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)
-
 [CSS properties](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 
 see the [examples](examples) for more
@@ -191,6 +189,14 @@ you can target the class `#battery.plugged` when AC is plugged in
 classes for battery charge are: `full | high | medium | low`
 
 use `ls /sys/class/power_supply/` to see devices
+
+#### disk
+
+```toml
+[component.disk]
+type = "disk"
+mounts = ["/"] # omit this to show all
+```
 
 #### tray
 

@@ -19,7 +19,7 @@ get sigint in gtk
 kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
-change _ to - in config
+darkblue: switch icons to background images
 
 impl
 ====
@@ -64,7 +64,6 @@ https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable
 ===
 osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline / hexagons (visualizer)
 crosspost on unixporn / r/rust
-darkblue: switch icons to background images
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
 https://i.imgur.com/TF69nPa.png

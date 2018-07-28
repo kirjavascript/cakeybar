@@ -1,25 +1,24 @@
-extern crate libc;
+extern crate glib;
 extern crate cairo;
 extern crate gio;
 extern crate gtk;
 extern crate gdk;
-extern crate gdk_sys;
-extern crate glib;
+extern crate libc;
 extern crate xcb;
+extern crate gdk_sys;
+extern crate libpulse_sys;
+extern crate libpulse_simple_sys;
 extern crate clap;
 extern crate toml;
 extern crate ansi_term;
-// components
 extern crate i3ipc;
 extern crate chrono;
 extern crate systemstat;
 extern crate probes;
 extern crate sysinfo;
-// tray
 #[macro_use]
 extern crate chan;
 extern crate chan_signal;
-// tray ipc
 extern crate bincode;
 #[macro_use]
 extern crate serde_derive;
@@ -42,6 +41,8 @@ pub static NAME: &str = env!("CARGO_PKG_NAME");
 pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn init(application: &gtk::Application, config: &config::Config) {
+    // components::equalizer::test();
+
     // load theme to screen
     match &config.theme {
         &Some(ref src) => wm::gtk::load_theme(src),

@@ -27,6 +27,7 @@ mod container;
 mod cpu;
 mod disk;
 mod dropdown;
+pub mod equalizer;
 mod image;
 mod ip;
 mod menu;
