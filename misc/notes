@@ -34,7 +34,7 @@ conditional display / flexbox
 script - classes for return code
 <api/>
 <webview>
-bandwidth upload
+bandwidth upload show-upload .upload
 remote ip
 mpd ipc
 dmenu gtk::WindowType::Popup

@@ -26,7 +26,7 @@ impl Component for CPU {
             gtk::Continue(true)
         });
 
-        let interval = config.get_int_or("interval", 5);
+        let interval = config.get_int_or("interval", 5).max(1);
         tick();
         gtk::timeout_add_seconds(interval as u32, tick);
     }

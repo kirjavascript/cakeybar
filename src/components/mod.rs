@@ -25,6 +25,7 @@ mod battery;
 mod clock;
 mod container;
 mod cpu;
+mod disk;
 mod dropdown;
 mod image;
 mod ip;
@@ -114,6 +115,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "clock" => clock::Clock::init,
             "container" => container::Container::init,
             "cpu" => cpu::CPU::init,
+            "disk" => disk::Disk::init,
             "dropdown" => dropdown::Dropdown::init,
             "image" => image::Image::init,
             "ip" => ip::IP::init,

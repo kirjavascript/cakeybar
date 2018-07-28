@@ -4,20 +4,31 @@
 </div>
 <br>
 
-**cakeybar** is a customizable statusbar for your windowmanager
+**cakeybar** is a user friendly tool for creating custom statusbars
 
 * multibar/multimonitor support
 * expressive theming with CSS
 * system tray integration
 * windowmanager neutral design
 * more rice than feudal japan
+* nothing to do with blockchain
 
-**work in progress** testing in i3/bspwm
+*work in progress* testing in i3/bspwm
 
-## running
+## quickstart
 
-```rust
-cargo run --release -- -h
+### from source
+
+```bash
+# clone repo
+git clone https://github.com/kirjavascript/cakeybar.git
+cd cakeybar
+
+# install rustup
+curl https://sh.rustup.rs -sSf | sh
+
+# run example
+cargo run --release -- -c examples/darkblue/config.toml
 ```
 
 ## configuration
@@ -43,7 +54,7 @@ theme = "theme.css" # paths can be relative or absolute
 monitor = 0
 position = "top" # "top" | "bottom"
 layout = [ "component", "names", "go", "here" ]
-scroll_workspace = false
+scroll-workspace = false
 ```
 
 you can define as many bars as you like as long as they have unique ids. the id is also used as the CSS selector for that bar: `#bar_name`
@@ -53,7 +64,7 @@ you can define as many bars as you like as long as they have unique ids. the id 
 #### common properties
 
 ```toml
-[component.component-name]
+[component.component_name]
 type = "image"
 class = "class-name"
 halign = "center"
@@ -64,7 +75,7 @@ interval = 5
 
 the only required property for a component is **type**
 
-components can be styled with `#component-name` and `.class-name`
+components can be styled with `#component_name` and `.class-name`
 
 alignments can be: `start | end | center | fill`
 
@@ -127,8 +138,8 @@ a gtk-context style dropdown menu
 ```toml
 [component.workspace_list]
 type = "workspaces"
-show_all = false # show workspaces from every window
-show_name = false # show full name or just index
+show-all = false # show workspaces from every window
+show-name = false # show full name or just index
 ```
 
 each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_list label .focused`
@@ -186,7 +197,7 @@ use `ls /sys/class/power_supply/` to see devices
 ```toml
 [component.tray]
 type = "tray"
-icon_size = 20
+icon-size = 20
 ```
 
 the `background-color` style needs to be set explicitly for it to work

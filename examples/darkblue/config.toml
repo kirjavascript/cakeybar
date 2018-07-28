@@ -53,17 +53,6 @@ items = [
     ] },
 ]
 
-# layout
-
-[component.box1]
-type = "container"
-# direction = "row"
-# spacing = 5
-layout = [ "battery", "cpu", "cpu-icon", "bandwidth", "bw-icon", "ip", "ip-icon", "clock", "clock-icon"]
-halign = "end"
-class = "gradient"
-# valign = "end"
-
 # wm stuff
 
 [component.title]
@@ -78,7 +67,21 @@ show-name = false
 [component.mode]
 type = "mode"
 
+# layout
+
+[component.box1]
+type = "container"
+# direction = "row"
+# spacing = 5
+layout = [ "disk", "battery", "cpu", "cpu-icon", "bandwidth", "bw-icon", "ip", "ip-icon", "clock", "clock-icon"]
+halign = "end"
+class = "gradient"
+# valign = "end"
+
 # stats
+[component.disk]
+type = "disk"
+mounts = ["", ""]
 
 [component.battery]
 type = "battery"
