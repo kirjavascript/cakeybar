@@ -8,6 +8,14 @@ label {
     font-weight: 600;
 }
 
+#eq .bar {
+    background-color: black;
+}
+
+#eq {
+    background-color: @darkblue;
+}
+
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;

@@ -27,6 +27,7 @@ bindsym $mod+m exec -- --message / accellerators
 reload config / theme (theme should be easy)
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 ipc - wm_util event - ipc show #eq #more .class_too - reload
+allow ipc in menus
 
 components
 ====

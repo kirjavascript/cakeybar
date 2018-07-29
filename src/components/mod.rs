@@ -11,7 +11,7 @@
 //         let label = Label::new(None);
 //         label.set_text(&"test");
 //         label.show();
-//         Self:init_widget(&label, container, config, bar);
+//         Self::init_widget(&label, container, config, bar);
 //     }
 // }
 
@@ -27,7 +27,7 @@ mod container;
 mod cpu;
 mod disk;
 mod dropdown;
-pub mod equalizer;
+mod equalizer;
 mod image;
 mod ip;
 mod menu;
@@ -118,6 +118,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
             "cpu" => cpu::CPU::init,
             "disk" => disk::Disk::init,
             "dropdown" => dropdown::Dropdown::init,
+            "equalizer" | "equaliser" => equalizer::Equalizer::init,
             "image" => image::Image::init,
             "ip" => ip::IP::init,
             "menu" => menu::Menu::init,

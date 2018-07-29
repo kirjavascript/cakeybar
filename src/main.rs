@@ -6,8 +6,6 @@ extern crate gdk;
 extern crate libc;
 extern crate xcb;
 extern crate gdk_sys;
-extern crate libpulse_sys;
-extern crate libpulse_simple_sys;
 extern crate clap;
 extern crate toml;
 extern crate ansi_term;
@@ -16,6 +14,8 @@ extern crate chrono;
 extern crate systemstat;
 extern crate probes;
 extern crate sysinfo;
+extern crate pulse_simple;
+extern crate dft;
 #[macro_use]
 extern crate chan;
 extern crate chan_signal;
@@ -41,8 +41,6 @@ pub static NAME: &str = env!("CARGO_PKG_NAME");
 pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn init(application: &gtk::Application, config: &config::Config) {
-    // components::equalizer::test();
-
     // load theme to screen
     match &config.theme {
         &Some(ref src) => wm::gtk::load_theme(src),
