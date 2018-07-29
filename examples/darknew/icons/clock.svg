@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg1"
+   viewBox="0 0 60 60"
+   _SVGFile__filename="oldscale/actions/todo.svg"
+   version="1.0"
+   height="12"
+   width="12"
+   y="0"
+   x="0">
+  <defs
+     id="defs12" />
+  <g
+     id="g2091"
+     transform="matrix(1.8141 0 0 1.8141 -24.352 -32.241)">
+    <path
+       id="path2093"
+       style="fill:none;stroke:#0A83FD;stroke-width:3.63319135;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 44.72258,34.31 c 0,8.148638 -6.612942,14.76158 -14.76158,14.76158 -8.148639,0 -14.761581,-6.612942 -14.761581,-14.76158 0,-8.148639 6.612942,-14.761581 14.761581,-14.761581 8.148638,0 14.76158,6.612942 14.76158,14.761581 z" />
+    <path
+       id="path2095"
+       style="stroke-linejoin:round;fill-rule:evenodd;stroke:#0A83FD;stroke-linecap:round;stroke-width:0;fill:none;stroke-opacity:1;fill-opacity:1;stroke-miterlimit:4;stroke-dasharray:none"
+       d="m43.399 34.31c0 7.418-6.02 13.438-13.438 13.438s-13.438-6.02-13.438-13.438 6.02-13.438 13.438-13.438 13.438 6.02 13.438 13.438z" />
+    <path
+       id="path2097"
+       style="fill:none;stroke:#0A83FD;stroke-width:4.13428164;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 29.961,35.060878 v -8.723" />
+    <path
+       id="path2099"
+       style="fill:none;stroke:#0A83FD;stroke-width:4.13428164;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 29.986,35.355878 5.869,3.389" />
+  </g>
+  <metadata
+     id="metadata9">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

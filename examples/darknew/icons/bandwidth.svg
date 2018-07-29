@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   height="12"
+   width="12"
+   x="0"
+   y="0"
+   version="1.0"
+   _SVGFile__filename="oldscale/actions/goto.svg"
+   viewBox="0 0 53.74577 53.746941"
+   id="svg1">
+  <defs
+     id="defs8" />
+  <path
+     d="m 1.5625,27.9035 25.311,24.281 c 8.436667,-8.093667 411.92945,-38.386846 25.31,-24.281 H 35.3105 V 1.5625 l -16.874,3e-4 v 26.341 H 1.5625 Z"
+     style="fill:none;stroke:none;stroke-width:8.125;stroke-linecap:round;stroke-linejoin:round"
+     id="path1719" />
+  <path
+     d="m 1.5625,27.9035 25.311,24.281 25.31,-24.281 H 35.3105 V 1.5625 l -16.874,3e-4 v 26.341 H 1.5625 Z"
+     style="fill:#5a95eb;fill-rule:evenodd;stroke:#0A83FD;stroke-width:3.125;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;fill-opacity:1"
+     id="path877" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
