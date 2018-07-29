@@ -8,22 +8,22 @@ label {
     font-weight: 600;
 }
 
-#left, #right {
-    min-height: 27px;
-    border-bottom: 2px solid @blue;
-    /* background-color: black; */
-}
-
-#left_scroll, #right_scroll {
-    background-color: black;
-}
-
 #eq .bar {
     background-color: black;
 }
 
 #eq {
     background-color: @darkblue;
+}
+
+#left, #right {
+    min-height: 27px;
+    border-bottom: 2px solid @blue;
+    background-color: black;
+}
+
+#left_scroll, #right_scroll {
+    background-color: black;
 }
 
 #menu label {
@@ -51,10 +51,6 @@ label {
 
 #tray {
     padding-right: 7px;
-    background-color: @darkblue;
-    padding: 0 7px;
-    border-radius: 10px 0 0 0;
-    border-bottom: none;
 }
 
 #title {
