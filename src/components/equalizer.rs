@@ -84,12 +84,12 @@ impl Component for Equalizer {
 //                 }
 //                 println!("]");
 //
-                // let spectrum = spectrum
-                //     .iter()
-                //     .map(|s| {
-                //         (9.0 * s.max(0.0) / max) as u8
-                //     })
-                //     .collect::<Vec<u8>>();
+                let spectrum = spectrum
+                    .iter()
+                    .map(|s| {
+                        (9.0 * s.max(0.0) / max) as u8
+                    })
+                    .collect::<Vec<u8>>();
 
                 tx.send(spectrum).ok();
             }
@@ -105,20 +105,34 @@ impl Component for Equalizer {
 
 
         gtk::timeout_add(10, clone!(wrapper move || {
-            if let Ok(msg) = rx.try_recv() {
+            if let Ok(mut msg) = rx.try_recv() {
                 // info!("{:?}", msg);
                 for child in wrapper.get_children() {
                     child.destroy();
                 }
 
-                for s in msg {
-                    // let v = (9.0 * s.max(0.0) / max) as u8;
+                msg.reverse();
 
+                for s in &msg[..msg.len()-1] {
                     let label = Label::new(None);
                     wrapper.add(&label);
                     // label.set_text(&format!("{}", s));
-                    label.set_size_request(20, 0);
-                    label.set_margin_bottom(s as i32);
+                    label.set_size_request(5, 0);
+                    label.set_margin_bottom(*s.min(&200) as i32);
+                    if let Some(ctx) = label.get_style_context() {
+                        ctx.add_class("bar");
+                    }
+                    label.show();
+                }
+
+                msg.reverse();
+
+                for s in msg {
+                    let label = Label::new(None);
+                    wrapper.add(&label);
+                    // label.set_text(&format!("{}", s));
+                    label.set_size_request(5, 0);
+                    label.set_margin_bottom(s.min(200) as i32);
                     if let Some(ctx) = label.get_style_context() {
                         ctx.add_class("bar");
                     }
