@@ -8,14 +8,6 @@ label {
     font-weight: 600;
 }
 
-#eq .bar {
-    background-color: black;
-}
-
-#eq {
-    background-color: @darkblue;
-}
-
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
@@ -24,6 +16,14 @@ label {
 
 #left_scroll, #right_scroll {
     background-color: black;
+}
+
+#eq .bar {
+    background-color: black;
+}
+
+#eq {
+    background-color: @darkblue;
 }
 
 #menu label {

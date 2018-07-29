@@ -1,60 +1,35 @@
 theme = "theme.css"
 
-[component.eq]
-type = "equalizer"
-
 # bars
 
 [bar.left]
 monitor = 0
 position = "bottom"
-layout = [ "workspaces", "mode", "eq", "title", "box1", "tray" ]
-# scroll-workspace = false
+layout = [ "workspaces", "eq", "title", "tray" ]
 
 [bar.right]
 monitor = 1
 position = "bottom"
-layout = [ "menu", "workspaces", "mode", "title", "box1" ]
-# scroll-workspace = false
-
-# creates a 1px bar at the bottom - used for scrolling workspaces only
-# [bar.right-scroll]
-# monitor = 0
-# position = "bottom"
-# [bar.left-scroll]
-# monitor = 1
-# position = "bottom"
+layout = [ "workspaces", "mode", "title", "clock" ]
 
 # tray
 
 [component.tray]
 type = "tray"
 icon-size = 20
+halign = "end"
 
-# menu
+# clock
 
-[component.menu]
-type = "dropdown"
-# label = "start"
-window-id = "menu_popup"
-items = [
-    { label = "run termite", command = "termite" },
-    { label = "hello", command = "echo \"hello\"" },
-    { label = "pcmanfm", command = "pcmanfm" },
-    { label = "terminal apps", children = [
-        { label = "pipes", command = "termite -e \"pipes\"" },
-        { label = "neofetch", command = "termite -e \"neofetch\"" },
-        { label = "cmatrix", command = "termite -e \"cmatrix\"" },
-        { label = "doge", command = "termite -e \"doge\"" },
-        { label = "nyancat", command = "termite -e \"nyancat\"" },
-        { label = "weather", command = "termite -e \"curl -s wttr.in/Manchester\"" },
-        { label = "nonsense", command = "termite -e \"genact\"" },
-    ] },
-    { label = "change background", children = [
-        { label = "forest bg", command = "feh --bg-fill \"/home/thom/backgrounds/forest.png\" --bg-fill \"/home/thom/backgrounds/mac.jpg\"" },
-        { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
-    ] },
-]
+[component.clock]
+type = "clock"
+format = "%Y-%m-%d %H:%M:%S"
+halign = "end"
+
+# eq
+
+[component.eq]
+type = "equalizer"
 
 # wm stuff
 
@@ -69,81 +44,3 @@ show-name = false
 
 [component.mode]
 type = "mode"
-
-# layout
-
-[component.box1]
-type = "container"
-# direction = "row"
-# spacing = 5
-layout = [
-    "battery",
-    "cpu",
-    "cpu-icon",
-    "bandwidth",
-    "bw-icon",
-    "disk",
-    "disk-icon",
-    "ip",
-    "ip-icon",
-    "clock",
-    "clock-icon",
-]
-halign = "end"
-class = "gradient"
-# valign = "end"
-
-# stats
-[component.disk]
-type = "disk"
-mounts = ["/"]
-
-[component.battery]
-type = "battery"
-battery = "BAT0"
-adapter = "AC"
-# ls -1 /sys/class/power_supply/ for device list (from polybar docs)
-
-[component.ip]
-type = "ip"
-# interface = "wlp58s0"
-interface = "enp3s0"
-# ipv6 = true
-
-[component.bandwidth]
-type = "bandwidth"
-interface = "enp3s0"
-
-[component.cpu]
-type = "cpu"
-
-[component.clock]
-type = "clock"
-format = "%Y-%m-%d %H:%M:%S"
-
-# icons
-
-[component.cpu-icon]
-type = "image"
-src = "./icons/cpu.svg"
-class = "icon"
-
-[component.disk-icon]
-type = "image"
-src = "./icons/disk.svg"
-class = "icon"
-
-[component.bw-icon]
-type = "image"
-src = "./icons/bandwidth.svg"
-class = "icon"
-
-[component.ip-icon]
-type = "image"
-src = "./icons/ip.svg"
-class = "icon"
-
-[component.clock-icon]
-type = "image"
-src = "./icons/clock.svg"
-class = "icon"

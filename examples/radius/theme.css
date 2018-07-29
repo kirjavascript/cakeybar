@@ -1,5 +1,5 @@
-@define-color blue #0A83FD;
-@define-color darkblue #0022CC;
+@define-color primary #747;
+@define-color secondary #551A8B;
 
 label {
     font-family: Hack;
@@ -10,110 +10,64 @@ label {
 
 #left, #right {
     min-height: 27px;
-    border-bottom: 2px solid @blue;
+    border-bottom: 2px solid @primary;
     /* background-color: black; */
 }
 
-#left_scroll, #right_scroll {
-    background-color: black;
-}
-
-#eq .bar {
-    background-color: black;
-}
-
 #eq {
-    background-color: @darkblue;
-}
-
-#menu label {
-    background-color: @blue;
-    padding: 0 8px;
-    min-width: 28px;
-    background-image: url("./icons/tux.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: 50% -10%;
-}
-
-#menu_popup {
-    background-color: black;
-    padding: 5px;
-}
-
-#menu_popup label {
-    padding: 5px;
-}
-
-#menu_popup label:focus {
-    background-color: @blue;
+    margin: 0 7px;
 }
 
 #tray {
     padding-right: 7px;
-    background-color: @darkblue;
     padding: 0 7px;
+    background-color: @primary;
     border-radius: 10px 0 0 0;
-    border-bottom: none;
 }
 
-#title {
-    margin-right: 200px;
+#clock {
+    padding: 0 7px;
+    background-color: @primary;
+    border-radius: 10px 0 0 0;
 }
 
 #workspaces label {
     padding: 0 8px;
+    background-color: @secondary;
 }
 
 #workspaces .visible {
-    background-color: @darkblue;
+    background-color: @secondary;
 }
 #workspaces .urgent {
     background-color: red;
 }
 #workspaces .focused {
-    background-color: @blue;
+    background-color: @primary;
 }
 
 #mode {
     padding: 0 5px;
     color: white;
-    background-color: @blue;
+    background-color: @primary;
 }
 
-.icon {
-    padding: 0 7px;
-}
-
-
-/* battery config */
-#battery {
-    background-size: 17px 17px;
-    background-position: 26px 5px;
+/* make the first workspace icon be firefox */
+#left #workspaces :nth-child(1) label {
+    background-image: url("./images/firefox.png");
+    color: transparent;
+    background-color: transparent;
+    padding: 0 5px 0 27px;
+    margin-left: 15px;
+    background-size: contain;
     background-repeat: no-repeat;
-    padding-right: 27px;
+    font-weight: bold;
 }
-#battery.full {
-    background-image: url("./icons/battery/full.svg");
+
+#left #workspaces :nth-child(2) label {
+    border-radius: 10px 0 0 0;
 }
-#battery.full.plugged {
-    background-image: url("./icons/battery/full_charging.svg");
-}
-#battery.high {
-    background-image: url("./icons/battery/high.svg");
-}
-#battery.high.plugged {
-    background-image: url("./icons/battery/full_charging.svg");
-}
-#battery.medium {
-    background-image: url("./icons/battery/medium.svg");
-}
-#battery.medium.plugged {
-    background-image: url("./icons/battery/medium_charging.svg");
-}
-#battery.low {
-    background-image: url("./icons/battery/low.svg");
-}
-#battery.low.plugged {
-    background-image: url("./icons/battery/low_charging.svg");
+
+#workspaces :last-child label {
+    border-radius: 0 10px 0 0;
 }

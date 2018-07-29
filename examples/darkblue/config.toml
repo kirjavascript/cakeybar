@@ -1,14 +1,11 @@
 theme = "theme.css"
 
-[component.eq]
-type = "equalizer"
-
 # bars
 
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "workspaces", "mode", "eq", "title", "box1", "tray" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
 scroll-workspace = false
 
 [bar.right]
