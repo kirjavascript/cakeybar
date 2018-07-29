@@ -34,7 +34,7 @@ cargo run --release -- -c examples/darkblue/config.toml
 
 [toml](https://github.com/toml-lang/toml) is used in 'normal' config files and CSS is used for theming
 
-[CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)
+[CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)  
 [CSS properties](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 
 see the [examples](examples) for more

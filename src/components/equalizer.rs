@@ -35,7 +35,7 @@ pub fn test() {
                 map_null, // map: *const pa_channel_map,
                 attr_null, // attr: *const pa_buffer_attr,
                 error,// error: *mut i32
-                );
+            );
 
             let mut n = 0;
             const LEN: usize = 512;
