@@ -60,6 +60,8 @@ config
 xdg
 [event.something]
 toml parsing tests
+add / remove - curl | sh install
+or install from cargo (scrftch)
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
@@ -74,7 +76,7 @@ https://i.imgur.com/TePyRmw.png
 blue rope / plain background
 slanted workspace names with SVG
 electronbar
-xml representation of the component view
+gifcurry
 
 https://alpha.wallhaven.cc/
 http://simpledesktops.com

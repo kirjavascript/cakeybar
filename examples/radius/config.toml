@@ -5,12 +5,12 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "bottom"
-layout = [ "workspaces", "eq", "title", "tray" ]
+layout = [ "workspaces", "eq", "title", "clock" ]
 
 [bar.right]
 monitor = 1
 position = "bottom"
-layout = [ "workspaces", "mode", "title", "clock" ]
+layout = [ "workspaces", "mode", "title", "tray" ]
 
 # tray
 

@@ -6,6 +6,11 @@
 
 **cakeybar** is a user friendly tool for creating custom statusbars
 
+<div align="center">
+    <img src="misc/demo.gif" alt="cakeybar">
+    <br>
+</div>
+
 * multibar/multimonitor support
 * expressive theming with CSS
 * windowmanager neutral design
@@ -223,4 +228,4 @@ src = "uptime | sed -r \"s/.*average: (.*)$/\\1/\""
 type = "equalizer"
 ```
 
-experimental pulseaudio equalizer
+experimental pulseaudio visualizer
