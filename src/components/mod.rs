@@ -16,7 +16,13 @@
 // }
 
 use {gtk, glib};
-use gtk::{Box, Align, WidgetExt, StyleContextExt, ContainerExt, OverlayExt};
+use gtk::{
+    Align,
+    WidgetExt,
+    StyleContextExt,
+    ContainerExt,
+    OverlayExt,
+};
 use bar::Bar;
 use config::{ComponentConfig, Property};
 
@@ -40,11 +46,11 @@ mod workspaces;
 
 
 pub trait Component {
-    fn init(container: &Box, config: &ComponentConfig, bar: &Bar);
+    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar);
 
     fn init_widget<T>(
         widget: &T,
-        container: &Box,
+        container: &gtk::Box,
         config: &ComponentConfig,
         bar: &Bar,
     ) where T: gtk::IsA<gtk::Widget>
@@ -84,14 +90,6 @@ pub trait Component {
         } else {
             container.add(widget);
         }
-
-        // position = "fixed"
-        // let fixed = config.get_vec_or("fixed", vec![]);
-        // let fixed = if let Some(Property::Float(x)) = fixed.get(0) {
-        //     if let Some(Property::Float(y)) = fixed.get(1) {
-        //         Some((x, y))
-        //     } else { None }
-        // } else { None };
     }
 
     fn get_alignment(align: &str) -> Align {
@@ -105,7 +103,7 @@ pub trait Component {
     }
 }
 
-fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
+fn load_component(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
     // get type
     let component_type_option = config.properties.get("type");
     if let Some(&Property::String(ref component_type)) = component_type_option {
@@ -134,7 +132,7 @@ fn load_component(container: &Box, config: &ComponentConfig, bar: &Bar) {
     }
 }
 
-fn layout_to_container(container: &Box, layout: &Property, bar: &Bar) {
+fn layout_to_container(container: &gtk::Box, layout: &Property, bar: &Bar) {
     if let &Property::Array(ref arr) = layout {
         // iterate over layout
         arr.iter().for_each(|name_prop| {
@@ -151,7 +149,7 @@ fn layout_to_container(container: &Box, layout: &Property, bar: &Bar) {
     }
 }
 
-pub fn load_components(container: &Box, bar: &Bar) {
+pub fn load_components(container: &gtk::Box, bar: &Bar) {
     let layout = Property::Array(bar.config.get_vec_or("layout", vec![]));
     layout_to_container(container, &layout, bar);
 }

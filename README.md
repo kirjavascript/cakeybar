@@ -215,3 +215,12 @@ the `background-color` style needs to be set explicitly for it to work
 type = "script"
 src = "uptime | sed -r \"s/.*average: (.*)$/\\1/\""
 ```
+
+#### equalizer
+
+```toml
+[component.eq]
+type = "equalizer"
+```
+
+experimental pulseaudio equalizer

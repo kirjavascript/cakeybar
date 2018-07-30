@@ -7,7 +7,7 @@ use gtk::{
     Overlay,
     Rectangle,
 };
-use gdk::{ ScrollDirection, ScreenExt };
+use gdk::{ScrollDirection, ScreenExt};
 
 use {NAME, components};
 use config::{ComponentConfig, Config};
