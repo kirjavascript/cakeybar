@@ -8,6 +8,7 @@ use sysinfo::{DiskExt, SystemExt, System};
 
 pub struct Disk { }
 
+
 impl Component for Disk {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
@@ -31,6 +32,9 @@ impl Component for Disk {
                 false
             }
         };
+    // let re = Regex::new(r"({})").unwrap();
+
+    // info!("{:?}", re);
 
         let mut tick = clone!(wrapper move || {
             system.refresh_disk_list();
@@ -42,7 +46,12 @@ impl Component for Disk {
             for disk in system.get_disks() {
                 if let Some(mount_point) = disk.get_mount_point().to_str() {
                     if should_include(mount_point) {
-                        // TODO: other info
+                // let q: () = disk.get_mount_point().to_str();
+                // disk.get_type(),
+                // disk.get_name(),
+                // disk.get_mount_point(),
+                // format_bytes(disk.get_available_space()),
+                // format_bytes(disk.get_total_space()),
                         let text = format!("{}", format_bytes(disk.get_available_space()));
                         let label = Label::new(None);
                         label.set_text(&text);

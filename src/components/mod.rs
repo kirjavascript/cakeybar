@@ -56,6 +56,11 @@ pub trait Component {
     ) where T: gtk::IsA<gtk::Widget>
             + gtk::IsA<gtk::Object>
             + glib::value::SetValue {
+        // add wrapper
+        // let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+        // wrapper.add(widget);
+        // wrapper.show();
+        // let widget = &wrapper;
         // set name
         widget.set_name(&config.name);
         // class

@@ -47,6 +47,8 @@ impl Component for Equalizer {
 
         let (tx, rx) = mpsc::channel();
 
+        let height = 27;
+
         thread::spawn(move || {
 
             let p = Record::new("Confectionary", "Record", None, RATE);
@@ -98,7 +100,7 @@ impl Component for Equalizer {
                 let spectrum = spectrum
                     .iter()
                     .map(|s| {
-                        (27.0 * s.max(0.0) / max) as u8
+                        (height as f32 * s.max(0.0) / max) as u8
                     })
                     .collect::<Vec<u8>>();
 
@@ -114,18 +116,18 @@ impl Component for Equalizer {
 
         let bars = Rc::new(RefCell::new(Bars::new()));
 
-        canvas.set_size_request(400,27);
+        canvas.set_size_request(400,height);
 
         canvas.connect_draw(clone!(bars move |_, cr| {
             cr.set_source_rgb(0.65, 0.26, 1.29);
 
-            for (height, i) in bars.borrow().data.iter().enumerate() {
+            for (bar_height, i) in bars.borrow().data.iter().enumerate() {
                 if *i != 0 {
                     cr.rectangle(
                         20. * (*i - 1) as f64,
-                        27. - height as f64,
+                        height as f64 - bar_height as f64,
                         20.0,
-                        height as _,
+                        bar_height as _,
                         );
                     cr.fill();
                 }

@@ -31,7 +31,12 @@ impl<'a> Bar<'a> {
         wm_util: &'a wm::WMUtil,
         monitor: &Rectangle,
     ) -> Bar<'a> {
-        let window = Window::new(WindowType::Toplevel);
+        let window_type = if config.get_bool_or("float", false) {
+            WindowType::Popup
+        } else {
+            WindowType::Toplevel
+        };
+        let window = Window::new(window_type);
         application.add_window(&window);
 
         // set base values

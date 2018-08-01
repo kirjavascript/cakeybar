@@ -19,12 +19,12 @@
 ### from source
 
 ```bash
+# install rustup (if you don't have cargo)
+curl https://sh.rustup.rs -sSf | sh
+
 # clone repo
 git clone https://github.com/kirjavascript/cakeybar.git
 cd cakeybar
-
-# install rustup (if you don't have cargo)
-curl https://sh.rustup.rs -sSf | sh
 
 # run example
 cargo run --release -- -c examples/darkblue/config.toml
@@ -172,7 +172,7 @@ interface = "eth0" # if omitted, uses the first device
 [component.ip_address]
 type = "ip"
 interface = "eth0" # if omitted, uses the first device
-# ipv6 = true
+ipv6 = false
 ```
 
 #### battery

@@ -22,6 +22,7 @@ fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
 darkblue: switch icons to background images
 add wrapper to every element
+override_redirect option
 
 impl
 ====
@@ -30,6 +31,17 @@ reload config / theme (theme should be easy)
 https://github.com/tomjakubowski/termite/commit/80df656493a3573a6508b673ea956855d7c010fe
 ipc - wm_util event - ipc show #eq #more .class_too - reload
 allow ipc in menus
+autohide bar
+rewrite ip to show all interfaces like disk does
+
+docs
+====
+add / remove - curl | sh install
+or install from cargo (scrftch)
+undocu'd;
+bar/float
+container/spacing
+all/pass_through
 
 components
 ====
@@ -41,9 +53,8 @@ bandwidth upload show-upload .upload
 remote ip
 mpd ipc
 dmenu gtk::WindowType::Popup
-container: clickable
+container: clickable (all components onclick?)
 keyboard layout
-volume / equalizer
 notifications?
 label
 label#Label here for layout
@@ -54,14 +65,6 @@ gtk3-widget-factory
 modal
 workspace multiple rows
 gmail
-
-config
-====
-xdg
-[event.something]
-toml parsing tests
-add / remove - curl | sh install
-or install from cargo (scrftch)
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug

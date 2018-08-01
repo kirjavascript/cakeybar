@@ -47,9 +47,11 @@ label {
 }
 
 #mode {
-    padding: 0 5px;
+    padding: 0 7px;
+    margin: 0 10px;
     color: white;
     background-color: @primary;
+    border-radius: 10px 10px 0 0;
 }
 
 /* make the first workspace icon be firefox */
