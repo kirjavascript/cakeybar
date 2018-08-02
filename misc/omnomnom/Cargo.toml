@@ -1,0 +1,7 @@
+[package]
+name = "omnomnom"
+version = "0.1.0"
+authors = ["kirjavascript <snkenjoi@gmail.com>"]
+
+[dependencies]
+nom = "4"
