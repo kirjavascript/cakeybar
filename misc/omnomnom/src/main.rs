@@ -28,10 +28,33 @@ named!(get_tokens<Input,Vec<Token>>,
     many0!( alt!( symbol | text ) )
 );
 
-fn main() {
-    let input = Input("{one} hello% { one} test {two} hello {one} poop  ");
-    println!("{:#?}", get_tokens(input));
+fn format_symbols<F: 'static>(input: &str, callback: F) -> String
+    where F: Fn(&str) -> &str  {
+    get_tokens(Input(input)).unwrap_or((Input(""), vec![])).1
+        .iter()
+        .map(|tok| {
+            match tok {
+                Token::Text(txt) => &txt,
+                Token::Symbol(sym) => callback(&sym),
+            }
+        })
+        .collect::<Vec<&str>>()
+        .concat()
 }
 
-// tests
+fn main() {
+    let input = "hello {one} world { two} end";
+
+    let output = format_symbols(input, |sym| {
+        match sym {
+            "one" => "ONE",
+            "two" => "dongers!",
+            _ => sym,
+        }
+    });
+
+    println!("{:#?}", output); // "hello ONE world dongers! end"
+}
+
+// TODO: tests
 // config.getFormat
