@@ -9,10 +9,9 @@ enum Token {
     Symbol(String),
 }
 
-
 named!(symbol<Input,Token>,
     map!(
-        delimited!(char!('{'), ws!(is_not!("{}")), char!('}')),
+        delimited!(char!('{'), is_not!("{}"), char!('}')),
         |s| Token::Symbol(s.to_string())
     )
 );
@@ -35,7 +34,7 @@ fn format_symbols<F: 'static>(input: &str, callback: F) -> String
         .map(|tok| {
             match tok {
                 Token::Text(txt) => &txt,
-                Token::Symbol(sym) => callback(&sym),
+                Token::Symbol(sym) => callback(&sym.trim()),
             }
         })
         .collect::<Vec<&str>>()
@@ -43,7 +42,7 @@ fn format_symbols<F: 'static>(input: &str, callback: F) -> String
 }
 
 fn main() {
-    let input = "hello {one} world { two} end";
+    let input = "hello {one} world { two } end";
 
     let output = format_symbols(input, |sym| {
         match sym {

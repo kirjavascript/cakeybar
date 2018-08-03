@@ -1,3 +1,5 @@
+// clone
+
 #[macro_export]
 macro_rules! clone {
     ( ($( $x:ident ),*) $y:expr ) => {
@@ -13,6 +15,8 @@ macro_rules! clone {
         }
     };
 }
+
+// messages
 
 macro_rules! message {
     ($c:ident, $m:expr, $p:expr) => {
