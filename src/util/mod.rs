@@ -1,3 +1,7 @@
+mod symbols;
+
+pub use self::symbols::format_symbols;
+
 use std::env;
 use std::process::Command;
 

@@ -21,6 +21,7 @@ i3ipc = "0.8.2"
 chrono = "0.4"
 clap = "2.31.2"
 toml = "0.4"
+nom = "4"
 ansi_term = "0.11"
 pulse-simple = { git = "https://github.com/astro/rust-pulse-simple" }
 dft = "0.5.5"

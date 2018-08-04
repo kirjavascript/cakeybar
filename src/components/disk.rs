@@ -1,7 +1,7 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
-use util::format_bytes;
+use util::{format_bytes, format_symbols};
 use config::Property;
 
 use sysinfo::{DiskExt, SystemExt, System};
@@ -32,11 +32,10 @@ impl Component for Disk {
                 false
             }
         };
-    // let re = Regex::new(r"({})").unwrap();
 
-    // info!("{:?}", re);
+        let format_str = config.get_str_or("format", "{name}:{free}").to_string();
 
-        let mut tick = clone!(wrapper move || {
+        let mut tick = clone!((wrapper, format_str) move || {
             system.refresh_disk_list();
             // remove old labels from wrapper
             for child in wrapper.get_children() {
@@ -46,13 +45,16 @@ impl Component for Disk {
             for disk in system.get_disks() {
                 if let Some(mount_point) = disk.get_mount_point().to_str() {
                     if should_include(mount_point) {
-                // let q: () = disk.get_mount_point().to_str();
-                // disk.get_type(),
-                // disk.get_name(),
-                // disk.get_mount_point(),
-                // format_bytes(disk.get_available_space()),
-                // format_bytes(disk.get_total_space()),
-                        let text = format!("{}", format_bytes(disk.get_available_space()));
+                        let text = format_symbols(&format_str, |sym| {
+                            match sym {
+                                "free" => format_bytes(disk.get_available_space()),
+                                "total" => format_bytes(disk.get_total_space()),
+                                "type" => format!("{:?}", disk.get_type()),
+                                "name" => disk.get_name().to_str().unwrap_or("?").to_string(),
+                                "path" => disk.get_mount_point().to_str().unwrap_or("?").to_string(),
+                                _ => sym.to_string(),
+                            }
+                        });
                         let label = Label::new(None);
                         label.set_text(&text);
                         label.show();

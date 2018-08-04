@@ -99,7 +99,6 @@ mounts = ["/"]
 type = "battery"
 battery = "BAT0"
 adapter = "AC"
-# ls -1 /sys/class/power_supply/ for device list (from polybar docs)
 
 [component.ip]
 type = "ip"

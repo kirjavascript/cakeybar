@@ -17,6 +17,8 @@ extern crate sysinfo;
 extern crate pulse_simple;
 extern crate dft;
 #[macro_use]
+extern crate nom;
+#[macro_use]
 extern crate chan;
 extern crate chan_signal;
 extern crate bincode;
