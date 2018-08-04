@@ -33,7 +33,7 @@ impl Component for Disk {
             }
         };
 
-        let format_str = config.get_str_or("format", "{name}:{free}").to_string();
+        let format_str = config.get_str_or("format", "{free}").to_string();
 
         let mut tick = clone!((wrapper, format_str) move || {
             system.refresh_disk_list();

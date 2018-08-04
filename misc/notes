@@ -61,7 +61,7 @@ container: clickable (all components onclick?)
 keyboard layout
 iOS style dock
 notifications?
-label
+label -> nice formatting stuff
 label#Label here for layout
 completion
 keylock notifier
