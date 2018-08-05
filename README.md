@@ -85,8 +85,10 @@ pass-through = true
 # the update interval in seconds
 interval = 3
 
-# format strings use a simple syntax for replacing named tokens with data
+# format strings use a basic syntax for replacing named tokens with data
 format = "label: {token-name}"
+
+# to print a literal curly bracket, duplicate the character `{{` or `}}`
 ```
 
 #### image
