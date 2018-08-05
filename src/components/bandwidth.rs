@@ -13,14 +13,22 @@ impl Component for Bandwidth {
         Self::init_widget(&label, container, config, bar);
         label.show();
 
-        let interface = String::from(config.get_str_or("interface", "auto"));
+        // let interfaces = config.get_string_vec("interfaces");
         let interval = config.get_int_or("interval", 3).max(1) as u64;
+        // let format_str = config.get_str_or("format", "{down}/s").to_string();
+
+        // let should_include = move |s: &str| {
+        //     interfaces.len() == 0 || interfaces.contains(&&s.to_string())
+        // };
+
+        let interface = String::from(config.get_str_or("interface", "auto"));
 
         let mut recv = 0u64;
         let mut tick = clone!(label move || {
             let bw = network::read();
             match bw {
                 Ok(info) => {
+
                     let mut interface_opt = if interface == "auto" {
                         info.interfaces.iter().find(|_| true)
                     } else {

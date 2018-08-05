@@ -12,16 +12,11 @@ impl Component for Disk {
         let mut system = System::new();
 
         let mounts = config.get_string_vec("mounts");
+        let format_str = config.get_str_or("format", "{free}").to_string();
 
         let should_include = move |s: &str| {
-            if mounts.len() == 0 || mounts.contains(&&s.to_string()) {
-                true
-            } else {
-                false
-            }
+            mounts.len() == 0 || mounts.contains(&&s.to_string())
         };
-
-        let format_str = config.get_str_or("format", "{free}").to_string();
 
         let mut tick = clone!((format_str, label_group) move || {
             system.refresh_disk_list();

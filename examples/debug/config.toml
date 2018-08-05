@@ -65,13 +65,11 @@ icon_size = 20
 
 [component.ip]
 type = "ip"
-interface = "enp3s0" # remove this for 'auto' mode
-# ipv6 = true
+interfaces = ["enp3s0"]
 
 [component.bandwidth]
 type = "bandwidth"
-interface = "enp3s0"
-# ipv6 = true
+interface = "enp3s0" # remove this for 'auto' mode
 
 [component.cpu]
 type = "cpu"

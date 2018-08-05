@@ -6,6 +6,13 @@ enum Token {
     Symbol(String),
 }
 
+named!(escaped<Input,Token>,
+   map!(
+       alt!( tag_s!("{{") | tag_s!("}}") ),
+       |s| Token::Text(s[..1].to_string())
+   )
+);
+
 named!(symbol<Input,Token>,
     map!(
         delimited!(char!('{'), is_not!("{}"), char!('}')),
@@ -21,7 +28,7 @@ named!(text<Input,Token>,
 );
 
 named!(get_tokens<Input,Vec<Token>>,
-    many0!( alt!( symbol | text ) )
+    many0!( alt!( escaped | symbol | text ) )
 );
 
 pub fn format_symbols<F>(input: &str, callback: F) -> String

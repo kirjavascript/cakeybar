@@ -82,7 +82,7 @@ valign = "fill"
 fixed = false
 pass-through = true
 
-# the update interval (for components that have one) in seconds
+# the update interval in seconds
 interval = 3
 
 # format strings use a simple syntax for replacing named tokens with data
@@ -179,8 +179,8 @@ interface = "eth0" # if omitted, uses the first device
 ```toml
 [component.ip_address]
 type = "ip"
-interface = "eth0" # if omitted, uses the first device
-ipv6 = false
+interfaces = ["eth0"] # omit to show all
+format = "{ipv4}" # tokens are; name, ipv4, ipv6
 ```
 
 #### battery
