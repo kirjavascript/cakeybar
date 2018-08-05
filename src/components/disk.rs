@@ -6,7 +6,7 @@ pub struct Disk { }
 
 impl Component for Disk {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
-        let mut label_group = LabelGroup::new();
+        let label_group = LabelGroup::new();
         Self::init_widget(&label_group.wrapper, container, config, bar);
 
         let mut system = System::new();

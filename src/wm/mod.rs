@@ -35,6 +35,12 @@ struct Data {
     events: EventEmitter<Event, EventValue>,
 }
 
+impl Clone for WMUtil {
+    fn clone(&self) -> Self {
+        Self { data: self.data.clone() }
+    }
+}
+
 impl WMUtil {
 
     pub fn new() -> Self {
@@ -72,10 +78,6 @@ impl WMUtil {
         }
 
         util
-    }
-
-    pub fn clone(&self) -> Self {
-        Self { data: self.data.clone() }
     }
 
     // getters

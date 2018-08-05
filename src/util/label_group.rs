@@ -49,7 +49,10 @@ impl LabelGroup {
         }
     }
 
-    pub fn clone(&self) -> Self {
+}
+
+impl Clone for LabelGroup {
+    fn clone(&self) -> Self {
         LabelGroup {
             widgets: self.widgets.clone(),
             wrapper: self.wrapper.clone(),
