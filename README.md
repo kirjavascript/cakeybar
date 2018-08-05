@@ -68,7 +68,8 @@ class = "class-name"
 halign = "center"
 valign = "fill"
 fixed = false
-interval = 5
+interval = 3
+format = "label: {token-name}"
 ```
 
 the only required property for a component is **type**
@@ -80,6 +81,8 @@ alignments can be: `start | end | center | fill`
 the `fixed` property changes the component position from relative to absolute
 
 interval is the update interval (for components that have one) in seconds
+
+format strings use a simple syntax for replacing named tokens with data
 
 #### image
 
@@ -97,7 +100,7 @@ type = "clock"
 format = "%Y-%m-%d %H:%M:%S"
 ```
 
-[formatting guide](https://docs.rs/chrono/0.4.2/chrono/format/strftime/index.html)
+formatting differs from other components: [formatting guide](https://docs.rs/chrono/0.4.2/chrono/format/strftime/index.html)
 
 #### container
 
@@ -195,7 +198,8 @@ use `ls /sys/class/power_supply/` to see devices
 ```toml
 [component.disk]
 type = "disk"
-mounts = ["/"] # omit this to show all
+mounts = ["/"] # omit to show all
+format = "{free}" # tokens are; free, total, type, name, path
 ```
 
 #### tray

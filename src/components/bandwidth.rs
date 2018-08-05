@@ -14,7 +14,7 @@ impl Component for Bandwidth {
         label.show();
 
         let interface = String::from(config.get_str_or("interface", "auto"));
-        let interval = config.get_int_or("interval", 5).max(1) as u64;
+        let interval = config.get_int_or("interval", 3).max(1) as u64;
 
         let mut recv = 0u64;
         let mut tick = clone!(label move || {

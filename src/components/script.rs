@@ -14,7 +14,7 @@ impl Component for Script {
         if let Some(&Property::String(ref src)) = config.properties.get("src") {
 
             let (tx, rx) = mpsc::channel();
-            let interval = config.get_int_or("interval", 5).max(1);
+            let interval = config.get_int_or("interval", 3).max(1);
 
             thread::spawn(clone!((src, interval) move || {
                 loop {
