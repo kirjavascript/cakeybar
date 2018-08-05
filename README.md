@@ -63,26 +63,25 @@ you can define as many bars as you like as long as they have unique ids. the id 
 
 ```toml
 [component.component_name]
+# the only required property for a component is **type**
 type = "image"
+
+# components can be styled with `#component_name` and `.class-name`
 class = "class-name"
+
+# alignments can be: `start | end | center | fill`
 halign = "center"
 valign = "fill"
+
+# the fixed property changes the component position from relative to absolute
 fixed = false
+
+# the update interval (for components that have one) in seconds
 interval = 3
+
+# format strings use a simple syntax for replacing named tokens with data
 format = "label: {token-name}"
 ```
-
-the only required property for a component is **type**
-
-components can be styled with `#component_name` and `.class-name`
-
-alignments can be: `start | end | center | fill`
-
-the `fixed` property changes the component position from relative to absolute
-
-interval is the update interval (for components that have one) in seconds
-
-format strings use a simple syntax for replacing named tokens with data
 
 #### image
 
@@ -107,14 +106,14 @@ formatting differs from other components: [formatting guide](https://docs.rs/chr
 ```toml
 [component.stats_box]
 type = "container"
-spacing = 5 # optional
+spacing = 0
 direction = "vertical"
 layout = [ "component", "names", "go", "here" ]
 ```
 
 can be used to create more complex layouts or group components to share between bars
 
-direction can be: `column | row` or `horizontal | vertical`
+possible directions: `column | row` or `horizontal | vertical`
 
 
 #### dropdown

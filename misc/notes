@@ -25,7 +25,6 @@ darkblue: switch icons to background images
 add wrapper to every element (enclose = true) (onclick)
 config.has_type("workspace") to disable listeners, etc
 
-format string docs
 background image instead of image
 rewrite ip to show all interfaces like disk does
 
