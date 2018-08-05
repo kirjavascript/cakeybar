@@ -71,6 +71,16 @@ impl ComponentConfig {
             or
         }
     }
+    pub fn get_string_vec(&self, prop: &str) -> Vec<String> {
+        self.get_vec_or(prop, vec![])
+            .iter()
+            .fold(vec![], |mut acc, cur| {
+                if let Property::String(s) = cur {
+                    acc.push(s.to_string());
+                }
+                acc
+            })
+    }
 }
 
 pub fn parse_config(filename: &str) -> Result<Config, String> {
@@ -109,9 +119,9 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
 
     if bars.len() == 0 {
         return Err(format!(
-            "{}: no bars defined (bars need a name like [bar.name])",
-            filename,
-        ));
+                "{}: no bars defined (bars need a name like [bar.name])",
+                filename,
+                ));
     }
 
     // getters

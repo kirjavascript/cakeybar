@@ -1,6 +1,8 @@
 mod symbols;
+mod label_group;
 
 pub use self::symbols::format_symbols;
+pub use self::label_group::LabelGroup;
 
 use std::env;
 use std::process::Command;

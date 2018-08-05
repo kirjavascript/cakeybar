@@ -89,7 +89,7 @@ pub trait Component {
         // set layout type
         if is_fixed {
             bar.overlay.add_overlay(widget);
-            if config.get_bool_or("pass_through", true) {
+            if config.get_bool_or("pass-through", true) {
                 bar.overlay.set_overlay_pass_through(widget, true);
             }
         } else {

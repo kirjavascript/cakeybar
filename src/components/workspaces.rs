@@ -92,7 +92,7 @@ impl Component for Workspaces {
                     let label_len = labels.borrow().len();
                     if label_len > work_len {
                         let mut labels = labels.borrow_mut();
-                        labels.splice(work_len.., vec![]).for_each(|w| {
+                        labels.splice(work_len..label_len, vec![]).for_each(|w| {
                             if let Some(parent) = w.get_parent() {
                                 // nuke the event box
                                 parent.destroy();

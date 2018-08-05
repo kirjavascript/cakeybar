@@ -43,8 +43,7 @@ add / remove - curl | sh install
 or install from cargo (scrftch)
 undocu'd;
 bar/float
-container/spacing
-all/pass_through
+workspaces/spacing
 
 components
 ====

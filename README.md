@@ -12,7 +12,9 @@
 * system tray integration
 * more rice than feudal japan
 
-*work in progress* testing in i3/bspwm
+*work in progress*  
+configuration is not stable yet  
+currently testing in i3wm/bspwm
 
 ## quickstart
 
@@ -62,7 +64,9 @@ you can define as many bars as you like as long as they have unique ids. the id 
 #### common properties
 
 ```toml
+# define a component with the name `component_name`
 [component.component_name]
+
 # the only required property for a component is **type**
 type = "image"
 
@@ -74,7 +78,9 @@ halign = "center"
 valign = "fill"
 
 # the fixed property changes the component position from relative to absolute
+# disabling pass-through allows the fixed component to capture mouse events
 fixed = false
+pass-through = true
 
 # the update interval (for components that have one) in seconds
 interval = 3
