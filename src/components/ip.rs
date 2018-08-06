@@ -1,11 +1,8 @@
+use super::{Component, Bar, gtk, ComponentConfig};
+use util::{format_symbols, LabelGroup};
+
 use systemstat::{System, Platform};
 use systemstat::data::{IpAddr, Network};
-
-use super::{Component, Bar, gtk, ComponentConfig};
-use gtk::prelude::*;
-use gtk::{Label};
-
-use util::{format_symbols, LabelGroup};
 
 pub struct IP {}
 
@@ -50,7 +47,7 @@ impl Component for IP {
                         labels.push(text);
                     }
                 }
-                label_group.set(labels);
+                label_group.set(&labels);
             }
             gtk::Continue(true)
         });

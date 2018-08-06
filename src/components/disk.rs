@@ -42,7 +42,7 @@ impl Component for Disk {
                     acc
                 });
 
-            label_group.set(labels);
+            label_group.set(&labels);
 
             gtk::Continue(true)
         });

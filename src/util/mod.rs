@@ -1,8 +1,10 @@
 mod symbols;
 mod label_group;
+mod format_bytes;
 
 pub use self::symbols::format_symbols;
 pub use self::label_group::LabelGroup;
+pub use self::format_bytes::format_bytes;
 
 use std::env;
 use std::process::Command;
@@ -24,15 +26,4 @@ pub fn run_command(command: String) {
         .arg(command)
         .spawn()
         .ok();
-}
-
-pub fn format_bytes(bytes: u64) -> String {
-    const LEN: usize = 5;
-    let bytes = bytes as f64;
-    let sizes: [&str; LEN] = ["", "K", "M", "G", "T"];
-    let index = ((bytes).ln() / 1024_f64.ln()).floor();
-    let val = bytes / (1024_f64.powf(index));
-    let index = index as usize;
-    let suffix = if index < LEN { sizes[index] } else { "?" };
-    format!("{:.*}{}B", if index < 2 { 0 } else { 2 }, val, suffix)
 }

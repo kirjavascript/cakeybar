@@ -34,7 +34,7 @@ cargo run --release -- -c examples/darkblue/config.toml
 
 ## configuration
 
-[toml](https://github.com/toml-lang/toml) is used in 'normal' config files and CSS is used for theming
+[TOML](https://github.com/toml-lang/toml) is used in 'normal' config files and CSS is used for theming
 
 [CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)  
 [CSS properties](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
@@ -85,8 +85,8 @@ pass-through = true
 # the update interval in seconds
 interval = 3
 
-# format strings use a basic syntax for replacing named tokens with data
-format = "label: {token-name}"
+# format strings use a basic syntax for replacing named symbols with data
+format = "label: {symbol-name}"
 
 # to print a literal curly bracket, duplicate the character `{{` or `}}`
 ```
@@ -124,23 +124,6 @@ can be used to create more complex layouts or group components to share between 
 possible directions: `column | row` or `horizontal | vertical`
 
 
-#### dropdown
-
-```toml
-[component.dropdown]
-type = "dropdown"
-items = [
-    { label = "web browser", command = "firefox" },
-    { label = "screenshot", command = "xfce4-screenshooter" },
-    { label = "background", children = [
-        { label = "forest", command = "feh --bg-fill forest.png" },
-        { label = "mountain", command = "feh --bg-fill mountain.png" },
-    ] },
-]
-```
-
-a gtk-context style dropdown menu
-
 #### workspaces
 
 ```toml
@@ -173,7 +156,8 @@ type = "window"
 ```toml
 [component.download]
 type = "bandwidth"
-interface = "eth0" # if omitted, uses the first device
+interfaces = ["eth0"] # omit to show all
+format = "{down/s}" # symbols are; name, down/s, up/s, down/total, up/total
 ```
 
 #### ip
@@ -182,7 +166,7 @@ interface = "eth0" # if omitted, uses the first device
 [component.ip_address]
 type = "ip"
 interfaces = ["eth0"] # omit to show all
-format = "{ipv4}" # tokens are; name, ipv4, ipv6
+format = "{ipv4}" # symbols are; name, ipv4, ipv6
 ```
 
 #### battery
@@ -206,7 +190,7 @@ use `ls /sys/class/power_supply/` to see devices
 [component.disk]
 type = "disk"
 mounts = ["/"] # omit to show all
-format = "{free}" # tokens are; free, total, type, name, path
+format = "{free}" # symbols are; free, total, type, name, path
 ```
 
 #### tray
@@ -235,3 +219,20 @@ type = "equalizer"
 ```
 
 experimental pulseaudio visualizer
+
+#### dropdown
+
+```toml
+[component.dropdown]
+type = "dropdown"
+items = [
+    { label = "web browser", command = "firefox" },
+    { label = "screenshot", command = "xfce4-screenshooter" },
+    { label = "background", children = [
+        { label = "forest", command = "feh --bg-fill forest.png" },
+        { label = "mountain", command = "feh --bg-fill mountain.png" },
+    ] },
+]
+```
+
+a gtk-context style dropdown menu

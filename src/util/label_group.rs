@@ -4,6 +4,7 @@ use gtk::{Label, WidgetExt, LabelExt, ContainerExt};
 use std::cell::RefCell;
 use std::rc::Rc;
 
+#[derive(Clone)]
 pub struct LabelGroup {
     widgets: Rc<RefCell<Vec<Label>>>,
     pub wrapper: gtk::Box,
@@ -19,7 +20,7 @@ impl LabelGroup {
         }
     }
 
-    pub fn set(&self, labels: Vec<String>) {
+    pub fn set(&self, labels: &Vec<String>) {
         for (i, text) in labels.iter().enumerate() {
             // check if the label exists already
             let added_opt = if let Some(widget) = self.widgets.borrow_mut().get_mut(i) {
@@ -49,13 +50,4 @@ impl LabelGroup {
         }
     }
 
-}
-
-impl Clone for LabelGroup {
-    fn clone(&self) -> Self {
-        LabelGroup {
-            widgets: self.widgets.clone(),
-            wrapper: self.wrapper.clone(),
-        }
-    }
 }

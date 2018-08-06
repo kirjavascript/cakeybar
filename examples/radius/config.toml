@@ -6,11 +6,13 @@ theme = "theme.css"
 monitor = 0
 position = "bottom"
 layout = [ "workspaces", "eq", "title", "clock" ]
+scroll-workspace = true
 
 [bar.right]
 monitor = 1
 position = "bottom"
 layout = [ "workspaces", "mode", "title", "tray" ]
+scroll-workspace = true
 
 # tray
 
