@@ -121,4 +121,11 @@ mod tests {
         });
         assert_eq!(output, "🔳🔊📣📢🔔🃏🤔 🀄️♠️♣️♥️🆓➰");
     }
+    #[test]
+    fn contains() {
+        let input = " sdasd {has} {bleh} asda";
+        let symbols = SymbolFmt::new(input);
+        assert!(symbols.contains("has"));
+        assert!(!symbols.contains("poop"));
+    }
 }

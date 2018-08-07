@@ -58,6 +58,7 @@ items = [
 [component.title]
 type = "window"
 fixed = true
+format = "« {title} »"
 
 [component.workspaces]
 type = "workspaces"
