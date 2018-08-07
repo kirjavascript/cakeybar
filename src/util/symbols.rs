@@ -13,7 +13,7 @@ pub struct SymbolFmt {
 
 named!(escaped<Input,Token>,
    map!(
-       alt!( tag_s!("{{") | tag_s!("}}") ),
+       alt!( tag!("{{") | tag!("}}") ),
        |s| Token::Text(s[..1].to_string())
    )
 );
@@ -59,6 +59,9 @@ impl SymbolFmt {
             })
             .collect::<Vec<String>>()
             .concat()
+    }
+    pub fn contains(&self, item: &str) -> bool {
+        self.tokens.contains(&Token::Symbol(item.to_string()))
     }
 }
 

@@ -5,7 +5,13 @@ pub use self::symbols::SymbolFmt;
 pub use self::label_group::LabelGroup;
 
 use std::env;
+
 use std::process::Command;
+
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::Error;
+use std::path::Path;
 
 pub fn get_config_dir() -> String {
     if let Ok(xdg_path) = env::var("XDG_CONFIG_HOME") {
@@ -23,6 +29,15 @@ pub fn run_command(command: String) {
         .arg(command)
         .spawn()
         .ok();
+}
+
+
+pub fn read_file(path: &str) -> Result<String, Error> {
+    let path = Path::new(path);
+    let mut file = File::open(path)?;
+    let mut contents = String::new();
+    file.read_to_string(&mut contents)?;
+    Ok(contents.trim().to_string())
 }
 
 pub fn format_bytes(bytes: u64) -> String {

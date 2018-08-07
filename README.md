@@ -169,6 +169,13 @@ interfaces = ["eth0"] # omit to show all
 format = "{ipv4}" # symbols are; name, ipv4, ipv6
 ```
 
+#### cpu
+```toml
+[component.cpu]
+type = "cpu"
+format = "{usage}" # symbols are; usage, temp
+```
+
 #### battery
 
 ```toml

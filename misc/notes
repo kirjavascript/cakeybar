@@ -25,9 +25,7 @@ darkblue: switch icons to background images
 add wrapper to every element (enclose = true) (onclick)
 config.has_type("workspace") to disable listeners, etc
 
-get_format_symbols = precompute
-
-current: format cpu, battery, clock?, impl memory
+current: format cpu, battery, clock?, - { title } -, impl memory
 
 impl
 ====

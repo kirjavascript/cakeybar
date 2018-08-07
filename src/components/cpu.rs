@@ -1,14 +1,11 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
+use util::{SymbolFmt, read_file};
 
 use sysinfo::{ProcessorExt, SystemExt, System};
 
 pub struct CPU { }
-
-// TODO: system_stat cpu temp
-// https://github.com/myfreeweb/systemstat/blob/master/src/platform/linux.rs#L505
-// util::read_file Battery
 
 impl Component for CPU {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
@@ -17,16 +14,36 @@ impl Component for CPU {
         label.show();
 
         let mut system = System::new();
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{usage}"));
+        let has_usage = symbols.contains("usage");
 
         let mut tick = clone!(label move || {
-            system.refresh_system();
-            let processor_list = system.get_processor_list();
-            if !processor_list.is_empty() {
-                let pro = &processor_list[0];
-                label.set_text(format!("{:.2}%", pro.get_cpu_usage() * 100.).as_str());
-            } else {
-                label.set_text("0.00%");
+            if has_usage {
+                system.refresh_system();
             }
+            label.set_text(&symbols.format(|sym| {
+                match sym {
+                    "usage" => {
+                        let processor_list = system.get_processor_list();
+                        if !processor_list.is_empty() {
+                            let pro = &processor_list[0];
+                            format!("{:.2}%", pro.get_cpu_usage() * 100.)
+                        } else {
+                            "0.00%".to_string()
+                        }
+                    },
+                    "temp" => {
+                        match read_file("/sys/class/thermal/thermal_zone0/temp") {
+                            Ok(text) => match text.parse::<f32>() {
+                                Ok(num) => format!("{}°C", num / 1000.),
+                                Err(_) => "NOTEMP".to_string(),
+                            },
+                            Err(_) => "NOTEMP".to_string(),
+                        }
+                    },
+                    _ => sym.to_string(),
+                }
+            }));
             gtk::Continue(true)
         });
 
