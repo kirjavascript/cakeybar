@@ -25,7 +25,9 @@ darkblue: switch icons to background images
 add wrapper to every element (enclose = true) (onclick)
 config.has_type("workspace") to disable listeners, etc
 
-current: format bandwidth
+get_format_symbols = precompute
+
+current: format cpu, battery, clock?, impl memory
 
 impl
 ====
@@ -72,7 +74,7 @@ type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
-osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline / hexagons (visualizer)
+osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline (half transparency w/ small window title) / hexagons (visualizer) / busy (stats)
 crosspost on unixporn / r/rust
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png

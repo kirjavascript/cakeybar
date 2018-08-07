@@ -1,7 +1,0 @@
-[package]
-name = "nom"
-version = "0.1.0"
-authors = ["thom <thom@gatherdigital.co.uk>"]
-
-[dependencies]
-nom = "4"

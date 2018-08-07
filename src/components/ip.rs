@@ -1,5 +1,5 @@
 use super::{Component, Bar, gtk, ComponentConfig};
-use util::{format_symbols, LabelGroup};
+use util::{SymbolFmt, LabelGroup};
 
 use systemstat::{System, Platform};
 use systemstat::data::{IpAddr, Network};
@@ -17,16 +17,16 @@ impl Component for IP {
             interfaces.len() == 0 || interfaces.contains(&&s.to_string())
         };
 
-        let format_str = config.get_str_or("format", "{ipv4}").to_string();
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{ipv4}"));
 
         let sys = System::new();
 
-        let tick = clone!((label_group, format_str) move || {
+        let tick = clone!(label_group move || {
             if let Ok(interfaces) = sys.networks() {
                 let mut labels = Vec::new();
                 for interface in interfaces {
                     if should_include(&interface.0) {
-                        let text = format_symbols(&format_str, |sym| {
+                        let text = symbols.format(|sym| {
                             match sym {
                                 "name" => interface.0.clone(),
                                 "ipv4" => {

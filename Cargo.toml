@@ -27,7 +27,7 @@ pulse-simple = { git = "https://github.com/astro/rust-pulse-simple" }
 dft = "0.5.5"
 
 # stats
-systemstat = "0.1.2"
+systemstat = "0.1.3"
 probes = "0.1.3"
 sysinfo = "0.5.6"
 

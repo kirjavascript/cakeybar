@@ -1,5 +1,5 @@
 use super::{Component, Bar, gtk, ComponentConfig};
-use util::{format_bytes, format_symbols, LabelGroup};
+use util::{format_bytes, SymbolFmt, LabelGroup};
 
 use std::collections::HashMap;
 use std::cell::RefCell;
@@ -16,7 +16,7 @@ impl Component for Bandwidth {
 
         let interfaces = config.get_string_vec("interfaces");
         let interval = config.get_int_or("interval", 3).max(1) as u64;
-        let format_str = config.get_str_or("format", "{down/s}").to_string();
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{down/s}"));
 
         let should_include = move |s: &str| {
             interfaces.len() == 0 || interfaces.contains(&&s.to_string())
@@ -46,7 +46,7 @@ impl Component for Bandwidth {
                             );
 
                             last.borrow_mut().insert(name.to_string(), (rx_now, tx_now));
-                            let text = format_symbols(&format_str, |sym| {
+                            let text = symbols.format(|sym| {
                                 match sym {
                                     "name" => name.to_string(),
                                     "down/s" => {

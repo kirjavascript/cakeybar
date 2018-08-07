@@ -6,6 +6,10 @@ use sysinfo::{ProcessorExt, SystemExt, System};
 
 pub struct CPU { }
 
+// TODO: system_stat cpu temp
+// https://github.com/myfreeweb/systemstat/blob/master/src/platform/linux.rs#L505
+// util::read_file Battery
+
 impl Component for CPU {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);

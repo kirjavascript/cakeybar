@@ -1,5 +1,5 @@
 use super::{Component, Bar, gtk, ComponentConfig};
-use util::{format_bytes, format_symbols, LabelGroup};
+use util::{format_bytes, SymbolFmt, LabelGroup};
 use sysinfo::{DiskExt, SystemExt, System};
 
 pub struct Disk { }
@@ -12,13 +12,13 @@ impl Component for Disk {
         let mut system = System::new();
 
         let mounts = config.get_string_vec("mounts");
-        let format_str = config.get_str_or("format", "{free}").to_string();
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{free}"));
 
         let should_include = move |s: &str| {
             mounts.len() == 0 || mounts.contains(&&s.to_string())
         };
 
-        let mut tick = clone!((format_str, label_group) move || {
+        let mut tick = clone!(label_group move || {
             system.refresh_disk_list();
 
             let labels = system.get_disks()
@@ -26,7 +26,7 @@ impl Component for Disk {
                 .fold(vec![], |mut acc, disk| {
                     if let Some(mount_point) = disk.get_mount_point().to_str() {
                         if should_include(mount_point) {
-                            let text = format_symbols(&format_str, |sym| {
+                            let text = symbols.format(|sym| {
                                 match sym {
                                     "free" => format_bytes(disk.get_available_space()),
                                     "total" => format_bytes(disk.get_total_space()),

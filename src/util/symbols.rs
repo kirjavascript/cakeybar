@@ -6,6 +6,11 @@ enum Token {
     Symbol(String),
 }
 
+#[derive(Debug)]
+pub struct SymbolFmt {
+    tokens: Vec<Token>,
+}
+
 named!(escaped<Input,Token>,
    map!(
        alt!( tag_s!("{{") | tag_s!("}}") ),
@@ -31,20 +36,31 @@ named!(get_tokens<Input,Vec<Token>>,
     many0!( alt!( escaped | symbol | text ) )
 );
 
-pub fn format_symbols<F>(input: &str, callback: F) -> String
-    where F: Fn(&str) -> String  {
-    get_tokens(Input(input)).unwrap_or((Input(""), vec![])).1
-        .iter()
-        .map(|tok| {
-            match tok {
-                Token::Text(txt) => txt.to_string(),
-                Token::Symbol(sym) => callback(&sym.trim()),
-            }
-        })
-        .collect::<Vec<String>>()
-        .concat()
+impl SymbolFmt {
+    pub fn new(input: &str) -> Self {
+        match get_tokens(Input(input)) {
+            Ok((_, tokens)) => {
+                Self { tokens }
+            },
+            Err(err) => {
+                warn!("format: {}", err);
+                Self { tokens: vec![] }
+            },
+        }
+    }
+    pub fn format<F>(&self, callback: F) -> String where F: Fn(&str) -> String {
+        self.tokens
+            .iter()
+            .map(|tok| {
+                match tok {
+                    Token::Text(txt) => txt.to_string(),
+                    Token::Symbol(sym) => callback(&sym.trim()),
+                }
+            })
+            .collect::<Vec<String>>()
+            .concat()
+    }
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -65,16 +81,16 @@ mod tests {
     #[test]
     fn no_interpolation() {
         let input = "< { one } >";
-        let output = format_symbols(input, |sym| sym);
+        let output = SymbolFmt::new(input).format(|sym| sym.to_string());
         assert_eq!(output, "< one >");
     }
     #[test]
     fn partial_interpolation() {
         let input = "{one}{two}";
-        let output = format_symbols(input, |sym| {
+        let output = SymbolFmt::new(input).format(|sym| {
             match sym {
-                "one" => "interp",
-                _ => sym,
+                "one" => "interp".to_string(),
+                _ => sym.to_string(),
             }
         });
         assert_eq!(output, "interptwo");
@@ -82,11 +98,11 @@ mod tests {
     #[test]
     fn multi_interpolation() {
         let input = "hello {one} world { two} end!\"";
-        let output = format_symbols(input, |sym| {
+        let output = SymbolFmt::new(input).format(|sym| {
             match sym {
-                "one" => "ONE",
-                "two" => "TWO",
-                _ => sym,
+                "one" => "ONE".to_string(),
+                "two" => "TWO".to_string(),
+                _ => sym.to_string(),
             }
         });
         assert_eq!(output, "hello ONE world TWO end!\"");
@@ -94,10 +110,10 @@ mod tests {
     #[test]
     fn weird_interpolation() {
         let input = "🔳🔊📣📢🔔🃏{🎴💬🆖} 🀄️♠️♣️♥️🆓➰";
-        let output = format_symbols(input, |sym| {
+        let output = SymbolFmt::new(input).format(|sym| {
             match sym {
-                "🎴💬🆖" => "🤔",
-                _ => sym,
+                "🎴💬🆖" => "🤔".to_string(),
+                _ => sym.to_string(),
             }
         });
         assert_eq!(output, "🔳🔊📣📢🔔🃏🤔 🀄️♠️♣️♥️🆓➰");
