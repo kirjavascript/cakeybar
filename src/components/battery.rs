@@ -1,21 +1,12 @@
 use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label, StyleContextExt};
-
-use std::fs::File;
-use std::io::prelude::*;
-use std::io::Error;
-use std::path::Path;
+use util::read_file;
 
 pub struct Battery { }
 
-fn get_value(device: String, query: &str) -> Result<String, Error> {
-    let path = format!("/sys/class/power_supply/{}/{}", device, query);
-    let path = Path::new(&path);
-    let mut file = File::open(path)?;
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
-    Ok(contents.trim().to_string())
+fn get_path(device: String, query: &str) -> String {
+    format!("/sys/class/power_supply/{}/{}", device, query)
 }
 
 impl Component for Battery {
@@ -29,15 +20,18 @@ impl Component for Battery {
 
         let adapter = config.get_str_or("adapter", "AC").to_string();
         let battery = config.get_str_or("battery", "BAT0").to_string();
-        let charge_full = get_value(battery.clone(), "charge_full").unwrap_or("0".to_string()).parse::<u64>();
+        let charge_full = read_file(&get_path(battery.clone(), "charge_full"))
+            .unwrap_or("0".to_string()).parse::<u64>();
 
         let tick = clone!(label move || {
-            let plugged = get_value(adapter.clone(), "online").unwrap_or("0".to_string()) == "1".to_string();
+            let plugged = read_file(&get_path(adapter.clone(), "online"))
+                .unwrap_or("0".to_string()) == "1".to_string();
 
 
             // display percentage
             if let Ok(full) = charge_full {
-                let charge_now = get_value(battery.clone(), "charge_now").unwrap_or("0".to_string()).parse::<u64>();
+                let charge_now = read_file(&get_path(adapter.clone(), "charge_now"))
+                    .unwrap_or("0".to_string()).parse::<u64>();
                 if let Ok(now) = charge_now {
                     // calculate pct
                     let pct = now as f64 / full as f64 * 100.;

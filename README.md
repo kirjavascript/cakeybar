@@ -149,6 +149,7 @@ will be hidden in the default mode
 ```toml
 [component.window_title]
 type = "window"
+format = "{title}"
 ```
 
 #### bandwidth
