@@ -2,6 +2,7 @@ use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 use chrono::Local;
+use util::SymbolFmt;
 
 pub struct Clock { }
 
@@ -13,12 +14,17 @@ impl Component for Clock {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);
 
-        let format = config.get_str_or("format", "%Y-%m-%d %H:%M:%S").to_string();
-
-        label.set_text(&current_time(format.clone()));
+        let timestamp = config.get_str_or("timestamp", "%Y-%m-%d %H:%M:%S").to_string();
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{timestamp}"));
 
         let tick = clone!(label move || {
-            label.set_text(&current_time(format.clone()));
+            let time = &current_time(timestamp.clone());
+            label.set_markup(&symbols.format(|sym| {
+                match sym {
+                    "timestamp" => time.to_string(),
+                    _ => sym.to_string(),
+                }
+            }));
             gtk::Continue(true)
         });
 

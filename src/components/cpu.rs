@@ -14,7 +14,7 @@ impl Component for CPU {
         label.show();
 
         let mut system = System::new();
-        let symbols = SymbolFmt::new(config.get_str_or("format", "{usage} {temp} {dumbtemp}"));
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{usage}"));
         let has_usage = symbols.contains("usage");
 
         let mut tick = clone!(label move || {
@@ -29,7 +29,7 @@ impl Component for CPU {
                             let pro = &processor_list[0];
                             format!("{:.2}%", pro.get_cpu_usage() * 100.)
                         } else {
-                            "0.00%".to_string()
+                            "NOCPU".to_string()
                         }
                     },
                     "temp" | "dumbtemp" => {
@@ -39,7 +39,7 @@ impl Component for CPU {
                                     if sym == "temp" {
                                         format!("{}°C", num / 1000.)
                                     } else {
-                                        format!("{}°F", ((num / 1000.) * 1.8) + 32.)
+                                        format!("{:.0}°F", ((num / 1000.) * 1.8) + 32.)
                                     }
                                 },
                                 Err(_) => "NOTEMP".to_string(),

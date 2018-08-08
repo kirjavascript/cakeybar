@@ -25,7 +25,6 @@ halign = "end"
 
 [component.clock]
 type = "clock"
-format = "%Y-%m-%d %H:%M:%S"
 halign = "end"
 
 # eq

@@ -115,7 +115,6 @@ type = "cpu"
 
 [component.clock]
 type = "clock"
-format = "%Y-%m-%d %H:%M:%S"
 
 # icons
 

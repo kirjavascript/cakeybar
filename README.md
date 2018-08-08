@@ -99,16 +99,6 @@ type = "image"
 src = "window.png"
 ```
 
-#### clock
-
-```toml
-[component.time]
-type = "clock"
-format = "%Y-%m-%d %H:%M:%S"
-```
-
-formatting differs from other components: [formatting guide](https://docs.rs/chrono/0.4.2/chrono/format/strftime/index.html)
-
 #### container
 
 ```toml
@@ -123,6 +113,13 @@ can be used to create more complex layouts or group components to share between 
 
 possible directions: `column | row` or `horizontal | vertical`
 
+#### window
+
+```toml
+[component.window_title]
+type = "window"
+format = "{title}"
+```
 
 #### workspaces
 
@@ -145,12 +142,11 @@ format = "{mode}"
 
 will be hidden in the default mode
 
-#### window
-
+#### cpu
 ```toml
-[component.window_title]
-type = "window"
-format = "{title}"
+[component.cpu]
+type = "cpu"
+format = "{usage}" # symbols are; usage, temp, dumbtemp
 ```
 
 #### bandwidth
@@ -169,13 +165,6 @@ format = "{down/s}" # symbols are; name, down/s, up/s, down/total, up/total
 type = "ip"
 interfaces = ["eth0"] # omit to show all
 format = "{ipv4}" # symbols are; name, ipv4, ipv6
-```
-
-#### cpu
-```toml
-[component.cpu]
-type = "cpu"
-format = "{usage}" # symbols are; usage, temp, dumbtemp
 ```
 
 #### battery
@@ -201,6 +190,17 @@ type = "disk"
 mounts = ["/"] # omit to show all
 format = "{free}" # symbols are; free, total, type, name, path
 ```
+
+#### clock
+
+```toml
+[component.time]
+type = "clock"
+timestamp = "%Y-%m-%d %H:%M:%S"
+format = "{timestamp}"
+```
+
+[timestamp formatting guide](https://docs.rs/chrono/0.4.2/chrono/format/strftime/index.html)
 
 #### tray
 

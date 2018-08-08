@@ -13,6 +13,7 @@ https://github.com/pw4ever/awesome-wm-config#setup
 awesome-client
 https://github.com/Rahix/pa-visualizer
 https://users.rust-lang.org/t/ann-chan-is-deprecated-use-crossbeam-channel-instead/19251
+set_markup (links) https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
 
 wm refactoring
 ===
@@ -25,7 +26,7 @@ darkblue: switch icons to background images
 add wrapper to every element (enclose = true) (onclick)
 config.has_type("workspace") to disable listeners, etc
 
-current: format symbols: clock, mode  | impl memory | ipc
+current: format symbols: battery, workspaces, script | impl memory | ipc
 
 impl
 ====
@@ -48,7 +49,6 @@ components
 ====
 conditional display / flexbox
 script - classes for return code
-<api/>
 <webview>
 bandwidth upload show-upload .upload
 remote ip
