@@ -14,7 +14,7 @@ impl Component for CPU {
         label.show();
 
         let mut system = System::new();
-        let symbols = SymbolFmt::new(config.get_str_or("format", "{usage}"));
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{usage} {temp} {dumbtemp}"));
         let has_usage = symbols.contains("usage");
 
         let mut tick = clone!(label move || {
@@ -32,10 +32,16 @@ impl Component for CPU {
                             "0.00%".to_string()
                         }
                     },
-                    "temp" => {
+                    "temp" | "dumbtemp" => {
                         match read_file("/sys/class/thermal/thermal_zone0/temp") {
                             Ok(text) => match text.parse::<f32>() {
-                                Ok(num) => format!("{}°C", num / 1000.),
+                                Ok(num) => {
+                                    if sym == "temp" {
+                                        format!("{}°C", num / 1000.)
+                                    } else {
+                                        format!("{}°F", ((num / 1000.) * 1.8) + 32.)
+                                    }
+                                },
                                 Err(_) => "NOTEMP".to_string(),
                             },
                             Err(_) => "NOTEMP".to_string(),

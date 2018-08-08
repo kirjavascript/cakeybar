@@ -175,7 +175,7 @@ format = "{ipv4}" # symbols are; name, ipv4, ipv6
 ```toml
 [component.cpu]
 type = "cpu"
-format = "{usage}" # symbols are; usage, temp
+format = "{usage}" # symbols are; usage, temp, dumbtemp
 ```
 
 #### battery
