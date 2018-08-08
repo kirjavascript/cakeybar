@@ -140,6 +140,7 @@ each `label` element in a workspace can have the focused, visibile and urgent cl
 ```toml
 [component.current_mode]
 type = "mode"
+format = "{mode}"
 ```
 
 will be hidden in the default mode

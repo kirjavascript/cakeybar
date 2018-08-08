@@ -17,6 +17,8 @@ impl Component for Image {
                 img.show();
                 gtk::Continue(false)
             }));
+        } else {
+            warn!("#{} missing src property", config.name);
         }
     }
 }

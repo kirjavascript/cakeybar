@@ -2,6 +2,7 @@ use super::{Component, Bar, gtk, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Label};
 use wm::events::{Event, EventValue};
+use util::SymbolFmt;
 
 pub struct Mode { }
 
@@ -9,6 +10,8 @@ impl Component for Mode {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
         let label = Label::new(None);
         Self::init_widget(&label, container, config, bar);
+
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{mode}"));
 
         bar.wm_util.add_listener(Event::Mode, clone!(label
             move |event_opt| {
@@ -19,7 +22,13 @@ impl Component for Mode {
                         label.hide();
                     } else {
                         label.show();
-                        label.set_text(&mode);
+                        let mode = &mode;
+                        label.set_text(&symbols.format(|sym| {
+                            match sym {
+                                "mode" => mode.to_string(),
+                                _ => sym.to_string(),
+                            }
+                        }));
                     }
                 }
             }

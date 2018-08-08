@@ -12,7 +12,7 @@ fn get_path(device: String, query: &str) -> String {
 impl Component for Battery {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
 
-        // TODO: add duration
+        // TODO: add duration, systemstats, add symbols
 
         let label = Label::new(None);
         Self::init_widget(&label, container, config, bar);
