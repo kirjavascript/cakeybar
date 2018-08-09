@@ -27,6 +27,7 @@ darkblue: switch icons to background images
 ?add wrapper to every element (enclose = true) (onclick)
 set_markup
     (links, entities)
+    pango parse markup (check output set_text)
     unescaped characters (&)
     https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
     remove this?

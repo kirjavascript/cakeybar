@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "load_averages", "menu", "workspaces", "mode", "title", "box1", "tray" ]
+layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
 
 [bar.right]
 monitor = 1
@@ -21,12 +21,6 @@ scroll-workspace = true
 monitor = 1
 position = "bottom"
 scroll-workspace = true
-
-[component.load_averages]
-type = "script"
-src = '''
-    uptime | sed -r "s/.*average: (.*)$/\\1/"
-'''
 
 # tray
 

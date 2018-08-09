@@ -39,12 +39,11 @@ impl Component for Script {
 
             thread::spawn(clone!((src, interval) move || {
                 loop {
+                    thread::sleep(Duration::from_secs(interval as u64));
                     if let Ok(output) = get_output(&src) {
                         tx.send(output).ok();
                     }
-                    thread::sleep(Duration::from_secs(interval as u64));
                 }
-
             }));
 
             let label = Label::new(None);
