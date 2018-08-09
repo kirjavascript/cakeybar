@@ -48,6 +48,7 @@ fn init(application: &gtk::Application, config: &config::Config) {
         &Some(ref src) => wm::gtk::load_theme(src),
         &None => {/* default theme */},
     }
+    print!("asddsdasdasd");
 
     let monitors = wm::gtk::get_monitor_geometry();
     let wm_util = wm::WMUtil::new();

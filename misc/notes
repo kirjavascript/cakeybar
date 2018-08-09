@@ -13,7 +13,8 @@ https://github.com/pw4ever/awesome-wm-config#setup
 awesome-client
 https://github.com/Rahix/pa-visualizer
 https://users.rust-lang.org/t/ann-chan-is-deprecated-use-crossbeam-channel-instead/19251
-set_markup (links) https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
+https://github.com/darkwater/obsidian
+https://github.com/onodera-punpun/melonbar - openbox
 
 wm refactoring
 ===
@@ -23,34 +24,41 @@ kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
 darkblue: switch icons to background images
-add wrapper to every element (enclose = true) (onclick)
+?add wrapper to every element (enclose = true) (onclick)
+set_markup
+    (links, entities)
+    unescaped characters (&)
+    https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
+    remove this?
 config.has_type("workspace") to disable listeners, etc
 
-current: format symbols: battery, workspaces, script | impl memory | ipc
+current: format symbols: battery, workspaces | impl memory | ipc
 
 impl
 ====
 bindsym $mod+m exec -- --message / accellerators
 bspwm mode
-ipc - wm_util event - ipc show #eq #more .class_too - reload
-reload config / theme (theme should be easy)
-allow ipc in menus
+ipc -
+    wm_util event
+    ipc show #eq #more .class_too
+    reload config / theme (theme should be easy)
+    allow ipc in menu objs
 autohide bar
 
 docs
 ====
 add / remove - curl | sh install
-or install from cargo (scrftch)
+    or install from cargo (google scrftch)
 undocu'd;
 bar/float
 workspaces/spacing
+
 
 components
 ====
 conditional display / flexbox
 script - classes for return code
 <webview>
-bandwidth upload show-upload .upload
 remote ip
 mpd ipc
 dmenu gtk::WindowType::Popup
@@ -58,7 +66,6 @@ container: clickable (all components onclick?)
 keyboard layout
 iOS style dock
 notifications?
-label -> nice formatting stuff
 label#Label here for layout
 completion
 keylock notifier

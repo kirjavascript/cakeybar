@@ -5,7 +5,7 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
+layout = [ "load_averages", "menu", "workspaces", "mode", "title", "box1", "tray" ]
 
 [bar.right]
 monitor = 1
@@ -21,6 +21,12 @@ scroll-workspace = true
 monitor = 1
 position = "bottom"
 scroll-workspace = true
+
+[component.load_averages]
+type = "script"
+src = '''
+    uptime | sed -r "s/.*average: (.*)$/\\1/"
+'''
 
 # tray
 
@@ -58,7 +64,9 @@ items = [
 [component.title]
 type = "window"
 fixed = true
-format = "« {title} »"
+format = '''
+    <span fgcolor="#0A83FD">«</span> {title} <span fgcolor="#0A83FD">»</span>
+'''
 
 [component.workspaces]
 type = "workspaces"

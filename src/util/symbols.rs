@@ -59,6 +59,8 @@ impl SymbolFmt {
             })
             .collect::<Vec<String>>()
             .concat()
+            .trim()
+            .to_string()
     }
     pub fn contains(&self, item: &str) -> bool {
         self.tokens.contains(&Token::Symbol(item.to_string()))
