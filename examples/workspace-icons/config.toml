@@ -8,4 +8,4 @@ layout = [ "workspaces" ]
 [component.workspaces]
 type = "workspaces"
 show-all = true
-show-name = true
+format = "{name}"

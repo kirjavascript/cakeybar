@@ -126,8 +126,8 @@ format = "{title}"
 ```toml
 [component.workspace_list]
 type = "workspaces"
-show-all = false # show workspaces from every window
-show-name = false # show full name or just index
+show-all = false # show workspaces from every monitor
+format = "{number}" # symbols are; number, name
 ```
 
 each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_list label .focused`

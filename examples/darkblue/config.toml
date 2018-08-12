@@ -79,7 +79,7 @@ type = "mode"
 type = "container"
 layout = [
     # "battery",
-    "memory",
+    # "memory",
     "cpu",
     "cpu-icon",
     "bandwidth",

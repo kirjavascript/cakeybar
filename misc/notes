@@ -35,7 +35,7 @@ set_markup
     remove this?
 config.has_type("workspace") to disable listeners, etc
 
-current: format symbols: battery, workspaces | impl memory | ipc
+current: format symbols: battery, workspaces | ipc
 
 impl
 ====

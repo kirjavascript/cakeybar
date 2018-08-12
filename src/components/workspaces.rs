@@ -5,6 +5,7 @@ use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextEx
 use wm;
 use wm::events::{Event, EventValue};
 use wm::workspace::Workspace;
+use util::{SymbolFmt};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -22,7 +23,7 @@ impl Component for Workspaces {
 
         // misc config
         let show_all = config.get_bool_or("show-all", false);
-        let show_name = config.get_bool_or("show-name", false);
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{number}"));
 
         // attach wrapper
         let wrapper = Box::new(Orientation::Horizontal, spacing);
@@ -46,7 +47,7 @@ impl Component for Workspaces {
 
         for workspace in workspaces.iter() {
             let label = Label::new(None);
-            set_label_attrs(&label, &workspace, show_name);
+            set_label_attrs(&label, &workspace, &symbols);
             let ebox = add_event_box(
                 &label,
                 workspace.name.clone(),
@@ -67,12 +68,12 @@ impl Component for Workspaces {
                     for (i, workspace) in workspaces.iter().enumerate() {
                         let added_new = if let Some(label) = labels.borrow_mut().get_mut(i) {
                             // if a label already exists
-                            set_label_attrs(&label, &workspace, show_name);
+                            set_label_attrs(&label, &workspace, &symbols);
                             None
                         } else {
                             // if adding a new label
                             let label = Label::new(None);
-                            set_label_attrs(&label, &workspace, show_name);
+                            set_label_attrs(&label, &workspace, &symbols);
                             let ebox = add_event_box(
                                 &label,
                                 workspace.name.clone(),
@@ -114,12 +115,12 @@ fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
 }
 
 
-fn set_label_attrs(label: &Label, workspace: &Workspace, show_name: bool) {
-    if show_name {
-        label.set_label(&workspace.name);
-    } else {
-        label.set_label(&workspace.number.to_string());
-    };
+fn set_label_attrs(label: &Label, workspace: &Workspace, symbols: &SymbolFmt) {
+    label.set_label(&symbols.format(|sym| match sym {
+        "name" => workspace.name.to_string(),
+        "number" => workspace.number.to_string(),
+        _ => sym.to_string()
+    }));
     // style
     if let Some(ctx) = label.get_style_context() {
         let set_class = get_set_class(ctx);

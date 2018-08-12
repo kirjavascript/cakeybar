@@ -50,7 +50,7 @@ halign = "center"
 [component.workspaces]
 type = "workspaces"
 show-all = true
-show-name = true
+format = "{name}"
 
 [component.mode]
 type = "mode"

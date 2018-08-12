@@ -41,7 +41,6 @@ fixed = true
 [component.workspaces]
 type = "workspaces"
 show-all = false
-show-name = false
 
 [component.mode]
 type = "mode"
