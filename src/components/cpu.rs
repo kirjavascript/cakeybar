@@ -21,34 +21,32 @@ impl Component for CPU {
             if has_usage {
                 system.refresh_system();
             }
-            label.set_text(&symbols.format(|sym| {
-                match sym {
-                    "usage" => {
-                        let processor_list = system.get_processor_list();
-                        if !processor_list.is_empty() {
-                            let pro = &processor_list[0];
-                            format!("{:.2}%", pro.get_cpu_usage() * 100.)
-                        } else {
-                            "NOCPU".to_string()
-                        }
-                    },
-                    "temp" | "dumbtemp" => {
-                        match read_file("/sys/class/thermal/thermal_zone0/temp") {
-                            Ok(text) => match text.parse::<f32>() {
-                                Ok(num) => {
-                                    if sym == "temp" {
-                                        format!("{}°C", num / 1000.)
-                                    } else {
-                                        format!("{:.0}°F", ((num / 1000.) * 1.8) + 32.)
-                                    }
-                                },
-                                Err(_) => "NOTEMP".to_string(),
+            label.set_text(&symbols.format(|sym| match sym {
+                "usage" => {
+                    let processor_list = system.get_processor_list();
+                    if !processor_list.is_empty() {
+                        let pro = &processor_list[0];
+                        format!("{:.2}%", pro.get_cpu_usage() * 100.)
+                    } else {
+                        "NOCPU".to_string()
+                    }
+                },
+                "temp" | "dumbtemp" => {
+                    match read_file("/sys/class/thermal/thermal_zone0/temp") {
+                        Ok(text) => match text.parse::<f32>() {
+                            Ok(num) => {
+                                if sym == "temp" {
+                                    format!("{}°C", num / 1000.)
+                                } else {
+                                    format!("{:.0}°F", ((num / 1000.) * 1.8) + 32.)
+                                }
                             },
                             Err(_) => "NOTEMP".to_string(),
-                        }
-                    },
-                    _ => sym.to_string(),
-                }
+                        },
+                        Err(_) => "NOTEMP".to_string(),
+                    }
+                },
+                _ => sym.to_string(),
             }));
             gtk::Continue(true)
         });

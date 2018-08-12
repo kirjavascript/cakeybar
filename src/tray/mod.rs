@@ -29,7 +29,6 @@ pub fn main() -> i32 {
     let signal = chan_signal::notify(&[
         chan_signal::Signal::INT,
         chan_signal::Signal::TERM,
-        chan_signal::Signal::KILL,
     ]);
 
     if let Ok((conn, screen_num)) = xcb::Connection::connect(None) {

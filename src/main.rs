@@ -48,10 +48,18 @@ fn init(application: &gtk::Application, config: &config::Config) {
         &Some(ref src) => wm::gtk::load_theme(src),
         &None => {/* default theme */},
     }
-    print!("asddsdasdasd");
 
     let monitors = wm::gtk::get_monitor_geometry();
     let wm_util = wm::WMUtil::new();
+
+    let on_signal = || {
+        info!("kill");
+        std::process::exit(2);
+        gtk::Continue(false)
+    };
+
+    glib::source::unix_signal_add(2, on_signal); // SIGINT
+    glib::source::unix_signal_add(15, on_signal); // SIGTERM
 
     // load bars
     for bar_config in config.bars.iter() {

@@ -16,12 +16,11 @@ https://users.rust-lang.org/t/ann-chan-is-deprecated-use-crossbeam-channel-inste
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
+current: format symbols: battery | tray | ipc
+
 wm refactoring
 ===
 wm restart event restack tray
-get sigint in gtk
-kill tray when bar dies (100% CPU)
-fix tray fullscreen latency with events
 atoms::get("_NET_WM_POOP")
 darkblue: switch icons to background images
 ?add wrapper to every element (enclose = true) (onclick)
@@ -35,7 +34,18 @@ set_markup
     remove this?
 config.has_type("workspace") to disable listeners, etc
 
-current: format symbols: battery, workspaces | ipc
+tray
+====
+kill tray when bar dies (100% CPU)
+fix tray fullscreen latency with events
+    let on_signal = || {
+        info!("kill");
+        std::process::exit(2);
+        gtk::Continue(false)
+    };
+
+    glib::source::unix_signal_add(2, on_signal); // SIGINT
+    glib::source::unix_signal_add(15, on_signal); // SIGTERM
 
 impl
 ====
