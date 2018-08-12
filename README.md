@@ -149,6 +149,13 @@ type = "cpu"
 format = "{usage}" # symbols are; usage, temp, dumbtemp
 ```
 
+#### memory
+```toml
+[component.memory]
+type = "memory"
+format = "{free-pct}" # symbols are; total, free, free-pct, used, used-pct, swap-total, swap-used
+```
+
 #### bandwidth
 
 ```toml

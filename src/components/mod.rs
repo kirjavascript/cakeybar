@@ -36,6 +36,7 @@ mod dropdown;
 mod equalizer;
 mod image;
 mod ip;
+mod memory;
 mod menu;
 mod mode;
 mod script;
@@ -124,6 +125,7 @@ fn load_component(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
             "equalizer" | "equaliser" => equalizer::Equalizer::init,
             "image" => image::Image::init,
             "ip" => ip::IP::init,
+            "memory" => memory::Memory::init,
             "menu" => menu::Menu::init,
             "mode" => mode::Mode::init,
             "script" => script::Script::init,

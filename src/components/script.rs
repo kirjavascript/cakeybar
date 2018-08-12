@@ -47,7 +47,7 @@ impl Component for Script {
             }));
 
             let label = Label::new(None);
-            let tick = clone!((label, src) move || {
+            let tick = clone!(label move || {
                 if let Ok((ref stdout, ref stderr, code)) = rx.try_recv() {
                     label.set_text(&symbols.format(|sym| {
                         match sym {

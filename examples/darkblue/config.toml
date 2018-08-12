@@ -58,8 +58,11 @@ items = [
 [component.title]
 type = "window"
 fixed = true
+# format = '''
+#     <span fgcolor="#0A83FD">«</span> {title} <span fgcolor="#0A83FD">»</span>
+# '''
 format = '''
-    <span fgcolor="#0A83FD">«</span> {title} <span fgcolor="#0A83FD">»</span>
+    « {title} »
 '''
 
 [component.workspaces]
@@ -74,10 +77,9 @@ type = "mode"
 
 [component.box1]
 type = "container"
-# direction = "row"
-# spacing = 5
 layout = [
-    "battery",
+    # "battery",
+    "memory",
     "cpu",
     "cpu-icon",
     "bandwidth",
@@ -94,6 +96,9 @@ class = "gradient"
 # valign = "end"
 
 # stats
+[component.memory]
+type = "memory"
+
 [component.disk]
 type = "disk"
 mounts = ["/"]

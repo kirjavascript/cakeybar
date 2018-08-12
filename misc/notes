@@ -29,7 +29,9 @@ set_markup
     (links, entities)
     pango parse markup (check output set_text)
     unescaped characters (&)
+    htmlencode test url with & in it
     https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
+    https://developer.gnome.org/glib/unstable/glib-Simple-XML-Subset-Parser.html#g-markup-escape-text
     remove this?
 config.has_type("workspace") to disable listeners, etc
 

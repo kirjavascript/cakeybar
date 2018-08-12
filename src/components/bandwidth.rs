@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use probes::{network};
+use probes::network;
 
 pub struct Bandwidth { }
 
@@ -27,6 +27,7 @@ impl Component for Bandwidth {
             HashMap::new()
         ));
 
+        let name = config.name.clone();
         let tick = clone!((label_group, last) move || {
             let bw = network::read();
             match bw {
@@ -77,7 +78,7 @@ impl Component for Bandwidth {
 
                 },
                 Err(err) => {
-                    error!("bandwidth: {}", err);
+                    error!("#{}: {}", name, err);
                 },
             }
             gtk::Continue(true)
