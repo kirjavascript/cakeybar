@@ -19,12 +19,7 @@ extern crate dft;
 #[macro_use]
 extern crate nom;
 #[macro_use]
-extern crate chan;
-extern crate chan_signal;
-extern crate bincode;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde;
+extern crate crossbeam_channel;
 
 use gio::prelude::*;
 
@@ -36,7 +31,6 @@ mod util;
 mod config;
 mod bar;
 mod components;
-mod tray;
 mod wm;
 
 pub static NAME: &str = env!("CARGO_PKG_NAME");
@@ -51,15 +45,6 @@ fn init(application: &gtk::Application, config: &config::Config) {
 
     let monitors = wm::gtk::get_monitor_geometry();
     let wm_util = wm::WMUtil::new();
-
-    let on_signal = || {
-        info!("kill");
-        std::process::exit(2);
-        gtk::Continue(false)
-    };
-
-    glib::source::unix_signal_add(2, on_signal); // SIGINT
-    glib::source::unix_signal_add(15, on_signal); // SIGTERM
 
     // load bars
     for bar_config in config.bars.iter() {
@@ -106,11 +91,6 @@ fn main() {
     // show monitor debug
     if matches.is_present("monitors") {
         wm::gtk::show_monitor_debug();
-        return ();
-    }
-    // load tray
-    else if matches.is_present("tray") {
-        tray::main();
         return ();
     }
 

@@ -17,6 +17,7 @@ pub enum Message {
     Move(u32, u32),
     BgColor(u32),
     IconSize(u16),
+    Signal,
 }
 
 pub fn get_server() -> (Sender<Message>, mpsc::Receiver<Message>){

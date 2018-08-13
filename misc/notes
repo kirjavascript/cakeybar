@@ -13,29 +13,31 @@ https://github.com/pw4ever/awesome-wm-config#setup
 awesome-client
 https://github.com/Rahix/pa-visualizer
 https://users.rust-lang.org/t/ann-chan-is-deprecated-use-crossbeam-channel-instead/19251
+https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-set-printerr-handler
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
-current: format symbols: battery | tray | ipc
+current: format symbols; battery | tray | ipc
 
 wm refactoring
 ===
-wm restart event restack tray
 atoms::get("_NET_WM_POOP")
-darkblue: switch icons to background images
-?add wrapper to every element (enclose = true) (onclick)
-set_markup
-    (links, entities)
-    pango parse markup (check output set_text)
-    unescaped characters (&)
-    htmlencode test url with & in it
-    https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
-    https://developer.gnome.org/glib/unstable/glib-Simple-XML-Subset-Parser.html#g-markup-escape-text
-    remove this?
+put an image to the right of a label
 config.has_type("workspace") to disable listeners, etc
+
+set_markup
+===
+(links, entities)
+pango parse markup (check output set_text)
+unescaped characters (&)
+htmlencode test url with & in it
+https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
+https://developer.gnome.org/glib/unstable/glib-Simple-XML-Subset-Parser.html#g-markup-escape-text
+remove this?
 
 tray
 ====
+wm restart event restack tray
 kill tray when bar dies (100% CPU)
 fix tray fullscreen latency with events
     let on_signal = || {
@@ -44,8 +46,8 @@ fix tray fullscreen latency with events
         gtk::Continue(false)
     };
 
-    glib::source::unix_signal_add(2, on_signal); // SIGINT
-    glib::source::unix_signal_add(15, on_signal); // SIGTERM
+    glib::source::unix_signal_add(2, on_signal); // sigint
+    glib::source::unix_signal_add(15, on_signal); // sigterm
 
 impl
 ====
@@ -73,6 +75,7 @@ conditional display / flexbox
 script - classes for return code
 <webview>
 remote ip
+onclick = ""
 mpd ipc
 dmenu gtk::WindowType::Popup
 container: clickable (all components onclick?)
