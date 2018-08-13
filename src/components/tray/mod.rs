@@ -8,7 +8,7 @@ use std;
 use glib;
 use crossbeam_channel as channel;
 use std::thread;
-use message::Message;
+use self::message::Message;
 
 pub struct Tray { }
 
@@ -37,22 +37,32 @@ impl Tray {
         base_widget.show_all();
         Self::init_widget(&base_widget, container, config, bar);
 
-        // let (s_main, r_main) = channel::unbounded();
+        let (s_main, r_main) = channel::unbounded();
 
-        thread::spawn(move || {
-            let (s_main, r_main) = channel::unbounded();
+        s_main.send(1);
 
-            let on_signal = || {
-                info!("kill");
-                s_main.send(true);
-                std::process::exit(2);
+        thread::spawn(clone!(s_main move || {
+            // capture signals
+            glib::source::unix_signal_add(2, clone!(s_main move || {
+                s_main.send(2);
                 gtk::Continue(false)
-            };
+            })); // SIGINT
+            glib::source::unix_signal_add(15, move || {
+                s_main.send(15);
+                gtk::Continue(false)
+            }); // SIGTERM
 
-            glib::source::unix_signal_add(2, on_signal); // SIGINT
-            glib::source::unix_signal_add(15, on_signal); // SIGTERM
+            loop {
+                if let Some(err) = r_main.recv() {
+                    println!("{:#?}", err);
+                    if err == 2 || err == 15 {
+                        info!("kill");
+                        std::process::exit(0);
+                    }
+                }
+            }
 
-        });
+        }));
 
     }
 
