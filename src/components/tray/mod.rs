@@ -3,12 +3,12 @@ use gtk::prelude::*;
 use gtk::{Orientation};
 use gdk::{WindowExt, RGBA};
 
-use std;
 use xcb;
 use glib;
 use crossbeam_channel as channel;
 use std::{thread, process};
 use std::sync::Arc;
+use std::time::Duration;
 use wm;
 
 mod manager;
@@ -76,6 +76,8 @@ impl Tray {
             s_main.send(Action::Move(x, y));
         });
 
+        let fullscreen_tick = channel::tick(Duration::from_millis(100));
+
         // start tray context
         thread::spawn(move || {
 
@@ -109,6 +111,7 @@ impl Tray {
 
                 loop {
                     select! {
+                        // xcb events
                         recv(r_events, event_opt) => {
                             if let Some(event) = event_opt {
                                 if let Some(code) = manager.handle_event(event) {
@@ -119,11 +122,21 @@ impl Tray {
                                 error!("tray: killed by XKillClient() maybe?");
                             }
                         },
+                        // gtk events
                         recv(r_main, action_opt) => {
                             if let Some(action) = action_opt {
                                 manager.handle_action(action);
                             }
                         },
+                        // fullscreen tick
+                        recv(fullscreen_tick) => {
+                            if wm::xcb::check_fullscreen(&conn, &atoms, &screen) {
+                                manager.hide();
+                            } else {
+                                manager.show();
+                            }
+                        },
+                        // signals
                         recv(r_signals, num) => {
                             error!("received kill signal");
                             manager.finish();
