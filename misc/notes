@@ -38,16 +38,8 @@ remove this?
 tray
 ====
 wm restart event restack tray
-kill tray when bar dies (100% CPU)
+detect xkill / kill -9
 fix tray fullscreen latency with events
-    let on_signal = || {
-        info!("kill");
-        std::process::exit(2);
-        gtk::Continue(false)
-    };
-
-    glib::source::unix_signal_add(2, on_signal); // sigint
-    glib::source::unix_signal_add(15, on_signal); // sigterm
 
 impl
 ====

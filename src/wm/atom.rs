@@ -3,7 +3,7 @@ use std::cell::RefCell;
 use xcb;
 
 macro_rules! atoms {
-    ( $( $x:ident ),* ) => {
+    ( $( $x:ident ),*, ) => {
         #[allow(non_snake_case)]
         $(pub const $x: &'static str = stringify!($x);)*
     }
@@ -36,7 +36,7 @@ atoms!(
     WM_PROTOCOLS,
     _COMPTON_SHADOW,
     UTF8_STRING,
-    MANAGER
+    MANAGER,
 );
 
 pub struct Atoms<'a> {
