@@ -56,7 +56,7 @@ impl Tray {
                 if let Some(err) = r_main.recv() {
                     println!("{:#?}", err);
                     if err == 2 || err == 15 {
-                        info!("kill");
+                        error!("received kill signal");
                         std::process::exit(0);
                     }
                 }
