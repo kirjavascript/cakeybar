@@ -21,25 +21,29 @@ impl Component for Window {
             move |event_opt| {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;
-                    let output = symbols.format(|sym| {
-                        match sym {
-                            "title" => {
-                                if name.chars().count() > trunc {
-                                    let parsed = name
-                                        .char_indices()
-                                        .filter(|x| x.0 <= trunc)
-                                        .fold("".to_string(), |acc, cur| {
-                                            acc + &cur.1.to_string()
-                                        });
-                                    format!("{}…", parsed)
-                                } else {
-                                    name.to_string()
-                                }
-                            },
-                            _ => sym.to_string(),
-                        }
-                    });
-                    label.set_text(&output);
+                    if name.len() == 0 {
+                        label.set_text(name);
+                    } else {
+                        let output = symbols.format(|sym| {
+                            match sym {
+                                "title" => {
+                                    if name.chars().count() > trunc {
+                                        let parsed = name
+                                            .char_indices()
+                                            .filter(|x| x.0 <= trunc)
+                                            .fold("".to_string(), |acc, cur| {
+                                                acc + &cur.1.to_string()
+                                            });
+                                        format!("{}…", parsed)
+                                    } else {
+                                        name.to_string()
+                                    }
+                                },
+                                _ => sym.to_string(),
+                            }
+                        });
+                        label.set_text(&output);
+                    }
                 }
             }
         ));

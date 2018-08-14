@@ -138,7 +138,6 @@ impl Tray {
                         },
                         // signals
                         recv(r_signals, num) => {
-                            error!("received kill signal");
                             manager.finish();
                             process::exit(num.unwrap_or(0));
                         },
