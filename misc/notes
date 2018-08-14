@@ -17,7 +17,7 @@ https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-set-
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
-current: format symbols; battery | tray | ipc
+current: format symbols; battery | ipc
 
 wm refactoring
 ===
