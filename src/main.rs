@@ -81,10 +81,10 @@ fn main() {
              .short("m")
              .long("monitors")
              .help("Shows information about monitors"))
-        .arg(Arg::with_name("tray")
-             .short("t")
-             .long("tray")
-             .help("Loads system tray")
+        .arg(Arg::with_name("multi")
+             .short("M")
+             .long("multi")
+             .help("Allow multiple instances")
              .hidden(true))
         .get_matches();
 
@@ -108,12 +108,16 @@ fn main() {
 
         // check version
         if let Some(err) = gtk::check_version(3, 22, 0) {
-            warn!("{} (requires 3.22+)", err);
+            error!("{} (requires 3.22+)", err);
         }
 
         let application = gtk::Application::new(
                 format!("com.kirjava.{}", NAME).as_str(),
-                gio::ApplicationFlags::NON_UNIQUE,
+                if matches.is_present("multi") {
+                    gio::ApplicationFlags::NON_UNIQUE
+                } else {
+                    gio::ApplicationFlags::empty()
+                }
             )
             .expect("Initialization failed...");
 

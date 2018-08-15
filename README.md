@@ -54,7 +54,7 @@ theme = "theme.css" # paths can be relative or absolute
 monitor = 0
 position = "top" # "top" | "bottom"
 layout = [ "component", "names", "go", "here" ]
-scroll-workspace = false
+workspace-scroll = false
 ```
 
 you can define as many bars as you like as long as they have unique ids. the id is also used as the CSS selector for that bar: `#bar_name`

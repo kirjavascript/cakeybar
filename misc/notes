@@ -21,6 +21,7 @@ wm refactoring
 ===
 put an image to the right of a label
 config.has_type("workspace") to disable listeners, etc
+MAKE OPEN MORE THAN ONCE A FLAGT
 
 set_markup
 ===
@@ -34,7 +35,6 @@ remove this?
 
 tray
 ====
-MAKE OPEN MORE THAN ONCE A FLAGT
 
 wm restart event restack tray (test this)
 fix tray fullscreen latency with events
