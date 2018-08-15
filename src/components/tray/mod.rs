@@ -88,8 +88,6 @@ impl Tray {
                 let setup = conn.get_setup();
                 let screen = setup.roots().nth(screen_num).unwrap();
 
-                let r_signals = Tray::get_signals();
-
                 let mut manager = manager::Manager::new(&conn, &atoms, &screen, s_tray);
 
                 if !manager.is_selection_available() {
@@ -108,6 +106,8 @@ impl Tray {
                         }
                     }
                 }));
+
+                let r_signals = Tray::get_signals();
 
                 loop {
                     select! {
@@ -138,6 +138,7 @@ impl Tray {
                         },
                         // signals
                         recv(r_signals, num) => {
+                            error!("dead");
                             manager.finish();
                             process::exit(num.unwrap_or(0));
                         },
