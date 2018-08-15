@@ -65,6 +65,7 @@ fn init(application: &gtk::Application, config: &config::Config) {
     }
 }
 
+
 fn main() {
     // CLI config
 

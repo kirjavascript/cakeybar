@@ -12,7 +12,6 @@ https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
 https://github.com/pw4ever/awesome-wm-config#setup
 awesome-client
 https://github.com/Rahix/pa-visualizer
-https://developer.gnome.org/glib/stable/glib-Warnings-and-Assertions.html#g-set-printerr-handler
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
@@ -20,7 +19,6 @@ current: format symbols; battery | ipc
 
 wm refactoring
 ===
-atoms::get("_NET_WM_POOP")
 put an image to the right of a label
 config.has_type("workspace") to disable listeners, etc
 
@@ -36,9 +34,20 @@ remove this?
 
 tray
 ====
-wm restart event restack tray
-detect xkill / kill -9
+MAKE OPEN MORE THAN ONCE A FLAGT
+
+wm restart event restack tray (test this)
 fix tray fullscreen latency with events
+    https://developer.gnome.org/glib/stable/glib-Message-Logging.html
+    3:37:04 <@ebassi> Kirjava: You could use an atexit() handler to save state on quit
+    i21:35:50 <+LambdaComplex> pub unsafe extern "C" fn do_nothing(_user_data: *mut c_void, _error: virErrorPtr) { /* do nothing */ }
+    21:36:04 <+LambdaComplex> libvirt_sys::virSetErrorFunc(ptr::null::<c_void>() as *mut c_void, Some(do_nothing));
+detect xkill / kill -9
+see what happens when you xkill THEN open VLC with a new tray
+/tmp/cakeytray-xid-cache
+get tray to save XIDs to file (or root window x properties) so they can be cleaned up on next boot
+test with XIDs that dont exist
+on no icons width = 1
 
 impl
 ====
