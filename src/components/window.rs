@@ -22,7 +22,7 @@ impl Component for Window {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;
                     if name.len() == 0 {
-                        label.set_markup(name);
+                        label.set_text(name);
                     } else {
                         let output = symbols.format(|sym| {
                             match sym {
@@ -42,7 +42,7 @@ impl Component for Window {
                                 _ => sym.to_string(),
                             }
                         });
-                        label.set_markup(&output);
+                        label.set_text(&output);
                     }
                 }
             }

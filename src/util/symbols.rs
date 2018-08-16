@@ -61,8 +61,8 @@ impl SymbolFmt {
             .concat()
             .trim()
             .to_string()
-            // pango escapes
-            .replace("&", "&amp;")
+            // TODO: pango escape
+            // .replace("&", "&amp;")
     }
     pub fn contains(&self, item: &str) -> bool {
         self.tokens.contains(&Token::Symbol(item.to_string()))

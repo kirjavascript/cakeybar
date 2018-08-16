@@ -27,6 +27,8 @@ set_markup
 (links, entities)
 https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
 https://developer.gnome.org/glib/unstable/glib-Simple-XML-Subset-Parser.html#g-markup-escape-text
+escape & (symbols)
+escape < (title)
 
 tray
 ====

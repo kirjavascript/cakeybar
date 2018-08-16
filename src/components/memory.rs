@@ -19,7 +19,7 @@ impl Component for Memory {
         let tick = clone!(label move || {
             match memory::read() {
                 Ok(data) => {
-                    label.set_markup(&symbols.format(|sym| {
+                    label.set_text(&symbols.format(|sym| {
                         match sym {
                             "total" => format_bytes(data.total() * 1024),
                             "free" => format_bytes(data.free() * 1024),

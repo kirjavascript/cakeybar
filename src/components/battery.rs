@@ -38,7 +38,7 @@ impl Component for Battery {
                     let pct = pct.min(100.) as u8;
                     let is_full = pct >= 100;
                     let suffix = if is_full { "" } else { "%" };
-                    label.set_markup(&format!("{}{}", pct, suffix));
+                    label.set_text(&format!("{}{}", pct, suffix));
 
                     // decide on class
                     let class = match pct {

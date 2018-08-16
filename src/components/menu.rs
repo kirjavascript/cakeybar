@@ -31,7 +31,7 @@ impl Component for Menu {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);
         let label_text = config.get_str_or("label", "");
-        label.set_markup(&label_text);
+        label.set_text(&label_text);
         let ebox = EventBox::new();
         ebox.add(&label);
         Self::init_widget(&ebox, container, config, bar);
@@ -81,7 +81,7 @@ impl Component for Menu {
         for (name, exec) in items {
             let ebox = EventBox::new();
             let label = Label::new(None);
-            label.set_markup(&name);
+            label.set_text(&name);
             ebox.add(&label);
             wrapper.add(&ebox);
 

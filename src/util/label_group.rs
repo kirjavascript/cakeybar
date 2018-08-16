@@ -24,13 +24,13 @@ impl LabelGroup {
         for (i, text) in labels.iter().enumerate() {
             // check if the label exists already
             let added_opt = if let Some(widget) = self.widgets.borrow_mut().get_mut(i) {
-                widget.set_markup(&text);
+                widget.set_text(&text);
                 None
             } else {
                 // otherwise create a new one
                 let widget = Label::new(None);
                 self.wrapper.add(&widget);
-                widget.set_markup(&text);
+                widget.set_text(&text);
                 widget.show();
                 Some(widget)
             };
