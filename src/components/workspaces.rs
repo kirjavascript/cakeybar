@@ -10,7 +10,7 @@ use util::{SymbolFmt};
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub struct Workspaces { }
+pub struct Workspaces;
 
 // Workspaces
 

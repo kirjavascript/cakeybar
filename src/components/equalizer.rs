@@ -10,7 +10,7 @@ use pulse_simple::Record;
 use dft;
 use dft::{Operation, Plan};
 
-pub struct Equalizer { }
+pub struct Equalizer;
 
 fn analyze_channel(plan: &Plan<f64>, data: &[[f32; 2]], channel: usize) -> Vec<f32> {
     let mut input = Vec::with_capacity(data.len());

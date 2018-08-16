@@ -13,7 +13,7 @@ use wm;
 
 mod manager;
 
-pub struct Tray { }
+pub struct Tray;
 
 // mutable statics should be safe within the same thread
 static mut TRAY_LOADED: bool = false;
@@ -135,6 +135,7 @@ impl Tray {
                             } else {
                                 manager.show();
                             }
+                            conn.flush();
                         },
                         // signals
                         recv(r_signals, num) => {

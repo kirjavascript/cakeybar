@@ -9,7 +9,7 @@ use std::sync::mpsc;
 use std::io::Error;
 use util::SymbolFmt;
 
-pub struct Script { }
+pub struct Script;
 
 fn get_output(src: &str) -> Result<(String, String, i32), Error> {
     let output = Command::new("/bin/sh")
@@ -49,7 +49,7 @@ impl Component for Script {
             let label = Label::new(None);
             let tick = clone!(label move || {
                 if let Ok((ref stdout, ref stderr, code)) = rx.try_recv() {
-                    label.set_text(&symbols.format(|sym| {
+                    label.set_markup(&symbols.format(|sym| {
                         match sym {
                             "stdout" => stdout.to_string(),
                             "stderr" => stderr.to_string(),

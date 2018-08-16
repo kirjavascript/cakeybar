@@ -5,7 +5,7 @@ use util::{SymbolFmt, format_bytes};
 
 use probes::memory;
 
-pub struct Memory { }
+pub struct Memory;
 
 impl Component for Memory {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
@@ -19,7 +19,7 @@ impl Component for Memory {
         let tick = clone!(label move || {
             match memory::read() {
                 Ok(data) => {
-                    label.set_text(&symbols.format(|sym| {
+                    label.set_markup(&symbols.format(|sym| {
                         match sym {
                             "total" => format_bytes(data.total() * 1024),
                             "free" => format_bytes(data.free() * 1024),

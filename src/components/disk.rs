@@ -2,7 +2,7 @@ use super::{Component, Bar, gtk, ComponentConfig};
 use util::{format_bytes, SymbolFmt, LabelGroup};
 use sysinfo::{DiskExt, SystemExt, System};
 
-pub struct Disk { }
+pub struct Disk;
 
 impl Component for Disk {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {

@@ -2,7 +2,7 @@ use super::{gtk, Component, Bar, ComponentConfig, Property};
 use gtk::prelude::*;
 use gtk::{Image as GtkImage};
 
-pub struct Image { }
+pub struct Image;
 
 impl Component for Image {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {

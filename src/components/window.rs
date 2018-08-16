@@ -5,7 +5,7 @@ use util::SymbolFmt;
 
 use wm::events::{Event, EventValue};
 
-pub struct Window { }
+pub struct Window;
 
 impl Component for Window {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
@@ -22,7 +22,7 @@ impl Component for Window {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;
                     if name.len() == 0 {
-                        label.set_text(name);
+                        label.set_markup(name);
                     } else {
                         let output = symbols.format(|sym| {
                             match sym {
@@ -42,7 +42,7 @@ impl Component for Window {
                                 _ => sym.to_string(),
                             }
                         });
-                        label.set_text(&output);
+                        label.set_markup(&output);
                     }
                 }
             }

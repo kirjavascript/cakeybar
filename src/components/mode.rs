@@ -4,7 +4,7 @@ use gtk::{Label};
 use wm::events::{Event, EventValue};
 use util::SymbolFmt;
 
-pub struct Mode { }
+pub struct Mode;
 
 impl Component for Mode {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
@@ -23,7 +23,7 @@ impl Component for Mode {
                     } else {
                         label.show();
                         let mode = &mode;
-                        label.set_text(&symbols.format(|sym| {
+                        label.set_markup(&symbols.format(|sym| {
                             match sym {
                                 "mode" => mode.to_string(),
                                 _ => sym.to_string(),

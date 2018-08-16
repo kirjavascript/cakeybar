@@ -2,7 +2,7 @@ use super::{Component, Bar, ComponentConfig};
 use gtk::prelude::*;
 use gtk::{Box, Orientation};
 
-pub struct Container { }
+pub struct Container;
 
 impl Component for Container {
     fn init(container: &Box, config: &ComponentConfig, bar: &Bar) {

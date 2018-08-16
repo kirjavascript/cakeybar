@@ -21,44 +21,29 @@ wm refactoring
 ===
 put an image to the right of a label
 config.has_type("workspace") to disable listeners, etc
-MAKE OPEN MORE THAN ONCE A FLAGT
 
 set_markup
 ===
 (links, entities)
-pango parse markup (check output set_text)
-unescaped characters (&)
-htmlencode test url with & in it
 https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
 https://developer.gnome.org/glib/unstable/glib-Simple-XML-Subset-Parser.html#g-markup-escape-text
-remove this?
 
 tray
 ====
-
-wm restart event restack tray (test this)
+wm restart event restack tray
 fix tray fullscreen latency with events
-    https://developer.gnome.org/glib/stable/glib-Message-Logging.html
-    3:37:04 <@ebassi> Kirjava: You could use an atexit() handler to save state on quit
-    i21:35:50 <+LambdaComplex> pub unsafe extern "C" fn do_nothing(_user_data: *mut c_void, _error: virErrorPtr) { /* do nothing */ }
-    21:36:04 <+LambdaComplex> libvirt_sys::virSetErrorFunc(ptr::null::<c_void>() as *mut c_void, Some(do_nothing));
-detect xkill / kill -9
-see what happens when you xkill THEN open VLC with a new tray
-/tmp/cakeytray-xid-cache
-get tray to save XIDs to file (or root window x properties) so they can be cleaned up on next boot
-test with XIDs that dont exist
-on no icons width = 1
+detect xkill / kill -9 ?
+bug: on no icons width = 1
+/tmp/cakeytray-horcrux - save processes, restart if dead & if file exists on boot
 
-impl
+ipc
 ====
-bindsym $mod+m exec -- --message / accellerators
-bspwm mode
-ipc -
-    wm_util event
-    ipc show #eq #more .class_too
-    reload config / theme (theme should be easy)
-    allow ipc in menu objs
+wm_util event
+ipc show #eq #more .class_too
+reload config / theme (theme should be easy)
+allow ipc in menu objs
 autohide bar
+bindsym $mod+m exec -- --message / accellerators
 
 docs
 ====
@@ -71,6 +56,7 @@ workspaces/spacing
 
 components
 ====
+bspwm mode
 conditional display / flexbox
 script - classes for return code
 <webview>

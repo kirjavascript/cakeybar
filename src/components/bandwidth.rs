@@ -7,7 +7,7 @@ use std::rc::Rc;
 
 use probes::network;
 
-pub struct Bandwidth { }
+pub struct Bandwidth;
 
 impl Component for Bandwidth {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {

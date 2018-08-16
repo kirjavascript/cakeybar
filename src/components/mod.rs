@@ -4,12 +4,12 @@
 // use gtk::prelude::*;
 // use gtk::{Label};
 //
-// pub struct Template { }
+// pub struct Template;
 //
 // impl Component for Template {
 //     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
 //         let label = Label::new(None);
-//         label.set_text(&"test");
+//         label.set_markup(&"test");
 //         label.show();
 //         Self::init_widget(&label, container, config, bar);
 //     }

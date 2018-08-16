@@ -229,7 +229,6 @@ impl<'a> Manager<'a> {
         if self.hidden {
             self.hidden = false;
             xcb::map_window(self.conn, self.window);
-            self.conn.flush();
         }
     }
 
@@ -238,7 +237,6 @@ impl<'a> Manager<'a> {
         if !self.hidden {
             self.hidden = true;
             xcb::unmap_window(self.conn, self.window);
-            self.conn.flush();
         }
     }
 
@@ -281,7 +279,7 @@ impl<'a> Manager<'a> {
         }
     }
 
-    pub fn reposition(&self) {
+    pub fn reposition(&mut self) {
         let width = self.children.len() as u16 * self.icon_size;
         self.s_tray.send(Action::Width(width));
         if width > 0 {
@@ -289,10 +287,12 @@ impl<'a> Manager<'a> {
                 (xcb::CONFIG_WINDOW_WIDTH as u16, width as u32),
                 (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
             ]);
-            xcb::map_window(self.conn, self.window);
+            if !self.hidden {
+                self.show();
+            }
         }
         else {
-            xcb::unmap_window(self.conn, self.window);
+            self.hide();
         }
         self.conn.flush();
     }

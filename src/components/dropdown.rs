@@ -12,7 +12,7 @@ use gtk::{
 
 use config::Property;
 
-pub struct Dropdown { }
+pub struct Dropdown;
 
 #[derive(Debug)]
 enum MenuItem {
@@ -46,7 +46,7 @@ impl Component for Dropdown {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
         let label = Label::new(None);
         let label_text = config.get_str_or("label", "");
-        label.set_text(&label_text);
+        label.set_markup(&label_text);
         let ebox = EventBox::new();
         ebox.add(&label);
         ebox.show_all();

@@ -3,7 +3,7 @@ use gtk::prelude::*;
 use gtk::{Label, StyleContextExt};
 use util::read_file;
 
-pub struct Battery { }
+pub struct Battery;
 
 fn get_path(device: String, query: &str) -> String {
     format!("/sys/class/power_supply/{}/{}", device, query)
@@ -38,7 +38,7 @@ impl Component for Battery {
                     let pct = pct.min(100.) as u8;
                     let is_full = pct >= 100;
                     let suffix = if is_full { "" } else { "%" };
-                    label.set_text(&format!("{}{}", pct, suffix));
+                    label.set_markup(&format!("{}{}", pct, suffix));
 
                     // decide on class
                     let class = match pct {
