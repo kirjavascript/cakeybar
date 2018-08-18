@@ -20,7 +20,6 @@ current: format symbols; battery | win95 | ipc
 
 wm refactoring
 ===
-put an image to the right of a label
 config.has_type("workspace") to disable listeners, etc
 
 set_markup

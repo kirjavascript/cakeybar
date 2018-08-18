@@ -16,25 +16,37 @@ fn get_data(device: &str, query: &str) -> Result<String, Error> {
 impl Component for Battery {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
 
-        // TODO: add duration, systemstats, add symbols
+        // TODO: add duration, add symbols
 
         let label = Label::new(None);
         Self::init_widget(&label, container, config, bar);
         label.show();
 
-        let adapter = config.get_str_or("adapter", "AC");
-        let battery = config.get_str_or("battery", "BAT0");
-        let has_battery = get_data(battery, "charge_full").is_ok();
-        // let charge_full = read_file(&get_path(battery.clone(), "charge_full"))
-        //     .unwrap_or("0".to_string()).parse::<u64>();
-
-        // let sys = System::new();
+        let adapter = config.get_str_or("adapter", "AC").to_string();
+        let battery = config.get_str_or("battery", "BAT0").to_string();
+        let has_battery = get_data(&battery, "charge_full").is_ok();
 
         let symbols = SymbolFmt::new(config.get_str_or("format", "{percent}"));
 // {dplcsEnabled ? '✔' : '✗'}
+//
 
         if has_battery {
             let tick = clone!(label move || {
+                let full = get_data(&battery, "full");
+                let now = get_data(&battery, "now");
+                let current = get_data(&battery, "current_now");
+                let data_all = full.map(|a| now.map(|b| current.map(|c| (a,b,c))));
+                if let Ok(a) = data_all {
+                    let plugged = get_data(&adapter, "online")
+                        .unwrap_or("0".to_string()) == "1".to_string();
+
+                    println!("{:#?}", a);
+                    let q: () = a;
+
+                }
+
+
+                // let v: Result<Vec<T>, Error>
                     // let plugged = sys.on_ac_power().unwrap_or(true);
                     // let capacity = life.remaining_capacity;
                     // let time = life.remaining_time;
