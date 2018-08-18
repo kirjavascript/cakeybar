@@ -77,7 +77,7 @@ type = "mode"
 [component.box1]
 type = "container"
 layout = [
-    # "battery",
+    "battery",
     # "memory",
     "cpu",
     "cpu-icon",

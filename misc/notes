@@ -6,6 +6,7 @@ https://developer.gnome.org/gtk3/stable/chap-css-properties.html
 https://people.gnome.org/~desrt/gtk/html/GtkCssProvider.html
 system tray:
 https://standards.freedesktop.org/systemtray-spec/systemtray-spec-latest.html#idm139990069470464
+https://github.com/thatsmydoing/rusttray (original implementation)
 wm stuff:
 https://standards.freedesktop.org/wm-spec/wm-spec-latest.html#idm140200472739424
 https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
@@ -29,6 +30,7 @@ https://developer.gnome.org/pango/stable/PangoMarkupFormat.html
 https://developer.gnome.org/glib/unstable/glib-Simple-XML-Subset-Parser.html#g-markup-escape-text
 escape & (symbols)
 escape < (title)
+use svg instead?
 
 tray
 ====
@@ -54,7 +56,6 @@ add / remove - curl | sh install
 undocu'd;
 bar/float
 workspaces/spacing
-
 
 components
 ====

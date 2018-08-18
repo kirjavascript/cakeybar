@@ -26,23 +26,21 @@ impl Component for IP {
                 let mut labels = Vec::new();
                 for interface in interfaces {
                     if should_include(&interface.0) {
-                        let text = symbols.format(|sym| {
-                            match sym {
-                                "name" => interface.0.clone(),
-                                "ipv4" => {
-                                    Self::get_addr_from_network(
-                                        &interface.1,
-                                        false,
+                        let text = symbols.format(|sym| match sym {
+                            "name" => interface.0.clone(),
+                            "ipv4" => {
+                                Self::get_addr_from_network(
+                                    &interface.1,
+                                    false,
                                     )
-                                },
-                                "ipv6" => {
-                                    Self::get_addr_from_network(
-                                        &interface.1,
-                                        true,
+                            },
+                            "ipv6" => {
+                                Self::get_addr_from_network(
+                                    &interface.1,
+                                    true,
                                     )
-                                },
-                                _ => sym.to_string(),
-                            }
+                            },
+                            _ => sym.to_string(),
                         });
                         labels.push(text);
                     }
