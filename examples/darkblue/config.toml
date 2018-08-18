@@ -5,12 +5,25 @@ theme = "theme.css"
 [bar.left]
 monitor = 0
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "box1", "tray" ]
+layout = [
+    "menu",
+    "workspaces",
+    "mode",
+    "title",
+    "box1",
+    "tray",
+]
 
 [bar.right]
 monitor = 1
 position = "top"
-layout = [ "menu", "workspaces", "mode", "title", "box1" ]
+layout = [
+    "menu",
+    "workspaces",
+    "mode",
+    "title",
+    "box1",
+]
 
 # creates a 1px bar at the bottom - used for scrolling workspaces only
 [bar.right-scroll]

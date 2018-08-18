@@ -100,13 +100,12 @@ label {
     background-image: url("./icons/cpu.svg");
 }
 
-/* TODO: cleanup */
-
 #battery {
-    background-size: 17px 17px;
-    background-position: 26px 5px;
     background-repeat: no-repeat;
-    padding-right: 27px;
+    background-size: 16px;
+    background-position: 100% 48%;
+    padding-right: 22px;
+    margin-right: 5px;
 }
 #battery.full {
     background-image: url("./icons/battery/full.svg");
