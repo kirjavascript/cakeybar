@@ -69,12 +69,39 @@ label {
     background-color: @blue;
 }
 
-.icon {
-    padding: 0 7px;
+
+/* icons */
+
+.has-icon {
+    background-repeat: no-repeat;
+    background-size: 12px;
+    background-position: 100% 50%;
+    padding-right: 19px;
+    margin-right: 7px;
 }
 
+#clock {
+    background-image: url("./icons/clock.svg");
+}
 
-/* battery config */
+#ip {
+    background-image: url("./icons/ip.svg");
+}
+
+#bandwidth {
+    background-image: url("./icons/bandwidth.svg");
+}
+
+#disk {
+    background-image: url("./icons/disk.svg");
+}
+
+#cpu {
+    background-image: url("./icons/cpu.svg");
+}
+
+/* TODO: cleanup */
+
 #battery {
     background-size: 17px 17px;
     background-position: 26px 5px;

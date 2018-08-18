@@ -26,32 +26,6 @@ workspace-scroll = true
 
 [component.tray]
 type = "tray"
-icon-size = 20
-
-# menu
-
-[component.menu]
-type = "dropdown"
-# label = "start"
-window-id = "menu_popup"
-items = [
-    { label = "run termite", command = "termite" },
-    { label = "hello", command = "echo \"hello\"" },
-    { label = "pcmanfm", command = "pcmanfm" },
-    { label = "terminal apps", children = [
-        { label = "pipes", command = "termite -e \"pipes\"" },
-        { label = "neofetch", command = "termite -e \"neofetch\"" },
-        { label = "cmatrix", command = "termite -e \"cmatrix\"" },
-        { label = "doge", command = "termite -e \"doge\"" },
-        { label = "nyancat", command = "termite -e \"nyancat\"" },
-        { label = "weather", command = "termite -e \"curl -s wttr.in/Manchester\"" },
-        { label = "nonsense", command = "termite -e \"genact\"" },
-    ] },
-    { label = "change background", children = [
-        { label = "forest bg", command = "feh --bg-fill \"/home/thom/backgrounds/forest.png\" --bg-fill \"/home/thom/backgrounds/mac.jpg\"" },
-        { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
-    ] },
-]
 
 # wm stuff
 
@@ -80,15 +54,10 @@ layout = [
     "battery",
     # "memory",
     "cpu",
-    "cpu-icon",
     "bandwidth",
-    "bw-icon",
     "disk",
-    "disk-icon",
     "ip",
-    "ip-icon",
     "clock",
-    "clock-icon",
 ]
 halign = "end"
 class = "gradient"
@@ -101,6 +70,7 @@ type = "memory"
 [component.disk]
 type = "disk"
 mounts = ["/"]
+class = "has-icon"
 
 [component.battery]
 type = "battery"
@@ -110,41 +80,42 @@ adapter = "AC"
 [component.ip]
 type = "ip"
 interfaces = ["enp3s0", "wlp58s0", "eth0"]
+class = "has-icon"
 
 [component.bandwidth]
 type = "bandwidth"
 interfaces = ["enp3s0", "wlp58s0", "eth0"]
-# interface = "enp3s0"
+class = "has-icon"
 
 [component.cpu]
 type = "cpu"
+class = "has-icon"
 
 [component.clock]
 type = "clock"
+class = "has-icon"
 
-# icons
+# menu
 
-[component.cpu-icon]
-type = "image"
-src = "./icons/cpu.svg"
-class = "icon"
-
-[component.disk-icon]
-type = "image"
-src = "./icons/disk.svg"
-class = "icon"
-
-[component.bw-icon]
-type = "image"
-src = "./icons/bandwidth.svg"
-class = "icon"
-
-[component.ip-icon]
-type = "image"
-src = "./icons/ip.svg"
-class = "icon"
-
-[component.clock-icon]
-type = "image"
-src = "./icons/clock.svg"
-class = "icon"
+[component.menu]
+type = "dropdown"
+# label = "start"
+window-id = "menu_popup"
+items = [
+    { label = "run termite", command = "termite" },
+    { label = "hello", command = "echo \"hello\"" },
+    { label = "pcmanfm", command = "pcmanfm" },
+    { label = "terminal apps", children = [
+        { label = "pipes", command = "termite -e \"pipes\"" },
+        { label = "neofetch", command = "termite -e \"neofetch\"" },
+        { label = "cmatrix", command = "termite -e \"cmatrix\"" },
+        { label = "doge", command = "termite -e \"doge\"" },
+        { label = "nyancat", command = "termite -e \"nyancat\"" },
+        { label = "weather", command = "termite -e \"curl -s wttr.in/Manchester\"" },
+        { label = "nonsense", command = "termite -e \"genact\"" },
+    ] },
+    { label = "change background", children = [
+        { label = "forest bg", command = "feh --bg-fill \"/home/thom/backgrounds/forest.png\" --bg-fill \"/home/thom/backgrounds/mac.jpg\"" },
+        { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
+    ] },
+]

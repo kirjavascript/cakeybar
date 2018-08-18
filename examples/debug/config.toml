@@ -81,6 +81,8 @@ type = "clock"
 
 # icons
 
+# TODO: convert to background images
+
 [component.fire_icon]
 type = "image"
 src = "./svg/flame.svg"

@@ -46,6 +46,8 @@ impl Component for Battery {
                         _ => sym.to_string(),
                     }));
 
+                    // println!("{:#?}", sys.on_ac_power());
+
                     // decide on class
                     let class = match pct {
                         p if p >= 99 => "full",
