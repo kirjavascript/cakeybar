@@ -26,11 +26,11 @@ layout = [
 ]
 
 # creates a 1px bar at the bottom - used for scrolling workspaces only
-[bar.right-scroll]
+[bar.left-scroll]
 monitor = 0
 position = "bottom"
 workspace-scroll = true
-[bar.left-scroll]
+[bar.right-scroll]
 monitor = 1
 position = "bottom"
 workspace-scroll = true
@@ -73,8 +73,6 @@ layout = [
     "clock",
 ]
 halign = "end"
-class = "gradient"
-# valign = "end"
 
 # stats
 [component.memory]

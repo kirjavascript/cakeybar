@@ -4,14 +4,10 @@ use gtk::{Label, StyleContextExt};
 use util::{SymbolFmt, read_file};
 use std::io::Error;
 
-use std::time::Duration;
-
 pub struct Battery;
 
 impl Component for Battery {
     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
-
-        // TODO: add duration
 
         let label = Label::new(None);
         Self::init_widget(&label, container, config, bar);
@@ -21,10 +17,9 @@ impl Component for Battery {
         let battery = config.get_str_or("battery", "BAT0").to_string();
         let has_battery = get_data(&battery, "charge_full").is_ok();
 
-        let symbols = SymbolFmt::new(config.get_str_or("format", "{percent} {remaining} {plugged}"));
+        let symbols = SymbolFmt::new(config.get_str_or("format", "{percent}"));
 
-        // if has_battery {
-        if true {
+        if has_battery {
             let tick = clone!(label move || {
                 if let Ok((full, now, current)) = get_charge(&battery) {
                     let plugged = get_data(&adapter, "online")
@@ -34,15 +29,14 @@ impl Component for Battery {
                     let pct = now as f64 / full as f64 * 100.;
                     let pct = pct.min(100.) as u8;
 
-                    // remaining time
-                    // let seconds = get_time_remaining(plugged, full, now, current);
+                    // TODO: this seems incorrect
                     let remaining = now / current;
 
                     // set label
                     label.set_text(&symbols.format(|sym| match sym {
                         "percent" => format!("{}%", pct),
                         "remaining" => format!(
-                            "{}:{:0>2}", remaining / 3600,
+                            "{}:{:0>2}?", remaining / 3600,
                             (remaining / 60) % 60,
                         ),
                         "plugged" => format!("{}", if plugged {'✔'} else {'✗'}),
@@ -89,22 +83,7 @@ fn get_charge(battery: &str) -> Result<(i32, i32, i32), Error> {
     let full = get_data(battery, "charge_full").map(|a| a.parse().unwrap_or(0));
     let now = get_data(battery, "charge_now").map(|a| a.parse().unwrap_or(0));
     let current = get_data(battery, "current_now").map(|a| a.parse().unwrap_or(0));
-    // let full: Result<i32, ()> = Ok("6663000".to_string()).map(|a| a.parse().unwrap_or(0));
-    // let now: Result<i32, ()> = Ok("7368000".to_string()).map(|a| a.parse().unwrap_or(0));
-    // let current: Result<i32, ()> = Ok("1000".to_string()).map(|a| a.parse().unwrap_or(0));
     full.and_then(|a| now.and_then(|b| current.and_then(|c| {
         Ok((a, b, c))
     })))
-}
-
-fn get_time_remaining(plugged: bool, full: i32, now: i32, current: i32) -> u64 {
-    if now != 0 {
-        if plugged {
-            (full - now).abs() as u64 * 3600u64 / current as u64
-        } else {
-            now as u64 * 3600u64 / current as u64
-        }
-    } else {
-        0
-    }
 }

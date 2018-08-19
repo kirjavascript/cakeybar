@@ -1,0 +1,39 @@
+theme = "theme.css"
+
+# bars
+
+[bar.default]
+position = "bottom"
+workspace-scroll = true
+layout = [
+    "start",
+    "workspaces",
+    "tray",
+    "wintray",
+]
+
+[bar.right-scroll]
+monitor = 1
+position = "bottom"
+workspace-scroll = true
+
+[component.workspaces]
+type = "workspaces"
+show-all = true
+format = "{name}"
+
+[component.start]
+type = "image"
+src = "assets/start.png"
+
+[component.wintray]
+type = "container"
+halign = "end"
+layout = [
+    "clock",
+]
+
+[component.clock]
+type = "clock"
+timestamp = "%H:%M %p"
+halign = "end"

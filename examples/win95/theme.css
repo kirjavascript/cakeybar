@@ -1,0 +1,60 @@
+@define-color grey #BDB8BE;
+@define-color darkgrey #7f787f;
+
+label {
+    font-family: Tahoma;
+    font-size: 11px;
+    color: black;
+    font-weight: 500;
+}
+
+#default {
+    min-height: 28px;
+    background-image: url("./assets/bg.png");
+}
+
+#start {
+    margin: 2px 0 0 4px;
+}
+
+#wintray {
+    border-top: 1px solid @darkgrey;
+    border-right: 1px solid white;
+    border-left: 1px solid @darkgrey;
+    border-bottom: 1px solid white;
+    margin-top: 4px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    padding: 0 8px 0 24px;
+    background-image: url("./assets/speaker.png");
+    background-repeat: no-repeat;
+    background-position: 4px;
+}
+
+#workspaces label {
+    margin: 2px 2px 0 2px;
+    padding: 0 10px 0 20px;
+    background-repeat: no-repeat;
+    min-width: 130px;
+    background-position: 3% 50%, 0% 50%;
+    background-size: 14px, auto;
+}
+
+#workspaces :nth-child(1) label {
+    background-image: url("./assets/icons/firefox.png"), url("./assets/window.png");
+}
+#workspaces :nth-child(1) label.focused {
+    background-image: url("./assets/icons/firefox.png"), url("./assets/focused.png");
+}
+#workspaces :nth-child(2) label {
+    background-image: url("./assets/icons/vim.png"), url("./assets/window.png");
+}
+#workspaces :nth-child(2) label.focused {
+    background-image: url("./assets/icons/vim.png"), url("./assets/focused.png");
+}
+#workspaces :nth-child(3) label {
+    background-image: url("./assets/icons/terminal.png"), url("./assets/window.png");
+}
+#workspaces :nth-child(3) label.focused {
+    background-image: url("./assets/icons/terminal.png"), url("./assets/focused.png");
+}

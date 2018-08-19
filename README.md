@@ -130,7 +130,7 @@ show-all = false # show workspaces from every monitor
 format = "{number}" # symbols are; number, name
 ```
 
-each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted like `#workspace_list label .focused`
+each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted with `#workspace_list label .focused`
 
 #### mode
 
@@ -181,6 +181,7 @@ format = "{ipv4}" # symbols are; name, ipv4, ipv6
 type = "battery"
 battery = "BAT0"
 adapter = "AC"
+format = "{percent}" # symbols are; percent, remaining, plugged
 ```
 
 you can target the class `#battery.plugged` when AC is plugged in
