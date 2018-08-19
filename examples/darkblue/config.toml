@@ -80,7 +80,7 @@ type = "memory"
 
 [component.disk]
 type = "disk"
-mounts = ["/", "/home/thom"]
+mounts = ["/"]
 class = "has-icon"
 
 [component.battery]

@@ -16,7 +16,7 @@ https://github.com/Rahix/pa-visualizer
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
-current: win95 | ipc
+current: ipc
 
 wm refactoring
 ===
@@ -41,6 +41,7 @@ bug: on no icons width = 1
 
 ipc
 ====
+env variable
 wm_util event
 ipc show #eq #more .class_too
 reload config / theme (theme should be easy)
