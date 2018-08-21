@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use config::Property;
 use gtk::prelude::*;
 use gtk::{Label};
@@ -26,7 +26,7 @@ fn get_output(src: &str) -> Result<(String, String, i32), Error> {
 }
 
 impl Component for Script {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         if let Some(&Property::String(ref src)) = config.properties.get("src") {
 
             let (tx, rx) = mpsc::channel();

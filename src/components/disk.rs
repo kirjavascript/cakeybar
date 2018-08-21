@@ -1,11 +1,11 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use util::{format_bytes, SymbolFmt, LabelGroup};
 use sysinfo::{DiskExt, SystemExt, System};
 
 pub struct Disk;
 
 impl Component for Disk {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         let label_group = LabelGroup::new();
         Self::init_widget(&label_group.wrapper, container, config, bar);
 

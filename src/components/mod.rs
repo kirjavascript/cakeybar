@@ -1,13 +1,13 @@
 // Component Template:
 //
-// use super::{Component, Bar, gtk, ComponentConfig};
+// use super::{Component, Bar, gtk, ConfigGroup};
 // use gtk::prelude::*;
 // use gtk::{Label};
 //
 // pub struct Template;
 //
 // impl Component for Template {
-//     fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+//     fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
 //         let label = Label::new(None);
 //         label.set_text(&"test");
 //         label.show();
@@ -24,7 +24,7 @@ use gtk::{
     OverlayExt,
 };
 use bar::Bar;
-use config::{ComponentConfig, Property};
+use config::{ConfigGroup, Property};
 
 mod bandwidth;
 mod battery;
@@ -47,12 +47,12 @@ mod workspaces;
 
 
 pub trait Component {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar);
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar);
 
     fn init_widget<T>(
         widget: &T,
         container: &gtk::Box,
-        config: &ComponentConfig,
+        config: &ConfigGroup,
         bar: &Bar,
     ) where T: gtk::IsA<gtk::Widget>
             + gtk::IsA<gtk::Object>
@@ -109,7 +109,7 @@ pub trait Component {
     }
 }
 
-fn load_component(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+fn load_component(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
     // get type
     let component_type_option = config.properties.get("type");
     if let Some(&Property::String(ref component_type)) = component_type_option {

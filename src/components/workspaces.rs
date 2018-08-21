@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
 
@@ -15,7 +15,7 @@ pub struct Workspaces;
 // Workspaces
 
 impl Component for Workspaces {
-    fn init(container: &Box, config: &ComponentConfig, bar: &Bar){
+    fn init(container: &Box, config: &ConfigGroup, bar: &Bar){
         let monitor_index = bar.config.get_int_or("monitor", 0) as i32;
 
         // get spacing

@@ -10,7 +10,7 @@ use gtk::{
 use gdk::{ScrollDirection, ScreenExt};
 
 use {NAME, components};
-use config::{ComponentConfig, Config};
+use config::{ConfigGroup, Config};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -18,7 +18,7 @@ use std::rc::Rc;
 pub struct Bar<'a> {
     pub application: &'a gtk::Application,
     pub app_config: &'a Config,
-    pub config: &'a ComponentConfig,
+    pub config: &'a ConfigGroup,
     pub wm_util: &'a wm::WMUtil,
     pub overlay: Box<Overlay>,
 }
@@ -27,7 +27,7 @@ impl<'a> Bar<'a> {
     pub fn new(
         application: &'a gtk::Application,
         app_config: &'a Config,
-        config: &'a ComponentConfig,
+        config: &'a ConfigGroup,
         wm_util: &'a wm::WMUtil,
         monitor: &Rectangle,
     ) -> Bar<'a> {

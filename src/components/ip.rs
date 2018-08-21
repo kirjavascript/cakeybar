@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use util::{SymbolFmt, LabelGroup};
 
 use systemstat::{System, Platform};
@@ -7,7 +7,7 @@ use systemstat::data::{IpAddr, Network};
 pub struct IP {}
 
 impl Component for IP {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         let label_group = LabelGroup::new();
         Self::init_widget(&label_group.wrapper, container, config, bar);
 

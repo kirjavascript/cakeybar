@@ -1,11 +1,11 @@
-use super::{gtk, Component, Bar, ComponentConfig, Property};
+use super::{gtk, Component, Bar, ConfigGroup, Property};
 use gtk::prelude::*;
 use gtk::{Image as GtkImage};
 
 pub struct Image;
 
 impl Component for Image {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         if let Some(&Property::String(ref src)) = config.properties.get("src") {
             let img: GtkImage = GtkImage::new_from_file(
                 &bar.app_config.get_path(src)

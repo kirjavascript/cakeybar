@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{
     Label,
@@ -28,7 +28,7 @@ pub struct Menu {
 }
 
 impl Component for Menu {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         let label = Label::new(None);
         let label_text = config.get_str_or("label", "");
         label.set_text(&label_text);

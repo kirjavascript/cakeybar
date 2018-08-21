@@ -1,11 +1,11 @@
-use super::{Component, Bar, ComponentConfig};
+use super::{Component, Bar, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Box, Orientation};
 
 pub struct Container;
 
 impl Component for Container {
-    fn init(container: &Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &Box, config: &ConfigGroup, bar: &Bar) {
         if let Some(layout) = config.properties.get("layout") {
 
             // get spacing

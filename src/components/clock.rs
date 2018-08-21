@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Label};
 use chrono::Local;
@@ -11,7 +11,7 @@ fn current_time(format: String) -> String {
 }
 
 impl Component for Clock {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         let label = Label::new(None);
 
         let timestamp = config.get_str_or("timestamp", "%Y-%m-%d %H:%M:%S").to_string();

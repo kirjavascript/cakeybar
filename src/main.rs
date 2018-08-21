@@ -22,7 +22,6 @@ extern crate nom;
 extern crate crossbeam_channel;
 
 use gio::prelude::*;
-
 use clap::{Arg, App};
 
 #[macro_use]

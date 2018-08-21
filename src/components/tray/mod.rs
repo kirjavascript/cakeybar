@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Orientation};
 use gdk::{WindowExt, RGBA};
@@ -19,7 +19,7 @@ pub struct Tray;
 static mut TRAY_LOADED: bool = false;
 
 impl Component for Tray {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         if unsafe { !TRAY_LOADED } {
             unsafe { TRAY_LOADED = true; }
             Tray::be_a_tray(container, config, bar);
@@ -39,7 +39,7 @@ pub enum Action {
 }
 
 impl Tray {
-    fn be_a_tray(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn be_a_tray(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);

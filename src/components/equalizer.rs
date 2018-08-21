@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{DrawingArea};
 use std::thread;
@@ -43,7 +43,7 @@ impl Bars {
 }
 
 impl Component for Equalizer {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
 
         let (tx, rx) = mpsc::channel();
 

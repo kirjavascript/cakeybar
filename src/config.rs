@@ -8,14 +8,14 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Config {
-    pub global: ComponentConfig,
-    pub bars: Vec<ComponentConfig>,
-    pub components: Vec<ComponentConfig>,
+    pub global: ConfigGroup,
+    pub bars: Vec<ConfigGroup>,
+    pub components: Vec<ConfigGroup>,
     pub config_dir: PathBuf,
 }
 
 #[derive(Debug)]
-pub struct ComponentConfig {
+pub struct ConfigGroup {
     pub name: String,
     pub properties: HashMap<String, Property>,
 }
@@ -46,7 +46,7 @@ impl Config {
     }
 }
 
-impl ComponentConfig {
+impl ConfigGroup {
     pub fn get_int_or(&self, prop: &str, or: i64) -> i64 {
         let value_option = self.properties.get(prop);
         if let Some(&Property::Integer(ref val)) = value_option {
@@ -134,14 +134,14 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
             properties.insert(key_str, value_to_property(value));
         });
 
-        ComponentConfig {
+        ConfigGroup {
             name: key.to_string(),
             properties,
         }
     };
 
 
-    let get_table_config_list = |name| -> Vec<ComponentConfig> {
+    let get_table_config_list = |name| -> Vec<ConfigGroup> {
         let component_option = parsed.get(name);
 
         if let Some(Some(component_table)) = component_option.map(|d| d.as_table()) {
@@ -150,7 +150,7 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
                 .iter()
                 .filter(|&(_k, v)| v.is_table())
                 .collect();
-            let component_configs: Vec<ComponentConfig> = components
+            let component_configs: Vec<ConfigGroup> = components
                 .iter()
                 .map(get_table_config)
                 .collect();
@@ -161,6 +161,8 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
         }
     };
 
+    // get global properties (ignore tables)
+
     let global = {
         let mut properties: HashMap<String, Property> = HashMap::new();
         parsed.as_table().unwrap().iter().for_each(|(key, value)| {
@@ -170,7 +172,7 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
             }
         });
 
-        ComponentConfig {
+        ConfigGroup {
             name: "global".to_string(),
             properties,
         }

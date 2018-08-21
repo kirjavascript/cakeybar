@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use util::{format_bytes, SymbolFmt, LabelGroup};
 
 use std::collections::HashMap;
@@ -10,7 +10,7 @@ use probes::network;
 pub struct Bandwidth;
 
 impl Component for Bandwidth {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar) {
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
         let label_group = LabelGroup::new();
         Self::init_widget(&label_group.wrapper, container, config, bar);
 

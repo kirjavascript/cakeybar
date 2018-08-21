@@ -1,4 +1,4 @@
-use super::{Component, Bar, gtk, ComponentConfig};
+use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Label};
 use util::SymbolFmt;
@@ -8,7 +8,7 @@ use wm::events::{Event, EventValue};
 pub struct Window;
 
 impl Component for Window {
-    fn init(container: &gtk::Box, config: &ComponentConfig, bar: &Bar){
+    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar){
         let label = Label::new(None);
 
         Self::init_widget(&label, container, config, bar);
