@@ -30,6 +30,7 @@ https://developer.gnome.org/glib/unstable/glib-Simple-XML-Subset-Parser.html#g-m
 escape & (symbols)
 escape < (title)
 use svg instead?
+use pangoattrlist instead?
 
 tray
 ====
@@ -48,6 +49,7 @@ reload config / theme (theme should be easy)
 allow ipc in menu objs
 autohide bar
 bindsym $mod+m exec -- --message / accellerators
+interactive mode
 
 docs
 ====
@@ -56,9 +58,13 @@ add / remove - curl | sh install
 undocu'd;
 bar/float
 workspaces/spacing
+BSPWM_SOCKET
 
 components
 ====
+17:10:12 <+isk> Kirjava: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/Uno_Slave_Reader/Visualizer.h
+17:10:45 <+isk> also if you're interested in terminal ascii visual representation: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/fade.cpp
+1D colour red-green lerping equalizer
 bspwm mode
 conditional display / flexbox
 script - classes for return code

@@ -119,7 +119,7 @@ impl Tray {
                                     return ()
                                 }
                             } else {
-                                error!("tray: killed by XKillClient() maybe?");
+                                error!("uhoh");
                             }
                         },
                         // gtk events

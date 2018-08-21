@@ -1,7 +1,5 @@
 theme = "theme.css"
 
-# bars
-
 [bar.default]
 position = "bottom"
 workspace-scroll = true
@@ -10,11 +8,6 @@ layout = [
     "workspaces",
     "wintray",
 ]
-
-[bar.right-scroll]
-monitor = 1
-position = "bottom"
-workspace-scroll = true
 
 [component.workspaces]
 type = "workspaces"
@@ -35,4 +28,3 @@ layout = [
 [component.clock]
 type = "clock"
 timestamp = "%H:%M %p"
-halign = "end"

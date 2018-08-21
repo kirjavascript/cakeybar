@@ -38,9 +38,9 @@ pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn init(application: &gtk::Application, config: &config::Config) {
     // load theme to screen
-    match &config.theme {
-        &Some(ref src) => wm::gtk::load_theme(src),
-        &None => {/* default theme */},
+    match config.get_theme() {
+        Some(ref src) => wm::gtk::load_theme(src),
+        None => {/* default theme */},
     }
 
     let monitors = wm::gtk::get_monitor_geometry();

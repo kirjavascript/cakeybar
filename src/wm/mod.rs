@@ -3,6 +3,7 @@ pub mod xcb;
 pub mod gtk;
 pub mod bsp;
 pub mod i3;
+pub mod ipc;
 pub mod events;
 pub mod workspace;
 

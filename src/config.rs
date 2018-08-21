@@ -8,7 +8,7 @@ use std::collections::HashMap;
 
 #[derive(Debug)]
 pub struct Config {
-    pub theme: Option<String>,
+    pub global: ComponentConfig,
     pub bars: Vec<ComponentConfig>,
     pub components: Vec<ComponentConfig>,
     pub config_dir: PathBuf,
@@ -35,6 +35,14 @@ pub enum Property {
 impl Config {
     pub fn get_path(&self, filename: &str) -> String {
         get_path(filename.to_string(), &self.config_dir)
+    }
+    pub fn get_theme(&self) -> Option<String> {
+        let theme_opt = self.global.properties.get("theme");
+        if let Some(Property::String(ref theme)) = theme_opt {
+            Some(self.get_path(theme))
+        } else {
+            None
+        }
     }
 }
 
@@ -98,14 +106,6 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
     let parsed = contents.parse::<toml::Value>()
         .map_err(|x| x.to_string())?;
 
-    // theme
-
-    let theme = match parsed.get("theme") {
-        Some(theme) => theme.as_str().map(String::from),
-        None => None,
-    };
-    let theme_str = theme.map(|x| get_path(x, config_dir));
-
     // bar assertions
 
     let bar_table = parsed.get("bar")
@@ -161,10 +161,25 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
         }
     };
 
+    let global = {
+        let mut properties: HashMap<String, Property> = HashMap::new();
+        parsed.as_table().unwrap().iter().for_each(|(key, value)| {
+            if !value.is_table() {
+                let key_str = key.to_string();
+                properties.insert(key_str, value_to_property(value));
+            }
+        });
+
+        ComponentConfig {
+            name: "global".to_string(),
+            properties,
+        }
+    };
+
     // root
 
     let config = Config {
-        theme: theme_str,
+        global,
         bars: get_table_config_list("bar"),
         components: get_table_config_list("component"),
         config_dir: config_dir.to_path_buf(),
