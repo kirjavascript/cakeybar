@@ -42,10 +42,16 @@ fn init(application: &gtk::Application, config: &config::Config) {
         None => {/* default theme */},
     }
 
-    let monitors = wm::gtk::get_monitor_geometry();
+    // load WM tools
     let wm_util = wm::WMUtil::new();
 
+    // load IPC
+    if config.global.get_bool_or("enable-ipc", true) {
+        wm::ipc::listen(&wm_util);
+    }
+
     // load bars
+    let monitors = wm::gtk::get_monitor_geometry();
     for bar_config in config.bars.iter() {
         let monitor_index = bar_config.get_int_or("monitor", 0);
         let monitor_option = monitors.get(monitor_index as usize);

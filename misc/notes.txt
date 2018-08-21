@@ -21,6 +21,7 @@ current: ipc
 wm refactoring
 ===
 config.has_type("workspace") to disable listeners, etc
+refactor Component trait - store root widget in struct
 
 set_markup
 ===
@@ -59,6 +60,8 @@ undocu'd;
 bar/float
 workspaces/spacing
 BSPWM_SOCKET
+CAKEYBAR_SOCKET
+enable-ipc global bool
 
 components
 ====
@@ -91,7 +94,7 @@ type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
-osx top bar (hover) / windows taskbar (clickable) + osx background rice / pice of cake / normal / powerline (half transparency w/ small window title) / hexagons (visualizer) / busy (stats)
+osx top bar (hover) / pice of cake / powerline (half transparency w/ small window title) / hexagons (visualizer + overhang via bar/float) / busy (all stats)
 crosspost on unixporn / r/rust
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
