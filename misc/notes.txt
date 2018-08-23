@@ -16,12 +16,14 @@ https://github.com/Rahix/pa-visualizer
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
-current: ipc
+features for 1.0.0: ipc, format string styling, startmenu, tray bugs
+current: ipc, repl
 
 wm refactoring
 ===
 config.has_type("workspace") to disable listeners, etc
-refactor Component trait - store root widget in struct
+refactor Component trait - store root widget in struct - default hide/show
+default-layout global prop
 
 set_markup
 ===
@@ -36,8 +38,7 @@ use pangoattrlist instead?
 tray
 ====
 wm restart event restack tray
-fix tray fullscreen latency with events
-detect xkill / kill -9 ?
+fix tray fullscreen latency/mm bug with events
 bug: on no icons width = 1
 /tmp/cakeytray-horcrux - save processes, restart if dead & if file exists on boot
 
@@ -51,17 +52,6 @@ allow ipc in menu objs
 autohide bar
 bindsym $mod+m exec -- --message / accellerators
 interactive mode
-
-docs
-====
-add / remove - curl | sh install
-    or install from cargo (google scrftch)
-undocu'd;
-bar/float
-workspaces/spacing
-BSPWM_SOCKET
-CAKEYBAR_SOCKET
-enable-ipc global bool
 
 components
 ====
@@ -90,12 +80,24 @@ modal
 workspace multiple rows
 gmail
 
+docs
+====
+add / remove - curl | sh install
+    or install from cargo (google scrftch)
+undocu'd;
+bar/float
+workspaces/spacing
+BSPWM_SOCKET
+CAKEYBAR_SOCKET
+enable-ipc global bool
+
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
 osx top bar (hover) / pice of cake / powerline (half transparency w/ small window title) / hexagons (visualizer + overhang via bar/float) / busy (all stats)
-crosspost on unixporn / r/rust
+crosspost on unixporn / r/rust [OC] a piece of cakeybar
+more rice than feudal japan
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
 https://i.imgur.com/TF69nPa.png

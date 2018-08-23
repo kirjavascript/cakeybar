@@ -28,19 +28,21 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                     }
                 }
             },
-            Err(err) => error!("Cannot start IPC"),
+            Err(err) => error!("Cannot start IPC {}", err),
         }
     });
 
     // receive events
     gtk::timeout_add(10, move || {
         if let Some(msg) = r.try_recv() {
-            println!("{:#?}", msg);
+            info!("IPC {:#?}", msg);
         }
         gtk::Continue(true)
     });
 }
 
-fn handle_stream(stream: UnixStream, s: channel::Sender<()>) {
-
+fn handle_stream(mut stream: UnixStream, s: channel::Sender<String>) {
+    let mut data = String::new();
+    stream.read_to_string(&mut data).ok();
+    s.send(data);
 }

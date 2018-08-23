@@ -13,3 +13,7 @@ pub fn get_socket_path() -> String {
         DEFAULT_SOCKET.to_string()
     }
 }
+
+pub fn send(input: &str) {
+    error!("TODO {}", input);
+}

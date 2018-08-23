@@ -18,7 +18,7 @@ pub fn load_theme(path: &str) {
     let provider = CssProvider::new();
     match provider.load_from_path(path) {
         Ok(_) => StyleContext::add_provider_for_screen(&screen, &provider, 0),
-        Err(e) => {error!("{}", e);},
+        Err(e) => error!("{}", e),
     };
 }
 

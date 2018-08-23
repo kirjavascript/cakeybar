@@ -1,5 +1,3 @@
-theme = "theme.css"
-
 [bar.default]
 position = "bottom"
 workspace-scroll = true

@@ -37,12 +37,7 @@ impl Config {
         get_path(filename.to_string(), &self.config_dir)
     }
     pub fn get_theme(&self) -> Option<String> {
-        let theme_opt = self.global.properties.get("theme");
-        if let Some(Property::String(ref theme)) = theme_opt {
-            Some(self.get_path(theme))
-        } else {
-            None
-        }
+        Some(self.get_path(self.global.get_str_or("theme", "theme.css")))
     }
 }
 

@@ -82,12 +82,18 @@ fn main() {
              .value_name("FILE")
              .help("Specify a config path")
              .takes_value(true))
-        .arg(Arg::with_name("monitors")
+        .arg(Arg::with_name("message")
              .short("m")
+             .long("message")
+             .value_name("MESSAGE")
+             .help("Send an IPC message")
+             .takes_value(true))
+        .arg(Arg::with_name("monitors")
+             .short("M")
              .long("monitors")
              .help("Shows information about monitors"))
         .arg(Arg::with_name("multi")
-             .short("M")
+             .short("Q")
              .long("multi")
              .help("Allow multiple instances")
              .hidden(true))
@@ -96,7 +102,13 @@ fn main() {
     // show monitor debug
     if matches.is_present("monitors") {
         wm::gtk::show_monitor_debug();
-        return ();
+        return
+    }
+
+    // send IPC message
+    if let Some(message) = matches.value_of("message") {
+        wm::ipc::send(message);
+        return
     }
 
     // get config
