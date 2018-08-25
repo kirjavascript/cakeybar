@@ -12,8 +12,8 @@
 * system tray integration
 * more rice than feudal japan
 
-*work in progress*  
-configuration is not stable yet  
+*work in progress*
+configuration is not stable yet
 currently testing in i3wm/bspwm
 
 ## quickstart
@@ -36,7 +36,7 @@ cargo run --release -- -c examples/darkblue/config.toml
 
 [TOML](https://github.com/toml-lang/toml) is used in 'normal' config files and CSS is used for theming
 
-[CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)  
+[CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)
 [CSS properties](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 
 see the [examples](examples) for more
@@ -44,20 +44,31 @@ see the [examples](examples) for more
 #### global properties
 
 ```toml
-theme = "theme.css" # paths can be relative or absolute
+# path to theme. paths can be relative or absolute
+theme = "theme.css"
 ```
 
 ### bar config
 
 ```toml
+# define a bar with the name `bar_name`
 [bar.bar_name]
+
+# which monitor the bar should show on
+# a list of monitors can be seen with `cakeybar -M`
 monitor = 0
-position = "top" # "top" | "bottom"
+
+# where to show the bar. options are: `top | bottom`
+position = "top"
+
+# a list of components to add to the bar, identified by name
 layout = [ "component", "names", "go", "here" ]
+
+# if enabled, will bind workspace next/prev actions to scroll events
 workspace-scroll = false
 ```
 
-you can define as many bars as you like as long as they have unique ids. the id is also used as the CSS selector for that bar: `#bar_name`
+you can define as many bars as you like as long as they have unique names. the name is also used as the CSS selector for that bar: `#bar_name`
 
 ### component config
 
@@ -68,7 +79,8 @@ you can define as many bars as you like as long as they have unique ids. the id 
 [component.component_name]
 
 # the only required property for a component is **type**
-type = "image"
+# values presented in this documentation are defaults
+type = "void"
 
 # components can be styled with `#component_name` and `.class-name`
 class = "class-name"
@@ -93,6 +105,8 @@ format = "label: {symbol-name}"
 
 #### image
 
+an image
+
 ```toml
 [component.start_icon]
 type = "image"
@@ -100,6 +114,8 @@ src = "window.png"
 ```
 
 #### container
+
+a container to create more complex layouts and group components
 
 ```toml
 [component.stats_box]
@@ -109,11 +125,11 @@ direction = "vertical"
 layout = [ "component", "names", "go", "here" ]
 ```
 
-can be used to create more complex layouts or group components to share between bars
-
 possible directions: `column | row` or `horizontal | vertical`
 
 #### window
+
+displays the current active window's title
 
 ```toml
 [component.window_title]

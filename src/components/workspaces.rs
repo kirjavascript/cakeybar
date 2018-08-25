@@ -69,6 +69,7 @@ impl Component for Workspaces {
                         let added_new = if let Some(label) = labels.borrow_mut().get_mut(i) {
                             // if a label already exists
                             set_label_attrs(&label, &workspace, &symbols);
+                            // TODO: update event box
                             None
                         } else {
                             // if adding a new label

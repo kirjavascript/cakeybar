@@ -21,9 +21,10 @@ current: ipc, repl
 
 wm refactoring
 ===
+default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 refactor Component trait - store root widget in struct - default hide/show
-default-layout global prop
+workspaces: update event box / general refactor
 
 set_markup
 ===
@@ -63,6 +64,7 @@ conditional display / flexbox
 script - classes for return code
 <webview>
 remote ip
+active window xprop
 onclick = ""
 mpd ipc
 dmenu gtk::WindowType::Popup
