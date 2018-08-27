@@ -7,7 +7,7 @@ use std::io::{Read, Write};
 use std::fs::remove_file;
 use crossbeam_channel as channel;
 
-pub fn listen(wm_util: &::wm::WMUtil) {
+pub fn listen(_wm_util: &::wm::WMUtil) {
     let socket_path = ipc::get_socket_path();
     // remove from last time
     remove_file(&socket_path).ok();
@@ -42,7 +42,15 @@ pub fn listen(wm_util: &::wm::WMUtil) {
 }
 
 fn handle_stream(mut stream: UnixStream, s: channel::Sender<String>) {
-    let mut data = String::new();
-    stream.read_to_string(&mut data).ok();
-    s.send(data);
+    let mut buf = [0; 256];
+    stream.read(&mut buf).ok();
+    // convert to string
+    let input = buf.iter()
+        .filter(|c| **c != 0)
+        .map(|c| *c as char)
+        .collect::<String>();
+    // send to main thread
+    s.send(input);
+    // send IPC response
+    stream.write("RESPONSE".as_bytes()).ok();
 }

@@ -107,7 +107,7 @@ fn main() {
 
     // send IPC message
     if let Some(message) = matches.value_of("message") {
-        wm::ipc::send(message);
+        wm::ipc::send_message(message);
         return
     }
 

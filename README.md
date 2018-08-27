@@ -12,8 +12,8 @@
 * system tray integration
 * more rice than feudal japan
 
-*work in progress*
-configuration is not stable yet
+*work in progress*  
+configuration is not stable yet  
 currently testing in i3wm/bspwm
 
 ## quickstart
@@ -36,7 +36,7 @@ cargo run --release -- -c examples/darkblue/config.toml
 
 [TOML](https://github.com/toml-lang/toml) is used in 'normal' config files and CSS is used for theming
 
-[CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)
+[CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)  
 [CSS properties](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 
 see the [examples](examples) for more
@@ -54,8 +54,7 @@ theme = "theme.css"
 # define a bar with the name `bar_name`
 [bar.bar_name]
 
-# which monitor the bar should show on
-# a list of monitors can be seen with `cakeybar -M`
+# monitor the bar should show on. a list of monitors can be seen with `cakeybar -M`
 monitor = 0
 
 # where to show the bar. options are: `top | bottom`
