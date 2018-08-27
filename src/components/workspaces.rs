@@ -1,6 +1,7 @@
 use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
+use glib::signal::SignalHandlerId;
 
 use wm;
 use wm::events::{Event, EventValue};
@@ -9,10 +10,9 @@ use util::{SymbolFmt};
 
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::mem::replace;
 
 pub struct Workspaces;
-
-// Workspaces
 
 impl Component for Workspaces {
     fn init(container: &Box, config: &ConfigGroup, bar: &Bar){
@@ -39,66 +39,51 @@ impl Component for Workspaces {
 
         // create initial UI
 
-        let labels: Rc<RefCell<Vec<Label>>> = Rc::new(RefCell::new(
-             Vec::new()
-        ));
+        let elabels: Rc<RefCell<Vec<EventLabel>>> =
+            Rc::new(RefCell::new(Vec::new()));
 
         let &Bar { wm_util, .. } = bar;
 
         for workspace in workspaces.iter() {
-            let label = Label::new(None);
-            set_label_attrs(&label, &workspace, &symbols);
-            let ebox = add_event_box(
-                &label,
-                workspace.name.clone(),
-                wm_util.clone(),
-            );
-            wrapper.add(&ebox);
-            labels.borrow_mut().push(label);
+            let elabel = EventLabel::new(&wrapper, wm_util, &workspace, &symbols);
+            elabels.borrow_mut().push(elabel);
         }
         wrapper.show_all();
 
         // listen for events
-        wm_util.add_listener(Event::Workspace, clone!((wrapper, labels, wm_util)
+        wm_util.add_listener(Event::Workspace, clone!((wrapper, elabels, wm_util)
             move |workspaces_opt| {
                 if let Some(EventValue::Workspaces(workspaces)) = workspaces_opt {
 
                     let mut workspaces = filter_by_name(&workspaces, show_all, &name_opt);
 
                     for (i, workspace) in workspaces.iter().enumerate() {
-                        let added_new = if let Some(label) = labels.borrow_mut().get_mut(i) {
+                        let added_new = if let Some(elabel) = elabels.borrow_mut().get_mut(i) {
                             // if a label already exists
-                            set_label_attrs(&label, &workspace, &symbols);
-                            // TODO: update event box
+                            elabel.update(&workspace, &symbols, &wm_util);
                             None
                         } else {
-                            // if adding a new label
-                            let label = Label::new(None);
-                            set_label_attrs(&label, &workspace, &symbols);
-                            let ebox = add_event_box(
-                                &label,
-                                workspace.name.clone(),
-                                wm_util.clone(),
-                            );
-                            wrapper.add(&ebox);
-                            Some(label)
+                            // otherwise create a new label
+                            Some(EventLabel::new(
+                                &wrapper,
+                                &wm_util,
+                                &workspace,
+                                &symbols
+                            ))
                         };
                         if let Some(added) = added_new {
-                            labels.borrow_mut().push(added);
+                            elabels.borrow_mut().push(added);
                         }
                     }
                     wrapper.show_all();
 
                     // remove items
                     let work_len = workspaces.len();
-                    let label_len = labels.borrow().len();
+                    let label_len = elabels.borrow().len();
                     if label_len > work_len {
-                        let mut labels = labels.borrow_mut();
-                        labels.splice(work_len..label_len, vec![]).for_each(|w| {
-                            if let Some(parent) = w.get_parent() {
-                                // nuke the event box
-                                parent.destroy();
-                            }
+                        let mut labels = elabels.borrow_mut();
+                        labels.splice(work_len..label_len, vec![]).for_each(|el| {
+                            el.destroy();
                         });
                     }
                 }
@@ -108,13 +93,68 @@ impl Component for Workspaces {
     }
 }
 
+
+struct EventLabel {
+    ebox: EventBox,
+    label: Label,
+    event_id: SignalHandlerId,
+}
+
+impl EventLabel {
+    pub fn new(
+        wrapper: &Box,
+        wm_util: &wm::WMUtil,
+        workspace: &Workspace,
+        symbols: &SymbolFmt
+    ) -> Self {
+        let label = Label::new(None);
+        let ebox = EventBox::new();
+        ebox.add(&label);
+        wrapper.add(&ebox);
+        set_label_attrs(&label, workspace, &symbols);
+        // attach initial event and store the id
+        let workspace_name = workspace.name.to_string();
+        let event_id = ebox.connect_button_press_event(clone!(wm_util
+            move |_, _| {
+                wm_util.focus_workspace(&workspace_name);
+                Inhibit(false)
+            }
+        ));
+        EventLabel {
+            ebox, label, event_id,
+        }
+    }
+
+    pub fn update(
+        &mut self,
+        workspace: &Workspace,
+        symbols: &SymbolFmt,
+        wm_util: &wm::WMUtil
+    ) {
+        set_label_attrs(&self.label, workspace, symbols);
+        // add a new event
+        let workspace_name = workspace.name.to_string();
+        let event_id = self.ebox.connect_button_press_event(clone!(wm_util
+            move |_, _| {
+                wm_util.focus_workspace(&workspace_name);
+                Inhibit(false)
+            }
+        ));
+        let old_event_id = replace(&mut self.event_id, event_id);
+        self.ebox.disconnect(old_event_id);
+    }
+
+    pub fn destroy(&self) {
+        self.ebox.destroy();
+    }
+}
+
 fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
     move |s, b| {
         if b { StyleContextExt::add_class(&ctx, s); }
         else { StyleContextExt::remove_class(&ctx, s); }
     }
 }
-
 
 fn set_label_attrs(label: &Label, workspace: &Workspace, symbols: &SymbolFmt) {
     label.set_label(&symbols.format(|sym| match sym {
@@ -129,16 +169,6 @@ fn set_label_attrs(label: &Label, workspace: &Workspace, symbols: &SymbolFmt) {
         set_class("visible", workspace.visible);
         set_class("urgent", workspace.urgent);
     }
-}
-
-fn add_event_box(label: &Label, name: String, wm_util: wm::WMUtil) -> EventBox {
-    let ebox = EventBox::new();
-    ebox.add(label);
-    ebox.connect_button_press_event(move |_, _| {
-        wm_util.focus_workspace(&name);
-        Inhibit(false)
-    });
-    ebox
 }
 
 fn filter_by_name<'a>(workspaces: &'a Vec<Workspace>, show_all: bool, name_opt: &Option<String>) -> Vec<&'a Workspace> {
