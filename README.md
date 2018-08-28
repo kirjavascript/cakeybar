@@ -54,10 +54,10 @@ theme = "theme.css"
 # define a bar with the name `bar_name`
 [bar.bar_name]
 
-# monitor the bar should show on. a list of monitors can be seen with `cakeybar -M`
+# monitor index the bar appears on. a list of monitors can be seen with `cakeybar -M`
 monitor = 0
 
-# where to show the bar. options are: `top | bottom`
+# where to show the bar. options are: top | bottom
 position = "top"
 
 # a list of components to add to the bar, identified by name
@@ -84,9 +84,9 @@ type = "void"
 # components can be styled with `#component_name` and `.class-name`
 class = "class-name"
 
-# alignments can be: `start | end | center | fill`
-halign = "center"
-valign = "fill"
+# alignments can be: start | end | center | fill
+halign = "void"
+valign = "void"
 
 # the fixed property changes the component position from relative to absolute
 # disabling pass-through allows the fixed component to capture mouse events

@@ -140,8 +140,8 @@ impl EventLabel {
                 Inhibit(false)
             }
         ));
-        let old_event_id = replace(&mut self.event_id, event_id);
-        self.ebox.disconnect(old_event_id);
+        // remove the old event and update the ID
+        self.ebox.disconnect(replace(&mut self.event_id, event_id));
     }
 
     pub fn destroy(&self) {
