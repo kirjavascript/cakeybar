@@ -21,7 +21,7 @@ impl Component for CPU {
             if has_usage {
                 system.refresh_system();
             }
-            label.set_text(&symbols.format(|sym| match sym {
+            label.set_markup(&symbols.format(|sym| match sym {
                 "usage" => {
                     let processor_list = system.get_processor_list();
                     if !processor_list.is_empty() {

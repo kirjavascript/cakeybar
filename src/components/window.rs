@@ -2,6 +2,7 @@ use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Label};
 use util::SymbolFmt;
+use glib::markup_escape_text;
 
 use wm::events::{Event, EventValue};
 
@@ -22,7 +23,7 @@ impl Component for Window {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;
                     if name.len() == 0 {
-                        label.set_text(name);
+                        label.set_markup(name);
                     } else {
                         let output = symbols.format(|sym| {
                             match sym {
@@ -34,15 +35,15 @@ impl Component for Window {
                                             .fold("".to_string(), |acc, cur| {
                                                 acc + &cur.1.to_string()
                                             });
-                                        format!("{}…", parsed)
+                                        format!("{}…", markup_escape_text(&parsed))
                                     } else {
-                                        name.to_string()
+                                        markup_escape_text(name)
                                     }
                                 },
                                 _ => sym.to_string(),
                             }
                         });
-                        label.set_text(&output);
+                        label.set_markup(&output);
                     }
                 }
             }

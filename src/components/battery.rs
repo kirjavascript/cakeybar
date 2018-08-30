@@ -33,7 +33,7 @@ impl Component for Battery {
                     let remaining = now / current;
 
                     // set label
-                    label.set_text(&symbols.format(|sym| match sym {
+                    label.set_markup(&symbols.format(|sym| match sym {
                         "percent" => format!("{}%", pct),
                         "remaining" => format!(
                             "{}:{:0>2}?", remaining / 3600,

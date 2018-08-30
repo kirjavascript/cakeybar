@@ -16,6 +16,7 @@ pub fn send(input: &str) -> Result<String, Error> {
 }
 
 pub fn send_message(input: &str) {
+    info!("sending {:?} via IPC...", input);
     match send(input) {
         Ok(res) => info!("{}", res),
         Err(err) => error!("{}", err),

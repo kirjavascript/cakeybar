@@ -19,7 +19,7 @@ impl Component for Clock {
 
         let tick = clone!(label move || {
             let time = &current_time(timestamp.clone());
-            label.set_text(&symbols.format(|sym| {
+            label.set_markup(&symbols.format(|sym| {
                 match sym {
                     "timestamp" => time.to_string(),
                     _ => sym.to_string(),

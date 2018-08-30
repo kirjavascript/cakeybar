@@ -49,7 +49,7 @@ impl Component for Script {
             let label = Label::new(None);
             let tick = clone!(label move || {
                 if let Ok((ref stdout, ref stderr, code)) = rx.try_recv() {
-                    label.set_text(&symbols.format(|sym| {
+                    label.set_markup(&symbols.format(|sym| {
                         match sym {
                             "stdout" => stdout.to_string(),
                             "stderr" => stderr.to_string(),

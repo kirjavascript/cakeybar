@@ -43,11 +43,8 @@ type = "tray"
 [component.title]
 type = "window"
 fixed = true
-# format = '''
-#     <span fgcolor="#0A83FD">«</span> {title} <span fgcolor="#0A83FD">»</span>
-# '''
 format = '''
-    « {title} »
+    <span fgcolor="#0A83FD">«</span> {title} <span fgcolor="#0A83FD">»</span>
 '''
 
 [component.workspaces]
