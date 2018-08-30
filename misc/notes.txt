@@ -31,11 +31,10 @@ tray
 fix tray fullscreen latency/mm bug with events
 wm restart event restack tray
 bug: on no icons width = 1
-/tmp/cakeytray-horcrux - save processes, restart if dead & if file exists on boot
+/tmp/cakeytray-horcrux - save processes, restart if dead & if file exists on boot`
 
 ipc
 ====
-env variable
 wm_util event
 ipc show #eq #more .class_too
 reload config / theme (theme should be easy)
@@ -83,6 +82,7 @@ workspaces/spacing
 BSPWM_SOCKET
 CAKEYBAR_SOCKET
 enable-ipc global bool
+* IPC with interactive REPL
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
