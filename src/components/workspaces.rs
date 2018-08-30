@@ -2,6 +2,7 @@ use super::{Component, Bar, gtk, ConfigGroup};
 use gtk::prelude::*;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
 use glib::signal::SignalHandlerId;
+use glib::markup_escape_text;
 
 use wm;
 use wm::events::{Event, EventValue};
@@ -158,7 +159,7 @@ fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
 
 fn set_label_attrs(label: &Label, workspace: &Workspace, symbols: &SymbolFmt) {
     label.set_label(&symbols.format(|sym| match sym {
-        "name" => workspace.name.to_string(),
+        "name" => markup_escape_text(&workspace.name),
         "number" => workspace.number.to_string(),
         _ => sym.to_string()
     }));

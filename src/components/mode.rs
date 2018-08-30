@@ -3,6 +3,7 @@ use gtk::prelude::*;
 use gtk::{Label};
 use wm::events::{Event, EventValue};
 use util::SymbolFmt;
+use glib::markup_escape_text;
 
 pub struct Mode;
 
@@ -25,7 +26,7 @@ impl Component for Mode {
                         let mode = &mode;
                         label.set_markup(&symbols.format(|sym| {
                             match sym {
-                                "mode" => mode.to_string(),
+                                "mode" => markup_escape_text(mode),
                                 _ => sym.to_string(),
                             }
                         }));
