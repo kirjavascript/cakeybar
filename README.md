@@ -102,7 +102,7 @@ format = "label: {symbol-name}"
 # to print a literal curly bracket, duplicate the character `{{` or `}}`
 ```
 
-Format strings also use the [Pango Text Attribute Markup Language](https://developer.gnome.org/pango/stable/PangoMarkupFormat.html), which adds hyperlinks and additional format options
+Format strings also use the [Pango Text Attribute Markup Language](https://developer.gnome.org/pango/stable/PangoMarkupFormat.html), which adds hyperlinks and additional formatting options
 
 #### image
 
@@ -136,6 +136,7 @@ displays the current active window's title
 [component.window_title]
 type = "window"
 format = "{title}"
+truncate = 100
 ```
 
 #### workspaces

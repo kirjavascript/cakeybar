@@ -43,7 +43,7 @@ allow ipc in menu objs
 autohide bar
 bindsym $mod+m exec -- --message / accellerators
 interactive mode
-impl fmt::debug
+impl fmt::Display
 
 components
 ====

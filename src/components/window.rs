@@ -25,23 +25,21 @@ impl Component for Window {
                     if name.len() == 0 {
                         label.set_markup(name);
                     } else {
-                        let output = symbols.format(|sym| {
-                            match sym {
-                                "title" => {
-                                    if name.chars().count() > trunc {
-                                        let parsed = name
-                                            .char_indices()
-                                            .filter(|x| x.0 <= trunc)
-                                            .fold("".to_string(), |acc, cur| {
-                                                acc + &cur.1.to_string()
-                                            });
-                                        format!("{}…", markup_escape_text(&parsed))
-                                    } else {
-                                        markup_escape_text(name)
-                                    }
-                                },
-                                _ => sym.to_string(),
-                            }
+                        let output = symbols.format(|sym| match sym {
+                            "title" => {
+                                if name.chars().count() > trunc {
+                                    let parsed = name
+                                        .char_indices()
+                                        .filter(|x| x.0 <= trunc)
+                                        .fold("".to_string(), |acc, cur| {
+                                            acc + &cur.1.to_string()
+                                        });
+                                    format!("{}…", markup_escape_text(&parsed))
+                                } else {
+                                    markup_escape_text(name)
+                                }
+                            },
+                            _ => sym.to_string(),
                         });
                         label.set_markup(&output);
                     }
