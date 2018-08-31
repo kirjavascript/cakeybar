@@ -36,13 +36,15 @@ bug: on no icons width = 1
 ipc
 ====
 wm_util event
-ipc show #eq #more .class_too
 reload config / theme (theme should be easy)
 allow ipc in menu objs
 autohide bar
-bindsym $mod+m exec -- --message / accellerators
+bindsym $mod+m exec -- --message
 interactive mode
-impl fmt::Display
+// if just the bar, show/hide the bar
+// if bar + other use bar as a selector
+
+// get a good readline for REPL
 
 components
 ====

@@ -1,18 +1,35 @@
 use nom::*;
 use nom::types::CompleteStr as Input;
-use wm::ipc::help::HelpTopic;
+
+// TODO: drop debug
 
 #[derive(Debug)]
-enum Command {
+pub enum Command {
     ReloadConfig(Option<String>),
     ReloadTheme(Option<String>),
-    Show(Vec<Selector>),
-    Hide(Vec<Selector>),
+    Show(Selectors),
+    Hide(Selectors),
     Help(HelpTopic),
 }
 
 #[derive(Debug)]
-enum Selector {
+pub enum HelpTopic {
+    Default,
+    // Show,
+    // Hide,
+    // Reload,
+// add a reload/show help catchall / help show
+// show extra message when path fails Some(theme)
+// get path from where ipc started
+}
+
+#[derive(Debug)]
+pub struct Selectors(
+    pub Vec<Selector>
+);
+
+#[derive(Debug)]
+pub enum Selector {
     Class(String),
     Id(String),
 }
@@ -31,9 +48,9 @@ named!(selector<Input,Selector>,
 );
 
 named!(selector_name<Input,String>,
-    map!(
-        many1!( alt!( alphanumeric1 | tag!("_") | tag!("-") )),
-        |s| s.iter().map(|s| s.to_string()).collect::<String>()
+    do_parse!(
+        name: many1!( alt!( alphanumeric1 | tag!("_") | tag!("-") )) >>
+        (name.iter().map(|s| s.to_string()).collect::<String>())
     )
 );
 
@@ -79,21 +96,30 @@ named!(show<Input,Command>,
     do_parse!(
         multispace0 >> tag!("show") >>
         selectors: many1!( selector ) >>
-        (Command::Show(selectors))
+        (Command::Show(Selectors(selectors)))
+    )
+);
+
+named!(hide<Input,Command>,
+    do_parse!(
+        multispace0 >> tag!("hide") >>
+        selectors: many1!( selector ) >>
+        (Command::Hide(Selectors(selectors)))
     )
 );
 
 named!(get_command<Input,Command>,
-    alt!( show | help | reload_theme | reload_config )
+    alt!( show | hide | help | reload_theme | reload_config )
 );
 
-    // if just the bar, show/hide the bar
-    // if bar + other use bar as a selector
-
-// add a reload/show help catchall / help show
-// get a good readline
-// fmt::Display
-
 pub fn parse_message(input: &str) {
-    println!("{:#?}", get_command(Input(input)));
+    match get_command(Input(input)) {
+        Ok((_remainder, command)) => {
+            println!("{:#?}", command);
+            println!("{}", command);
+        },
+        Err(err) => {
+            error!("{:?}", err);
+        },
+    }
 }

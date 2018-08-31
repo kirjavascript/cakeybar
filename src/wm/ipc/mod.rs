@@ -1,6 +1,6 @@
 mod listen;
 mod parser;
-mod help;
+mod display;
 pub use self::listen::listen;
 
 use std::env;
