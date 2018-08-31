@@ -139,7 +139,6 @@ impl Tray {
                         },
                         // signals
                         recv(r_signals, num) => {
-                            error!("dead");
                             manager.finish();
                             process::exit(num.unwrap_or(0));
                         },

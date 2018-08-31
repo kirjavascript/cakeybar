@@ -93,7 +93,7 @@ fn main() {
              .long("monitors")
              .help("Shows information about monitors"))
         .arg(Arg::with_name("multi")
-             .short("Q")
+             .short("D")
              .long("multi")
              .help("Allow multiple instances")
              .hidden(true))

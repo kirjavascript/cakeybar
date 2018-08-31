@@ -151,7 +151,6 @@ named!(get_command<Input,Command>,
 pub fn parse_message(input: &str) {
     match get_command(Input(input)) {
         Ok((_remainder, command)) => {
-            // println!("{:#?}", command);
             println!("{}", command);
         },
         Err(err) => {

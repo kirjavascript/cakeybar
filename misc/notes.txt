@@ -39,15 +39,13 @@ wm_util event
 reload config / theme (theme should be easy)
 allow ipc in menu objs
 autohide bar
-bindsym $mod+m exec -- --message
-interactive mode
+bindsym $mod+m exec -- --message / sxhkdrc
+rustyline
 // if just the bar, show/hide the bar
 // if bar + other use bar as a selector
 // show extra message when path fails Some(theme)
 // get path from where ipc started
 // Open(Selector)
-
-// get a good readline for REPL
 
 components
 ====
