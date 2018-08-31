@@ -43,6 +43,9 @@ bindsym $mod+m exec -- --message
 interactive mode
 // if just the bar, show/hide the bar
 // if bar + other use bar as a selector
+// show extra message when path fails Some(theme)
+// get path from where ipc started
+// Open(Selector)
 
 // get a good readline for REPL
 

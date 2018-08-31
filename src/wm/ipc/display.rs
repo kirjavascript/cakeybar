@@ -1,4 +1,4 @@
-use wm::ipc::parser::{Command, Selectors, Selector};
+use wm::ipc::parser::*;
 use std::fmt;
 
 impl fmt::Display for Selectors {
@@ -33,7 +33,9 @@ impl fmt::Display for Command {
             Command::Hide(selectors) => {
                 write!(f, "hiding {}", selectors)
             },
-            _ => write!(f, "TODO: help"),
+            Command::Help(topic) => {
+                write!(f, "TODO: show help for {:?}", topic)
+            },
         }
     }
 }
