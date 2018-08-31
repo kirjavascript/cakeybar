@@ -27,9 +27,9 @@ impl fmt::Display for WMType {
     }
 }
 
-pub struct WMUtil {
-    data: Rc<RefCell<Data>>,
-}
+pub struct WMUtil(
+    Rc<RefCell<Data>>
+);
 
 struct Data {
     wm_type: WMType,
@@ -38,7 +38,7 @@ struct Data {
 
 impl Clone for WMUtil {
     fn clone(&self) -> Self {
-        Self { data: self.data.clone() }
+        WMUtil(self.0.clone())
     }
 }
 
@@ -64,7 +64,7 @@ impl WMUtil {
             events,
         }));
 
-        let util = Self { data };
+        let util = WMUtil(data);
 
         xcb::listen(&util);
 
@@ -84,29 +84,29 @@ impl WMUtil {
     // getters
 
     pub fn get_wm_type(&self) -> WMType {
-        self.data.borrow().wm_type.clone()
+        self.0.borrow().wm_type.clone()
     }
 
     // events
 
     pub fn add_listener<F: 'static>(&self, event: Event, callback: F)
         where F: Fn(Option<EventValue>) {
-        self.data.borrow_mut().events.add_listener(event, callback);
+        self.0.borrow_mut().events.add_listener(event, callback);
     }
 
     #[allow(dead_code)]
     pub fn emit(&self, event: Event) {
-        self.data.borrow().events.emit(event);
+        self.0.borrow().events.emit(event);
     }
 
     pub fn emit_value(&self, event: Event, value: EventValue) {
-        self.data.borrow().events.emit_value(event, value);
+        self.0.borrow().events.emit_value(event, value);
     }
 
     // wm actions
 
     pub fn get_workspaces(&self) -> Option<Vec<Workspace>> {
-        match self.data.borrow().wm_type {
+        match self.0.borrow().wm_type {
             WMType::I3 => {
                 match i3::connect() {
                     Ok(mut connection) => {
@@ -128,7 +128,7 @@ impl WMUtil {
     }
 
     pub fn focus_workspace(&self, workspace_name: &String) {
-        match self.data.borrow().wm_type {
+        match self.0.borrow().wm_type {
             WMType::I3 => {
                 let command = format!("workspace {}", workspace_name);
                 i3::run_command(&command);
@@ -142,7 +142,7 @@ impl WMUtil {
     }
 
     pub fn cycle_workspace(&self, forward: bool, monitor_index: i32) {
-        match self.data.borrow().wm_type {
+        match self.0.borrow().wm_type {
             WMType::I3 => {
                 i3::cycle_workspace(forward, monitor_index);
             },
@@ -154,7 +154,7 @@ impl WMUtil {
     }
 
     pub fn set_padding(&self, is_top: bool, padding: i32) {
-        match self.data.borrow().wm_type {
+        match self.0.borrow().wm_type {
             WMType::Bsp => {
                 bsp::set_padding(is_top, padding);
             },
