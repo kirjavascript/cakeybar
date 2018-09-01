@@ -27,9 +27,7 @@ impl fmt::Display for WMType {
     }
 }
 
-pub struct WMUtil(
-    Rc<RefCell<Data>>
-);
+pub struct WMUtil(Rc<RefCell<Data>>);
 
 struct Data {
     wm_type: WMType,

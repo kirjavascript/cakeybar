@@ -148,13 +148,13 @@ named!(get_command<Input,Command>,
     alt!( show | hide | reload | help )
 );
 
-pub fn parse_message(input: &str) {
+pub fn parse_message(input: &str) -> Result<Command, String> {
     match get_command(Input(input)) {
         Ok((_remainder, command)) => {
-            println!("{}", command);
+            command
         },
         Err(err) => {
-            error!("{:?}", err);
+            format!("{:?}", err)
         },
     }
 }
