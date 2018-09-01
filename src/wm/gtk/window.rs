@@ -1,66 +1,36 @@
-use {gtk, gdk_sys};
-use gtk::{
-    Rectangle,
-    WidgetExt,
-    CssProvider,
-    CssProviderExt,
-    StyleContext,
-};
-use gdk::{
-    Screen,
-    Display,
-    DisplayExt,
-    MonitorExt,
-};
-
-pub fn load_theme(path: &str) {
-    let screen = Screen::get_default().unwrap();
-    let provider = CssProvider::new();
-    match provider.load_from_path(path) {
-        Ok(_) => StyleContext::add_provider_for_screen(&screen, &provider, 0),
-        Err(e) => error!("{}", e),
-    };
-}
-
-// monitor stuff
-
-pub fn get_monitor_geometry() -> Vec<Rectangle> {
-    let display = Display::get_default().unwrap();
-    let mut monitors = Vec::new();
-    for i in 0..display.get_n_monitors() {
-        let monitor = display.get_monitor(i).unwrap();
-        monitors.push(monitor.get_geometry())
-    }
-    monitors
-}
-
-pub fn get_monitor_name(monitor_index: i32) -> Option<String> {
-    let display = Display::get_default()?;
-    let monitor = display.get_monitor(monitor_index)?;
-    monitor.get_model()
-}
-
-pub fn show_monitor_debug() {
-    gtk::init().ok();
-    let display = Display::get_default().unwrap();
-    for i in 0..display.get_n_monitors() {
-        if let Some(monitor) = display.get_monitor(i) {
-            let geometry = monitor.get_geometry();
-            let Rectangle { x, y, width, height } = geometry;
-            let model = monitor.get_model().unwrap_or("".to_string());
-            println!(
-                "Monitor {}: {} @ {}x{} x: {} y: {}",
-                i, model, width, height, x, y
-            );
-        }
-    }
-}
-
 // x11 stuff
 
 use glib::translate::ToGlibPtr;
 use std::ffi::CString;
 use std::os::raw::c_int;
+
+use {gtk, gdk_sys};
+use gtk::{Rectangle, WidgetExt};
+
+pub fn disable_shadow(window: &gtk::Window) {
+    let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
+
+    unsafe {
+        let shadow = CString::new("_COMPTON_SHADOW").unwrap();
+        let cardinal = CString::new("CARDINAL").unwrap();
+        let shadow = gdk_sys::gdk_atom_intern(shadow.as_ptr(), 0);
+        let cardinal = gdk_sys::gdk_atom_intern(cardinal.as_ptr(), 0);
+        let format: c_int = 32;
+        let mode: c_int = 0;
+        let data = [0, 0, 0, 0];
+        let data_ptr: *const u8 = data.as_ptr();
+        let el: c_int = 1;
+        gdk_sys::gdk_property_change(
+            ptr, // window:
+            shadow, // property:
+            cardinal, // type_:
+            format, // format:
+            mode, // mode:
+            data_ptr, // data:
+            el, // nelements:
+        );
+    }
+}
 
 // seems ignored in bspwm, i3 and awesome. why did I write this?
 pub fn set_strut(window: &gtk::Window, is_top: bool, rect: Rectangle) {
@@ -138,31 +108,6 @@ pub fn set_strut(window: &gtk::Window, is_top: bool, rect: Rectangle) {
         gdk_sys::gdk_property_change(
             ptr, // window:
             partial, // property:
-            cardinal, // type_:
-            format, // format:
-            mode, // mode:
-            data_ptr, // data:
-            el, // nelements:
-        );
-    }
-}
-
-pub fn disable_shadow(window: &gtk::Window) {
-    let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
-
-    unsafe {
-        let shadow = CString::new("_COMPTON_SHADOW").unwrap();
-        let cardinal = CString::new("CARDINAL").unwrap();
-        let shadow = gdk_sys::gdk_atom_intern(shadow.as_ptr(), 0);
-        let cardinal = gdk_sys::gdk_atom_intern(cardinal.as_ptr(), 0);
-        let format: c_int = 32;
-        let mode: c_int = 0;
-        let data = [0, 0, 0, 0];
-        let data_ptr: *const u8 = data.as_ptr();
-        let el: c_int = 1;
-        gdk_sys::gdk_property_change(
-            ptr, // window:
-            shadow, // property:
             cardinal, // type_:
             format, // format:
             mode, // mode:

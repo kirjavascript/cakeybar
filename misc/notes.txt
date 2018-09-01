@@ -25,6 +25,7 @@ default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 refactor Component trait - store root widget in struct - default hide/show
 Env { bars, config, wm_util } Bar { components }
+startup animation
 
 tray
 ====
