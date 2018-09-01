@@ -29,7 +29,7 @@ pub struct WMUtil(Rc<RefCell<Data>>);
 
 struct Data {
     app: gtk::Application,
-    // bars: Vec<Bar>,
+    bars: Vec<Bar>,
     config: Config,
     events: EventEmitter<Event, EventValue>,
     wm_type: WMType,
@@ -62,7 +62,7 @@ impl WMUtil {
             wm_type,
             events,
             config,
-            // bars: Vec::new(),
+            bars: Vec::new(),
         }));
 
         let util = WMUtil(data);
@@ -112,7 +112,7 @@ impl WMUtil {
                     self.clone(),
                     monitor,
                 );
-                // self.0.borrow().bars.push(bar);
+                self.0.borrow_mut().bars.push(bar);
             } else {
                 warn!("no monitor at index {}", monitor_index);
             }
