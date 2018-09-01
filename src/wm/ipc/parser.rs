@@ -151,10 +151,10 @@ named!(get_command<Input,Command>,
 pub fn parse_message(input: &str) -> Result<Command, String> {
     match get_command(Input(input)) {
         Ok((_remainder, command)) => {
-            command
+            Ok(command)
         },
         Err(err) => {
-            format!("{:?}", err)
+            Err(format!("{:?}", err))
         },
     }
 }
