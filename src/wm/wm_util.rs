@@ -1,5 +1,5 @@
 use bar::Bar;
-use config::Config;
+use config::{Config, ConfigGroup};
 use wm::events::{Event, EventValue, EventEmitter};
 use wm::workspace::Workspace;
 
@@ -133,6 +133,12 @@ impl WMUtil {
 
     pub fn get_wm_type(&self) -> WMType {
         self.0.borrow().wm_type.clone()
+    }
+
+    pub fn get_component_config(&self, name: &str) -> Option<ConfigGroup> {
+        self.0.borrow().config.components.iter().find(|x| {
+            &x.name == name
+        }).map(|x| x.clone())
     }
 
     // events

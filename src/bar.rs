@@ -1,4 +1,4 @@
-use {gdk, gtk, wm, cairo, NAME};
+use {gdk, gtk, wm, cairo, NAME, components};
 use gtk::prelude::*;
 use gtk::{
     Window,
@@ -9,13 +9,15 @@ use gtk::{
 };
 use gdk::{ScrollDirection, ScreenExt};
 
-use config::{ConfigGroup, Config};
-
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use config::{ConfigGroup, Config};
+use components::Component;
+
 pub struct Bar {
     pub config: ConfigGroup,
+    pub components: Vec<Box<Component>>,
     pub wm_util: wm::WMUtil,
     pub overlay: Overlay,
     pub container: gtk::Box,
@@ -115,21 +117,16 @@ impl Bar {
         window.show_all();
 
         // create Bar
-        let bar = Bar {
+        let mut bar = Bar {
             config,
+            components: Vec::new(),
             wm_util,
             overlay,
             container,
             window,
         };
 
-        let label = gtk::Label::new(None);
-        label.set_markup(&"this is a test");
-        bar.container.add(&label);
-        label.show();
-
-        // load components
-        // components::load_components(&container, &bar);
+        bar.load_components();
 
         wm::gtk::disable_shadow(&bar.window);
 
@@ -143,6 +140,15 @@ impl Bar {
         bar
     }
 
+    pub fn load_components(&mut self) {
+        for name in self.config.get_string_vec("layout") {
+            let config_opt = self.wm_util.get_component_config(&name);
+
+            println!("{:#?}", config_opt);
+
+        }
+    }
+
     pub fn show(&self) {
         self.window.show();
     }
@@ -152,7 +158,9 @@ impl Bar {
     }
 
     pub fn destroy(&self) {
-        // TODO: unload components
+        for component in self.components.iter() {
+            component.destroy();
+        }
         self.window.destroy();
     }
 

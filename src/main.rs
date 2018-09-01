@@ -29,7 +29,7 @@ mod macros;
 mod util;
 mod config;
 mod bar;
-// mod components;
+mod components;
 mod wm;
 
 pub static NAME: &str = env!("CARGO_PKG_NAME");
@@ -47,7 +47,7 @@ fn init(app: &gtk::Application, config_match: Option<&str>) {
     if let Ok(config) = config_res {
 
         // start application
-        let wm_util = wm::WMUtil::new(app.clone(), config);
+        wm::WMUtil::new(app.clone(), config);
 
     } else if let Err(msg) = config_res {
         error!("{}", msg);
