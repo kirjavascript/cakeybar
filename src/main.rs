@@ -37,7 +37,6 @@ pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn init(app: &gtk::Application, config_match: Option<&str>) {
     // get config path
-
     let config_path = match config_match {
         Some(path) => path.to_string(),
         None => format!("{}/config.toml", util::get_config_dir()),
@@ -47,8 +46,8 @@ fn init(app: &gtk::Application, config_match: Option<&str>) {
 
     if let Ok(config) = config_res {
 
+        // start application
         let wm_util = wm::WMUtil::new(app.clone(), config);
-        wm_util.load_bars();
 
     } else if let Err(msg) = config_res {
         error!("{}", msg);

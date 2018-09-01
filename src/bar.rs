@@ -18,6 +18,7 @@ pub struct Bar {
     pub config: ConfigGroup,
     pub wm_util: wm::WMUtil,
     pub overlay: Overlay,
+    pub container: gtk::Box,
     window: Window,
 }
 
@@ -118,8 +119,14 @@ impl Bar {
             config,
             wm_util,
             overlay,
+            container,
             window,
         };
+
+        let label = gtk::Label::new(None);
+        label.set_markup(&"this is a test");
+        bar.container.add(&label);
+        label.show();
 
         // load components
         // components::load_components(&container, &bar);
@@ -134,6 +141,19 @@ impl Bar {
         });
 
         bar
+    }
+
+    pub fn show(&self) {
+        self.window.show();
+    }
+
+    pub fn hide(&self) {
+        self.window.hide();
+    }
+
+    pub fn destroy(&self) {
+        // TODO: unload components
+        self.window.destroy();
     }
 
     fn set_visual(window: &Window, _screen: &Option<gdk::Screen>) {

@@ -10,7 +10,7 @@ use gtk::prelude::*;
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::fmt;
-
+use std::mem;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum WMType {
@@ -67,9 +67,15 @@ impl WMUtil {
 
         let util = WMUtil(data);
 
-        wm::ipc::listen(&util);
+        // start IPC
+        if util.0.borrow().config.global.get_bool_or("enable-ipc", true) {
+            wm::ipc::listen(&util);
+        }
+
+        // listen for WM events
         wm::xcb::listen(&util);
 
+        // WM specific listeners
         match util.get_wm_type() {
             WMType::I3 => {
                 wm::i3::listen(&util);
@@ -80,17 +86,7 @@ impl WMUtil {
             _ => {},
         }
 
-    // load theme to screen
-    // match config.get_theme() {
-    //     Some(ref src) => wm::gtk::load_theme(src),
-    //     None => {/* default theme */},
-    // }
-
-    // load IPC
-    // if config.global.get_bool_or("enable-ipc", true) {
-    //     wm::ipc::listen(&wm_util);
-    // }
-
+        util.load_theme();
         util.load_bars();
 
         util
@@ -100,23 +96,37 @@ impl WMUtil {
         self.0.borrow().app.add_window(window);
     }
 
+    pub fn load_theme(&self) {
+        match self.0.borrow().config.get_theme() {
+            Some(ref src) => wm::gtk::load_theme(src),
+            None => {/* default theme */},
+        }
+    }
+
     pub fn load_bars(&self) {
         let monitors = wm::gtk::get_monitor_geometry();
-        for bar_config in self.0.borrow().config.bars.iter() {
-            let monitor_index = bar_config.get_int_or("monitor", 0);
-            let monitor_option = monitors.get(monitor_index as usize);
+        let bars = self.0.borrow().config.bars.iter()
+            .fold(Vec::new(), |mut acc, bar_config| {
+                let monitor_index = bar_config.get_int_or("monitor", 0);
+                let monitor_option = monitors.get(monitor_index as usize);
 
-            if let Some(monitor) = monitor_option {
-                let bar = Bar::new(
-                    bar_config.clone(),
-                    self.clone(),
-                    monitor,
-                );
-                self.0.borrow_mut().bars.push(bar);
-            } else {
-                warn!("no monitor at index {}", monitor_index);
-            }
-        }
+                if let Some(monitor) = monitor_option {
+                    acc.push(Bar::new(
+                        bar_config.clone(),
+                        self.clone(),
+                        monitor,
+                    ));
+                } else {
+                    warn!("no monitor at index {}", monitor_index);
+                }
+                acc
+            });
+        let _ = mem::replace(&mut self.0.borrow_mut().bars, bars);
+    }
+
+    pub fn unload_bars(&self) {
+        self.0.borrow().bars.iter().for_each(|bar| bar.destroy());
+        self.0.borrow_mut().bars.clear();
     }
 
     // getters

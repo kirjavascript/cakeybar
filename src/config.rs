@@ -6,7 +6,7 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::collections::HashMap;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Config {
     pub global: ConfigGroup,
     pub bars: Vec<ConfigGroup>,
