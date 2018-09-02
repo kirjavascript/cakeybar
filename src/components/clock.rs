@@ -1,6 +1,8 @@
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
+use glib_sys;
+use glib::translate::ToGlib;
 use config::{ConfigGroup, Property};
 use components::Component;
 use bar::Bar;
@@ -10,6 +12,7 @@ use util::SymbolFmt;
 pub struct Clock {
     config: ConfigGroup,
     label: Label,
+    timer: Option<u32>,
 }
 
 impl Component for Clock {
@@ -19,7 +22,14 @@ impl Component for Clock {
     fn hide(&self) {
         self.label.hide();
     }
-    fn destroy(&self) {}
+    fn destroy(&self) {
+        if let Some(timer) = self.timer {
+            unsafe {
+                glib_sys::g_source_remove(timer);
+            }
+        }
+        self.label.destroy();
+    }
 }
 
 impl Clock {
@@ -29,7 +39,7 @@ impl Clock {
 
         let label = Label::new(None);
 
-        let clock = Clock { config, label };
+        let mut clock = Clock { config, label, timer: None };
 
         // TODO: init_widget
         container.add(&clock.label);
@@ -38,10 +48,10 @@ impl Clock {
         clock.start_timer();
 
         // check show/hide removes timeout
-        Box::new(component)
+        Box::new(clock)
     }
 
-    fn start_timer(&self) {
+    fn start_timer(&mut self) {
         let symbols = SymbolFmt::new(self.config.get_str_or("format", "{timestamp}"));
         let timestamp = self.config.get_str_or("timestamp", "%Y-%m-%d %H:%M:%S").to_string();
         let label = self.label.clone();
@@ -58,7 +68,8 @@ impl Clock {
         };
         tick();
         let interval = self.config.get_int_or("interval", 1).max(1);
-        gtk::timeout_add_seconds(interval as u32, tick);
+        let timer = gtk::timeout_add_seconds(interval as u32, tick);
+        self.timer = Some(timer.to_glib());
     }
 }
 //

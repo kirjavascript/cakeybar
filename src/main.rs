@@ -1,4 +1,5 @@
 extern crate glib;
+extern crate glib_sys;
 extern crate cairo;
 extern crate gio;
 extern crate gtk;
