@@ -52,6 +52,8 @@ pub trait Component {
     // get_children
 }
 
+// container add to bar.components instead of container's stuff
+
 pub fn load_component(
     config: ConfigGroup, bar: &Bar, container: Option<&gtk::Box>
 ) -> Box<Component> {
