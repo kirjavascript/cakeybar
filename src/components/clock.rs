@@ -18,10 +18,13 @@ pub struct Clock {
 }
 
 impl Component for Clock {
-    fn show(&self) {
+    fn get_config(&self) -> &ConfigGroup {
+        &self.config
+    }
+    fn show(&mut self) {
         self.label.show();
     }
-    fn hide(&self) {
+    fn hide(&mut self) {
         self.label.hide();
     }
     fn destroy(&self) {
@@ -36,7 +39,7 @@ impl Component for Clock {
 
 impl Clock {
     pub fn init(
-        config: ConfigGroup, bar: &Bar, container: &gtk::Box,
+        config: ConfigGroup, container: &gtk::Box,
     ) -> Box<Self> {
 
         let label = Label::new(None);
@@ -47,7 +50,7 @@ impl Clock {
         container.add(&clock.label);
         clock.label.show();
 
-        // open closure inside here?
+        // TODO: open closure inside here
 
         clock.start_timer();
 
@@ -60,12 +63,9 @@ impl Clock {
         let label = self.label.clone();
         let tick = move || {
             let time = &format!("{}", Local::now().format(&timestamp));
-;
-            label.set_markup(&symbols.format(|sym| {
-                match sym {
-                    "timestamp" => time.to_string(),
-                    _ => sym.to_string(),
-                }
+            label.set_markup(&symbols.format(|sym| match sym {
+                "timestamp" => time.to_string(),
+                _ => sym.to_string(),
             }));
             gtk::Continue(true)
         };

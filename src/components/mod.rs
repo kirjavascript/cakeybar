@@ -41,28 +41,33 @@ mod clock;
 // mod mode;
 // mod script;
 // mod tray;
-mod void;
 // mod window;
 // mod workspaces;
 
+/// interface for all components
 pub trait Component {
-    fn show(&self);
-    fn hide(&self);
+    /// provide the config object for this component
+    fn get_config(&self) -> &ConfigGroup;
+    /// show component
+    fn show(&mut self);
+    /// hide component
+    fn hide(&mut self);
+    /// clean up any remaining timeouts, callbacks
     fn destroy(&self);
-    // get_children
 }
 
-// container add to bar.components instead of container's stuff
+// TODO: container add to bar.components instead of container's stuff
+// TODO: start_timer get config for each callback
 
 pub fn load_component(
     config: ConfigGroup, bar: &Bar, container: Option<&gtk::Box>
-) -> Box<Component> {
+) -> Option<Box<Component>> {
     let container = container.unwrap_or(&bar.container);
     // decide which component to load
     match config.get_str_or("type", "void") {
         // "bandwidth" => bandwidth::Bandwidth::init,
         // "battery" => battery::Battery::init,
-        "clock" => clock::Clock::init(config, bar, container),
+        "clock" => Some(clock::Clock::init(config, container)),
         // "container" => container::Container::init,
         // "cpu" => cpu::CPU::init,
         // "disk" => disk::Disk::init,
@@ -77,7 +82,10 @@ pub fn load_component(
         // "tray" => tray::Tray::init,
         // "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,
-        _ => void::Void::init(config),
+        _ => {
+            warn!("a valid type is required for {}", config.name);
+            None
+        },
     }
 }
 

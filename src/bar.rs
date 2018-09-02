@@ -145,7 +145,9 @@ impl Bar {
             let config_opt = self.wm_util.get_component_config(&name);
             if let Some(config) = config_opt {
                 let component = components::load_component(config, &self, None);
-                self.components.push(component);
+                if let Some(component) = component {
+                    self.components.push(component);
+                }
             } else {
                 warn!("missing component {:?}", name);
             }

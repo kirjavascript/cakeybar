@@ -125,7 +125,7 @@ impl WMUtil {
     }
 
     pub fn unload_bars(&self) {
-        self.0.borrow().bars.iter().for_each(|bar| bar.destroy());
+        self.0.borrow_mut().bars.iter().for_each(|bar| bar.destroy());
         self.0.borrow_mut().bars.clear();
     }
 
