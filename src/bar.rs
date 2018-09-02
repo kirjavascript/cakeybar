@@ -143,9 +143,12 @@ impl Bar {
     pub fn load_components(&mut self) {
         for name in self.config.get_string_vec("layout") {
             let config_opt = self.wm_util.get_component_config(&name);
-
-            println!("{:#?}", config_opt);
-
+            if let Some(config) = config_opt {
+                let component = components::load_component(config, &self, None);
+                self.components.push(component);
+            } else {
+                warn!("missing component {:?}", name);
+            }
         }
     }
 

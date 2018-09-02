@@ -1,24 +1,53 @@
-use super::{Component, Bar, gtk, ConfigGroup};
+use gtk;
 use gtk::prelude::*;
-use gtk::{Label};
+use gtk::Label;
+use config::{ConfigGroup, Property};
+use components::Component;
+use bar::Bar;
 use chrono::Local;
 use util::SymbolFmt;
 
-pub struct Clock;
-
-fn current_time(format: String) -> String {
-    return format!("{}", Local::now().format(&format));
+pub struct Clock {
+    config: ConfigGroup,
+    label: Label,
 }
 
 impl Component for Clock {
-    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
+    fn show(&self) {
+        self.label.show();
+    }
+    fn hide(&self) {
+        self.label.hide();
+    }
+    fn destroy(&self) {}
+}
+
+impl Clock {
+    pub fn init(
+        config: ConfigGroup, bar: &Bar, container: &gtk::Box,
+    ) -> Box<Self> {
+
         let label = Label::new(None);
 
-        let timestamp = config.get_str_or("timestamp", "%Y-%m-%d %H:%M:%S").to_string();
-        let symbols = SymbolFmt::new(config.get_str_or("format", "{timestamp}"));
+        let clock = Clock { config, label };
 
-        let tick = clone!(label move || {
-            let time = &current_time(timestamp.clone());
+        // TODO: init_widget
+        container.add(&clock.label);
+        clock.label.show();
+
+        clock.start_timer();
+
+        // check show/hide removes timeout
+        Box::new(component)
+    }
+
+    fn start_timer(&self) {
+        let symbols = SymbolFmt::new(self.config.get_str_or("format", "{timestamp}"));
+        let timestamp = self.config.get_str_or("timestamp", "%Y-%m-%d %H:%M:%S").to_string();
+        let label = self.label.clone();
+        let tick = move || {
+            let time = &format!("{}", Local::now().format(&timestamp));
+;
             label.set_markup(&symbols.format(|sym| {
                 match sym {
                     "timestamp" => time.to_string(),
@@ -26,14 +55,50 @@ impl Component for Clock {
                 }
             }));
             gtk::Continue(true)
-        });
-
-        let interval = config.get_int_or("interval", 1).max(1);
+        };
         tick();
+        let interval = self.config.get_int_or("interval", 1).max(1);
         gtk::timeout_add_seconds(interval as u32, tick);
-
-        label.show();
-
-        Self::init_widget(&label, container, config, bar);
     }
 }
+//
+// use super::{Component, Bar, gtk, ConfigGroup};
+// use gtk::prelude::*;
+// use gtk::{Label};
+// use chrono::Local;
+// use util::SymbolFmt;
+
+// pub struct Clock;
+
+
+// fn current_time(format: String) -> String {
+//     return format!("{}", Local::now().format(&timestamp));
+// }
+
+// impl Component for Clock {
+//     fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
+//         let label = Label::new(None);
+
+//         let timestamp = config.get_str_or("timestamp", "%Y-%m-%d %H:%M:%S").to_string();
+//         let symbols = SymbolFmt::new(config.get_str_or("format", "{timestamp}"));
+
+//         let tick = clone!(label move || {
+//             let time = &current_time(timestamp.clone());
+//             label.set_markup(&symbols.format(|sym| {
+//                 match sym {
+//                     "timestamp" => time.to_string(),
+//                     _ => sym.to_string(),
+//                 }
+//             }));
+//             gtk::Continue(true)
+//         });
+
+//         let interval = config.get_int_or("interval", 1).max(1);
+//         tick();
+//         gtk::timeout_add_seconds(interval as u32, tick);
+
+//         label.show();
+
+//         Self::init_widget(&label, container, config, bar);
+//     }
+// }

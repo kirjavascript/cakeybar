@@ -28,7 +28,7 @@ use config::{ConfigGroup, Property};
 
 // mod bandwidth;
 // mod battery;
-// mod clock;
+mod clock;
 // mod container;
 // mod cpu;
 // mod disk;
@@ -49,17 +49,18 @@ pub trait Component {
     fn show(&self);
     fn hide(&self);
     fn destroy(&self);
+    // get_children
 }
 
-fn load_component(
+pub fn load_component(
     config: ConfigGroup, bar: &Bar, container: Option<&gtk::Box>
 ) -> Box<Component> {
     let container = container.unwrap_or(&bar.container);
     // decide which component to load
-    let component = match config.get_str_or("type", "void") {
+    match config.get_str_or("type", "void") {
         // "bandwidth" => bandwidth::Bandwidth::init,
         // "battery" => battery::Battery::init,
-        // "clock" => clock::Clock::init,
+        "clock" => clock::Clock::init(config, bar, container),
         // "container" => container::Container::init,
         // "cpu" => cpu::CPU::init,
         // "disk" => disk::Disk::init,
@@ -74,10 +75,8 @@ fn load_component(
         // "tray" => tray::Tray::init,
         // "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,
-        _ => void::Void::init,
-    };
-    // load component
-    Box::new(component(container, config, bar))
+        _ => void::Void::init(config),
+    }
 }
 
 // pub trait ComponentInit {
