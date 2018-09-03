@@ -1,20 +1,3 @@
-// Component Template:
-//
-// use super::{Component, Bar, gtk, ConfigGroup};
-// use gtk::prelude::*;
-// use gtk::{Label};
-//
-// pub struct Template;
-//
-// impl Component for Template {
-//     fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
-//         let label = Label::new(None);
-//         label.set_markup(&"test");
-//         label.show();
-//         Self::init_widget(&label, container, config, bar);
-//     }
-// }
-
 use {gtk, glib};
 use gtk::{
     Align,
@@ -83,7 +66,7 @@ pub fn load_component(
         // "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,
         _ => {
-            warn!("a valid type is required for {}", config.name);
+            warn!("a valid type is required for #{}", config.name);
             None
         },
     }

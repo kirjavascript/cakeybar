@@ -13,7 +13,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use config::{ConfigGroup, Config};
-use components::Component;
+use components::{Component, load_component};
 
 pub struct Bar {
     pub config: ConfigGroup,
@@ -144,8 +144,8 @@ impl Bar {
         for name in self.config.get_string_vec("layout") {
             let config_opt = self.wm_util.get_component_config(&name);
             if let Some(config) = config_opt {
-                let component = components::load_component(config, &self, None);
-                if let Some(component) = component {
+                let component = load_component(config, &self, None);
+                if let Some(mut component) = component {
                     self.components.push(component);
                 }
             } else {
