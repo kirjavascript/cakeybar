@@ -9,15 +9,13 @@ impl Timer {
     pub fn add_seconds<F>(interval: u32, callback: F) -> Self
         where F: FnMut() -> gtk::Continue + 'static
     {
-        let src = gtk::timeout_add_seconds(interval, callback);
-        Timer(src.to_glib())
+        Self::from(gtk::timeout_add_seconds(interval, callback))
     }
 
     pub fn add_ms<F>(interval: u32, callback: F) -> Self
         where F: FnMut() -> gtk::Continue + 'static
     {
-        let src = gtk::timeout_add(interval, callback);
-        Timer(src.to_glib())
+        Self::from(gtk::timeout_add(interval, callback))
     }
 
     pub fn from(src: SourceId) -> Self {

@@ -40,7 +40,6 @@ pub trait Component {
 }
 
 // TODO: container add to bar.components instead of container's stuff
-// TODO: start_timer get config for each callback
 
 pub fn load_component(
     config: ConfigGroup, bar: &Bar, container: Option<&gtk::Box>

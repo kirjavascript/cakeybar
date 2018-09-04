@@ -17,7 +17,7 @@ https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
 features for 1.0.0: ipc, startmenu, tray bugs
-current: component refactor
+current: component refactor - container / ipc
 
 wm refactoring
 ===
@@ -94,7 +94,6 @@ https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable
 ===
 osx top bar (hover) / pice of cake / powerline (half transparency w/ small window title) / hexagons (visualizer + overhang via bar/float) / busy (all stats)
 crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
-more rice than feudal japan
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
 https://i.imgur.com/TF69nPa.png
