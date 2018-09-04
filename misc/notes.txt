@@ -24,6 +24,7 @@ wm refactoring
 default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
+config file watcher
 rebase into master
 
 tray
