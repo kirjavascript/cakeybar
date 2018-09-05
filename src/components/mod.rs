@@ -66,71 +66,62 @@ pub fn load_component(
     }
 }
 
-// pub trait ComponentInit {
-//     fn init(bar: &Bar, config: ConfigGroup) -> Self;
-// }
+pub fn init_widget<T>(
+    widget: &T,
+    config: &ConfigGroup,
+    bar: &Bar,
+    container: &gtk::Box,
+) where T: gtk::IsA<gtk::Widget>
+        + gtk::IsA<gtk::Object>
+        + glib::value::SetValue {
+    // TODO: add EventBox
+    // add wrapper
+    // let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+    // wrapper.add(widget);
+    // wrapper.show();
+    // let widget = &wrapper;
+    // set name
+    widget.set_name(&config.name);
+    // class
+    let class_str = config.get_str_or("class", "null");
+    if class_str != "null"  {
+        if let Some(ctx) = widget.get_style_context() {
+            ctx.add_class(class_str);
+        }
+    }
+    let is_fixed = config.get_bool_or("fixed", false);
+    // set alignment
+    let halign_str = config.get_str_or("halign", "null");
+    if halign_str != "null" {
+        WidgetExt::set_halign(widget, get_alignment(halign_str));
+        if !is_fixed {
+            WidgetExt::set_hexpand(widget, true);
+        }
+    }
+    let valign_str = config.get_str_or("valign", "null");
+    if valign_str != "null" {
+        WidgetExt::set_valign(widget, get_alignment(valign_str));
+        if !is_fixed {
+            WidgetExt::set_vexpand(widget, true);
+        }
+    }
+    // set layout type
+    if is_fixed {
+        bar.overlay.add_overlay(widget);
+        if config.get_bool_or("pass-through", true) {
+            bar.overlay.set_overlay_pass_through(widget, true);
+        }
+    } else {
+        container.add(widget);
+    }
+}
 
-// in component, store &'a Bar
-
-// pub trait Component {
-//     fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar);
-
-//     fn init_widget<T>(
-//         widget: &T,
-//         container: &gtk::Box,
-//         config: &ConfigGroup,
-//         bar: &Bar,
-//     ) where T: gtk::IsA<gtk::Widget>
-//             + gtk::IsA<gtk::Object>
-//             + glib::value::SetValue {
-//         // add wrapper
-//         // let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-//         // wrapper.add(widget);
-//         // wrapper.show();
-//         // let widget = &wrapper;
-//         // set name
-//         widget.set_name(&config.name);
-//         // class
-//         let class_str = config.get_str_or("class", "null");
-//         if class_str != "null"  {
-//             if let Some(ctx) = widget.get_style_context() {
-//                 ctx.add_class(class_str);
-//             }
-//         }
-//         let is_fixed = config.get_bool_or("fixed", false);
-//         // set alignment
-//         let halign_str = config.get_str_or("halign", "null");
-//         if halign_str != "null" {
-//             WidgetExt::set_halign(widget, Self::get_alignment(halign_str));
-//             if !is_fixed {
-//                 WidgetExt::set_hexpand(widget, true);
-//             }
-//         }
-//         let valign_str = config.get_str_or("valign", "null");
-//         if valign_str != "null" {
-//             WidgetExt::set_valign(widget, Self::get_alignment(valign_str));
-//             if !is_fixed {
-//                 WidgetExt::set_vexpand(widget, true);
-//             }
-//         }
-//         // set layout type
-//         if is_fixed {
-//             bar.overlay.add_overlay(widget);
-//             if config.get_bool_or("pass-through", true) {
-//                 bar.overlay.set_overlay_pass_through(widget, true);
-//             }
-//         } else {
-//             container.add(widget);
-//         }
-//     }
-
-//     fn get_alignment(align: &str) -> Align {
-//         match align {
-//             "start" => Align::Start,
-//             "end" => Align::End,
-//             "center" | "centre" => Align::Center,
-//             "fill" => Align::Fill,
-//             _ => Align::Baseline,
-//         }
-//     }
-// }
+fn get_alignment(align: &str) -> Align {
+    match align {
+        "start" => Align::Start,
+        "end" => Align::End,
+        "center" | "centre" => Align::Center,
+        "fill" => Align::Fill,
+        _ => Align::Baseline,
+    }
+}

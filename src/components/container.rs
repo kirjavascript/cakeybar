@@ -39,9 +39,7 @@ impl Container {
         };
 
         let wrapper = gtk::Box::new(direction, spacing);
-
-        // TODO: init widget
-        container.add(&wrapper);
+        super::init_widget(&wrapper, &config, bar, container);
         wrapper.show();
 
         // load layout

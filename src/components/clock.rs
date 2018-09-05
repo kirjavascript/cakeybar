@@ -34,9 +34,7 @@ impl Clock {
         config: ConfigGroup, bar: &mut Bar, container: &gtk::Box,
     ) {
         let label = Label::new(None);
-
-        // TODO: init_widget
-        container.add(&label);
+        super::init_widget(&label, &config, bar, container);
         label.show();
 
         // get config
