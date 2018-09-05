@@ -31,9 +31,8 @@ impl Component for Clock {
 
 impl Clock {
     pub fn init(
-        config: ConfigGroup, container: &gtk::Box,
-    ) -> Box<Self> {
-
+        config: ConfigGroup, bar: &mut Bar, container: &gtk::Box,
+    ) {
         let label = Label::new(None);
 
         // TODO: init_widget
@@ -57,6 +56,6 @@ impl Clock {
         tick();
         let timer = Timer::add_seconds(interval as u32, tick);
 
-        Box::new(Clock { config, label, timer })
+        bar.add_component(Box::new(Clock { config, label, timer }));
     }
 }

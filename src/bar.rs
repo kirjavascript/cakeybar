@@ -140,16 +140,18 @@ impl Bar {
         bar
     }
 
+    pub fn add_component(&mut self, component: Box<Component>) {
+        self.components.push(component);
+    }
+
     pub fn load_components(&mut self) {
+        let container = self.container.clone();
         for name in self.config.get_string_vec("layout") {
             let config_opt = self.wm_util.get_component_config(&name);
             if let Some(config) = config_opt {
-                let component = load_component(config, &self, None);
-                if let Some(mut component) = component {
-                    self.components.push(component);
-                }
+                load_component(config, self, &container);
             } else {
-                warn!("missing component {:?}", name);
+                warn!("missing component #{:?}", name);
             }
         }
     }
@@ -178,7 +180,7 @@ impl Bar {
     }
 
     fn draw(_window: &Window, ctx: &cairo::Context) -> Inhibit {
-        ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0);
+        ctx.set_source_rgba(0., 0., 0., 0.);
         ctx.set_operator(cairo::enums::Operator::Screen);
         ctx.paint();
         Inhibit(false)

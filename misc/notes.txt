@@ -17,7 +17,7 @@ https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
 features for 1.0.0: ipc, startmenu, tray bugs
-current: component refactor - container / ipc
+current: component refactor - init_widget / ipc
 
 wm refactoring
 ===

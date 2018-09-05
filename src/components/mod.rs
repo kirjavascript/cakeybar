@@ -12,7 +12,7 @@ use config::{ConfigGroup, Property};
 // mod bandwidth;
 // mod battery;
 mod clock;
-// mod container;
+mod container;
 // mod cpu;
 // mod disk;
 // mod dropdown;
@@ -39,18 +39,15 @@ pub trait Component {
     fn destroy(&self);
 }
 
-// TODO: container add to bar.components instead of container's stuff
-
 pub fn load_component(
-    config: ConfigGroup, bar: &Bar, container: Option<&gtk::Box>
-) -> Option<Box<Component>> {
-    let container = container.unwrap_or(&bar.container);
+    config: ConfigGroup, bar: &mut Bar, container: &gtk::Box
+) {
     // decide which component to load
     match config.get_str_or("type", "void") {
         // "bandwidth" => bandwidth::Bandwidth::init,
         // "battery" => battery::Battery::init,
-        "clock" => Some(clock::Clock::init(config, container)),
-        // "container" => container::Container::init,
+        "clock" => clock::Clock::init(config, bar, container),
+        "container" => container::Container::init(config, bar, container),
         // "cpu" => cpu::CPU::init,
         // "disk" => disk::Disk::init,
         // "dropdown" => dropdown::Dropdown::init,
@@ -64,10 +61,7 @@ pub fn load_component(
         // "tray" => tray::Tray::init,
         // "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,
-        _ => {
-            warn!("a valid type is required for #{}", config.name);
-            None
-        },
+        _ => warn!("a valid type is required for #{}", config.name),
     }
 }
 
