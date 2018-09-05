@@ -4,7 +4,6 @@
 monitor = 0
 position = "top"
 layout = [
-"clock",
     "menu",
     "workspaces",
     "mode",

@@ -89,7 +89,12 @@ impl Bar {
         window.connect_size_allocate(clone!((is_set, wm_util)
             move |window, rect| {
                 let xpos = x;
-                let ypos = if !is_top { y + (height - rect.height) } else { y };
+                let ypos = if !is_top {
+                    y + (height - rect.height)
+                } else {
+                    y
+                };
+
                 if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
                     *is_set.borrow_mut() = true;
                     window.move_(xpos, ypos);

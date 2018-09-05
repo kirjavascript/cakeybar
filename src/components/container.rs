@@ -1,21 +1,9 @@
-// use super::{Component, Bar, ConfigGroup};
-// use gtk::prelude::*;
-// use gtk::{Box, Orientation};
-
-// pub struct Container;
-
-// impl Component for Container {
-//     fn init(container: &Box, config: &ConfigGroup, bar: &Bar) {
-//     }
-// }
-
 use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
 use config::{ConfigGroup, Property};
 use components::{Component};
 use bar::Bar;
-// use util::{SymbolFmt, Timer};
 
 pub struct Container {
     config: ConfigGroup,
@@ -62,7 +50,7 @@ impl Container {
             if let Some(config) = config_opt {
                 super::load_component(config, bar, &wrapper);
             } else {
-                warn!("missing component {:?}", name);
+                warn!("missing component #{:?}", name);
             }
         }
 

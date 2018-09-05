@@ -39,6 +39,7 @@ pub trait Component {
     fn destroy(&self);
 }
 
+/// each component MUST call bar.add_component
 pub fn load_component(
     config: ConfigGroup, bar: &mut Bar, container: &gtk::Box
 ) {
@@ -132,56 +133,4 @@ pub fn load_component(
 //             _ => Align::Baseline,
 //         }
 //     }
-// }
-
-// fn load_component(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
-//     // get type
-//     let component_type_option = config.properties.get("type");
-//     if let Some(&Property::String(ref component_type)) = component_type_option {
-//         // decide which component to load
-//         let component_init = match component_type.as_str() {
-//             // "bandwidth" => bandwidth::Bandwidth::init,
-//             // "battery" => battery::Battery::init,
-//             "clock" => clock::Clock::init,
-//             // "container" => container::Container::init,
-//             // "cpu" => cpu::CPU::init,
-//             // "disk" => disk::Disk::init,
-//             // "dropdown" => dropdown::Dropdown::init,
-//             // "equalizer" | "equaliser" => equalizer::Equalizer::init,
-//             // "image" => image::Image::init,
-//             // "ip" => ip::IP::init,
-//             // "memory" => memory::Memory::init,
-//             // "menu" => menu::Menu::init,
-//             // "mode" => mode::Mode::init,
-//             // "script" => script::Script::init,
-//             // "tray" => tray::Tray::init,
-//             // "window" => window::Window::init,
-//             // "workspaces" => workspaces::Workspaces::init,
-//             _ => void::Void::init,
-//         };
-//         // load component
-//         component_init(container, config, bar);
-//     }
-// }
-
-// fn layout_to_container(container: &gtk::Box, layout: &Property, bar: &Bar) {
-//     if let &Property::Array(ref arr) = layout {
-//         // iterate over layout
-//         arr.iter().for_each(|name_prop| {
-//             if let &Property::String(ref name) = name_prop {
-//                 // get config for layout fragment
-//                 let component_config = bar.app_config.components.iter().find(|x| {
-//                     &x.name == name
-//                 });
-//                 if let Some(config) = component_config {
-//                     load_component(container, config, bar);
-//                 }
-//             }
-//         });
-//     }
-// }
-
-// pub fn load_components(container: &gtk::Box, bar: &Bar) {
-//     let layout = Property::Array(bar.config.get_vec_or("layout", vec![]));
-//     layout_to_container(container, &layout, bar);
 // }
