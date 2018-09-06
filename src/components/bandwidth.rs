@@ -1,5 +1,10 @@
-use super::{Component, Bar, gtk, ConfigGroup};
-use util::{format_bytes, SymbolFmt, LabelGroup};
+use gtk;
+use gtk::prelude::*;
+// use super::{Component, Bar, gtk, ConfigGroup};
+use bar::Bar;
+use components::Component;
+use config::ConfigGroup;
+use util::{format_bytes, SymbolFmt, LabelGroup, Timer};
 
 use std::collections::HashMap;
 use std::cell::RefCell;
@@ -7,12 +12,32 @@ use std::rc::Rc;
 
 use probes::network;
 
-pub struct Bandwidth;
+pub struct Bandwidth {
+    config: ConfigGroup,
+    wrapper: gtk::Box,
+    timer: Timer,
+}
 
 impl Component for Bandwidth {
-    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
+    fn get_config(&self) -> &ConfigGroup {
+        &self.config
+    }
+    fn show(&mut self) {
+        self.wrapper.show();
+    }
+    fn hide(&mut self) {
+        self.wrapper.hide();
+    }
+    fn destroy(&self) {
+        self.timer.remove();
+        self.wrapper.destroy();
+    }
+}
+
+impl Bandwidth {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         let label_group = LabelGroup::new();
-        Self::init_widget(&label_group.wrapper, container, config, bar);
+        super::init_widget(&label_group.wrapper, &config, bar, container);
 
         let interfaces = config.get_string_vec("interfaces");
         let interval = config.get_int_or("interval", 3).max(1) as u64;
@@ -83,8 +108,12 @@ impl Component for Bandwidth {
             }
             gtk::Continue(true)
         });
+        let timer = Timer::add_seconds(interval as u32, tick);
 
-        tick();
-        gtk::timeout_add_seconds(interval as u32, tick);
+        bar.add_component(Box::new(Bandwidth {
+            config,
+            wrapper: label_group.wrapper,
+            timer,
+        }));
     }
 }

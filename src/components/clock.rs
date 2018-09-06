@@ -1,8 +1,8 @@
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
-use config::{ConfigGroup, Property};
-use components::{Component};
+use config::ConfigGroup;
+use components::Component;
 use bar::Bar;
 use chrono::Local;
 use util::{SymbolFmt, Timer};
@@ -30,9 +30,7 @@ impl Component for Clock {
 }
 
 impl Clock {
-    pub fn init(
-        config: ConfigGroup, bar: &mut Bar, container: &gtk::Box,
-    ) {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         let label = Label::new(None);
         super::init_widget(&label, &config, bar, container);
         label.show();
@@ -51,9 +49,12 @@ impl Clock {
             }));
             gtk::Continue(true)
         });
-        tick();
         let timer = Timer::add_seconds(interval as u32, tick);
 
-        bar.add_component(Box::new(Clock { config, label, timer }));
+        bar.add_component(Box::new(Clock {
+            config,
+            label,
+            timer,
+        }));
     }
 }

@@ -26,7 +26,6 @@ config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
 config file watcher
-rebase into master
 
 tray
 ====

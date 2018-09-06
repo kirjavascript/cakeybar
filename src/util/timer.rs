@@ -6,15 +6,17 @@ use glib::source::SourceId;
 pub struct Timer(u32);
 
 impl Timer {
-    pub fn add_seconds<F>(interval: u32, callback: F) -> Self
+    pub fn add_seconds<F>(interval: u32, mut callback: F) -> Self
         where F: FnMut() -> gtk::Continue + 'static
     {
+        callback();
         Self::from(gtk::timeout_add_seconds(interval, callback))
     }
 
-    pub fn add_ms<F>(interval: u32, callback: F) -> Self
+    pub fn add_ms<F>(interval: u32, mut callback: F) -> Self
         where F: FnMut() -> gtk::Continue + 'static
     {
+        callback();
         Self::from(gtk::timeout_add(interval, callback))
     }
 
