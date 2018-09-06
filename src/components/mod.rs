@@ -53,7 +53,7 @@ pub fn load_component(
         "clock" => clock::Clock::init,
         "container" => container::Container::init,
         "cpu" => cpu::CPU::init,
-        // "disk" => disk::Disk::init,
+        "disk" => disk::Disk::init,
         // "dropdown" => dropdown::Dropdown::init,
         // "equalizer" | "equaliser" => equalizer::Equalizer::init,
         // "image" => image::Image::init,
