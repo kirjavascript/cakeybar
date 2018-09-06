@@ -1,5 +1,8 @@
-use super::{Component, Bar, gtk, ConfigGroup};
+use gtk;
 use gtk::prelude::*;
+use bar::Bar;
+use components::Component;
+use config::{ConfigGroup, Property};
 use gtk::{
     Label,
     EventBox,
@@ -10,9 +13,26 @@ use gtk::{
 
 // gtk context menu
 
-use config::Property;
 
-pub struct Dropdown;
+pub struct Dropdown {
+    config: ConfigGroup,
+    wrapper: EventBox,
+}
+
+impl Component for Dropdown {
+    fn get_config(&self) -> &ConfigGroup {
+        &self.config
+    }
+    fn show(&mut self) {
+        self.wrapper.show();
+    }
+    fn hide(&mut self) {
+        self.wrapper.hide();
+    }
+    fn destroy(&self) {
+        self.wrapper.destroy();
+    }
+}
 
 #[derive(Debug)]
 enum MenuItem {
@@ -42,15 +62,18 @@ fn get_menu(items: Vec<Property>) -> Vec<MenuItem> {
     menu_items
 }
 
-impl Component for Dropdown {
-    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
+impl Dropdown {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         let label = Label::new(None);
-        let label_text = config.get_str_or("label", "");
-        label.set_markup(&label_text);
+        {
+            let label_text = config.get_str_or("label", "");
+            label.set_markup(&label_text);
+        } // config no longer borrowed
+
         let ebox = EventBox::new();
         ebox.add(&label);
         ebox.show_all();
-        Self::init_widget(&ebox, container, config, bar);
+        super::init_widget(&ebox, &config, bar, container);
 
         let menu_items = get_menu(config.get_vec_or("items", vec![]));
 
@@ -62,10 +85,12 @@ impl Component for Dropdown {
             menu.popup_easy(0, 0);
             Inhibit(false)
         }));
-    }
-}
 
-impl Dropdown {
+        bar.add_component(Box::new(Dropdown {
+            config,
+            wrapper: ebox,
+        }));
+    }
     fn create_menu(menu_items: &Vec<MenuItem>) -> GtkMenu {
         let menu = GtkMenu::new();
         menu_items.iter().for_each(|item| {

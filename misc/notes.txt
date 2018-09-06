@@ -82,6 +82,7 @@ add / remove - curl | sh install
     or install from cargo (google scrftch)
 undocu'd;
 bar/float
+dropdown/label
 workspaces/spacing
 BSPWM_SOCKET
 CAKEYBAR_SOCKET

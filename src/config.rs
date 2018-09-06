@@ -74,6 +74,14 @@ impl ConfigGroup {
             or
         }
     }
+    pub fn get_string(&self, prop: &str) -> Option<String> {
+        let value_option = self.properties.get(prop);
+        if let Some(&Property::String(ref val)) = value_option {
+            Some(val.to_string())
+        } else {
+            None
+        }
+    }
     pub fn get_string_vec(&self, prop: &str) -> Vec<String> {
         self.get_vec_or(prop, vec![])
             .iter()

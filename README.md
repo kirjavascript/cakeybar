@@ -39,6 +39,8 @@ cargo run --release -- -c examples/darkblue/config.toml
 [CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)  
 [CSS properties](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 
+Format strings use the [Pango Text Attribute Markup Language](https://developer.gnome.org/pango/stable/PangoMarkupFormat.html), which adds hyperlinks and other formatting options
+
 see the [examples](examples) for more
 
 #### global properties
@@ -101,8 +103,6 @@ format = "label: {symbol-name}"
 
 # to print a literal curly bracket, duplicate the character `{{` or `}}`
 ```
-
-Format strings also use the [Pango Text Attribute Markup Language](https://developer.gnome.org/pango/stable/PangoMarkupFormat.html), which adds hyperlinks and additional formatting options
 
 #### image
 

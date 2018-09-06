@@ -15,10 +15,10 @@ mod clock;
 mod container;
 mod cpu;
 mod disk;
-// mod dropdown;
+mod dropdown;
 // mod equalizer;
-// mod image;
-// mod ip;
+mod image;
+mod ip;
 // mod memory;
 // mod menu;
 // mod mode;
@@ -54,10 +54,10 @@ pub fn load_component(
         "container" => container::Container::init,
         "cpu" => cpu::CPU::init,
         "disk" => disk::Disk::init,
-        // "dropdown" => dropdown::Dropdown::init,
+        "dropdown" => dropdown::Dropdown::init,
         // "equalizer" | "equaliser" => equalizer::Equalizer::init,
-        // "image" => image::Image::init,
-        // "ip" => ip::IP::init,
+        "image" => image::Image::init,
+        "ip" => ip::IP::init,
         // "memory" => memory::Memory::init,
         // "menu" => menu::Menu::init,
         // "mode" => mode::Mode::init,

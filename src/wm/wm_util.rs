@@ -103,6 +103,10 @@ impl WMUtil {
         }
     }
 
+    pub fn get_path(&self, filename: &str) -> String {
+        self.0.borrow().config.get_path(filename)
+    }
+
     pub fn load_bars(&self) {
         let monitors = wm::gtk::get_monitor_geometry();
         let bars = self.0.borrow().config.bars.iter()
