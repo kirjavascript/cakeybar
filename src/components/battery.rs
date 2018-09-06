@@ -1,16 +1,39 @@
-use super::{Component, Bar, gtk, ConfigGroup};
+use gtk;
 use gtk::prelude::*;
+use bar::Bar;
+use components::Component;
+use config::ConfigGroup;
 use gtk::{Label, StyleContextExt};
-use util::{SymbolFmt, read_file};
+use util::{SymbolFmt, read_file, Timer};
 use std::io::Error;
 
-pub struct Battery;
+pub struct Battery {
+    config: ConfigGroup,
+    label: Label,
+    timer: Timer,
+}
 
 impl Component for Battery {
-    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
+    fn get_config(&self) -> &ConfigGroup {
+        &self.config
+    }
+    fn show(&mut self) {
+        self.label.show();
+    }
+    fn hide(&mut self) {
+        self.label.hide();
+    }
+    fn destroy(&self) {
+        self.timer.remove();
+        self.label.destroy();
+    }
+}
+
+impl Battery {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 
         let label = Label::new(None);
-        Self::init_widget(&label, container, config, bar);
+        super::init_widget(&label, &config, bar, container);
         label.show();
 
         let adapter = config.get_str_or("adapter", "AC").to_string();
@@ -66,8 +89,13 @@ impl Component for Battery {
             });
 
             let interval = config.get_int_or("interval", 3).max(1);
-            tick();
-            gtk::timeout_add_seconds(interval as u32, tick);
+            let timer = Timer::add_seconds(interval as u32, tick);
+
+            bar.add_component(Box::new(Battery {
+                config,
+                label,
+                timer,
+            }));
         } else {
             warn!("no battery detected");
         }

@@ -1,6 +1,5 @@
 use gtk;
 use gtk::prelude::*;
-// use super::{Component, Bar, gtk, ConfigGroup};
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;

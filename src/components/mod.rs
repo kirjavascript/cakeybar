@@ -10,11 +10,11 @@ use bar::Bar;
 use config::{ConfigGroup, Property};
 
 mod bandwidth;
-// mod battery;
+mod battery;
 mod clock;
 mod container;
-// mod cpu;
-// mod disk;
+mod cpu;
+mod disk;
 // mod dropdown;
 // mod equalizer;
 // mod image;
@@ -49,10 +49,10 @@ pub fn load_component(
     // decide which component to load
     let component = match config.get_str_or("type", "void") {
         "bandwidth" => bandwidth::Bandwidth::init,
-        // "battery" => battery::Battery::init,
+        "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
         "container" => container::Container::init,
-        // "cpu" => cpu::CPU::init,
+        "cpu" => cpu::CPU::init,
         // "disk" => disk::Disk::init,
         // "dropdown" => dropdown::Dropdown::init,
         // "equalizer" | "equaliser" => equalizer::Equalizer::init,
