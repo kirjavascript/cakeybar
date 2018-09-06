@@ -16,7 +16,7 @@ https://github.com/Rahix/pa-visualizer
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
-features for 1.0.0: ipc, startmenu, tray bugs
+features for 1.0.0: ipc, file watching, startmenu, tray bugs
 current: component refactor / ipc
 
 wm refactoring
@@ -24,6 +24,7 @@ wm refactoring
 default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
+autohide bar
 config file watcher
 rebase into master
 
@@ -31,6 +32,7 @@ tray
 ====
 fix tray fullscreen latency/mm bug with events
 wm restart event restack tray
+spacing
 bug: on no icons width = 1
 /tmp/cakeytray-horcrux - save processes, restart if dead & if file exists on boot`
 
@@ -39,7 +41,6 @@ ipc
 wm_util event
 reload config / theme (theme should be easy) / all
 allow ipc in menu objs
-autohide bar
 bindsym $mod+m exec -- --message / sxhkdrc
 rustyline
 // if just the bar, show/hide the bar

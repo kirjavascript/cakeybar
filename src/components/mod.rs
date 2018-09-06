@@ -43,12 +43,15 @@ pub trait Component {
 pub fn load_component(
     config: ConfigGroup, bar: &mut Bar, container: &gtk::Box
 ) {
+    fn void(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+        warn!("a valid type is required for #{}", config.name)
+    }
     // decide which component to load
-    match config.get_str_or("type", "void") {
+    let component = match config.get_str_or("type", "void") {
         // "bandwidth" => bandwidth::Bandwidth::init,
         // "battery" => battery::Battery::init,
-        "clock" => clock::Clock::init(config, bar, container),
-        "container" => container::Container::init(config, bar, container),
+        "clock" => clock::Clock::init,
+        "container" => container::Container::init,
         // "cpu" => cpu::CPU::init,
         // "disk" => disk::Disk::init,
         // "dropdown" => dropdown::Dropdown::init,
@@ -62,8 +65,9 @@ pub fn load_component(
         // "tray" => tray::Tray::init,
         // "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,
-        _ => warn!("a valid type is required for #{}", config.name),
-    }
+        _ => void,
+    };
+    component(config, bar, container);
 }
 
 pub fn init_widget<T>(
@@ -75,7 +79,7 @@ pub fn init_widget<T>(
         + gtk::IsA<gtk::Object>
         + glib::value::SetValue {
     // TODO: add EventBox
-    // add wrapper
+    // TODO: add wrapper
     // let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
     // wrapper.add(widget);
     // wrapper.show();
