@@ -1,4 +1,4 @@
-use {gdk, gtk, wm, cairo};
+use {gdk, gtk, wm, cairo, NAME};
 use gtk::prelude::*;
 use gtk::{
     Window,
@@ -9,35 +9,31 @@ use gtk::{
 };
 use gdk::{ScrollDirection, ScreenExt};
 
-use {NAME, components};
 use config::{ConfigGroup, Config};
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub struct Bar<'a> {
-    pub application: &'a gtk::Application,
-    pub app_config: &'a Config,
-    pub config: &'a ConfigGroup,
-    pub wm_util: &'a wm::WMUtil,
-    pub overlay: Box<Overlay>,
+pub struct Bar {
+    pub config: ConfigGroup,
+    pub wm_util: wm::WMUtil,
+    pub overlay: Overlay,
+    window: Window,
 }
 
-impl<'a> Bar<'a> {
+impl Bar {
     pub fn new(
-        application: &'a gtk::Application,
-        app_config: &'a Config,
-        config: &'a ConfigGroup,
-        wm_util: &'a wm::WMUtil,
+        config: ConfigGroup,
+        wm_util: wm::WMUtil,
         monitor: &Rectangle,
-    ) -> Bar<'a> {
+    ) -> Bar {
         let window_type = if config.get_bool_or("float", false) {
             WindowType::Popup
         } else {
             WindowType::Toplevel
         };
         let window = Window::new(window_type);
-        application.add_window(&window);
+        wm_util.add_window(&window);
 
         // set base values
         window.set_title(NAME);
@@ -119,23 +115,22 @@ impl<'a> Bar<'a> {
 
         // create Bar
         let bar = Bar {
-            app_config,
             config,
-            application,
             wm_util,
-            overlay: Box::new(overlay),
+            overlay,
+            window,
         };
 
         // load components
-        components::load_components(&container, &bar);
+        // components::load_components(&container, &bar);
 
-        wm::gtk::disable_shadow(&window);
+        wm::gtk::disable_shadow(&bar.window);
 
-        wm::gtk::set_strut(&window, is_top, Rectangle {
+        wm::gtk::set_strut(&bar.window, is_top, Rectangle {
             x: monitor.x,
             y: monitor.y,
             width: monitor.width,
-            height: window.get_size().1,
+            height: bar.window.get_size().1,
         });
 
         bar

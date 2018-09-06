@@ -6,7 +6,7 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::collections::HashMap;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Config {
     pub global: ConfigGroup,
     pub bars: Vec<ConfigGroup>,
@@ -14,7 +14,7 @@ pub struct Config {
     pub config_dir: PathBuf,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ConfigGroup {
     pub name: String,
     pub properties: HashMap<String, Property>,

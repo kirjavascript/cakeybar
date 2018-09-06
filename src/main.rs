@@ -29,44 +29,29 @@ mod macros;
 mod util;
 mod config;
 mod bar;
-mod components;
+// mod components;
 mod wm;
 
 pub static NAME: &str = env!("CARGO_PKG_NAME");
 pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
-fn init(application: &gtk::Application, config: &config::Config) {
-    // load theme to screen
-    match config.get_theme() {
-        Some(ref src) => wm::gtk::load_theme(src),
-        None => {/* default theme */},
-    }
+fn init(app: &gtk::Application, config_match: Option<&str>) {
+    // get config path
 
-    // load WM tools
-    let wm_util = wm::WMUtil::new();
+    let config_path = match config_match {
+        Some(path) => path.to_string(),
+        None => format!("{}/config.toml", util::get_config_dir()),
+    };
 
-    // load IPC
-    if config.global.get_bool_or("enable-ipc", true) {
-        wm::ipc::listen(&wm_util);
-    }
+    let config_res = config::parse_config(&config_path);
 
-    // load bars
-    let monitors = wm::gtk::get_monitor_geometry();
-    for bar_config in config.bars.iter() {
-        let monitor_index = bar_config.get_int_or("monitor", 0);
-        let monitor_option = monitors.get(monitor_index as usize);
+    if let Ok(config) = config_res {
 
-        if let Some(monitor) = monitor_option {
-            let _ = bar::Bar::new(
-                &application,
-                &config,
-                &bar_config,
-                &wm_util,
-                monitor,
-            );
-        } else {
-            warn!("no monitor at index {}", monitor_index);
-        }
+        let wm_util = wm::WMUtil::new(app.clone(), config);
+        wm_util.load_bars();
+
+    } else if let Err(msg) = config_res {
+        error!("{}", msg);
     }
 }
 
@@ -111,42 +96,27 @@ fn main() {
         return
     }
 
-    // get config
+    // GTK application
 
-    let default_path = format!("{}/config.toml", util::get_config_dir());
-
-    let config_path = matches.value_of("config").unwrap_or(&default_path);
-
-    let config_res = config::parse_config(config_path);
-
-    if let Ok(config) = config_res {
-
-        // GTK application
-
-        // check version
-        if let Some(err) = gtk::check_version(3, 22, 0) {
-            error!("{} (requires 3.22+)", err);
-        }
-
-        let application = gtk::Application::new(
-                format!("com.kirjava.{}", NAME).as_str(),
-                if matches.is_present("multi") {
-                    gio::ApplicationFlags::NON_UNIQUE
-                } else {
-                    gio::ApplicationFlags::empty()
-                }
-            )
-            .expect("Initialization failed...");
-
-        application.connect_startup(move |app| {
-            init(&app, &config);
-        });
-        application.connect_activate(|_| {});
-
-        application.run(&Vec::new()); // dont pass any arguments to GTK
-
-    } else if let Err(msg) = config_res {
-        error!("{}", msg);
+    // check version
+    if let Some(err) = gtk::check_version(3, 22, 0) {
+        error!("{} (requires 3.22+)", err);
     }
 
+    let application = gtk::Application::new(
+            format!("com.kirjava.{}", NAME).as_str(),
+            if matches.is_present("multi") {
+                gio::ApplicationFlags::NON_UNIQUE
+            } else {
+                gio::ApplicationFlags::empty()
+            }
+        )
+        .expect("Initialization failed...");
+
+    application.connect_startup(move |app| {
+        init(&app, matches.value_of("config"));
+    });
+    application.connect_activate(|_| {});
+
+    application.run(&Vec::new()); // dont pass any arguments to GTK
 }
