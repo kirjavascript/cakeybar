@@ -60,7 +60,7 @@ type = "mode"
 type = "container"
 layout = [
     "battery",
-    # "memory",
+    "memory",
     "cpu",
     "bandwidth",
     "disk",

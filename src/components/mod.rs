@@ -19,7 +19,7 @@ mod dropdown;
 // mod equalizer;
 mod image;
 mod ip;
-// mod memory;
+mod memory;
 // mod menu;
 // mod mode;
 // mod script;
@@ -47,7 +47,7 @@ pub fn load_component(
         warn!("a valid type is required for #{}", config.name)
     }
     // decide which component to load
-    let component = match config.get_str_or("type", "void") {
+    (match config.get_str_or("type", "void") {
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
@@ -58,7 +58,7 @@ pub fn load_component(
         // "equalizer" | "equaliser" => equalizer::Equalizer::init,
         "image" => image::Image::init,
         "ip" => ip::IP::init,
-        // "memory" => memory::Memory::init,
+        "memory" => memory::Memory::init,
         // "menu" => menu::Menu::init,
         // "mode" => mode::Mode::init,
         // "script" => script::Script::init,
@@ -66,8 +66,7 @@ pub fn load_component(
         // "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,
         _ => void,
-    };
-    component(config, bar, container);
+    }) (config, bar, container);
 }
 
 pub fn init_widget<T>(

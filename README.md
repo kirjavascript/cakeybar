@@ -249,15 +249,6 @@ icon-size = 20
 
 the `background-color` style needs to be set explicitly for it to work
 
-#### equalizer
-
-```toml
-[component.eq]
-type = "equalizer"
-```
-
-experimental pulseaudio visualizer
-
 #### dropdown
 
 ```toml
