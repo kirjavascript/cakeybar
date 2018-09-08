@@ -1,22 +1,47 @@
-use super::{Component, Bar, gtk, ConfigGroup};
+use gtk;
 use gtk::prelude::*;
+use bar::Bar;
+use components::Component;
+use config::ConfigGroup;
 use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
 use glib::signal::SignalHandlerId;
 use glib::markup_escape_text;
 
 use wm;
-use wm::events::{Event, EventValue};
+use wm::events::{Event, EventValue, EventId};
 use wm::workspace::Workspace;
+use wm::WMUtil;
 use util::{SymbolFmt};
 
 use std::cell::RefCell;
 use std::rc::Rc;
 use std::mem::replace;
 
-pub struct Workspaces;
+pub struct Workspaces {
+    config: ConfigGroup,
+    label: Label,
+    event_id: EventId,
+    wm_util: WMUtil,
+}
 
 impl Component for Workspaces {
-    fn init(container: &Box, config: &ConfigGroup, bar: &Bar){
+    fn get_config(&self) -> &ConfigGroup {
+        &self.config
+    }
+    fn show(&mut self) {
+        self.label.show();
+    }
+    fn hide(&mut self) {
+        self.label.hide();
+    }
+    fn destroy(&self) {
+        self.wm_util.remove_listener(Event::Workspace, self.event_id);
+        self.label.destroy();
+    }
+}
+
+impl Workspaces {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         let monitor_index = bar.config.get_int_or("monitor", 0) as i32;
 
         // get spacing
@@ -30,7 +55,7 @@ impl Component for Workspaces {
         let wrapper = Box::new(Orientation::Horizontal, spacing);
 
         // add to container and show
-        Self::init_widget(&wrapper, container, config, bar);
+        super::init_widget(&wrapper, &config, bar, container);
         wrapper.show();
 
         let name_opt = wm::gtk::get_monitor_name(monitor_index);
@@ -43,17 +68,17 @@ impl Component for Workspaces {
         let elabels: Rc<RefCell<Vec<EventLabel>>> =
             Rc::new(RefCell::new(Vec::new()));
 
-        let &Bar { wm_util, .. } = bar;
+        let wm_util = bar.wm_util.clone();
 
         for workspace in workspaces.iter() {
-            let elabel = EventLabel::new(&wrapper, wm_util, &workspace, &symbols);
+            let elabel = EventLabel::new(&wrapper, &wm_util, &workspace, &symbols);
             elabels.borrow_mut().push(elabel);
         }
         wrapper.show_all();
 
         // listen for events
-        wm_util.add_listener(Event::Workspace, clone!((wrapper, elabels, wm_util)
-            move |workspaces_opt| {
+        let event_id = wm_util.add_listener(Event::Workspace,
+            clone!((wrapper, elabels, wm_util) move |workspaces_opt| {
                 if let Some(EventValue::Workspaces(workspaces)) = workspaces_opt {
 
                     let mut workspaces = filter_by_name(&workspaces, show_all, &name_opt);

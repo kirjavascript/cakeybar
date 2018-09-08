@@ -21,11 +21,11 @@ mod image;
 mod ip;
 mod memory;
 // mod menu;
-// mod mode;
+mod mode;
 mod script;
 // mod tray;
 mod window;
-// mod workspaces;
+mod workspaces;
 
 /// interface for all components
 pub trait Component {
@@ -60,11 +60,11 @@ pub fn load_component(
         "ip" => ip::IP::init,
         "memory" => memory::Memory::init,
         // "menu" => menu::Menu::init,
-        // "mode" => mode::Mode::init,
+        "mode" => mode::Mode::init,
         "script" => script::Script::init,
         // "tray" => tray::Tray::init,
         "window" => window::Window::init,
-        // "workspaces" => workspaces::Workspaces::init,
+        "workspaces" => workspaces::Workspaces::init,
         _ => void,
     }) (config, bar, container);
 }
