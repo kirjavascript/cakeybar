@@ -48,7 +48,7 @@ impl Container {
             if let Some(config) = config_opt {
                 super::load_component(config, bar, &wrapper);
             } else {
-                warn!("missing component #{:?}", name);
+                warn!("missing component #{}", name);
             }
         }
 

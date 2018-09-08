@@ -22,7 +22,7 @@ mod ip;
 mod memory;
 // mod menu;
 // mod mode;
-// mod script;
+mod script;
 // mod tray;
 // mod window;
 // mod workspaces;
@@ -61,7 +61,7 @@ pub fn load_component(
         "memory" => memory::Memory::init,
         // "menu" => menu::Menu::init,
         // "mode" => mode::Mode::init,
-        // "script" => script::Script::init,
+        "script" => script::Script::init,
         // "tray" => tray::Tray::init,
         // "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,

@@ -156,7 +156,7 @@ impl Bar {
             if let Some(config) = config_opt {
                 load_component(config, self, &container);
             } else {
-                warn!("missing component #{:?}", name);
+                warn!("missing component #{}", name);
             }
         }
     }

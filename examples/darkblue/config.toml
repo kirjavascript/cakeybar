@@ -1,9 +1,17 @@
 # bars
 
+[component.script]
+type = "script"
+src = '''
+    uptime | sed -r "s/.*average: (.*)$/\\1/"
+'''
+format = "{stdout}" # symbols are; stdout, stderr, code
+
 [bar.left]
 monitor = 0
 position = "top"
 layout = [
+"script",
     "menu",
     "workspaces",
     "mode",
@@ -60,7 +68,7 @@ type = "mode"
 type = "container"
 layout = [
     "battery",
-    "memory",
+    # "memory",
     "cpu",
     "bandwidth",
     "disk",
