@@ -42,7 +42,7 @@ impl Disk {
             mounts.len() == 0 || mounts.contains(&&s.to_string())
         };
 
-        let mut tick = clone!(label_group move || {
+        let tick = clone!(label_group move || {
             system.refresh_disk_list();
 
             let labels = system.get_disks()

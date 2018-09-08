@@ -347,6 +347,12 @@ impl<'a> Manager<'a> {
                 }
                 self.reposition();
             },
+            Action::Show => {
+                self.show();
+            },
+            Action::Hide => {
+                self.hide();
+            },
             _ => {},
         }
     }

@@ -3,7 +3,7 @@ use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
-use gtk::{Label, Box, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
+use gtk::{Label, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
 use glib::signal::SignalHandlerId;
 use glib::markup_escape_text;
 
@@ -19,7 +19,7 @@ use std::mem::replace;
 
 pub struct Workspaces {
     config: ConfigGroup,
-    label: Label,
+    wrapper: gtk::Box,
     event_id: EventId,
     wm_util: WMUtil,
 }
@@ -29,14 +29,14 @@ impl Component for Workspaces {
         &self.config
     }
     fn show(&mut self) {
-        self.label.show();
+        self.wrapper.show();
     }
     fn hide(&mut self) {
-        self.label.hide();
+        self.wrapper.hide();
     }
     fn destroy(&self) {
         self.wm_util.remove_listener(Event::Workspace, self.event_id);
-        self.label.destroy();
+        self.wrapper.destroy();
     }
 }
 
@@ -52,7 +52,7 @@ impl Workspaces {
         let symbols = SymbolFmt::new(config.get_str_or("format", "{number}"));
 
         // attach wrapper
-        let wrapper = Box::new(Orientation::Horizontal, spacing);
+        let wrapper = gtk::Box::new(Orientation::Horizontal, spacing);
 
         // add to container and show
         super::init_widget(&wrapper, &config, bar, container);
@@ -116,6 +116,14 @@ impl Workspaces {
             }
         ));
 
+        let wm_util = bar.wm_util.clone();
+        bar.add_component(Box::new(Workspaces {
+            config,
+            wrapper,
+            wm_util,
+            event_id,
+        }));
+
     }
 }
 
@@ -128,7 +136,7 @@ struct EventLabel {
 
 impl EventLabel {
     pub fn new(
-        wrapper: &Box,
+        wrapper: &gtk::Box,
         wm_util: &wm::WMUtil,
         workspace: &Workspace,
         symbols: &SymbolFmt

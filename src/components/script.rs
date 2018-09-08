@@ -3,7 +3,7 @@ use gtk::prelude::*;
 use gtk::Label;
 use bar::Bar;
 use components::Component;
-use config::{ConfigGroup, Property};
+use config::ConfigGroup;
 use std::process::{Command, Stdio};
 use std::thread;
 use std::time::Duration;

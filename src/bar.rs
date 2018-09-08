@@ -1,4 +1,4 @@
-use {gdk, gtk, wm, cairo, NAME, components};
+use {gdk, gtk, wm, cairo, NAME};
 use gtk::prelude::*;
 use gtk::{
     Window,
@@ -12,7 +12,7 @@ use gdk::{ScrollDirection, ScreenExt};
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use config::{ConfigGroup, Config};
+use config::ConfigGroup;
 use components::{Component, load_component};
 
 pub struct Bar {

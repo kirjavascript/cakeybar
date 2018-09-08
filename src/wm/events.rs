@@ -58,7 +58,11 @@ impl<T, V> EventEmitter<T, V> where T: Hash + Eq, V: Clone {
             });
             if let Some(index) = index_opt {
                 listeners.remove(index);
+            } else {
+                error!("removing non existant event id");
             }
+        } else {
+            error!("removing non existant event type");
         }
     }
 

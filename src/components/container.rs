@@ -1,7 +1,7 @@
 use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
-use config::{ConfigGroup, Property};
+use config::ConfigGroup;
 use components::{Component};
 use bar::Bar;
 

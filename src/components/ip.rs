@@ -2,7 +2,7 @@ use gtk;
 use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
-use config::{ConfigGroup, Property};
+use config::ConfigGroup;
 use util::{SymbolFmt, LabelGroup, Timer};
 
 use systemstat::{System, Platform};

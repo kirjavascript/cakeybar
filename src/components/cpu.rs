@@ -40,7 +40,7 @@ impl CPU {
         let symbols = SymbolFmt::new(config.get_str_or("format", "{usage}"));
         let has_usage = symbols.contains("usage");
 
-        let mut tick = clone!(label move || {
+        let tick = clone!(label move || {
             if has_usage {
                 system.refresh_system();
             }

@@ -7,7 +7,7 @@ use gtk::{
     OverlayExt,
 };
 use bar::Bar;
-use config::{ConfigGroup, Property};
+use config::ConfigGroup;
 
 mod bandwidth;
 mod battery;
@@ -23,7 +23,7 @@ mod memory;
 // mod menu;
 mod mode;
 mod script;
-// mod tray;
+mod tray;
 mod window;
 mod workspaces;
 
@@ -43,7 +43,7 @@ pub trait Component {
 pub fn load_component(
     config: ConfigGroup, bar: &mut Bar, container: &gtk::Box
 ) {
-    fn void(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    fn void(config: ConfigGroup, _: &mut Bar, _: &gtk::Box) {
         warn!("a valid type is required for #{}", config.name)
     }
     // decide which component to load
@@ -62,7 +62,7 @@ pub fn load_component(
         // "menu" => menu::Menu::init,
         "mode" => mode::Mode::init,
         "script" => script::Script::init,
-        // "tray" => tray::Tray::init,
+        "tray" => tray::Tray::init,
         "window" => window::Window::init,
         "workspaces" => workspaces::Workspaces::init,
         _ => void,

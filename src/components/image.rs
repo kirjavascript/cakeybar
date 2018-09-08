@@ -1,8 +1,7 @@
 use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
-use config::{ConfigGroup, Property};
+use config::ConfigGroup;
 use gtk::prelude::*;
 use gtk::{Image as GtkImage};
 

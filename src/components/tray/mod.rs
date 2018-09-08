@@ -1,7 +1,13 @@
-use super::{Component, Bar, gtk, ConfigGroup};
+use gtk;
 use gtk::prelude::*;
+use glib_sys::g_source_remove;
+use glib::translate::ToGlib;
 use gtk::{Orientation};
 use gdk::{WindowExt, RGBA};
+use bar::Bar;
+use components::Component;
+use config::ConfigGroup;
+use util::Timer;
 
 use xcb;
 use glib;
@@ -13,39 +19,63 @@ use wm;
 
 mod manager;
 
-pub struct Tray;
-
 // mutable statics should be safe within the same thread
 static mut TRAY_LOADED: bool = false;
 
-impl Component for Tray {
-    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
-        if unsafe { !TRAY_LOADED } {
-            unsafe { TRAY_LOADED = true; }
-            Tray::be_a_tray(container, config, bar);
-        }
-        else {
-            warn!("tray component is already loaded");
-        }
-    }
-}
-
-#[derive(Debug)]
+#[derive(PartialEq)]
 pub enum Action {
     Width(u16),
     Move(u32, u32),
     BgColor(u32),
     IconSize(u16),
+    Show,
+    Hide,
+    Quit,
+}
+
+pub struct Tray {
+    config: ConfigGroup,
+    base_widget: gtk::Box,
+    timer: Timer,
+    sender: channel::Sender<Action>,
+}
+
+impl Component for Tray {
+    fn get_config(&self) -> &ConfigGroup {
+        &self.config
+    }
+    fn show(&mut self) {
+        self.base_widget.show();
+        self.sender.send(Action::Show);
+    }
+    fn hide(&mut self) {
+        self.base_widget.hide();
+        self.sender.send(Action::Hide);
+    }
+    fn destroy(&self) {
+        self.base_widget.destroy();
+        self.timer.remove();
+        self.sender.send(Action::Quit);
+    }
 }
 
 impl Tray {
-    fn be_a_tray(container: &gtk::Box, config: &ConfigGroup, bar: &Bar) {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+        if unsafe { !TRAY_LOADED } {
+            unsafe { TRAY_LOADED = true; }
+            Tray::be_a_tray(config, bar, container);
+        }
+        else {
+            warn!("tray component is already loaded");
+        }
+    }
+    fn be_a_tray(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
         base_widget.add(&wrapper);
         base_widget.show_all();
-        Self::init_widget(&base_widget, container, config, bar);
+        super::init_widget(&base_widget, &config, bar, container);
 
         // communication
         let (s_main, r_main) = channel::unbounded();
@@ -68,13 +98,13 @@ impl Tray {
         }
 
         // send resize event
-        wrapper.connect_size_allocate(move |c, rect| {
+        wrapper.connect_size_allocate(clone!(s_main move |c, rect| {
             let w = c.get_window().unwrap();
             let (_zo, xo, yo) = w.get_origin();
             let y = (yo + (rect.y + ((rect.height - (icon_size as i32))/2))) as u32;
             let x = (xo + rect.x) as u32;
             s_main.send(Action::Move(x, y));
-        });
+        }));
 
         let fullscreen_tick = channel::tick(Duration::from_millis(100));
 
@@ -107,7 +137,7 @@ impl Tray {
                     }
                 }));
 
-                let r_signals = Tray::get_signals();
+                let (r_signals, signal_destroy) = Tray::get_signals();
 
                 loop {
                     select! {
@@ -116,7 +146,7 @@ impl Tray {
                             if let Some(event) = event_opt {
                                 if let Some(code) = manager.handle_event(event) {
                                     info!("system tray exited with code {}", code);
-                                    return ()
+                                    return;
                                 }
                             } else {
                                 error!("uhoh");
@@ -125,7 +155,13 @@ impl Tray {
                         // gtk events
                         recv(r_main, action_opt) => {
                             if let Some(action) = action_opt {
-                                manager.handle_action(action);
+                                if action == Action::Quit {
+                                    manager.finish();
+                                    signal_destroy();
+                                    break;
+                                } else {
+                                    manager.handle_action(action);
+                                }
                             }
                         },
                         // fullscreen tick
@@ -152,7 +188,7 @@ impl Tray {
         });
 
         // receive events
-        gtk::timeout_add(10, move || {
+        let timer = Timer::add_ms(10, clone!(base_widget move || {
             if let Some(msg) = r_tray.try_recv() {
                 match msg {
                     Action::Width(w) => {
@@ -165,20 +201,30 @@ impl Tray {
                 }
             }
             gtk::Continue(true)
-        });
+        }));
+
+        bar.add_component(Box::new(Tray {
+            config,
+            base_widget,
+            timer,
+            sender: s_main,
+        }));
 
     }
 
-    fn get_signals() -> channel::Receiver<i32> {
+    fn get_signals() -> (channel::Receiver<i32>, impl Fn()) {
         let (s, r) = channel::bounded(2);
-        glib::source::unix_signal_add(2, clone!(s move || {
+        let id2 = glib::source::unix_signal_add(2, clone!(s move || {
             s.send(2);
             gtk::Continue(false)
-        })); // SIGINT
-        glib::source::unix_signal_add(15, move || {
+        })).to_glib(); // SIGINT
+        let id15 = glib::source::unix_signal_add(15, move || {
             s.send(15);
             gtk::Continue(false)
-        }); // SIGTERM
-        r
+        }).to_glib(); // SIGTERM
+        (r, move || {
+            unsafe { g_source_remove(id2); }
+            unsafe { g_source_remove(id15); }
+        })
     }
 }
