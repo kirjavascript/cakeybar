@@ -11,17 +11,28 @@ use gdk::{
     DisplayExt,
     MonitorExt,
 };
+use glib::Error;
 
 mod window;
 pub use self::window::*;
 
-pub fn load_theme(path: &str) {
+pub fn load_theme(path: &str) -> Result<CssProvider, Error> {
     let screen = Screen::get_default().unwrap();
     let provider = CssProvider::new();
     match provider.load_from_path(path) {
-        Ok(_) => StyleContext::add_provider_for_screen(&screen, &provider, 0),
-        Err(e) => error!("{}", e),
-    };
+        Ok(_) => {
+            StyleContext::add_provider_for_screen(&screen, &provider, 0);
+            Ok(provider)
+        },
+        Err(e) => {
+            Err(e)
+        },
+    }
+}
+
+pub fn unload_theme(provider: &CssProvider) {
+    let screen = Screen::get_default().unwrap();
+    StyleContext::remove_provider_for_screen(&screen, provider);
 }
 
 // monitor stuff

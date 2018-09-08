@@ -6,6 +6,7 @@ use wm::workspace::Workspace;
 use gtk;
 use wm;
 use gtk::prelude::*;
+use gtk::CssProvider;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -31,6 +32,7 @@ struct Data {
     app: gtk::Application,
     bars: Vec<Bar>,
     config: Config,
+    css_provider: Option<CssProvider>,
     events: EventEmitter<Event, EventValue>,
     wm_type: WMType,
 }
@@ -59,10 +61,11 @@ impl WMUtil {
 
         let data = Rc::new(RefCell::new(Data {
             app,
-            wm_type,
-            events,
-            config,
             bars: Vec::new(),
+            config,
+            css_provider: None,
+            events,
+            wm_type,
         }));
 
         let util = WMUtil(data);
@@ -96,15 +99,25 @@ impl WMUtil {
         self.0.borrow().app.add_window(window);
     }
 
-    pub fn load_theme(&self) {
-        match self.0.borrow().config.get_theme() {
-            Some(ref src) => wm::gtk::load_theme(src),
-            None => {/* default theme */},
-        }
-    }
-
     pub fn get_path(&self, filename: &str) -> String {
         self.0.borrow().config.get_path(filename)
+    }
+
+    pub fn load_theme(&self) {
+        let theme = self.0.borrow().config.get_theme();
+        // unload old theme
+        if let Some(ref provider) = self.0.borrow().css_provider {
+            wm::gtk::unload_theme(provider);
+        }
+        // load new theme
+        match wm::gtk::load_theme(&theme) {
+            Ok(provider) => {
+                self.0.borrow_mut().css_provider = Some(provider);
+            },
+            Err(err) => {
+                error!("{}", err);
+            },
+        }
     }
 
     pub fn load_bars(&self) {

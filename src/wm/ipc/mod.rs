@@ -1,5 +1,5 @@
 mod listen;
-mod parser;
+pub mod parser;
 mod display;
 pub use self::listen::listen;
 
@@ -20,7 +20,15 @@ pub fn send(input: &str) -> Result<String, Error> {
 pub fn send_message(input: &str) {
     info!("sending {:?} via IPC...", input);
     match send(input) {
-        Ok(res) => info!("{}", res),
+        Ok(res) => {
+            if res.starts_with("e:") {
+                error!("{}", &res[2..]);
+            } else if res.starts_with("w:") {
+                warn!("{}", &res[2..]);
+            } else {
+                info!("{}", res);
+            }
+        },
         Err(err) => error!("{}", err),
     }
 }

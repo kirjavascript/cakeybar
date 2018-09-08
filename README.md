@@ -39,7 +39,7 @@ cargo run --release -- -c examples/darkblue/config.toml
 [CSS overview](https://developer.gnome.org/gtk3/stable/chap-css-overview.html)  
 [CSS properties](https://developer.gnome.org/gtk3/stable/chap-css-properties.html)
 
-Format strings use the [Pango Text Attribute Markup Language](https://developer.gnome.org/pango/stable/PangoMarkupFormat.html), which adds hyperlinks and other formatting options
+The [Pango Text Attribute Markup Language](https://developer.gnome.org/pango/stable/PangoMarkupFormat.html) adds hyperlinks and other formatting options for format strings
 
 see the [examples](examples) for more
 

@@ -34,7 +34,7 @@ impl fmt::Display for Command {
                 write!(f, "hiding {}", selectors)
             },
             Command::Help(topic) => {
-                write!(f, "TODO: show help for {:?}", topic)
+                write!(f, "w:TODO: show help for {:?}", topic)
             },
         }
     }

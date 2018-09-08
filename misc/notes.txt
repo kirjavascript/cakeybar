@@ -17,7 +17,7 @@ https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
 features for 1.0.0: ipc, file watching, startmenu, eq, mpd, tray bugs
-current: component refactor / ipc
+current: ipc
 
 wm refactoring
 ===
@@ -37,6 +37,7 @@ bug: on no icons width = 1
 
 ipc
 ====
+help
 wm_util event
 reload config / theme (theme should be easy) / all
 allow ipc in menu objs
@@ -65,7 +66,7 @@ dmenu gtk::WindowType::Popup
 container: clickable (all components onclick?)
 keyboard layout
 iOS style dock
-notifications?
+notifications
 battery - time remaing / time to charge
 label#Label here for layout
 completion
