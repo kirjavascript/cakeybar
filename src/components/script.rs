@@ -30,7 +30,7 @@ impl Component for Script {
     }
     fn destroy(&self) {
         self.timer.remove();
-        self.tx_term.send(());
+        self.tx_term.send(()).ok();
         self.label.destroy();
     }
 }

@@ -24,7 +24,7 @@ mod memory;
 // mod mode;
 mod script;
 // mod tray;
-// mod window;
+mod window;
 // mod workspaces;
 
 /// interface for all components
@@ -63,7 +63,7 @@ pub fn load_component(
         // "mode" => mode::Mode::init,
         "script" => script::Script::init,
         // "tray" => tray::Tray::init,
-        // "window" => window::Window::init,
+        "window" => window::Window::init,
         // "workspaces" => workspaces::Workspaces::init,
         _ => void,
     }) (config, bar, container);

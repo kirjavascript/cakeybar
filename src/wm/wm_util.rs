@@ -1,6 +1,6 @@
 use bar::Bar;
 use config::{Config, ConfigGroup};
-use wm::events::{Event, EventValue, EventEmitter};
+use wm::events::{Event, EventValue, EventEmitter, EventId};
 use wm::workspace::Workspace;
 
 use gtk;
@@ -109,7 +109,9 @@ impl WMUtil {
 
     pub fn load_bars(&self) {
         let monitors = wm::gtk::get_monitor_geometry();
-        let bars = self.0.borrow().config.bars.iter()
+        // clone is here to ensure we're not borrowing during Bar::load_components
+        let bars = self.0.borrow().config.bars.clone();
+        let bars = bars.iter()
             .fold(Vec::new(), |mut acc, bar_config| {
                 let monitor_index = bar_config.get_int_or("monitor", 0);
                 let monitor_option = monitors.get(monitor_index as usize);
@@ -147,9 +149,13 @@ impl WMUtil {
 
     // events
 
-    pub fn add_listener<F: 'static>(&self, event: Event, callback: F)
+    pub fn add_listener<F: 'static>(&self, event: Event, callback: F) -> EventId
         where F: Fn(Option<EventValue>) {
-        self.0.borrow_mut().events.add_listener(event, callback);
+        self.0.borrow_mut().events.add_listener(event, callback)
+    }
+
+    pub fn remove_listener(&self, event: Event, id: EventId) {
+        self.0.borrow_mut().events.remove_listener(event, id);
     }
 
     #[allow(dead_code)]

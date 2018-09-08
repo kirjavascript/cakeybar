@@ -1,24 +1,48 @@
-use super::{Component, Bar, gtk, ConfigGroup};
+use gtk;
 use gtk::prelude::*;
-use gtk::{Label};
+use gtk::Label;
+use bar::Bar;
+use components::Component;
+use config::ConfigGroup;
 use util::SymbolFmt;
 use glib::markup_escape_text;
 
-use wm::events::{Event, EventValue};
+use wm::events::{Event, EventValue, EventId};
+use wm::WMUtil;
 
-pub struct Window;
+pub struct Window {
+    config: ConfigGroup,
+    label: Label,
+    event_id: EventId,
+    wm_util: WMUtil,
+}
 
 impl Component for Window {
-    fn init(container: &gtk::Box, config: &ConfigGroup, bar: &Bar){
-        let label = Label::new(None);
+    fn get_config(&self) -> &ConfigGroup {
+        &self.config
+    }
+    fn show(&mut self) {
+        self.label.show();
+    }
+    fn hide(&mut self) {
+        self.label.hide();
+    }
+    fn destroy(&self) {
+        self.wm_util.remove_listener(Event::Window, self.event_id);
+        self.label.destroy();
+    }
+}
 
-        Self::init_widget(&label, container, config, bar);
+impl Window {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+        let label = Label::new(None);
+        super::init_widget(&label, &config, bar, container);
         label.show();
 
         let trunc = config.get_int_or("truncate", 100) as usize;
         let symbols = SymbolFmt::new(config.get_str_or("format", "{title}"));
 
-        bar.wm_util.add_listener(Event::Window, clone!(label
+        let event_id = bar.wm_util.add_listener(Event::Window, clone!(label
             move |event_opt| {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;
@@ -46,5 +70,13 @@ impl Component for Window {
                 }
             }
         ));
+
+        let wm_util = bar.wm_util.clone();
+        bar.add_component(Box::new(Window {
+            config,
+            label,
+            wm_util,
+            event_id,
+        }));
     }
 }
