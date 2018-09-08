@@ -1,6 +1,6 @@
 use gtk;
 use gtk::prelude::*;
-use gtk::Label;
+use gtk::{Label, Orientation};
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
@@ -11,7 +11,7 @@ use glib::markup_escape_text;
 
 pub struct Mode {
     config: ConfigGroup,
-    label: Label,
+    wrapper: gtk::Box,
     event_id: EventId,
     wm_util: WMUtil,
 }
@@ -21,21 +21,24 @@ impl Component for Mode {
         &self.config
     }
     fn show(&mut self) {
-        self.label.show();
+        self.wrapper.show();
     }
     fn hide(&mut self) {
-        self.label.hide();
+        self.wrapper.hide();
     }
     fn destroy(&self) {
         self.wm_util.remove_listener(Event::Mode, self.event_id);
-        self.label.destroy();
+        self.wrapper.destroy();
     }
 }
 
 impl Mode {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         let label = Label::new(None);
-        super::init_widget(&label, &config, bar, container);
+        let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
+        super::init_widget(&label, &config, bar, &wrapper);
+        container.add(&wrapper);
+        wrapper.show();
 
         let symbols = SymbolFmt::new(config.get_str_or("format", "{mode}"));
 
@@ -63,7 +66,7 @@ impl Mode {
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Mode {
             config,
-            label,
+            wrapper,
             wm_util,
             event_id,
         }));

@@ -16,7 +16,7 @@ https://github.com/Rahix/pa-visualizer
 https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
-features for 1.0.0: ipc, file watching, startmenu, tray bugs
+features for 1.0.0: ipc, file watching, startmenu, eq, mpd, tray bugs
 current: component refactor / ipc
 
 wm refactoring
