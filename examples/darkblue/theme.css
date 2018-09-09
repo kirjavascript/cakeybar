@@ -12,7 +12,6 @@ label {
     min-height: 27px;
     border-bottom: 2px solid @blue;
     background-color: black;
-    /* margin: 25px; */
 }
 
 #left_scroll, #right_scroll {
@@ -29,18 +28,18 @@ label {
     background-position: 50% -10%;
 }
 
-#menu_popup {
-    background-color: black;
-    padding: 5px;
-}
+/* #menu_popup { */
+/*     background-color: black; */
+/*     padding: 5px; */
+/* } */
 
-#menu_popup label {
-    padding: 5px;
-}
+/* #menu_popup label { */
+/*     padding: 5px; */
+/* } */
 
-#menu_popup label:focus {
-    background-color: @blue;
-}
+/* #menu_popup label:focus { */
+/*     background-color: @blue; */
+/* } */
 
 #tray {
     padding-right: 7px;

@@ -30,6 +30,8 @@ pub fn watch(wm_util: &WMUtil, filename: String, theme: String) {
         if let Some(msg) = r.try_recv() {
             // println!("{:#?}", msg);
             wm_util.load_theme(None);
+            // wm_util.reload_config(None);
+            // TODO: fix relayout
         }
         gtk::Continue(true)
     }));

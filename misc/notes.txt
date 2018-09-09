@@ -41,7 +41,6 @@ wm restart event restack tray
 send multiple IPC commands at once
 spacing
 bug: on no icons width = 1
-/tmp/cakeytray-horcrux - save processes, restart if dead & if file exists on boot`
 
 ipc
 ====
