@@ -15,8 +15,8 @@ awesome-client
 https://github.com/Rahix/pa-visualizer
 https://github.com/onodera-punpun/melonbar - openbox
 
-features for 1.0.0: ipc, file watching, startmenu, xkb, completor, tray bugs
-current: ipc
+features for 1.0.0: startmenu, xkb, completor, tray bugs
+current: file watching
 
 file watcher
 ===
@@ -29,6 +29,7 @@ default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
+faster config reload
 
 tray
 ====
@@ -37,6 +38,7 @@ reload theme -> wm_util event
 reload event -> ???
 ipc doesn't show/hide (fullscreen? )
 wm restart event restack tray
+send multiple IPC commands at once
 spacing
 bug: on no icons width = 1
 /tmp/cakeytray-horcrux - save processes, restart if dead & if file exists on boot`

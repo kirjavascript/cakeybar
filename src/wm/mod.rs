@@ -7,4 +7,5 @@ pub mod ipc;
 mod wm_util;
 pub mod workspace;
 pub mod xcb;
+pub mod watch;
 pub use self::wm_util::*;

@@ -97,12 +97,21 @@ impl WMUtil {
 
         util.load_theme(None);
         util.load_bars();
+        util.watch_files();
 
         util
     }
 
     pub fn add_window(&self, window: &gtk::Window) {
         self.data.borrow().app.add_window(window);
+    }
+
+    pub fn watch_files(&self) {
+        let (filename, theme) = (
+            self.data.borrow().config.get_filename(),
+            self.data.borrow().config.get_theme(),
+        );
+        wm::watch::watch(self, filename, theme);
     }
 
     pub fn reload_config(&self, new_path: Option<String>) {
@@ -112,6 +121,7 @@ impl WMUtil {
         }
         // get filename
         let filename = self.data.borrow().config.get_filename();
+        // load config
         let config_res = parse_config(&filename);
         if let Ok(config) = config_res {
             self.unload_bars();

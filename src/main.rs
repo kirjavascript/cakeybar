@@ -16,6 +16,7 @@ extern crate pulse_simple;
 extern crate sysinfo;
 extern crate systemstat;
 extern crate toml;
+extern crate notify;
 extern crate xcb;
 #[macro_use]
 extern crate nom;

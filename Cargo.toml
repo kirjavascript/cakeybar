@@ -26,6 +26,7 @@ nom = "4"
 ansi_term = "0.11"
 pulse-simple = { git = "https://github.com/astro/rust-pulse-simple" }
 dft = "0.5.5"
+notify = "4.0.0"
 
 # stats
 systemstat = "0.1.3"
