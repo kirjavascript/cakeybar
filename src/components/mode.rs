@@ -1,13 +1,13 @@
-use gtk;
-use gtk::prelude::*;
-use gtk::{Label, Orientation};
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
-use wm::events::{Event, EventValue, EventId};
-use wm::WMUtil;
-use util::SymbolFmt;
 use glib::markup_escape_text;
+use gtk;
+use gtk::prelude::*;
+use gtk::{Label, Orientation};
+use util::SymbolFmt;
+use wm::events::{Event, EventId, EventValue};
+use wm::WMUtil;
 
 pub struct Mode {
     config: ConfigGroup,
@@ -42,7 +42,9 @@ impl Mode {
 
         let symbols = SymbolFmt::new(config.get_str_or("format", "{mode}"));
 
-        let event_id = bar.wm_util.add_listener(Event::Mode, clone!(label
+        let event_id = bar.wm_util.add_listener(
+            Event::Mode,
+            clone!(label
             move |event_opt| {
                 if let Some(EventValue::String(mode)) = event_opt {
                     let is_default = mode == "default";
@@ -61,7 +63,8 @@ impl Mode {
                     }
                 }
             }
-        ));
+        ),
+        );
 
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Mode {

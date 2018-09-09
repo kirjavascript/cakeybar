@@ -1,10 +1,10 @@
 pub mod atom;
-pub mod xcb;
-pub mod gtk;
 pub mod bsp;
+pub mod events;
+pub mod gtk;
 pub mod i3;
 pub mod ipc;
-pub mod events;
-pub mod workspace;
 mod wm_util;
+pub mod workspace;
+pub mod xcb;
 pub use self::wm_util::*;

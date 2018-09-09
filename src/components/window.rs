@@ -1,13 +1,13 @@
-use gtk;
-use gtk::prelude::*;
-use gtk::Label;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
-use util::SymbolFmt;
 use glib::markup_escape_text;
+use gtk;
+use gtk::prelude::*;
+use gtk::Label;
+use util::SymbolFmt;
 
-use wm::events::{Event, EventValue, EventId};
+use wm::events::{Event, EventId, EventValue};
 use wm::WMUtil;
 
 pub struct Window {
@@ -42,7 +42,9 @@ impl Window {
         let trunc = config.get_int_or("truncate", 100) as usize;
         let symbols = SymbolFmt::new(config.get_str_or("format", "{title}"));
 
-        let event_id = bar.wm_util.add_listener(Event::Window, clone!(label
+        let event_id = bar.wm_util.add_listener(
+            Event::Window,
+            clone!(label
             move |event_opt| {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;
@@ -69,7 +71,8 @@ impl Window {
                     }
                 }
             }
-        ));
+        ),
+        );
 
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Window {

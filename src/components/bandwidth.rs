@@ -1,12 +1,12 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
-use util::{format_bytes, SymbolFmt, LabelGroup, Timer};
+use gtk;
+use gtk::prelude::*;
+use util::{format_bytes, LabelGroup, SymbolFmt, Timer};
 
-use std::collections::HashMap;
 use std::cell::RefCell;
+use std::collections::HashMap;
 use std::rc::Rc;
 
 use probes::network;
@@ -42,14 +42,11 @@ impl Bandwidth {
         let interval = config.get_int_or("interval", 3).max(1) as u64;
         let symbols = SymbolFmt::new(config.get_str_or("format", "{down/s}"));
 
-        let should_include = move |s: &str| {
-            interfaces.len() == 0 || interfaces.contains(&&s.to_string())
-        };
+        let should_include =
+            move |s: &str| interfaces.len() == 0 || interfaces.contains(&&s.to_string());
 
         // last frame of data
-        let last: Rc<RefCell<HashMap<String, (u64, u64)>>> = Rc::new(RefCell::new(
-            HashMap::new()
-        ));
+        let last: Rc<RefCell<HashMap<String, (u64, u64)>>> = Rc::new(RefCell::new(HashMap::new()));
 
         let name = config.name.clone();
         let tick = clone!((label_group, last) move || {

@@ -1,12 +1,12 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
+use gtk;
+use gtk::prelude::*;
 use gtk::Label;
-use util::{SymbolFmt, read_file, Timer};
+use util::{read_file, SymbolFmt, Timer};
 
-use sysinfo::{ProcessorExt, SystemExt, System};
+use sysinfo::{ProcessorExt, System, SystemExt};
 
 pub struct CPU {
     config: ConfigGroup,

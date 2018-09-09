@@ -1,12 +1,12 @@
 use gtk;
+use i3ipc::event::Event as I3Event;
 use i3ipc::{I3EventListener, Subscription};
-use i3ipc::event::{Event as I3Event};
+use wm::events::{Event, EventValue};
 use wm::i3;
 use wm::workspace::Workspace;
-use wm::events::{Event, EventValue};
 
-use std::thread;
 use std::sync::mpsc;
+use std::thread;
 
 enum I3Msg {
     Mode(String),
@@ -14,17 +14,13 @@ enum I3Msg {
 }
 
 pub fn listen(wm_util: &::wm::WMUtil) {
-
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
         let listener_result = I3EventListener::connect();
         match listener_result {
             Ok(mut listener) => {
-                let subs = [
-                    Subscription::Mode,
-                    Subscription::Workspace,
-                ];
+                let subs = [Subscription::Mode, Subscription::Workspace];
                 listener.subscribe(&subs).unwrap();
 
                 let mut connection = i3::connect();
@@ -35,37 +31,39 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                             match message {
                                 I3Event::ModeEvent(e) => {
                                     tx.send(Ok(I3Msg::Mode(e.change))).ok();
-                                },
+                                }
                                 I3Event::WorkspaceEvent(_e) => {
                                     // Focus Init Empty Urgent Rename Reload Restored Move Unknown
 
                                     if let Ok(ref mut connection) = connection {
-                                        tx.send(Ok(I3Msg::Workspace(
-                                            i3::get_workspaces(connection)
-                                        ))).ok();
+                                        tx.send(Ok(I3Msg::Workspace(i3::get_workspaces(
+                                            connection,
+                                        )))).ok();
                                     } else if let Err(ref err) = connection {
                                         error!("{} (try reloading i3 config)", err);
                                     }
-                                },
+                                }
                                 _ => unreachable!(),
                             };
-                        },
+                        }
                         Err(err) => {
                             // listener is rip
                             tx.send(Err(format!("{}", err))).unwrap();
                             break;
-                        },
+                        }
                     };
                 }
-            },
+            }
             Err(err) => {
                 // socket failed to connect
                 tx.send(Err(format!("{}", err))).unwrap();
-            },
+            }
         };
     });
 
-    gtk::timeout_add(10, clone!(wm_util move || {
+    gtk::timeout_add(
+        10,
+        clone!(wm_util move || {
         if let Ok(msg_result) = rx.try_recv() {
             match msg_result {
                 Ok(msg) => {
@@ -95,5 +93,6 @@ pub fn listen(wm_util: &::wm::WMUtil) {
             };
         }
         gtk::Continue(true)
-    }));
+    }),
+    );
 }

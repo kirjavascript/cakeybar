@@ -1,12 +1,12 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
-use util::{SymbolFmt, LabelGroup, Timer};
+use gtk;
+use gtk::prelude::*;
+use util::{LabelGroup, SymbolFmt, Timer};
 
-use systemstat::{System, Platform};
 use systemstat::data::{IpAddr, Network};
+use systemstat::{Platform, System};
 
 pub struct IP {
     config: ConfigGroup,
@@ -37,9 +37,8 @@ impl IP {
 
         let interfaces = config.get_string_vec("interfaces");
 
-        let should_include = move |s: &str| {
-            interfaces.len() == 0 || interfaces.contains(&&s.to_string())
-        };
+        let should_include =
+            move |s: &str| interfaces.len() == 0 || interfaces.contains(&&s.to_string());
 
         let symbols = SymbolFmt::new(config.get_str_or("format", "{ipv4}"));
 
@@ -90,8 +89,7 @@ impl IP {
                 if ipv6 {
                     return format!("{}", ip);
                 }
-            }
-            else if let IpAddr::V4(ip) = addr.addr {
+            } else if let IpAddr::V4(ip) = addr.addr {
                 if !ipv6 {
                     return format!("{}", ip);
                 }

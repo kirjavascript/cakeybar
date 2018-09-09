@@ -1,11 +1,12 @@
-mod listen;
-pub mod parser;
+mod commands;
 mod display;
+mod listen;
+mod parser;
 pub use self::listen::listen;
 
 use std::env;
+use std::io::{Error, Read, Write};
 use std::os::unix::net::UnixStream;
-use std::io::{Read, Write, Error};
 
 const DEFAULT_SOCKET: &str = "/tmp/cakeybar";
 
@@ -28,7 +29,7 @@ pub fn send_message(input: &str) {
             } else {
                 info!("{}", res);
             }
-        },
+        }
         Err(err) => error!("{}", err),
     }
 }

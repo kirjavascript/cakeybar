@@ -2,8 +2,8 @@ mod listen;
 
 pub use self::listen::listen;
 
-use xcb;
 use wm::atom;
+use xcb;
 
 pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xcb::Screen) -> bool {
     // get active window
@@ -40,11 +40,11 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
                             return true;
                         }
                     }
-                },
-                Err(_err) => {},
+                }
+                Err(_err) => {}
             }
-        },
-        Err(_err) => {},
+        }
+        Err(_err) => {}
     }
     false
 }
@@ -63,7 +63,7 @@ pub fn get_string(conn: &xcb::Connection, id: u32, _type: u32, attr: u32) -> Str
             _type, // xcb::ATOM_STRING
             long_offset,
             long_length,
-            );
+        );
         match cookie.get_reply() {
             Ok(reply) => {
                 let value: &[u8] = reply.value();
@@ -92,7 +92,6 @@ pub fn get_string(conn: &xcb::Connection, id: u32, _type: u32, attr: u32) -> Str
 //         info!("{:#?} {}", get_wm_name(&self.conn, *i), i);
 //     }
 // }
-
 
 // use std::sync::Arc;
 // pub fn set_strut(window_role: String) {

@@ -1,13 +1,7 @@
-use {gtk, glib};
-use gtk::{
-    Align,
-    WidgetExt,
-    StyleContextExt,
-    ContainerExt,
-    OverlayExt,
-};
 use bar::Bar;
 use config::ConfigGroup;
+use gtk::{Align, ContainerExt, OverlayExt, StyleContextExt, WidgetExt};
+use {glib, gtk};
 
 mod bandwidth;
 mod battery;
@@ -40,9 +34,7 @@ pub trait Component {
 }
 
 /// each component MUST call bar.add_component
-pub fn load_component(
-    config: ConfigGroup, bar: &mut Bar, container: &gtk::Box
-) {
+pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
     fn void(config: ConfigGroup, _: &mut Bar, _: &gtk::Box) {
         warn!("a valid type is required for #{}", config.name)
     }
@@ -66,17 +58,13 @@ pub fn load_component(
         "window" => window::Window::init,
         "workspaces" => workspaces::Workspaces::init,
         _ => void,
-    }) (config, bar, container);
+    })(config, bar, container);
 }
 
-pub fn init_widget<T>(
-    widget: &T,
-    config: &ConfigGroup,
-    bar: &Bar,
-    container: &gtk::Box,
-) where T: gtk::IsA<gtk::Widget>
-        + gtk::IsA<gtk::Object>
-        + glib::value::SetValue {
+pub fn init_widget<T>(widget: &T, config: &ConfigGroup, bar: &Bar, container: &gtk::Box)
+where
+    T: gtk::IsA<gtk::Widget> + gtk::IsA<gtk::Object> + glib::value::SetValue,
+{
     // TODO: add EventBox
     // TODO: add wrapper
     // let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
@@ -87,7 +75,7 @@ pub fn init_widget<T>(
     widget.set_name(&config.name);
     // class
     let class_str = config.get_str_or("class", "null");
-    if class_str != "null"  {
+    if class_str != "null" {
         if let Some(ctx) = widget.get_style_context() {
             ctx.add_class(class_str);
         }

@@ -1,5 +1,5 @@
 use gtk;
-use gtk::{Label, WidgetExt, LabelExt, ContainerExt};
+use gtk::{ContainerExt, Label, LabelExt, WidgetExt};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -49,5 +49,4 @@ impl LabelGroup {
             });
         }
     }
-
 }

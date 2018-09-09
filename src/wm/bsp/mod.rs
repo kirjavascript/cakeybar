@@ -6,12 +6,11 @@ use wm;
 use wm::workspace::Workspace;
 
 use std::env;
-use std::os::unix::net::{UnixStream};
-use std::io::{Error, Write, Read};
+use std::io::{Error, Read, Write};
+use std::os::unix::net::UnixStream;
 
 pub fn connect() -> Result<UnixStream, Error> {
-    let stream_file = env::var("BSPWM_SOCKET")
-        .unwrap_or("/tmp/bspwm_0_0-socket".to_string());
+    let stream_file = env::var("BSPWM_SOCKET").unwrap_or("/tmp/bspwm_0_0-socket".to_string());
 
     UnixStream::connect(stream_file)
 }
@@ -57,11 +56,7 @@ pub fn cycle_workspace(forward: bool, monitor_index: i32) {
     if let Ok(mut stream) = connect() {
         let workspaces = get_workspaces(&mut stream);
 
-        let next_opt = wm::workspace::get_next(
-            &workspaces,
-            forward,
-            monitor_index,
-        );
+        let next_opt = wm::workspace::get_next(&workspaces, forward, monitor_index);
 
         if let Some(next) = next_opt {
             let command = format!("desktop -f {}", next.name);
@@ -78,15 +73,19 @@ pub fn parse_workspaces(string: String) -> Vec<Workspace> {
 
     let string = &string[1..].trim();
     let indices: Vec<(usize, &str)> = string.match_indices(&['m', 'M'][..]).collect();
-    let monitors = indices.iter().enumerate().map(|(i, (start, status))| {
-        let end_opt =  indices.get(i + 1).map(|x| x.0);
-        let slice = if let Some(end) = end_opt {
-            &string[start+1..end]
-        } else {
-            &string[start+1..]
-        };
-        (*status, slice)
-    }).collect::<Vec<(&str, &str)>>();
+    let monitors = indices
+        .iter()
+        .enumerate()
+        .map(|(i, (start, status))| {
+            let end_opt = indices.get(i + 1).map(|x| x.0);
+            let slice = if let Some(end) = end_opt {
+                &string[start + 1..end]
+            } else {
+                &string[start + 1..]
+            };
+            (*status, slice)
+        })
+        .collect::<Vec<(&str, &str)>>();
 
     for monitor in monitors {
         let mut text: String = monitor.1.to_string();

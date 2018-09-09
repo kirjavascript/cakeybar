@@ -1,21 +1,21 @@
-use gtk;
-use gtk::prelude::*;
-use glib_sys::g_source_remove;
-use glib::translate::ToGlib;
-use gtk::{Orientation};
-use gdk::{WindowExt, RGBA};
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
+use gdk::{WindowExt, RGBA};
+use glib::translate::ToGlib;
+use glib_sys::g_source_remove;
+use gtk;
+use gtk::prelude::*;
+use gtk::Orientation;
 use util::Timer;
 
-use xcb;
-use glib;
 use crossbeam_channel as channel;
-use std::{thread, process};
+use glib;
 use std::sync::Arc;
 use std::time::Duration;
+use std::{process, thread};
 use wm;
+use xcb;
 
 mod manager;
 
@@ -62,10 +62,11 @@ impl Component for Tray {
 impl Tray {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         if unsafe { !TRAY_LOADED } {
-            unsafe { TRAY_LOADED = true; }
+            unsafe {
+                TRAY_LOADED = true;
+            }
             Tray::be_a_tray(config, bar, container);
-        }
-        else {
+        } else {
             warn!("tray component is already loaded");
         }
     }
@@ -86,8 +87,12 @@ impl Tray {
         // get bg color
         if let Some(ctx) = base_widget.get_style_context() {
             #[allow(deprecated)] // ctx.get_property doesn't work
-            let RGBA { red, green, blue, .. } = ctx.get_background_color(gtk::StateFlags::NORMAL);
-            let bg_color = (((red * 255.) as u32) << 16) + (((green * 255.) as u32) << 8) + (blue * 255.) as u32;
+            let RGBA {
+                red, green, blue, ..
+            } = ctx.get_background_color(gtk::StateFlags::NORMAL);
+            let bg_color = (((red * 255.) as u32) << 16)
+                + (((green * 255.) as u32) << 8)
+                + (blue * 255.) as u32;
             s_main.send(Action::BgColor(bg_color));
         }
 
@@ -110,7 +115,6 @@ impl Tray {
 
         // start tray context
         thread::spawn(move || {
-
             if let Ok((conn, screen_num)) = xcb::Connection::connect(None) {
                 let conn = Arc::new(conn);
                 let atoms = wm::atom::Atoms::new(&conn);
@@ -122,7 +126,7 @@ impl Tray {
 
                 if !manager.is_selection_available() {
                     warn!("another system tray is already running");
-                    return ()
+                    return ();
                 }
 
                 manager.create();
@@ -180,15 +184,15 @@ impl Tray {
                         },
                     }
                 }
-
-            }
-            else {
+            } else {
                 error!("tray: could not connect to X server 😢");
             }
         });
 
         // receive events
-        let timer = Timer::add_ms(10, clone!(base_widget move || {
+        let timer = Timer::add_ms(
+            10,
+            clone!(base_widget move || {
             if let Some(msg) = r_tray.try_recv() {
                 match msg {
                     Action::Width(w) => {
@@ -201,7 +205,8 @@ impl Tray {
                 }
             }
             gtk::Continue(true)
-        }));
+        }),
+        );
 
         bar.add_component(Box::new(Tray {
             config,
@@ -209,22 +214,28 @@ impl Tray {
             timer,
             sender: s_main,
         }));
-
     }
 
     fn get_signals() -> (channel::Receiver<i32>, impl Fn()) {
         let (s, r) = channel::bounded(2);
-        let id2 = glib::source::unix_signal_add(2, clone!(s move || {
+        let id2 = glib::source::unix_signal_add(
+            2,
+            clone!(s move || {
             s.send(2);
             gtk::Continue(false)
-        })).to_glib(); // SIGINT
+        }),
+        ).to_glib(); // SIGINT
         let id15 = glib::source::unix_signal_add(15, move || {
             s.send(15);
             gtk::Continue(false)
         }).to_glib(); // SIGTERM
         (r, move || {
-            unsafe { g_source_remove(id2); }
-            unsafe { g_source_remove(id15); }
+            unsafe {
+                g_source_remove(id2);
+            }
+            unsafe {
+                g_source_remove(id15);
+            }
         })
     }
 }

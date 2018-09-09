@@ -1,10 +1,10 @@
+use bar::Bar;
+use chrono::Local;
+use components::Component;
+use config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
-use config::ConfigGroup;
-use components::Component;
-use bar::Bar;
-use chrono::Local;
 use util::{SymbolFmt, Timer};
 
 pub struct Clock {
@@ -37,7 +37,9 @@ impl Clock {
 
         // get config
         let symbols = SymbolFmt::new(config.get_str_or("format", "{timestamp}"));
-        let timestamp = config.get_str_or("timestamp", "%Y-%m-%d %H:%M:%S").to_string();
+        let timestamp = config
+            .get_str_or("timestamp", "%Y-%m-%d %H:%M:%S")
+            .to_string();
         let interval = config.get_int_or("interval", 1).max(1);
 
         // start timer

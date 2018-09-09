@@ -1,14 +1,14 @@
-use gtk;
-use gtk::prelude::*;
-use gtk::Label;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
+use gtk;
+use gtk::prelude::*;
+use gtk::Label;
+use std::io::Error;
 use std::process::{Command, Stdio};
+use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
-use std::sync::mpsc;
-use std::io::Error;
 use util::{SymbolFmt, Timer};
 
 pub struct Script {
@@ -85,7 +85,6 @@ impl Script {
                 timer,
                 tx_term,
             }));
-
         } else {
             warn!("src property missing from #{}", config.name);
         }

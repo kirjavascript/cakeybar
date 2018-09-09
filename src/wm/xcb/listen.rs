@@ -1,18 +1,16 @@
 use gtk;
 use xcb;
 
-use std::thread;
 use std::sync::mpsc;
+use std::thread;
 
 use wm;
 use wm::events::{Event, EventValue};
 
 pub fn listen(wm_util: &::wm::WMUtil) {
-
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
-
         if let Ok((conn, screen_num)) = xcb::Connection::connect(None) {
             let atoms = wm::atom::Atoms::new(&conn);
             let screen_num = screen_num as usize;
@@ -20,9 +18,11 @@ pub fn listen(wm_util: &::wm::WMUtil) {
             let setup = conn.get_setup();
             let screen = setup.roots().nth(screen_num).unwrap();
 
-            xcb::change_window_attributes_checked(&conn, screen.root(), &[
-                (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
-            ]);
+            xcb::change_window_attributes_checked(
+                &conn,
+                screen.root(),
+                &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE)],
+            );
 
             conn.flush();
 
@@ -56,10 +56,7 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                 xcb::change_window_attributes_checked(
                                     &conn,
                                     current_window,
-                                    &[(
-                                        xcb::CW_EVENT_MASK,
-                                        xcb::EVENT_MASK_NO_EVENT,
-                                    )],
+                                    &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_NO_EVENT)],
                                 );
                             }
                             // subscribe to new one
@@ -67,34 +64,21 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                 xcb::change_window_attributes_checked(
                                     &conn,
                                     window,
-                                    &[(
-                                        xcb::CW_EVENT_MASK,
-                                        xcb::EVENT_MASK_PROPERTY_CHANGE,
-                                    )],
+                                    &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE)],
                                 );
                             }
                             current_window = window;
                         }
                         if window == xcb::NONE {
-                            tx.send(Ok(
-                                "".to_string()
-                            )).unwrap();
+                            tx.send(Ok("".to_string())).unwrap();
                         } else {
-
-                            let title = wm::xcb::get_string(
-                                &conn,
-                                window,
-                                _utf8_string,
-                                _wm_name,
-                            );
-                            tx.send(Ok(
-                                title.trim().to_string()
-                            )).unwrap();
+                            let title = wm::xcb::get_string(&conn, window, _utf8_string, _wm_name);
+                            tx.send(Ok(title.trim().to_string())).unwrap();
                         }
-                    },
+                    }
                     Err(err) => {
                         warn!("xcb cookie error {:?}", err);
-                    },
+                    }
                 }
             };
 
@@ -120,23 +104,25 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                                 if is_title {
                                     get_title(is_active_event);
                                 }
-                            },
-                            _ => { },
+                            }
+                            _ => {}
                         }
-                    },
+                    }
                     None => {
                         tx.send(Err(format!("xcb: no events (?)"))).unwrap();
                         break;
                     }
                 }
             }
-        }
-        else {
-            tx.send(Err(format!("could not connect to X server"))).unwrap();
+        } else {
+            tx.send(Err(format!("could not connect to X server")))
+                .unwrap();
         }
     });
 
-    gtk::timeout_add(10, clone!(wm_util move || {
+    gtk::timeout_add(
+        10,
+        clone!(wm_util move || {
         if let Ok(msg_result) = rx.try_recv() {
             match msg_result {
                 Ok(msg) => {
@@ -157,5 +143,6 @@ pub fn listen(wm_util: &::wm::WMUtil) {
             };
         }
         gtk::Continue(true)
-    }));
+    }),
+    );
 }

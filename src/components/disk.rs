@@ -1,10 +1,10 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
-use util::{format_bytes, SymbolFmt, LabelGroup, Timer};
-use sysinfo::{DiskExt, SystemExt, System};
+use gtk;
+use gtk::prelude::*;
+use sysinfo::{DiskExt, System, SystemExt};
+use util::{format_bytes, LabelGroup, SymbolFmt, Timer};
 
 pub struct Disk {
     config: ConfigGroup,
@@ -38,9 +38,7 @@ impl Disk {
         let mounts = config.get_string_vec("mounts");
         let symbols = SymbolFmt::new(config.get_str_or("format", "{free}"));
 
-        let should_include = move |s: &str| {
-            mounts.len() == 0 || mounts.contains(&&s.to_string())
-        };
+        let should_include = move |s: &str| mounts.len() == 0 || mounts.contains(&&s.to_string());
 
         let tick = clone!(label_group move || {
             system.refresh_disk_list();

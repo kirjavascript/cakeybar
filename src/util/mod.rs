@@ -1,9 +1,9 @@
-mod symbols;
 mod label_group;
+mod symbols;
 mod timer;
 
-pub use self::symbols::SymbolFmt;
 pub use self::label_group::LabelGroup;
+pub use self::symbols::SymbolFmt;
 pub use self::timer::Timer;
 
 use std::env;
@@ -26,13 +26,8 @@ pub fn get_config_dir() -> String {
 }
 
 pub fn run_command(command: String) {
-    Command::new("/bin/sh")
-        .arg("-c")
-        .arg(command)
-        .spawn()
-        .ok();
+    Command::new("/bin/sh").arg("-c").arg(command).spawn().ok();
 }
-
 
 pub fn read_file(path: &str) -> Result<String, Error> {
     let path = Path::new(path);

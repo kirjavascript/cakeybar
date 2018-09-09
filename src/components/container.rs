@@ -1,9 +1,9 @@
+use bar::Bar;
+use components::Component;
+use config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
-use config::ConfigGroup;
-use components::{Component};
-use bar::Bar;
 
 pub struct Container {
     config: ConfigGroup,
@@ -26,9 +26,7 @@ impl Component for Container {
 }
 
 impl Container {
-    pub fn init(
-        config: ConfigGroup, bar: &mut Bar, container: &gtk::Box,
-    ) {
+    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         // get spacing
         let spacing = config.get_int_or("spacing", 0) as i32;
 
@@ -52,8 +50,6 @@ impl Container {
             }
         }
 
-        bar.add_component(Box::new(Container {
-            config, wrapper,
-        }));
+        bar.add_component(Box::new(Container { config, wrapper }));
     }
 }

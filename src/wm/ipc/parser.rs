@@ -1,31 +1,6 @@
-use nom::*;
 use nom::types::CompleteStr as Input;
-
-pub enum Command {
-    ReloadConfig(Option<String>),
-    ReloadTheme(Option<String>),
-    Show(Selectors),
-    Hide(Selectors),
-    Help(HelpTopic),
-}
-
-#[derive(Debug)]
-pub enum HelpTopic {
-    Default,
-    Show,
-    Hide,
-    Reload,
-    Unknown(String),
-}
-
-pub struct Selectors(
-    pub Vec<Selector>
-);
-
-pub enum Selector {
-    Class(String),
-    Id(String),
-}
+use nom::*;
+use wm::ipc::commands::*;
 
 named!(selector<Input,Selector>,
     do_parse!(

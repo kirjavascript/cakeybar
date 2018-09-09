@@ -27,7 +27,11 @@ pub struct EventEmitter<T: Hash + Eq, V: Clone> {
     next_id: EventId,
 }
 
-impl<T, V> EventEmitter<T, V> where T: Hash + Eq, V: Clone {
+impl<T, V> EventEmitter<T, V>
+where
+    T: Hash + Eq,
+    V: Clone,
+{
     pub fn new() -> Self {
         Self {
             listeners: HashMap::new(),
@@ -35,9 +39,9 @@ impl<T, V> EventEmitter<T, V> where T: Hash + Eq, V: Clone {
         }
     }
 
-    pub fn add_listener<F: 'static>(&mut self, event: T, callback: F)
-        -> EventId
-        where F: Fn(Option<V>)
+    pub fn add_listener<F: 'static>(&mut self, event: T, callback: F) -> EventId
+    where
+        F: Fn(Option<V>),
     {
         let id = self.next_id;
         self.next_id += 1;
@@ -53,9 +57,7 @@ impl<T, V> EventEmitter<T, V> where T: Hash + Eq, V: Clone {
 
     pub fn remove_listener(&mut self, event: T, id: EventId) {
         if let Some(listeners) = self.listeners.get_mut(&event) {
-            let index_opt = listeners.iter().position(|listener| {
-                listener.0 == id
-            });
+            let index_opt = listeners.iter().position(|listener| listener.0 == id);
             if let Some(index) = index_opt {
                 listeners.remove(index);
             } else {

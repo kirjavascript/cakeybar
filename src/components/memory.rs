@@ -1,10 +1,10 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
+use gtk;
+use gtk::prelude::*;
 use gtk::Label;
-use util::{SymbolFmt, format_bytes, Timer};
+use util::{format_bytes, SymbolFmt, Timer};
 
 use probes::memory;
 

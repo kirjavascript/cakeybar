@@ -1,18 +1,11 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::{ConfigGroup, Property};
-use gtk::{
-    Label,
-    EventBox,
-    WidgetExt,
-    Menu as GtkMenu,
-    MenuItem as GtkMenuItem,
-};
+use gtk;
+use gtk::prelude::*;
+use gtk::{EventBox, Label, Menu as GtkMenu, MenuItem as GtkMenuItem, WidgetExt};
 
 // gtk context menu
-
 
 pub struct Dropdown {
     config: ConfigGroup,
@@ -40,6 +33,7 @@ enum MenuItem {
     SubMenu(String, Vec<MenuItem>),
 }
 
+// TODO: move to config and refactor config (folders)
 fn get_menu(items: Vec<Property>) -> Vec<MenuItem> {
     let mut menu_items: Vec<MenuItem> = Vec::new();
     items.iter().for_each(|item| {
@@ -93,21 +87,19 @@ impl Dropdown {
     }
     fn create_menu(menu_items: &Vec<MenuItem>) -> GtkMenu {
         let menu = GtkMenu::new();
-        menu_items.iter().for_each(|item| {
-            match item {
-                MenuItem::Command(label, command) => {
-                    let item = GtkMenuItem::new_with_label(label);
-                    menu.append(&item);
-                    item.connect_activate(clone!(command move |_| {
+        menu_items.iter().for_each(|item| match item {
+            MenuItem::Command(label, command) => {
+                let item = GtkMenuItem::new_with_label(label);
+                menu.append(&item);
+                item.connect_activate(clone!(command move |_| {
                         ::util::run_command(command.to_string());
                     }));
-                },
-                MenuItem::SubMenu(label, items) => {
-                    let submenu = Self::create_menu(items);
-                    let item = GtkMenuItem::new_with_label(label);
-                    item.set_submenu(&submenu);
-                    menu.append(&item);
-                },
+            }
+            MenuItem::SubMenu(label, items) => {
+                let submenu = Self::create_menu(items);
+                let item = GtkMenuItem::new_with_label(label);
+                item.set_submenu(&submenu);
+                menu.append(&item);
             }
         });
         menu

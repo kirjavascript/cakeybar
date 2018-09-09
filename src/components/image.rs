@@ -1,9 +1,9 @@
-use gtk;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
+use gtk;
 use gtk::prelude::*;
-use gtk::{Image as GtkImage};
+use gtk::Image as GtkImage;
 
 pub struct Image;
 
@@ -30,9 +30,7 @@ impl Component for Bandwidth {
 impl Image {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
         if let Some(src) = config.get_string("src") {
-            let img: GtkImage = GtkImage::new_from_file(
-                &bar.wm_util.get_path(&src)
-            );
+            let img: GtkImage = GtkImage::new_from_file(&bar.wm_util.get_path(&src));
             super::init_widget(&img, &config, bar, container);
 
             // wait a tick, otherwise we get negative height warnings
@@ -41,11 +39,7 @@ impl Image {
                 gtk::Continue(false)
             }));
 
-            bar.add_component(Box::new(Bandwidth {
-                config,
-                image: img,
-            }));
-
+            bar.add_component(Box::new(Bandwidth { config, image: img }));
         } else {
             warn!("#{} missing src property", config.name);
         }

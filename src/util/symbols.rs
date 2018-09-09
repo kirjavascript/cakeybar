@@ -39,23 +39,22 @@ named!(get_tokens<Input,Vec<Token>>,
 impl SymbolFmt {
     pub fn new(input: &str) -> Self {
         match get_tokens(Input(input)) {
-            Ok((_, tokens)) => {
-                Self { tokens }
-            },
+            Ok((_, tokens)) => Self { tokens },
             Err(err) => {
                 warn!("format: {}", err);
                 Self { tokens: vec![] }
-            },
+            }
         }
     }
-    pub fn format<F>(&self, callback: F) -> String where F: Fn(&str) -> String {
+    pub fn format<F>(&self, callback: F) -> String
+    where
+        F: Fn(&str) -> String,
+    {
         self.tokens
             .iter()
-            .map(|tok| {
-                match tok {
-                    Token::Text(txt) => txt.to_string(),
-                    Token::Symbol(sym) => callback(&sym.trim()),
-                }
+            .map(|tok| match tok {
+                Token::Text(txt) => txt.to_string(),
+                Token::Symbol(sym) => callback(&sym.trim()),
             })
             .collect::<Vec<String>>()
             .concat()
@@ -75,13 +74,16 @@ mod tests {
     fn check_tokens() {
         let input = "text { int  } bork {q}allo";
         let tokens = get_tokens(Input(input));
-        assert_eq!(tokens.unwrap().1, vec![
-            Token::Text("text ".to_string()),
-            Token::Symbol(" int  ".to_string()),
-            Token::Text(" bork ".to_string()),
-            Token::Symbol("q".to_string()),
-            Token::Text("allo".to_string()),
-        ]);
+        assert_eq!(
+            tokens.unwrap().1,
+            vec![
+                Token::Text("text ".to_string()),
+                Token::Symbol(" int  ".to_string()),
+                Token::Text(" bork ".to_string()),
+                Token::Symbol("q".to_string()),
+                Token::Text("allo".to_string()),
+            ]
+        );
     }
     #[test]
     fn no_interpolation() {
@@ -92,36 +94,33 @@ mod tests {
     #[test]
     fn partial_interpolation() {
         let input = "{one}{two}";
-        let output = SymbolFmt::new(input).format(|sym| {
-            match sym {
-                "one" => "interp".to_string(),
-                _ => sym.to_string(),
-            }
+        let output = SymbolFmt::new(input).format(|sym| match sym {
+            "one" => "interp".to_string(),
+            _ => sym.to_string(),
         });
         assert_eq!(output, "interptwo");
     }
     #[test]
     fn multi_interpolation() {
         let input = "hello {one} world { two} end!\"";
-        let output = SymbolFmt::new(input).format(|sym| {
-            match sym {
-                "one" => "ONE".to_string(),
-                "two" => "TWO".to_string(),
-                _ => sym.to_string(),
-            }
+        let output = SymbolFmt::new(input).format(|sym| match sym {
+            "one" => "ONE".to_string(),
+            "two" => "TWO".to_string(),
+            _ => sym.to_string(),
         });
         assert_eq!(output, "hello ONE world TWO end!\"");
     }
     #[test]
     fn weird_interpolation() {
         let input = "🔳🔊📣📢🔔🃏{🎴💬🆖} 🀄️♠️♣️♥️🆓➰";
-        let output = SymbolFmt::new(input).format(|sym| {
-            match sym {
-                "🎴💬🆖" => "🤔".to_string(),
-                _ => sym.to_string(),
-            }
+        let output = SymbolFmt::new(input).format(|sym| match sym {
+            "🎴💬🆖" => "🤔".to_string(),
+            _ => sym.to_string(),
         });
-        assert_eq!(output, "🔳🔊📣📢🔔🃏🤔 🀄️♠️♣️♥️🆓➰");
+        assert_eq!(
+            output,
+            "🔳🔊📣📢🔔🃏🤔 🀄️♠️♣️♥️🆓➰"
+        );
     }
     #[test]
     fn contains() {

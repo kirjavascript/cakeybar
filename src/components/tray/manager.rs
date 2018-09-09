@@ -1,7 +1,7 @@
+use super::Action;
+use crossbeam_channel::Sender;
 use wm::atom;
 use xcb;
-use crossbeam_channel::Sender;
-use super::Action;
 
 const CLIENT_MESSAGE: u8 = xcb::CLIENT_MESSAGE | 0x80; // 0x80 flag for client messages
 
@@ -45,14 +45,15 @@ impl<'a> Manager<'a> {
     }
 
     pub fn create(&self) {
-
         xcb::create_window(
             &self.conn,
             xcb::COPY_FROM_PARENT as u8,
             self.window,
             self.screen.root(),
-            0, 0,
-            self.icon_size, self.icon_size,
+            0,
+            0,
+            self.icon_size,
+            self.icon_size,
             0,
             xcb::WINDOW_CLASS_INPUT_OUTPUT as u16,
             self.screen.root_visual(),
@@ -60,25 +61,20 @@ impl<'a> Manager<'a> {
                 (xcb::CW_BACK_PIXEL, 0), // black
                 (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE),
                 (xcb::CW_OVERRIDE_REDIRECT, 1),
-            ]
+            ],
         );
-        self.set_property(
-            xcb::ATOM_WM_NAME,
-            xcb::ATOM_STRING,
-            8,
-            WM_NAME.as_bytes()
-        );
+        self.set_property(xcb::ATOM_WM_NAME, xcb::ATOM_STRING, 8, WM_NAME.as_bytes());
         self.set_property(
             xcb::ATOM_WM_CLASS,
             xcb::ATOM_STRING,
             8,
-            format!("{0}\0{0}", ::NAME).as_bytes()
+            format!("{0}\0{0}", ::NAME).as_bytes(),
         );
         self.set_property(
             self.atoms.get(atom::_NET_SYSTEM_TRAY_ORIENTATION),
             xcb::ATOM_CARDINAL,
             32,
-            &[0 as u32] // 0 is horizontal, 1 is vertical
+            &[0 as u32], // 0 is horizontal, 1 is vertical
         );
 
         // set window type to utility (so it floats)
@@ -86,7 +82,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_DOCK)]
+            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_DOCK)],
         );
         xcb::change_property(
             self.conn,
@@ -95,7 +91,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_NET_WM_WINDOW_TYPE),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_NORMAL)]
+            &[self.atoms.get(atom::_NET_WM_WINDOW_TYPE_NORMAL)],
         );
 
         // ??? (seems set in polybar)
@@ -106,7 +102,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_NET_SYSTEM_TRAY_VISUAL),
             xcb::ATOM_VISUALID,
             32,
-            &[self.screen.root_visual()]
+            &[self.screen.root_visual()],
         );
 
         // skip showing in taskbar
@@ -117,7 +113,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_NET_WM_STATE),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::_NET_WM_STATE_SKIP_TASKBAR)]
+            &[self.atoms.get(atom::_NET_WM_STATE_SKIP_TASKBAR)],
         );
 
         // seems to stop delete event ruining our fun
@@ -128,7 +124,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::WM_PROTOCOLS),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::WM_DELETE_WINDOW)]
+            &[self.atoms.get(atom::WM_DELETE_WINDOW)],
         );
 
         xcb::change_property(
@@ -138,7 +134,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::WM_PROTOCOLS),
             xcb::ATOM_ATOM,
             32,
-            &[self.atoms.get(atom::WM_TAKE_FOCUS)]
+            &[self.atoms.get(atom::WM_TAKE_FOCUS)],
         );
 
         // keeps tray on every workspace screen
@@ -152,7 +148,7 @@ impl<'a> Manager<'a> {
             &[
                 self.atoms.get(atom::_NET_WM_STATE_STICKY),
                 self.atoms.get(atom::_NET_WM_STATE_ABOVE),
-            ]
+            ],
         );
 
         // make decorationless
@@ -163,7 +159,7 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_MOTIF_WM_HINTS),
             xcb::ATOM_INTEGER,
             32,
-            &[0b10, 0, 0, 0, 0]
+            &[0b10, 0, 0, 0, 0],
         );
 
         // disable compton shadow (apparently)
@@ -174,18 +170,21 @@ impl<'a> Manager<'a> {
             self.atoms.get(atom::_COMPTON_SHADOW),
             xcb::ATOM_CARDINAL,
             32,
-            &[0]
+            &[0],
         );
 
         // initially draw in some absurd place
 
-        xcb::configure_window(self.conn, self.window, &[
-            (xcb::CONFIG_WINDOW_X as u16, 0),
-            (xcb::CONFIG_WINDOW_Y as u16, 10_000),
-        ]);
+        xcb::configure_window(
+            self.conn,
+            self.window,
+            &[
+                (xcb::CONFIG_WINDOW_X as u16, 0),
+                (xcb::CONFIG_WINDOW_Y as u16, 10_000),
+            ],
+        );
 
         self.conn.flush();
-
     }
 
     pub fn set_property<T>(&self, name: xcb::Atom, type_: xcb::Atom, format: u8, data: &[T]) {
@@ -196,20 +195,26 @@ impl<'a> Manager<'a> {
             name,
             type_,
             format,
-            data
+            data,
         );
     }
 
     pub fn is_selection_available(&self) -> bool {
         let selection = self.atoms.get(atom::_NET_SYSTEM_TRAY_S0);
-        let owner = xcb::get_selection_owner(self.conn, selection).get_reply().unwrap().owner();
+        let owner = xcb::get_selection_owner(self.conn, selection)
+            .get_reply()
+            .unwrap()
+            .owner();
         owner == xcb::NONE
     }
 
     pub fn take_selection(&mut self, timestamp: xcb::Timestamp) -> bool {
         let selection = self.atoms.get(atom::_NET_SYSTEM_TRAY_S0);
         xcb::set_selection_owner(self.conn, self.window, selection, timestamp);
-        let owner = xcb::get_selection_owner(self.conn, selection).get_reply().unwrap().owner();
+        let owner = xcb::get_selection_owner(self.conn, selection)
+            .get_reply()
+            .unwrap()
+            .owner();
         let ok = owner == self.window;
         if ok {
             self.timestamp = timestamp;
@@ -217,9 +222,15 @@ impl<'a> Manager<'a> {
                 32, // 32 bits (refers to data)
                 self.screen.root(),
                 self.atoms.get(atom::MANAGER),
-                xcb::ClientMessageData::from_data32([timestamp, selection, self.window, 0, 0])
+                xcb::ClientMessageData::from_data32([timestamp, selection, self.window, 0, 0]),
             );
-            xcb::send_event(self.conn, false, self.screen.root(), xcb::EVENT_MASK_STRUCTURE_NOTIFY, &client_event);
+            xcb::send_event(
+                self.conn,
+                false,
+                self.screen.root(),
+                xcb::EVENT_MASK_STRUCTURE_NOTIFY,
+                &client_event,
+            );
             self.conn.flush();
         }
         ok
@@ -232,7 +243,6 @@ impl<'a> Manager<'a> {
         }
     }
 
-
     pub fn hide(&mut self) {
         if !self.hidden {
             self.hidden = true;
@@ -242,9 +252,11 @@ impl<'a> Manager<'a> {
 
     pub fn adopt(&mut self, window: xcb::Window) {
         let offset = (self.children.len() as u16 * self.icon_size) as i16;
-        xcb::change_window_attributes(self.conn, window, &[
-            (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY),
-        ]);
+        xcb::change_window_attributes(
+            self.conn,
+            window,
+            &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY)],
+        );
         xcb::reparent_window(self.conn, window, self.window, offset, 0);
         xcb::map_window(self.conn, window);
         self.force_size(window, None);
@@ -258,9 +270,7 @@ impl<'a> Manager<'a> {
         for (index, child) in self.children.iter().enumerate() {
             let window = *child;
             let xpos = index as u32 * self.icon_size as u32;
-            xcb::configure_window(&self.conn, window, &[
-                (xcb::CONFIG_WINDOW_X as u16, xpos)
-            ]);
+            xcb::configure_window(&self.conn, window, &[(xcb::CONFIG_WINDOW_X as u16, xpos)]);
         }
         self.reposition();
     }
@@ -271,10 +281,14 @@ impl<'a> Manager<'a> {
             (geometry.width(), geometry.height())
         });
         if dimensions != (self.icon_size, self.icon_size) {
-            xcb::configure_window(self.conn, window, &[
-                (xcb::CONFIG_WINDOW_WIDTH as u16, self.icon_size as u32),
-                (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32)
-            ]);
+            xcb::configure_window(
+                self.conn,
+                window,
+                &[
+                    (xcb::CONFIG_WINDOW_WIDTH as u16, self.icon_size as u32),
+                    (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
+                ],
+            );
             self.conn.flush();
         }
     }
@@ -283,15 +297,18 @@ impl<'a> Manager<'a> {
         let width = self.children.len() as u16 * self.icon_size;
         self.s_tray.send(Action::Width(width));
         if width > 0 {
-            xcb::configure_window(self.conn, self.window, &[
-                (xcb::CONFIG_WINDOW_WIDTH as u16, width as u32),
-                (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
-            ]);
+            xcb::configure_window(
+                self.conn,
+                self.window,
+                &[
+                    (xcb::CONFIG_WINDOW_WIDTH as u16, width as u32),
+                    (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
+                ],
+            );
             if !self.hidden {
                 self.show();
             }
-        }
-        else {
+        } else {
             self.hide();
         }
         self.conn.flush();
@@ -304,130 +321,138 @@ impl<'a> Manager<'a> {
 
         for child in self.children.iter() {
             let window = *child;
-            xcb::change_window_attributes(self.conn, window, &[
-                (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_NO_EVENT)
-            ]);
+            xcb::change_window_attributes(
+                self.conn,
+                window,
+                &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_NO_EVENT)],
+            );
             xcb::unmap_window(self.conn, window);
             xcb::reparent_window(self.conn, window, root, 0, 0);
         }
-        xcb::change_window_attributes(self.conn, self.window, &[
-            (xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY)
-        ]);
+        xcb::change_window_attributes(
+            self.conn,
+            self.window,
+            &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_STRUCTURE_NOTIFY)],
+        );
         xcb::destroy_window(self.conn, self.window);
         self.conn.flush();
     }
 
     pub fn handle_action(&mut self, msg: Action) {
-        if self.finishing { return (); }
+        if self.finishing {
+            return ();
+        }
         match msg {
             Action::Move(x, y) => {
-                xcb::configure_window(self.conn, self.window, &[
-                    (xcb::CONFIG_WINDOW_X as u16, x),
-                    (xcb::CONFIG_WINDOW_Y as u16, y),
-                ]);
+                xcb::configure_window(
+                    self.conn,
+                    self.window,
+                    &[
+                        (xcb::CONFIG_WINDOW_X as u16, x),
+                        (xcb::CONFIG_WINDOW_Y as u16, y),
+                    ],
+                );
                 self.conn.flush();
-            },
+            }
             Action::BgColor(value) => {
                 xcb::unmap_window(self.conn, self.window);
-                xcb::change_window_attributes(self.conn, self.window, &[
-                    (xcb::CW_BACK_PIXEL, value),
-                ]);
+                xcb::change_window_attributes(
+                    self.conn,
+                    self.window,
+                    &[(xcb::CW_BACK_PIXEL, value)],
+                );
                 xcb::map_window(self.conn, self.window);
                 self.conn.flush();
-            },
+            }
             Action::IconSize(size) => {
                 self.icon_size = size;
                 for (i, child) in self.children.iter().enumerate() {
                     let window = *child;
-                    xcb::configure_window(self.conn, window, &[
-                        (xcb::CONFIG_WINDOW_WIDTH as u16, self.icon_size as u32),
-                        (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
-                        (xcb::CONFIG_WINDOW_X as u16, ((i as u16) * self.icon_size) as u32),
-                    ]);
+                    xcb::configure_window(
+                        self.conn,
+                        window,
+                        &[
+                            (xcb::CONFIG_WINDOW_WIDTH as u16, self.icon_size as u32),
+                            (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
+                            (
+                                xcb::CONFIG_WINDOW_X as u16,
+                                ((i as u16) * self.icon_size) as u32,
+                            ),
+                        ],
+                    );
                 }
                 self.reposition();
-            },
+            }
             Action::Show => {
                 self.show();
-            },
+            }
             Action::Hide => {
                 self.hide();
-            },
-            _ => {},
+            }
+            _ => {}
         }
     }
 
     pub fn handle_event(&mut self, event: xcb::GenericEvent) -> Option<i32> {
         if self.finishing {
             self.handle_event_finishing(event)
-        }
-        else {
+        } else {
             self.handle_event_normal(event)
         }
     }
 
     fn handle_event_normal(&mut self, event: xcb::GenericEvent) -> Option<i32> {
-            match event.response_type() {
-                xcb::PROPERTY_NOTIFY if self.timestamp == 0 => {
-                    let event: &xcb::PropertyNotifyEvent = unsafe {
-                        xcb::cast_event(&event)
-                    };
-                    if !self.take_selection(event.time()) {
-                        warn!("Could not take ownership of tray selection. Maybe another tray is also running?");
-                        return Some(2)
-                    }
-                },
-                CLIENT_MESSAGE => {
-                    let event: &xcb::ClientMessageEvent = unsafe {
-                        xcb::cast_event(&event)
-                    };
-                    if event.type_() == self.atoms.get(atom::_NET_SYSTEM_TRAY_OPCODE) {
-                        let data = event.data().data32();
-                        let opcode = data[1];
-                        let window = data[2];
-                        match opcode {
-                            SYSTEM_TRAY_REQUEST_DOCK => {
-                                self.adopt(window);
-                            },
-                            SYSTEM_TRAY_BEGIN_MESSAGE => {},
-                            SYSTEM_TRAY_CANCEL_MESSAGE => {},
-                            _ => { unreachable!("Invalid opcode") }
-                        }
-                    }
-                },
-                xcb::REPARENT_NOTIFY => {
-                    let event: &xcb::ReparentNotifyEvent = unsafe {
-                        xcb::cast_event(&event)
-                    };
-                    if event.parent() != self.window {
-                        self.forget(event.window());
-                    }
-                },
-                xcb::DESTROY_NOTIFY => {
-                    let event: &xcb::DestroyNotifyEvent = unsafe {
-                        xcb::cast_event(&event)
-                    };
-                    self.forget(event.window());
-                },
-                xcb::CONFIGURE_NOTIFY => {
-                    let event: &xcb::ConfigureNotifyEvent = unsafe {
-                        xcb::cast_event(&event)
-                    };
-                    self.force_size(event.window(), Some((event.width(), event.height())));
-                },
-                xcb::SELECTION_CLEAR => {
-                    self.finish();
-                },
-                _ => { }
+        match event.response_type() {
+            xcb::PROPERTY_NOTIFY if self.timestamp == 0 => {
+                let event: &xcb::PropertyNotifyEvent = unsafe { xcb::cast_event(&event) };
+                if !self.take_selection(event.time()) {
+                    warn!("Could not take ownership of tray selection. Maybe another tray is also running?");
+                    return Some(2);
+                }
             }
-            None
+            CLIENT_MESSAGE => {
+                let event: &xcb::ClientMessageEvent = unsafe { xcb::cast_event(&event) };
+                if event.type_() == self.atoms.get(atom::_NET_SYSTEM_TRAY_OPCODE) {
+                    let data = event.data().data32();
+                    let opcode = data[1];
+                    let window = data[2];
+                    match opcode {
+                        SYSTEM_TRAY_REQUEST_DOCK => {
+                            self.adopt(window);
+                        }
+                        SYSTEM_TRAY_BEGIN_MESSAGE => {}
+                        SYSTEM_TRAY_CANCEL_MESSAGE => {}
+                        _ => unreachable!("Invalid opcode"),
+                    }
+                }
+            }
+            xcb::REPARENT_NOTIFY => {
+                let event: &xcb::ReparentNotifyEvent = unsafe { xcb::cast_event(&event) };
+                if event.parent() != self.window {
+                    self.forget(event.window());
+                }
+            }
+            xcb::DESTROY_NOTIFY => {
+                let event: &xcb::DestroyNotifyEvent = unsafe { xcb::cast_event(&event) };
+                self.forget(event.window());
+            }
+            xcb::CONFIGURE_NOTIFY => {
+                let event: &xcb::ConfigureNotifyEvent = unsafe { xcb::cast_event(&event) };
+                self.force_size(event.window(), Some((event.width(), event.height())));
+            }
+            xcb::SELECTION_CLEAR => {
+                self.finish();
+            }
+            _ => {}
+        }
+        None
     }
 
     fn handle_event_finishing(&mut self, event: xcb::GenericEvent) -> Option<i32> {
         if event.response_type() == xcb::DESTROY_NOTIFY {
             let event: &xcb::DestroyNotifyEvent = unsafe { xcb::cast_event(&event) };
             if event.window() == self.window {
-                return Some(0)
+                return Some(0);
             }
         }
         None

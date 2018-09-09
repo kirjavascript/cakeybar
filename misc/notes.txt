@@ -13,10 +13,9 @@ https://github.com/windelicato/dotfiles/wiki/bspwm-for-dummies
 https://github.com/pw4ever/awesome-wm-config#setup
 awesome-client
 https://github.com/Rahix/pa-visualizer
-https://github.com/darkwater/obsidian
 https://github.com/onodera-punpun/melonbar - openbox
 
-features for 1.0.0: ipc, file watching, startmenu, eq, mpd, tray bugs
+features for 1.0.0: ipc, file watching, startmenu, xkb, eq, mpd, tray bugs
 current: ipc
 
 wm refactoring
@@ -30,6 +29,8 @@ config file watcher
 tray
 ====
 fix tray fullscreen latency/mm bug with events
+reload theme -> wm_util event
+show/hide ipc -> event
 wm restart event restack tray
 spacing
 bug: on no icons width = 1
@@ -38,8 +39,6 @@ bug: on no icons width = 1
 ipc
 ====
 help
-wm_util event
-reload config / theme (theme should be easy) / all
 allow ipc in menu objs
 bindsym $mod+m exec -- --message / sxhkdrc
 rustyline
@@ -96,14 +95,14 @@ https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable
 ===
 osx top bar (hover) / pice of cake / powerline (half transparency w/ small window title) / hexagons (visualizer + overhang via bar/float) / busy (all stats)
 crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
-live reload gif
+live reload gifcurry
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
 https://i.imgur.com/TF69nPa.png
 https://i.imgur.com/TePyRmw.png
 blue rope / plain background
 slanted workspace names with SVG
-electronbar
+mspaint, duplex
 gifcurry
 
 https://alpha.wallhaven.cc/

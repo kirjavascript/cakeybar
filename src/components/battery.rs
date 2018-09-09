@@ -1,11 +1,11 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
+use gtk;
+use gtk::prelude::*;
 use gtk::{Label, StyleContextExt};
-use util::{SymbolFmt, read_file, Timer};
 use std::io::Error;
+use util::{read_file, SymbolFmt, Timer};
 
 pub struct Battery {
     config: ConfigGroup,
@@ -31,7 +31,6 @@ impl Component for Battery {
 
 impl Battery {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
-
         let label = Label::new(None);
         super::init_widget(&label, &config, bar, container);
         label.show();
@@ -99,7 +98,6 @@ impl Battery {
         } else {
             warn!("no battery detected");
         }
-
     }
 }
 
@@ -111,7 +109,5 @@ fn get_charge(battery: &str) -> Result<(i32, i32, i32), Error> {
     let full = get_data(battery, "charge_full").map(|a| a.parse().unwrap_or(0));
     let now = get_data(battery, "charge_now").map(|a| a.parse().unwrap_or(0));
     let current = get_data(battery, "current_now").map(|a| a.parse().unwrap_or(0));
-    full.and_then(|a| now.and_then(|b| current.and_then(|c| {
-        Ok((a, b, c))
-    })))
+    full.and_then(|a| now.and_then(|b| current.and_then(|c| Ok((a, b, c)))))
 }

@@ -1,19 +1,13 @@
-use {gdk, gtk, wm, cairo, NAME};
+use gdk::{ScreenExt, ScrollDirection};
 use gtk::prelude::*;
-use gtk::{
-    Window,
-    WindowType,
-    Orientation,
-    Overlay,
-    Rectangle,
-};
-use gdk::{ScrollDirection, ScreenExt};
+use gtk::{Orientation, Overlay, Rectangle, Window, WindowType};
+use {cairo, gdk, gtk, wm, NAME};
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use components::{load_component, Component};
 use config::ConfigGroup;
-use components::{Component, load_component};
 
 pub struct Bar {
     pub config: ConfigGroup,
@@ -25,11 +19,7 @@ pub struct Bar {
 }
 
 impl Bar {
-    pub fn new(
-        config: ConfigGroup,
-        wm_util: wm::WMUtil,
-        monitor: &Rectangle,
-    ) -> Bar {
+    pub fn new(config: ConfigGroup, wm_util: wm::WMUtil, monitor: &Rectangle) -> Bar {
         let window_type = if config.get_bool_or("float", false) {
             WindowType::Popup
         } else {
@@ -135,12 +125,16 @@ impl Bar {
 
         wm::gtk::disable_shadow(&bar.window);
 
-        wm::gtk::set_strut(&bar.window, is_top, Rectangle {
-            x: monitor.x,
-            y: monitor.y,
-            width: monitor.width,
-            height: bar.window.get_size().1,
-        });
+        wm::gtk::set_strut(
+            &bar.window,
+            is_top,
+            Rectangle {
+                x: monitor.x,
+                y: monitor.y,
+                width: monitor.width,
+                height: bar.window.get_size().1,
+            },
+        );
 
         bar
     }
@@ -190,5 +184,4 @@ impl Bar {
         ctx.paint();
         Inhibit(false)
     }
-
 }

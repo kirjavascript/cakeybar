@@ -1,4 +1,4 @@
-use i3ipc::reply::{Workspace as I3Workspace};
+use i3ipc::reply::Workspace as I3Workspace;
 use wm;
 
 #[derive(Debug, Clone)]
@@ -22,19 +22,20 @@ pub fn i3_to_generic(i3workspace: &I3Workspace) -> Workspace {
     }
 }
 
-pub fn get_next(workspaces: &Vec<Workspace>, forward: bool, monitor_index: i32)
-    -> Option<&Workspace> {
+pub fn get_next(
+    workspaces: &Vec<Workspace>,
+    forward: bool,
+    monitor_index: i32,
+) -> Option<&Workspace> {
     // get monitor name
     let name_opt = wm::gtk::get_monitor_name(monitor_index);
     let mut workspaces = workspaces
         .iter()
-        .filter(|w| {
-            match name_opt {
-                Some(ref name) => *name == w.output,
-                None => true,
-            }
+        .filter(|w| match name_opt {
+            Some(ref name) => *name == w.output,
+            None => true,
         })
-    .collect::<Vec<&Workspace>>();
+        .collect::<Vec<&Workspace>>();
 
     // so we can search backwards
     if !forward {
@@ -54,7 +55,7 @@ pub fn get_next(workspaces: &Vec<Workspace>, forward: bool, monitor_index: i32)
         });
 
         if let Some(next) = next_opt {
-            return Some(next)
+            return Some(next);
         }
     }
 

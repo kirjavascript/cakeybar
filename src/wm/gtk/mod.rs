@@ -1,17 +1,7 @@
-use gtk;
-use gtk::{
-    Rectangle,
-    CssProvider,
-    CssProviderExt,
-    StyleContext,
-};
-use gdk::{
-    Screen,
-    Display,
-    DisplayExt,
-    MonitorExt,
-};
+use gdk::{Display, DisplayExt, MonitorExt, Screen};
 use glib::Error;
+use gtk;
+use gtk::{CssProvider, CssProviderExt, Rectangle, StyleContext};
 
 mod window;
 pub use self::window::*;
@@ -23,10 +13,8 @@ pub fn load_theme(path: &str) -> Result<CssProvider, Error> {
         Ok(_) => {
             StyleContext::add_provider_for_screen(&screen, &provider, 0);
             Ok(provider)
-        },
-        Err(e) => {
-            Err(e)
-        },
+        }
+        Err(e) => Err(e),
     }
 }
 
@@ -59,7 +47,12 @@ pub fn show_monitor_debug() {
     for i in 0..display.get_n_monitors() {
         if let Some(monitor) = display.get_monitor(i) {
             let geometry = monitor.get_geometry();
-            let Rectangle { x, y, width, height } = geometry;
+            let Rectangle {
+                x,
+                y,
+                width,
+                height,
+            } = geometry;
             let model = monitor.get_model().unwrap_or("".to_string());
             println!(
                 "Monitor {}: {} @ {}x{} x: {} y: {}",

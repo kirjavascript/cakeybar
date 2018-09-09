@@ -1,21 +1,21 @@
-use gtk;
-use gtk::prelude::*;
 use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
-use gtk::{Label, EventBox, Orientation, LabelExt, WidgetExt, StyleContextExt};
-use glib::signal::SignalHandlerId;
 use glib::markup_escape_text;
+use glib::signal::SignalHandlerId;
+use gtk;
+use gtk::prelude::*;
+use gtk::{EventBox, Label, LabelExt, Orientation, StyleContextExt, WidgetExt};
 
+use util::SymbolFmt;
 use wm;
-use wm::events::{Event, EventValue, EventId};
+use wm::events::{Event, EventId, EventValue};
 use wm::workspace::Workspace;
 use wm::WMUtil;
-use util::{SymbolFmt};
 
 use std::cell::RefCell;
-use std::rc::Rc;
 use std::mem::replace;
+use std::rc::Rc;
 
 pub struct Workspaces {
     config: ConfigGroup,
@@ -35,7 +35,8 @@ impl Component for Workspaces {
         self.wrapper.hide();
     }
     fn destroy(&self) {
-        self.wm_util.remove_listener(Event::Workspace, self.event_id);
+        self.wm_util
+            .remove_listener(Event::Workspace, self.event_id);
         self.wrapper.destroy();
     }
 }
@@ -65,8 +66,7 @@ impl Workspaces {
 
         // create initial UI
 
-        let elabels: Rc<RefCell<Vec<EventLabel>>> =
-            Rc::new(RefCell::new(Vec::new()));
+        let elabels: Rc<RefCell<Vec<EventLabel>>> = Rc::new(RefCell::new(Vec::new()));
 
         let wm_util = bar.wm_util.clone();
 
@@ -114,7 +114,8 @@ impl Workspaces {
                     }
                 }
             }
-        ));
+        ),
+        );
 
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Workspaces {
@@ -123,10 +124,8 @@ impl Workspaces {
             wm_util,
             event_id,
         }));
-
     }
 }
-
 
 struct EventLabel {
     ebox: EventBox,
@@ -139,7 +138,7 @@ impl EventLabel {
         wrapper: &gtk::Box,
         wm_util: &wm::WMUtil,
         workspace: &Workspace,
-        symbols: &SymbolFmt
+        symbols: &SymbolFmt,
     ) -> Self {
         let label = Label::new(None);
         let ebox = EventBox::new();
@@ -155,16 +154,13 @@ impl EventLabel {
             }
         ));
         EventLabel {
-            ebox, label, event_id,
+            ebox,
+            label,
+            event_id,
         }
     }
 
-    pub fn update(
-        &mut self,
-        workspace: &Workspace,
-        symbols: &SymbolFmt,
-        wm_util: &wm::WMUtil
-    ) {
+    pub fn update(&mut self, workspace: &Workspace, symbols: &SymbolFmt, wm_util: &wm::WMUtil) {
         set_label_attrs(&self.label, workspace, symbols);
         // add a new event
         let workspace_name = workspace.name.to_string();
@@ -185,8 +181,11 @@ impl EventLabel {
 
 fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
     move |s, b| {
-        if b { StyleContextExt::add_class(&ctx, s); }
-        else { StyleContextExt::remove_class(&ctx, s); }
+        if b {
+            StyleContextExt::add_class(&ctx, s);
+        } else {
+            StyleContextExt::remove_class(&ctx, s);
+        }
     }
 }
 
@@ -194,7 +193,7 @@ fn set_label_attrs(label: &Label, workspace: &Workspace, symbols: &SymbolFmt) {
     label.set_label(&symbols.format(|sym| match sym {
         "name" => markup_escape_text(&workspace.name),
         "number" => workspace.number.to_string(),
-        _ => sym.to_string()
+        _ => sym.to_string(),
     }));
     // style
     if let Some(ctx) = label.get_style_context() {
@@ -205,7 +204,11 @@ fn set_label_attrs(label: &Label, workspace: &Workspace, symbols: &SymbolFmt) {
     }
 }
 
-fn filter_by_name<'a>(workspaces: &'a Vec<Workspace>, show_all: bool, name_opt: &Option<String>) -> Vec<&'a Workspace> {
+fn filter_by_name<'a>(
+    workspaces: &'a Vec<Workspace>,
+    show_all: bool,
+    name_opt: &Option<String>,
+) -> Vec<&'a Workspace> {
     workspaces
         .iter()
         .filter(|w| {
@@ -218,5 +221,5 @@ fn filter_by_name<'a>(workspaces: &'a Vec<Workspace>, show_all: bool, name_opt: 
                 }
             }
         })
-    .collect::<Vec<&Workspace>>()
+        .collect::<Vec<&Workspace>>()
 }
