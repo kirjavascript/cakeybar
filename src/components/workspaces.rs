@@ -35,8 +35,7 @@ impl Component for Workspaces {
         self.wrapper.hide();
     }
     fn destroy(&self) {
-        self.wm_util
-            .remove_listener(Event::Workspace, self.event_id);
+        self.wm_util.remove_listener(Event::Workspace, self.event_id);
         self.wrapper.destroy();
     }
 }

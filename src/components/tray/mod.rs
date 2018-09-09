@@ -56,6 +56,9 @@ impl Component for Tray {
         self.base_widget.destroy();
         self.timer.remove();
         self.sender.send(Action::Quit);
+        unsafe {
+            TRAY_LOADED = false;
+        }
     }
 }
 

@@ -40,6 +40,9 @@ pub fn listen(wm_util: &WMUtil) {
                 Command::ReloadTheme(path_opt) => {
                     wm_util.load_theme(path_opt);
                 },
+                Command::ReloadConfig(path_opt) => {
+                    wm_util.reload_config(path_opt);
+                },
                 Command::Show(selectors) => {
                     let bar_names = wm_util.get_bar_names();
                     let bars = get_bars_from_selectors(&selectors, bar_names);

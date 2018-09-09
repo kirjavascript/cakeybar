@@ -11,7 +11,6 @@ use wm;
 
 use std::cell::RefCell;
 use std::fmt;
-use std::mem;
 use std::rc::Rc;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -27,11 +26,13 @@ impl fmt::Display for WMType {
     }
 }
 
-pub struct WMUtil(Rc<RefCell<Data>>);
+pub struct WMUtil{
+    data: Rc<RefCell<Data>>,
+    bars: Rc<RefCell<Vec<Bar>>>,
+}
 
 struct Data {
     app: gtk::Application,
-    bars: Vec<Bar>,
     config: Config,
     css_provider: Option<CssProvider>,
     events: EventEmitter<Event, EventValue>,
@@ -40,7 +41,10 @@ struct Data {
 
 impl Clone for WMUtil {
     fn clone(&self) -> Self {
-        WMUtil(self.0.clone())
+        WMUtil {
+            data: self.data.clone(),
+            bars: self.bars.clone(),
+        }
     }
 }
 
@@ -62,17 +66,18 @@ impl WMUtil {
 
         let data = Rc::new(RefCell::new(Data {
             app,
-            bars: Vec::new(),
             config,
             css_provider: None,
             events,
             wm_type,
         }));
 
-        let util = WMUtil(data);
+        let bars = Rc::new(RefCell::new(Vec::new()));
+
+        let util = WMUtil { data, bars };
 
         // start IPC
-        if util.0.borrow().config.global.get_bool_or("enable-ipc", true) {
+        if util.data.borrow().config.global.get_bool_or("enable-ipc", true) {
             wm::ipc::listen(&util);
         }
 
@@ -97,37 +102,42 @@ impl WMUtil {
     }
 
     pub fn add_window(&self, window: &gtk::Window) {
-        self.0.borrow().app.add_window(window);
+        self.data.borrow().app.add_window(window);
     }
 
-    pub fn reload_config(&self) {
-
-        // let config_res = parse_config(&config_path);
-
-        // if let Ok(config) = config_res {
-        //     self.unload_bars();
-        //     self.0.borrow_mut().config = config;
-        //     self.load_bars();
-        // } else if let Err(msg) = config_res {
-        //     error!("{}", msg);
-        // }
+    pub fn reload_config(&self, new_path: Option<String>) {
+        // update filename
+        if let Some(new_path) = new_path {
+            self.data.borrow_mut().config.set_filename(new_path);
+        }
+        // get filename
+        let filename = self.data.borrow().config.get_filename();
+        let config_res = parse_config(&filename);
+        if let Ok(config) = config_res {
+            self.unload_bars();
+            self.data.borrow_mut().config = config;
+            self.load_theme(None);
+            self.load_bars();
+        } else if let Err(msg) = config_res {
+            error!("{}", msg);
+        }
     }
 
     pub fn load_theme(&self, new_path: Option<String>) {
         // update path
         if let Some(new_path) = new_path {
-            self.0.borrow_mut().config.set_theme(new_path);
+            self.data.borrow_mut().config.set_theme(new_path);
         }
         // get theme
-        let theme = self.0.borrow().config.get_theme();
+        let theme = self.data.borrow().config.get_theme();
         // unload old theme
-        if let Some(ref provider) = self.0.borrow().css_provider {
+        if let Some(ref provider) = self.data.borrow().css_provider {
             wm::gtk::unload_theme(provider);
         }
         // load new theme
         match wm::gtk::load_theme(&theme) {
             Ok(provider) => {
-                self.0.borrow_mut().css_provider = Some(provider);
+                self.data.borrow_mut().css_provider = Some(provider);
             }
             Err(err) => {
                 error!("{}", err);
@@ -138,8 +148,8 @@ impl WMUtil {
     pub fn load_bars(&self) {
         let monitors = wm::gtk::get_monitor_geometry();
         // clone is here to ensure we're not borrowing during Bar::load_components
-        let bars = self.0.borrow().config.bars.clone();
-        let bars = bars.iter().fold(Vec::new(), |mut acc, bar_config| {
+        let bars = self.data.borrow().config.bars.clone();
+        let mut bars = bars.iter().fold(Vec::new(), |mut acc, bar_config| {
             let monitor_index = bar_config.get_int_or("monitor", 0);
             let monitor_option = monitors.get(monitor_index as usize);
 
@@ -150,16 +160,17 @@ impl WMUtil {
             }
             acc
         });
-        let _ = mem::replace(&mut self.0.borrow_mut().bars, bars);
+        self.bars.borrow_mut().clear();
+        self.bars.borrow_mut().append(&mut bars);
     }
 
     pub fn unload_bars(&self) {
-        self.0.borrow_mut().bars.iter().for_each(|bar| bar.destroy());
-        self.0.borrow_mut().bars.clear();
+        self.bars.borrow().iter().for_each(|bar| bar.destroy());
+        self.bars.borrow_mut().clear();
     }
 
     pub fn display_bars(&self, names: Vec<String>, show: bool) {
-        for bar in self.0.borrow().bars.iter() {
+        for bar in self.bars.borrow().iter() {
             if names.contains(&bar.config.name) {
                 if show {
                     bar.show();
@@ -173,7 +184,7 @@ impl WMUtil {
     pub fn display_components(
         &self, bar_names: Vec<String>, selectors: Selectors, show: bool
     ) {
-        for bar in self.0.borrow().bars.iter() {
+        for bar in self.bars.borrow().iter() {
             if bar_names.len() == 0 || bar_names.contains(&bar.config.name) {
                 bar.display_components(&selectors, show);
             }
@@ -183,21 +194,21 @@ impl WMUtil {
     // getters
 
     pub fn get_bar_names(&self) -> Vec<String> {
-        self.0.borrow().bars.iter().map(|x| x.config.name.clone()).collect()
+        self.bars.borrow().iter().map(|x| x.config.name.clone()).collect()
     }
 
     pub fn get_wm_type(&self) -> WMType {
-        self.0.borrow().wm_type.clone()
+        self.data.borrow().wm_type.clone()
     }
 
     pub fn get_component_config(&self, name: &str) -> Option<ConfigGroup> {
-        self.0.borrow().config.components.iter().find(|x| {
+        self.data.borrow().config.components.iter().find(|x| {
             &x.name == name
         }) .map(|x| x.clone())
     }
 
     pub fn get_path(&self, filename: &str) -> String {
-        self.0.borrow().config.get_path(filename)
+        self.data.borrow().config.get_path(filename)
     }
 
     // events
@@ -206,26 +217,26 @@ impl WMUtil {
     where
         F: Fn(Option<EventValue>),
     {
-        self.0.borrow_mut().events.add_listener(event, callback)
+        self.data.borrow_mut().events.add_listener(event, callback)
     }
 
     pub fn remove_listener(&self, event: Event, id: EventId) {
-        self.0.borrow_mut().events.remove_listener(event, id);
+        self.data.borrow_mut().events.remove_listener(event, id);
     }
 
     #[allow(dead_code)]
     pub fn emit(&self, event: Event) {
-        self.0.borrow().events.emit(event);
+        self.data.borrow().events.emit(event);
     }
 
     pub fn emit_value(&self, event: Event, value: EventValue) {
-        self.0.borrow().events.emit_value(event, value);
+        self.data.borrow().events.emit_value(event, value);
     }
 
     // wm actions
 
     pub fn get_workspaces(&self) -> Option<Vec<Workspace>> {
-        match self.0.borrow().wm_type {
+        match self.data.borrow().wm_type {
             WMType::I3 => match wm::i3::connect() {
                 Ok(mut connection) => Some(wm::i3::get_workspaces(&mut connection)),
                 Err(_) => None,
@@ -239,7 +250,7 @@ impl WMUtil {
     }
 
     pub fn focus_workspace(&self, workspace_name: &String) {
-        match self.0.borrow().wm_type {
+        match self.data.borrow().wm_type {
             WMType::I3 => {
                 let command = format!("workspace {}", workspace_name);
                 wm::i3::run_command(&command);
@@ -253,7 +264,7 @@ impl WMUtil {
     }
 
     pub fn cycle_workspace(&self, forward: bool, monitor_index: i32) {
-        match self.0.borrow().wm_type {
+        match self.data.borrow().wm_type {
             WMType::I3 => {
                 wm::i3::cycle_workspace(forward, monitor_index);
             }
@@ -265,7 +276,7 @@ impl WMUtil {
     }
 
     pub fn set_padding(&self, is_top: bool, padding: i32) {
-        match self.0.borrow().wm_type {
+        match self.data.borrow().wm_type {
             WMType::Bsp => {
                 wm::bsp::set_padding(is_top, padding);
             }

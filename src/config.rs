@@ -39,9 +39,13 @@ impl Config {
         self.get_path(self.global.get_str_or("theme", "theme.css"))
     }
     pub fn set_theme(&mut self, new_path: String) {
-        let key = "theme".to_string();
-        self.global.properties.remove(&key);
-        self.global.properties.insert(key, Property::String(new_path));
+        self.global.properties.insert("theme".to_string(), Property::String(new_path));
+    }
+    pub fn get_filename(&self) -> String {
+        self.get_path(self.global.get_str_or("filename", "config.toml"))
+    }
+    pub fn set_filename(&mut self, new_path: String) {
+        self.global.properties.insert("filename".to_string(), Property::String(new_path));
     }
 }
 
@@ -101,7 +105,7 @@ impl ConfigGroup {
 pub fn parse_config(filename: &str) -> Result<Config, String> {
     let file_path = Path::new(filename);
     let config_dir = file_path.parent().ok_or("getting config directory")?;
-    let config_file = file_path.file_name().ok_or("getting config file")?;
+    let config_file = file_path.file_name().ok_or("getting config filename")?;
 
     // get file
     let mut file_result = File::open(filename).map_err(|x| x.to_string())?;
@@ -178,6 +182,11 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
                 properties.insert(key_str, value_to_property(value));
             }
         });
+
+        // add filename
+        properties.insert("filename".to_string(), Property::String(
+            config_file.to_string_lossy().to_string()
+        ));
 
         ConfigGroup {
             name: "global".to_string(),

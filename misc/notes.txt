@@ -18,20 +18,24 @@ https://github.com/onodera-punpun/melonbar - openbox
 features for 1.0.0: ipc, file watching, startmenu, xkb, completor, tray bugs
 current: ipc
 
+file watcher
+===
+inotify
+reset on config reload
+
 wm refactoring
 ===
 default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
-config file watcher
 
 tray
 ====
 fix tray fullscreen latency/mm bug with events
 reload theme -> wm_util event
-show/hide ipc -> event
-ipc doesn't show/hide
+reload event -> ???
+ipc doesn't show/hide (fullscreen? )
 wm restart event restack tray
 spacing
 bug: on no icons width = 1
@@ -41,7 +45,6 @@ ipc
 ====
 help
 allow ipc in menu objs
-bindsym $mod+m exec -- --message / sxhkdrc
 rustyline
 // if just the bar, show/hide the bar
 // if bar + other use bar as a selector
@@ -87,6 +90,8 @@ BSPWM_SOCKET
 CAKEYBAR_SOCKET
 enable-ipc global bool
 .focused class for Bar
+bindsym $mod+m exec -- --message / sxhkdrc
+ipc help
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
