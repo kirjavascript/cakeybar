@@ -179,6 +179,10 @@ impl Bar {
         }
     }
 
+    pub fn relayout(&self) {
+        self.window.resize(1, 1);
+    }
+
     pub fn show(&self) {
         self.window.show();
     }

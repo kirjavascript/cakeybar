@@ -143,6 +143,7 @@ impl WMUtil {
         // unload old theme
         if let Some(ref provider) = self.data.borrow().css_provider {
             wm::gtk::unload_theme(provider);
+            self.bars.borrow().iter().for_each(|bar| bar.relayout());
         }
         // load new theme
         match wm::gtk::load_theme(&theme) {

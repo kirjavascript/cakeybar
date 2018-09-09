@@ -1,5 +1,3 @@
-// use notify;
-
 use notify::{Watcher, RecursiveMode, raw_watcher, RawEvent};
 use std::sync::mpsc;
 use crossbeam_channel as channel;
