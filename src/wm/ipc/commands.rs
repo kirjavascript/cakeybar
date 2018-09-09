@@ -21,8 +21,15 @@ impl Selectors {
     pub fn len(&self) -> usize {
         self.0.len()
     }
+    pub fn contains_id(&self, name: String) -> bool {
+        self.0.contains(&Selector::Id(name))
+    }
+    pub fn contains_class(&self, name: String) -> bool {
+        self.0.contains(&Selector::Class(name))
+    }
 }
 
+#[derive(PartialEq)]
 pub enum Selector {
     Class(String),
     Id(String),

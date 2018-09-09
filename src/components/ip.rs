@@ -18,10 +18,10 @@ impl Component for IP {
     fn get_config(&self) -> &ConfigGroup {
         &self.config
     }
-    fn show(&mut self) {
+    fn show(&self) {
         self.wrapper.show();
     }
-    fn hide(&mut self) {
+    fn hide(&self) {
         self.wrapper.hide();
     }
     fn destroy(&self) {

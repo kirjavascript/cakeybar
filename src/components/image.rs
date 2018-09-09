@@ -16,10 +16,10 @@ impl Component for Bandwidth {
     fn get_config(&self) -> &ConfigGroup {
         &self.config
     }
-    fn show(&mut self) {
+    fn show(&self) {
         self.image.show();
     }
-    fn hide(&mut self) {
+    fn hide(&self) {
         self.image.hide();
     }
     fn destroy(&self) {

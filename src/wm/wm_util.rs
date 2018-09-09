@@ -1,6 +1,7 @@
 use bar::Bar;
-use config::{Config, ConfigGroup};
+use config::{Config, ConfigGroup, parse_config};
 use wm::events::{Event, EventEmitter, EventId, EventValue};
+use wm::ipc::commands::*;
 use wm::workspace::Workspace;
 
 use gtk;
@@ -99,6 +100,19 @@ impl WMUtil {
         self.0.borrow().app.add_window(window);
     }
 
+    pub fn reload_config(&self) {
+
+        // let config_res = parse_config(&config_path);
+
+        // if let Ok(config) = config_res {
+        //     self.unload_bars();
+        //     self.0.borrow_mut().config = config;
+        //     self.load_bars();
+        // } else if let Err(msg) = config_res {
+        //     error!("{}", msg);
+        // }
+    }
+
     pub fn load_theme(&self, new_path: Option<String>) {
         // update path
         if let Some(new_path) = new_path {
@@ -144,10 +158,24 @@ impl WMUtil {
         self.0.borrow_mut().bars.clear();
     }
 
-    pub fn hide_bars(&self, names: Vec<String>) {
+    pub fn display_bars(&self, names: Vec<String>, show: bool) {
         for bar in self.0.borrow().bars.iter() {
             if names.contains(&bar.config.name) {
-                bar.hide();
+                if show {
+                    bar.show();
+                } else {
+                    bar.hide();
+                }
+            }
+        }
+    }
+
+    pub fn display_components(
+        &self, bar_names: Vec<String>, selectors: Selectors, show: bool
+    ) {
+        for bar in self.0.borrow().bars.iter() {
+            if bar_names.len() == 0 || bar_names.contains(&bar.config.name) {
+                bar.display_components(&selectors, show);
             }
         }
     }
@@ -155,7 +183,7 @@ impl WMUtil {
     // getters
 
     pub fn get_bar_names(&self) -> Vec<String> {
-        self.0.borrow().bars.iter().map(|x| x.config.name.clone()) .collect()
+        self.0.borrow().bars.iter().map(|x| x.config.name.clone()).collect()
     }
 
     pub fn get_wm_type(&self) -> WMType {
@@ -163,7 +191,7 @@ impl WMUtil {
     }
 
     pub fn get_component_config(&self, name: &str) -> Option<ConfigGroup> {
-        self.0 borrow().config.components.iter().find(|x| {
+        self.0.borrow().config.components.iter().find(|x| {
             &x.name == name
         }) .map(|x| x.clone())
     }

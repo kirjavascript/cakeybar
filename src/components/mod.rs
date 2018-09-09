@@ -26,9 +26,9 @@ pub trait Component {
     /// provide the config object for this component
     fn get_config(&self) -> &ConfigGroup;
     /// show component
-    fn show(&mut self);
+    fn show(&self);
     /// hide component
-    fn hide(&mut self);
+    fn hide(&self);
     /// clean up any remaining timeouts, callbacks
     fn destroy(&self);
 }

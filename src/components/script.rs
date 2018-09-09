@@ -22,10 +22,10 @@ impl Component for Script {
     fn get_config(&self) -> &ConfigGroup {
         &self.config
     }
-    fn show(&mut self) {
+    fn show(&self) {
         self.label.show();
     }
-    fn hide(&mut self) {
+    fn hide(&self) {
         self.label.hide();
     }
     fn destroy(&self) {

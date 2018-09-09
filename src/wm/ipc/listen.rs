@@ -33,33 +33,40 @@ pub fn listen(wm_util: &WMUtil) {
     });
 
     // receive events
-    gtk::timeout_add(
-        10,
-        clone!(wm_util move || {
+    gtk::timeout_add(10, clone!(wm_util move || {
         if let Some((input, cmd)) = r.try_recv() {
             info!("received {:?} via IPC...", input);
             match cmd {
                 Command::ReloadTheme(path_opt) => {
                     wm_util.load_theme(path_opt);
                 },
-                Command::Hide(selectors) => {
+                Command::Show(selectors) => {
                     let bar_names = wm_util.get_bar_names();
                     let bars = get_bars_from_selectors(&selectors, bar_names);
 
                     if selectors.len() == bars.len() {
                         // if we only have bars
-                        wm_util.hide_bars(bars);
+                        wm_util.display_bars(bars, true);
                     } else {
                         // otherwise targets id/classes from specific bars
+                        wm_util.display_components(bars, selectors, true);
+                    }
+                },
+                Command::Hide(selectors) => {
+                    let bar_names = wm_util.get_bar_names();
+                    let bars = get_bars_from_selectors(&selectors, bar_names);
 
+                    if selectors.len() == bars.len() {
+                        wm_util.display_bars(bars, false);
+                    } else {
+                        wm_util.display_components(bars, selectors, false);
                     }
                 },
                 _ => {},
             }
         }
         gtk::Continue(true)
-    }),
-    );
+    }));
 }
 
 fn get_bars_from_selectors(selectors: &Selectors, bar_names: Vec<String>) -> Vec<String> {

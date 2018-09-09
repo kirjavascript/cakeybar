@@ -58,35 +58,27 @@ fn main() {
 
     let matches = App::new(NAME)
         .version(VERSION)
-        .arg(
-            Arg::with_name("config")
-                .short("c")
-                .long("config")
-                .value_name("FILE")
-                .help("Specify a config path")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("message")
-                .short("m")
-                .long("message")
-                .value_name("MESSAGE")
-                .help("Send an IPC message")
-                .takes_value(true),
-        )
-        .arg(
-            Arg::with_name("monitors")
-                .short("M")
-                .long("monitors")
-                .help("Shows information about monitors"),
-        )
-        .arg(
-            Arg::with_name("multi")
-                .short("D")
-                .long("multi")
-                .help("Allow multiple instances")
-                .hidden(true),
-        )
+        .arg(Arg::with_name("config")
+            .short("c")
+            .long("config")
+            .value_name("FILE")
+            .help("Specify a config path")
+            .takes_value(true))
+        .arg(Arg::with_name("message")
+            .short("m")
+            .long("message")
+            .value_name("MESSAGE")
+            .help("Send an IPC message")
+            .takes_value(true))
+        .arg(Arg::with_name("monitors")
+            .short("M")
+            .long("monitors")
+            .help("Shows information about monitors"))
+        .arg(Arg::with_name("multi")
+            .short("D")
+            .long("multi")
+            .help("Allow multiple instances")
+            .hidden(true))
         .get_matches();
 
     // show monitor debug

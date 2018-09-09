@@ -41,9 +41,7 @@ impl Config {
     pub fn set_theme(&mut self, new_path: String) {
         let key = "theme".to_string();
         self.global.properties.remove(&key);
-        self.global
-            .properties
-            .insert(key, Property::String(new_path));
+        self.global.properties.insert(key, Property::String(new_path));
     }
 }
 
@@ -101,9 +99,9 @@ impl ConfigGroup {
 }
 
 pub fn parse_config(filename: &str) -> Result<Config, String> {
-    let config_dir = Path::new(filename)
-        .parent()
-        .ok_or("getting config directory")?;
+    let file_path = Path::new(filename);
+    let config_dir = file_path.parent().ok_or("getting config directory")?;
+    let config_file = file_path.file_name().ok_or("getting config file")?;
 
     // get file
     let mut file_result = File::open(filename).map_err(|x| x.to_string())?;

@@ -1,4 +1,4 @@
-mod commands;
+pub mod commands;
 mod display;
 mod listen;
 mod parser;

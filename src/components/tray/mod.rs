@@ -44,11 +44,11 @@ impl Component for Tray {
     fn get_config(&self) -> &ConfigGroup {
         &self.config
     }
-    fn show(&mut self) {
+    fn show(&self) {
         self.base_widget.show();
         self.sender.send(Action::Show);
     }
-    fn hide(&mut self) {
+    fn hide(&self) {
         self.base_widget.hide();
         self.sender.send(Action::Hide);
     }
@@ -218,13 +218,10 @@ impl Tray {
 
     fn get_signals() -> (channel::Receiver<i32>, impl Fn()) {
         let (s, r) = channel::bounded(2);
-        let id2 = glib::source::unix_signal_add(
-            2,
-            clone!(s move || {
+        let id2 = glib::source::unix_signal_add(2, clone!(s move || {
             s.send(2);
             gtk::Continue(false)
-        }),
-        ).to_glib(); // SIGINT
+        })).to_glib(); // SIGINT
         let id15 = glib::source::unix_signal_add(15, move || {
             s.send(15);
             gtk::Continue(false)
