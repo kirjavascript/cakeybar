@@ -26,6 +26,7 @@ impl fmt::Display for WMType {
     }
 }
 
+#[derive(Clone)]
 pub struct WMUtil{
     data: Rc<RefCell<Data>>,
     bars: Rc<RefCell<Vec<Bar>>>,
@@ -37,15 +38,6 @@ struct Data {
     css_provider: Option<CssProvider>,
     events: EventEmitter<Event, EventValue>,
     wm_type: WMType,
-}
-
-impl Clone for WMUtil {
-    fn clone(&self) -> Self {
-        WMUtil {
-            data: self.data.clone(),
-            bars: self.bars.clone(),
-        }
-    }
 }
 
 impl WMUtil {
@@ -124,7 +116,8 @@ impl WMUtil {
         // load config
         let config_res = parse_config(&filename);
         if let Ok(config) = config_res {
-            self.unload_bars();
+            // clean up old bars
+            // self.unload_bars();
             self.data.borrow_mut().config = config;
             self.load_theme(None);
             self.load_bars();
@@ -134,17 +127,17 @@ impl WMUtil {
     }
 
     pub fn load_theme(&self, new_path: Option<String>) {
+        // unload old theme
+        if let Some(ref provider) = self.data.borrow().css_provider {
+            wm::gtk::unload_theme(provider);
+            self.bars.borrow().iter().for_each(|bar| bar.relayout());
+        }
         // update path
         if let Some(new_path) = new_path {
             self.data.borrow_mut().config.set_theme(new_path);
         }
         // get theme
         let theme = self.data.borrow().config.get_theme();
-        // unload old theme
-        if let Some(ref provider) = self.data.borrow().css_provider {
-            wm::gtk::unload_theme(provider);
-            self.bars.borrow().iter().for_each(|bar| bar.relayout());
-        }
         // load new theme
         match wm::gtk::load_theme(&theme) {
             Ok(provider) => {
@@ -157,6 +150,13 @@ impl WMUtil {
     }
 
     pub fn load_bars(&self) {
+        // unload old bars and retain gtk::Window
+        let bars = self.bars.borrow_mut().split_off(0);
+        let mut windows: Vec<gtk::Window> =
+            bars.iter().map(|b| b.to_window()).collect();
+        windows.reverse();
+
+        // get monitor info
         let monitors = wm::gtk::get_monitor_geometry();
         // clone is here to ensure we're not borrowing during Bar::load_components
         let bars = self.data.borrow().config.bars.clone();
@@ -165,18 +165,27 @@ impl WMUtil {
             let monitor_option = monitors.get(monitor_index as usize);
 
             if let Some(monitor) = monitor_option {
-                acc.push(Bar::new(bar_config.clone(), self.clone(), monitor));
+                acc.push(Bar::new(
+                    bar_config.clone(),
+                    self.clone(),
+                    monitor,
+                    windows.pop(),
+                ));
             } else {
                 warn!("no monitor at index {}", monitor_index);
             }
             acc
         });
+
+        // destroy old (now unused) windows
+        windows.iter().for_each(|w| w.destroy());
+        // update new bar vec
         self.bars.borrow_mut().clear();
         self.bars.borrow_mut().append(&mut bars);
     }
 
-    pub fn unload_bars(&self) {
-        self.bars.borrow().iter().for_each(|bar| bar.destroy());
+    pub fn _unload_bars(&self) {
+        self.bars.borrow().iter().for_each(|bar| bar._destroy());
         self.bars.borrow_mut().clear();
     }
 

@@ -20,29 +20,45 @@ pub struct Bar {
 }
 
 impl Bar {
-    pub fn new(config: ConfigGroup, wm_util: wm::WMUtil, monitor: &Rectangle) -> Bar {
+    pub fn new(
+        config: ConfigGroup,
+        wm_util: wm::WMUtil,
+        monitor: &Rectangle,
+        existing_window: Option<Window>,
+    ) -> Bar {
+        // TODO: check if the type differs to existing window
         let window_type = if config.get_bool_or("float", false) {
             WindowType::Popup
         } else {
             WindowType::Toplevel
         };
-        let window = Window::new(window_type);
-        wm_util.add_window(&window);
+
+        // use existing or create new window
+        let is_new = existing_window.is_none();
+        let window = if let Some(existing) = existing_window {
+            existing
+        } else {
+            let window = Window::new(window_type);
+            wm_util.add_window(&window);
+            window
+        };
 
         // set base values
-        window.set_title(NAME);
         window.set_default_size(monitor.width, 1);
-        window.set_type_hint(gdk::WindowTypeHint::Dock);
-        #[allow(deprecated)]
-        window.set_wmclass(NAME, NAME);
-        window.set_keep_above(true);
-        window.stick();
+        if is_new {
+            window.set_title(NAME);
+            window.set_type_hint(gdk::WindowTypeHint::Dock);
+            #[allow(deprecated)]
+            window.set_wmclass(NAME, NAME);
+            window.set_keep_above(true);
+            window.stick();
 
-        // transparency
-        Self::set_visual(&window, &None);
-        window.connect_screen_changed(Self::set_visual);
-        window.connect_draw(Self::draw);
-        window.set_app_paintable(true);
+            // transparency
+            Self::set_visual(&window, &None);
+            window.connect_screen_changed(Self::set_visual);
+            window.connect_draw(Self::draw);
+            window.set_app_paintable(true);
+        }
 
         // init container
         let container = gtk::Box::new(Orientation::Horizontal, 0);
@@ -191,11 +207,21 @@ impl Bar {
         self.window.hide();
     }
 
-    pub fn destroy(&self) {
+    pub fn destroy_components(&self) {
         for component in self.components.iter() {
             component.destroy();
         }
+    }
+
+    pub fn _destroy(&self) {
+        self.destroy_components();
         self.window.destroy();
+    }
+
+    pub fn to_window(&self) -> Window {
+        self.destroy_components();
+        self.window.get_children().iter().for_each(|w| w.destroy());
+        self.window.clone()
     }
 
     fn set_visual(window: &Window, _screen: &Option<gdk::Screen>) {

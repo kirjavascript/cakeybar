@@ -189,7 +189,7 @@ fn get_set_class(ctx: gtk::StyleContext) -> impl Fn(&str, bool) {
 }
 
 fn set_label_attrs(label: &Label, workspace: &Workspace, symbols: &SymbolFmt) {
-    label.set_label(&symbols.format(|sym| match sym {
+    label.set_markup(&symbols.format(|sym| match sym {
         "name" => markup_escape_text(&workspace.name),
         "number" => workspace.number.to_string(),
         _ => sym.to_string(),

@@ -25,7 +25,7 @@ pub fn watch(wm_util: &WMUtil, filename: String, theme: String) {
                Ok(RawEvent{path: Some(path), op: Ok(op), .. }) => {
                    if op == op::CLOSE_WRITE {
                        if let Some(filename) = path.file_name() {
-                           info!("wrote {}...", filename.to_string_lossy());
+                           info!("wrote {}", filename.to_string_lossy());
                        }
                        if path.to_string_lossy().into_owned() == theme {
                            s.send(WriteType::Theme);
