@@ -1,6 +1,8 @@
 use gdk::{ScreenExt, ScrollDirection};
 use gtk::prelude::*;
 use gtk::{Orientation, Overlay, Rectangle, Window, WindowType};
+use glib::SignalHandlerId;
+use glib::translate::{ToGlib, from_glib};
 use {cairo, gdk, gtk, wm, NAME};
 
 use std::cell::RefCell;
@@ -13,9 +15,10 @@ use wm::ipc::commands::*;
 pub struct Bar {
     pub config: ConfigGroup,
     pub components: Vec<Box<Component>>,
-    pub wm_util: wm::WMUtil,
     pub overlay: Overlay,
     pub container: gtk::Box,
+    pub wm_util: wm::WMUtil,
+    event_ids: Vec<SignalHandlerId>,
     window: Window,
 }
 
@@ -47,9 +50,9 @@ impl Bar {
         window.set_default_size(monitor.width, 1);
         if is_new {
             window.set_title(NAME);
-            window.set_type_hint(gdk::WindowTypeHint::Dock);
             #[allow(deprecated)]
             window.set_wmclass(NAME, NAME);
+            window.set_type_hint(gdk::WindowTypeHint::Dock);
             window.set_keep_above(true);
             window.stick();
 
@@ -93,7 +96,7 @@ impl Bar {
         let is_top = config.get_str_or("position", "top") == "top";
         let &Rectangle { x, y, height, .. } = monitor;
         let is_set = Rc::new(RefCell::new(false));
-        window.connect_size_allocate(clone!((is_set, wm_util)
+        let size_id = window.connect_size_allocate(clone!((is_set, wm_util)
             move |window, rect| {
                 let xpos = x;
                 let ypos = if !is_top {
@@ -112,18 +115,24 @@ impl Bar {
         ));
 
         // set .focused
-        window.connect_enter_notify_event(clone!(container move |_, _| {
-            if let Some(ctx) = container.get_style_context() {
-                StyleContextExt::add_class(&ctx, "focused");
-            }
-            Inhibit(false)
-        }));
-        window.connect_leave_notify_event(clone!(container move |_, _| {
-            if let Some(ctx) = container.get_style_context() {
-                StyleContextExt::remove_class(&ctx, "focused");
-            }
-            Inhibit(false)
-        }));
+        let focus_id = window.connect_enter_notify_event(clone!(container
+            move |_, _| {
+                if let Some(ctx) = container.get_style_context() {
+                    StyleContextExt::add_class(&ctx, "focused");
+                }
+                Inhibit(false)
+            })
+        );
+        let unfocus_id = window.connect_leave_notify_event(clone!(container
+             move |_, _| {
+                 if let Some(ctx) = container.get_style_context() {
+                     StyleContextExt::remove_class(&ctx, "focused");
+                 }
+                 Inhibit(false)
+             })
+        );
+
+        let event_ids = vec![size_id, focus_id, unfocus_id];
 
         // show window
         window.show_all();
@@ -136,11 +145,14 @@ impl Bar {
             overlay,
             container,
             window,
+            event_ids,
         };
 
         bar.load_components();
 
-        wm::gtk::disable_shadow(&bar.window);
+        if is_new {
+            wm::gtk::disable_shadow(&bar.window);
+        }
 
         wm::gtk::set_strut(
             &bar.window,
@@ -207,19 +219,18 @@ impl Bar {
         self.window.hide();
     }
 
-    pub fn destroy_components(&self) {
+    pub fn to_window(&self) -> Window {
+        // destroy components
         for component in self.components.iter() {
             component.destroy();
         }
-    }
-
-    pub fn _destroy(&self) {
-        self.destroy_components();
-        self.window.destroy();
-    }
-
-    pub fn to_window(&self) -> Window {
-        self.destroy_components();
+        // remove events
+        let window = self.window.clone();
+        self.event_ids.iter().for_each(move |id| {
+            // immutable signal copy
+            window.disconnect(from_glib(id.to_glib()));
+        });
+        // remove widgets
         self.window.get_children().iter().for_each(|w| w.destroy());
         self.window.clone()
     }

@@ -15,12 +15,18 @@ awesome-client
 https://github.com/Rahix/pa-visualizer
 https://github.com/onodera-punpun/melonbar - openbox
 
-features for 1.0.0: startmenu, xkb, completor, tray bugs
+features for 1.0.0: xkb, completor, tray bugs
 current: file watching | info! for filewatch / IPC
+
+completor
+===
+dmenu
+:ipc
 
 file watcher
 ===
-faster config reload (bar diffing return Window)
+window change from popup to toplevel
+restart position bug
 command flag
 restart
 

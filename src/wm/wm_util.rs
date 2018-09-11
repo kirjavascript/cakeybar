@@ -116,8 +116,6 @@ impl WMUtil {
         // load config
         let config_res = parse_config(&filename);
         if let Ok(config) = config_res {
-            // clean up old bars
-            // self.unload_bars();
             self.data.borrow_mut().config = config;
             self.load_theme(None);
             self.load_bars();
@@ -182,11 +180,6 @@ impl WMUtil {
         // update new bar vec
         self.bars.borrow_mut().clear();
         self.bars.borrow_mut().append(&mut bars);
-    }
-
-    pub fn _unload_bars(&self) {
-        self.bars.borrow().iter().for_each(|bar| bar._destroy());
-        self.bars.borrow_mut().clear();
     }
 
     pub fn display_bars(&self, names: Vec<String>, show: bool) {
