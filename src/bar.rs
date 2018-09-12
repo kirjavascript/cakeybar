@@ -219,7 +219,7 @@ impl Bar {
         self.window.hide();
     }
 
-    pub fn to_window(&self) -> Window {
+    fn unload(&self) {
         // destroy components
         for component in self.components.iter() {
             component.destroy();
@@ -232,7 +232,16 @@ impl Bar {
         });
         // remove widgets
         self.window.get_children().iter().for_each(|w| w.destroy());
+    }
+
+    pub fn to_window(&self) -> Window {
+        self.unload();
         self.window.clone()
+    }
+
+    pub fn destroy(&self) {
+        self.unload();
+        self.window.destroy();
     }
 
     fn set_visual(window: &Window, _screen: &Option<gdk::Screen>) {

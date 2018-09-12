@@ -11,17 +11,31 @@ enum WriteType {
     Theme,
 }
 
-pub fn watch(wm_util: &WMUtil, filename: String, theme: String) {
+pub struct Unwatcher {
+    timer: Timer,
+    sender: channel::Sender<()>,
+}
+
+impl Unwatcher {
+    pub fn unwatch(&self) {
+        self.timer.remove();
+        self.sender.send(());
+    }
+}
+
+pub fn watch(wm_util: &WMUtil, filename: String, theme: String) -> Unwatcher {
 
     let (s, r) = channel::unbounded();
+    let (s_dead, r_dead) = channel::unbounded();
 
     thread::spawn(move || {
+        // TODO: clean up unwrap
         let (tx, rx) = mpsc::channel();
         let mut watcher = raw_watcher(tx).unwrap();
         watcher.watch(&filename, RecursiveMode::Recursive).unwrap();
         watcher.watch(&theme, RecursiveMode::Recursive).unwrap();
         loop {
-            match rx.recv() {
+            match rx.try_recv() {
                Ok(RawEvent{path: Some(path), op: Ok(op), .. }) => {
                    if op == op::CLOSE_WRITE {
                        if let Some(filename) = path.file_name() {
@@ -40,7 +54,9 @@ pub fn watch(wm_util: &WMUtil, filename: String, theme: String) {
         }
     });
 
-    let _timer = Timer::add_ms(50, clone!(wm_util move || {
+    // tx_clone.send(());
+
+    let timer = Timer::add_ms(50, clone!(wm_util move || {
         if let Some(wtype) = r.try_recv() {
             match wtype {
                 WriteType::Config => {
@@ -54,5 +70,5 @@ pub fn watch(wm_util: &WMUtil, filename: String, theme: String) {
         gtk::Continue(true)
     }));
 
-    // TODO: cleanup
+    Unwatcher { timer, sender: s_dead }
 }

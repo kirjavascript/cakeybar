@@ -107,6 +107,7 @@ impl WMUtil {
     }
 
     pub fn reload_config(&self, new_path: Option<String>) {
+        let change_config = new_path.is_some();
         // update filename
         if let Some(new_path) = new_path {
             self.data.borrow_mut().config.set_filename(new_path);
@@ -116,7 +117,14 @@ impl WMUtil {
         // load config
         let config_res = parse_config(&filename);
         if let Ok(config) = config_res {
+            // unload old bars if changing the config
+            if change_config {
+                self.bars.borrow_mut().iter().for_each(|b| b.destroy());
+                self.bars.borrow_mut().clear();
+            }
+            // update config
             self.data.borrow_mut().config = config;
+            // reload everything
             self.load_theme(None);
             self.load_bars();
         } else if let Err(msg) = config_res {

@@ -12,7 +12,6 @@ extern crate gtk;
 extern crate i3ipc;
 extern crate libc;
 extern crate probes;
-extern crate pulse_simple;
 extern crate sysinfo;
 extern crate systemstat;
 extern crate toml;

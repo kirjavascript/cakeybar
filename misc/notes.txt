@@ -25,10 +25,10 @@ dmenu
 
 file watcher
 ===
-window change from popup to toplevel
-restart position bug
 command flag
 restart
+window change from popup to toplevel
+restart position bug
 
 wm refactoring
 ===
@@ -36,7 +36,6 @@ default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
-faster config reload
 interval float for /s Timer::get_interval(config)
 
 tray
@@ -101,6 +100,7 @@ enable-ipc global bool
 .focused class for Bar
 bindsym $mod+m exec -- --message / sxhkdrc
 ipc help
+AUR / shell command
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
