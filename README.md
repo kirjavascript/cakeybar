@@ -13,7 +13,7 @@
 * more rice than feudal japan
 
 *work in progress*  
-configuration is not stable yet  
+not stable yet  
 currently testing in i3wm/bspwm
 
 ## quickstart
