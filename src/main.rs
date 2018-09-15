@@ -36,23 +36,6 @@ mod wm;
 pub static NAME: &str = env!("CARGO_PKG_NAME");
 pub static VERSION: &str = env!("CARGO_PKG_VERSION");
 
-fn init(app: &gtk::Application, config_match: Option<&str>) {
-    // get config path
-    let config_path = match config_match {
-        Some(path) => path.to_string(),
-        None => format!("{}/config.toml", util::get_config_dir()),
-    };
-
-    let config_res = config::parse_config(&config_path);
-
-    if let Ok(config) = config_res {
-        // start application
-        wm::WMUtil::new(app.clone(), config);
-    } else if let Err(msg) = config_res {
-        error!("{}", msg);
-    }
-}
-
 fn main() {
     // CLI config
 
@@ -64,6 +47,10 @@ fn main() {
             .value_name("FILE")
             .help("Specify a config path")
             .takes_value(true))
+        .arg(Arg::with_name("watch")
+            .short("w")
+            .long("watch")
+            .help("Watch config files and reload on write"))
         .arg(Arg::with_name("message")
             .short("m")
             .long("message")
@@ -110,7 +97,20 @@ fn main() {
     ).expect("Initialization failed...");
 
     application.connect_startup(move |app| {
-        init(&app, matches.value_of("config"));
+        // get config path
+        let config_path = match matches.value_of("config") {
+            Some(path) => path.to_string(),
+            None => format!("{}/config.toml", util::get_config_dir()),
+        };
+
+        let config_res = config::parse_config(&config_path);
+
+        if let Ok(config) = config_res {
+            // start application
+            wm::WMUtil::new(app.clone(), config, &matches);
+        } else if let Err(msg) = config_res {
+            error!("{}", msg);
+        }
     });
     application.connect_activate(|_| {});
 

@@ -3,6 +3,8 @@ use config::{Config, ConfigGroup, parse_config};
 use wm::events::{Event, EventEmitter, EventId, EventValue};
 use wm::ipc::commands::*;
 use wm::workspace::Workspace;
+use wm::watch::Watcher;
+use clap::ArgMatches;
 
 use gtk;
 use gtk::prelude::*;
@@ -37,11 +39,14 @@ struct Data {
     config: Config,
     css_provider: Option<CssProvider>,
     events: EventEmitter<Event, EventValue>,
+    watcher: Option<Watcher>,
     wm_type: WMType,
 }
 
 impl WMUtil {
-    pub fn new(app: gtk::Application, config: Config) -> Self {
+    pub fn new(
+        app: gtk::Application, config: Config, matches: &ArgMatches
+    ) -> Self {
         let wm_type = if let Ok(_) = wm::i3::connect() {
             WMType::I3
         } else if let Ok(_) = wm::bsp::connect() {
@@ -61,6 +66,7 @@ impl WMUtil {
             config,
             css_provider: None,
             events,
+            watcher: None,
             wm_type,
         }));
 
@@ -89,7 +95,9 @@ impl WMUtil {
 
         util.load_theme(None);
         util.load_bars();
-        util.watch_files();
+        if matches.is_present("watch") {
+            util.watch_files();
+        }
 
         util
     }
@@ -99,11 +107,21 @@ impl WMUtil {
     }
 
     pub fn watch_files(&self) {
-        let (filename, theme) = (
-            self.data.borrow().config.get_filename(),
-            self.data.borrow().config.get_theme(),
-        );
-        wm::watch::watch(self, filename, theme);
+        let watcher = Watcher::new(self, &self.data.borrow().config);
+        self.data.borrow_mut().watcher = Some(watcher);
+    }
+
+    pub fn rewatch_files(&self) {
+        let was_some = {
+            let watcher_opt = &self.data.borrow().watcher;
+            if let Some(watcher) = watcher_opt {
+                watcher.unwatch();
+            }
+            watcher_opt.is_some()
+        };
+        if was_some {
+            self.watch_files();
+        }
     }
 
     pub fn reload_config(&self, new_path: Option<String>) {
@@ -117,13 +135,15 @@ impl WMUtil {
         // load config
         let config_res = parse_config(&filename);
         if let Ok(config) = config_res {
-            // unload old bars if changing the config
-            if change_config {
-                self.bars.borrow_mut().iter().for_each(|b| b.destroy());
-                self.bars.borrow_mut().clear();
-            }
             // update config
             self.data.borrow_mut().config = config;
+            if change_config {
+                // unload old bars if changing the config
+                self.bars.borrow_mut().iter().for_each(|b| b.destroy());
+                self.bars.borrow_mut().clear();
+                // watch different files
+                self.rewatch_files();
+            }
             // reload everything
             self.load_theme(None);
             self.load_bars();

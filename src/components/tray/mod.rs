@@ -193,9 +193,7 @@ impl Tray {
         });
 
         // receive events
-        let timer = Timer::add_ms(
-            10,
-            clone!(base_widget move || {
+        let timer = Timer::add_ms(10, clone!(base_widget move || {
             if let Some(msg) = r_tray.try_recv() {
                 match msg {
                     Action::Width(w) => {
@@ -208,8 +206,7 @@ impl Tray {
                 }
             }
             gtk::Continue(true)
-        }),
-        );
+        }));
 
         bar.add_component(Box::new(Tray {
             config,
