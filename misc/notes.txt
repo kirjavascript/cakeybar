@@ -16,18 +16,12 @@ https://github.com/Rahix/pa-visualizer
 https://github.com/onodera-punpun/melonbar - openbox
 
 features for 1.0.0: xkb, completor, tray bugs
-current: gmail | IPC / install.sh
+current: gmail | install.sh
 
 completor
 ===
 dmenu
 :ipc
-
-file watcher (bugs)
-===
-command flag
-window change from popup to toplevel
-restart position bug
 
 wm refactoring
 ===
@@ -48,6 +42,11 @@ wm restart event restack tray
 send multiple IPC commands at once
 spacing
 bug: on no icons width = 1
+
+file watcher
+===
+window change from popup to toplevel bug
+restart position bug
 
 ipc
 ====

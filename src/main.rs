@@ -50,7 +50,7 @@ fn main() {
         .arg(Arg::with_name("watch")
             .short("w")
             .long("watch")
-            .help("Watch config files and reload on write"))
+            .help("Watch config files and reload on changes"))
         .arg(Arg::with_name("message")
             .short("m")
             .long("message")
