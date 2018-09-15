@@ -30,61 +30,51 @@ impl Unwatcher {
 }
 
 pub fn watch(wm_util: &WMUtil, filename: String, theme: String) -> Unwatcher {
-
-    thread::spawn(move || {
-        let mut inotify = Inotify::init().unwrap();
-
-        if let Err(err) = inotify.add_watch(&filename, WatchMask::CLOSE_WRITE) {
-            error!("failed to watch {}: {}", &filename, err);
-        }
-        if let Err(err) = inotify.add_watch(&theme, WatchMask::CLOSE_WRITE) {
-            error!("failed to watch {}: {}", &theme, err);
-        }
-
-        let mut buffer = [0; 1024];
-
-        loop {
-            let events = inotify.read_events(&mut buffer)
-                .expect("Error while reading events");
-            for event in events {
-                println!("{:#?}", event);
-            }
-            thread::sleep(time::Duration::from_millis(50));
-        }
-    });
-
-    // ---
+    // TODO: pass in config
 
     let (s, r) = channel::unbounded();
     let (s_dead, r_dead) = channel::unbounded();
 
-    // thread::spawn(move || {
-    //     // TODO: clean up unwrap
-    //     let (tx, rx) = mpsc::channel();
-    //     let mut watcher = raw_watcher(tx).unwrap();
-    //     watcher.watch(&filename, RecursiveMode::Recursive).unwrap();
-    //     watcher.watch(&theme, RecursiveMode::Recursive).unwrap();
-    //     loop {
-    //         match rx.recv() {
-    //            Ok(RawEvent{path: Some(path), op: Ok(op), .. }) => {
-    //                if op == op::CLOSE_WRITE {
-    //                    if let Some(filename) = path.file_name() {
-    //                        info!("wrote {}", filename.to_string_lossy());
-    //                    }
-    //                    if path.to_string_lossy().into_owned() == theme {
-    //                        s.send(WriteType::Theme);
-    //                    } else {
-    //                        s.send(WriteType::Config);
-    //                    }
-    //                }
-    //            },
-    //            Ok(event) => println!("broken event: {:?}", event),
-    //            Err(e) => println!("watch error: {:?}", e),
-    //         }
-    //     }
-    // });
+    thread::spawn(move || {
+        let mut inotify = Inotify::init().unwrap();
 
-    // tx_clone.send(());
+        let mut watchers = Vec::new();
+
+        match inotify.add_watch(&filename, WatchMask::CLOSE_WRITE) {
+            Ok(watcher) => watchers.push((&filename, watcher)),
+            Err(err) => error!("failed to watch {}: {}", &filename, err),
+        }
+        match inotify.add_watch(&theme, WatchMask::CLOSE_WRITE) {
+            Ok(watcher) => watchers.push((&theme, watcher)),
+            Err(err) => error!("failed to watch {}: {}", &theme, err),
+        }
+
+        let mut buffer = [0; 1024];
+        loop {
+            let events = inotify.read_events(&mut buffer)
+                .expect("error reading events");
+            for event in events {
+                let wd_opt = watchers.iter().find(|(_, wd)| wd == &event.wd);
+                if let Some((path, _)) = wd_opt {
+                    let fragments = path.split("/").collect::<Vec<&str>>();
+                    if let Some(head) = fragments.last() {
+                        info!("wrote {}", head);
+                    }
+                    if path == &&filename {
+                        s.send(WriteType::Config);
+                    } else {
+                        s.send(WriteType::Theme);
+                    }
+                }
+            }
+            if let Some(_) = r_dead.try_recv() {
+                error!("rip");
+                break;
+            } else {
+                thread::sleep(time::Duration::from_millis(50));
+            }
+        }
+    });
 
     let timer = Timer::add_ms(50, clone!(wm_util move || {
         if let Some(wtype) = r.try_recv() {
