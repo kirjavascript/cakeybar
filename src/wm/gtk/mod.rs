@@ -11,7 +11,11 @@ pub fn load_theme(path: &str) -> Result<CssProvider, Error> {
     let provider = CssProvider::new();
     match provider.load_from_path(path) {
         Ok(_) => {
-            StyleContext::add_provider_for_screen(&screen, &provider, 0);
+            StyleContext::add_provider_for_screen(
+                &screen,
+                &provider,
+                gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+            );
             Ok(provider)
         }
         Err(e) => Err(e),

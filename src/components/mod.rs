@@ -6,6 +6,7 @@ use {glib, gtk};
 mod bandwidth;
 mod battery;
 mod clock;
+mod completor;
 mod container;
 mod cpu;
 mod disk;
@@ -21,7 +22,7 @@ mod tray;
 mod window;
 mod workspaces;
 
-/// interface for all components
+/// defines interface for components
 pub trait Component {
     /// provide the config object for this component
     fn get_config(&self) -> &ConfigGroup;
@@ -43,6 +44,7 @@ pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) 
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
+        "completor" => completor::Completor::init,
         "container" => container::Container::init,
         "cpu" => cpu::CPU::init,
         "disk" => disk::Disk::init,
@@ -116,3 +118,35 @@ fn get_alignment(align: &str) -> Align {
         _ => Align::Baseline,
     }
 }
+
+// use bar::Bar;
+// use components::Component;
+// use config::ConfigGroup;
+// use gtk;
+// use gtk::prelude::*;
+//
+// pub struct Template {
+//     config: ConfigGroup,
+// }
+//
+// impl Component for Template {
+//     fn get_config(&self) -> &ConfigGroup {
+//         &self.config
+//     }
+//     fn show(&self) {
+//     }
+//     fn hide(&self) {
+//     }
+//     fn destroy(&self) {
+//     }
+// }
+//
+// impl Template {
+//     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+//         //super::init_widget(&entry, &config, bar, container);
+//
+//         bar.add_component(Box::new(Template {
+//             config,
+//         }));
+//     }
+// }

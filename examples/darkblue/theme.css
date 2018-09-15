@@ -28,6 +28,11 @@ label {
     background-position: 50% -10%;
 }
 
+entry {
+    color: red;
+    background-color: blue;
+}
+
 /* #menu_popup { */
 /*     background-color: black; */
 /*     padding: 5px; */

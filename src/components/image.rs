@@ -5,14 +5,12 @@ use gtk;
 use gtk::prelude::*;
 use gtk::Image as GtkImage;
 
-pub struct Image;
-
-pub struct Bandwidth {
+pub struct Image {
     config: ConfigGroup,
     image: GtkImage,
 }
 
-impl Component for Bandwidth {
+impl Component for Image {
     fn get_config(&self) -> &ConfigGroup {
         &self.config
     }
@@ -39,7 +37,7 @@ impl Image {
                 gtk::Continue(false)
             }));
 
-            bar.add_component(Box::new(Bandwidth { config, image: img }));
+            bar.add_component(Box::new(Image { config, image: img }));
         } else {
             warn!("#{} missing src property", config.name);
         }

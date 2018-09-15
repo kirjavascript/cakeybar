@@ -14,14 +14,27 @@ https://github.com/pw4ever/awesome-wm-config#setup
 awesome-client
 https://github.com/Rahix/pa-visualizer
 https://github.com/onodera-punpun/melonbar - openbox
+GTK_DEBUG=interactive
 
-features for 1.0.0: xkb, completor, tray bugs
-current: gmail | install.sh
+features for 1.0.0: xkb, completor, start menu, tray bugs
+current: dmenu / ipc
 
 completor
 ===
+add trigger
 dmenu
+ctrl shift d
+recency / history
 :ipc
+use event listener
+
+ipc
+====
+help
+allow ipc in menu objs
+rustyline
+Open(Selector) completor/startmenu // checkselector(config)
+watch / unwatch
 
 wm refactoring
 ===
@@ -30,7 +43,6 @@ config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
 interval float for /s Timer::get_interval(config) ::from_config
-change timers to 25ms
 
 tray
 ====
@@ -48,23 +60,13 @@ file watcher
 window change from popup to toplevel bug
 restart position bug
 
-ipc
-====
-help
-allow ipc in menu objs
-rustyline
-// if just the bar, show/hide the bar
-// if bar + other use bar as a selector
-// show extra message when path fails Some(theme)
-// get path from where ipc started
-// Open(Selector)
-
 components
 ====
 17:10:12 <+isk> Kirjava: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/Uno_Slave_Reader/Visualizer.h
 17:10:45 <+isk> also if you're interested in terminal ascii visual representation: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/fade.cpp
 1D colour red-green lerping equalizer
 bspwm mode
+gmail -> plugins in examples folder
 script - classes for return code
 prompt -> ipc command
 remote ip
@@ -83,7 +85,7 @@ gtk3-demo
 gtk3-widget-factory
 modal
 workspace multiple rows
-gmail
+about splashscreen
 
 docs
 ====
@@ -95,6 +97,7 @@ dropdown/label
 workspaces/spacing
 BSPWM_SOCKET
 CAKEYBAR_SOCKET
+GTKTheme can affect bar
 enable-ipc global bool
 .focused class for Bar
 bindsym $mod+m exec -- --message / sxhkdrc
