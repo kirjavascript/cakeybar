@@ -1,11 +1,18 @@
 @define-color blue #0A83FD;
 @define-color darkblue #0022CC;
 
-label {
+label, entry {
     font-family: Hack;
     color: white;
     font-size: 12px;
     font-weight: 600;
+}
+
+entry {
+    background-color: black;
+    border: 2px solid @blue;
+    padding: 0 15px;
+    font-size: 16px;
 }
 
 #left, #right {
@@ -26,11 +33,6 @@ label {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: 50% -10%;
-}
-
-entry {
-    color: red;
-    background-color: blue;
 }
 
 /* #menu_popup { */

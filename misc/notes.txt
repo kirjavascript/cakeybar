@@ -25,8 +25,9 @@ add trigger
 dmenu
 ctrl shift d
 recency / history
-:ipc
+command / !shell cmd / /find
 use event listener
+force focus
 
 ipc
 ====
