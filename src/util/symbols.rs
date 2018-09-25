@@ -12,10 +12,10 @@ pub struct SymbolFmt {
 }
 
 named!(escaped<Input,Token>,
-   map!(
-       alt!( tag!("{{") | tag!("}}") ),
-       |s| Token::Text(s[..1].to_string())
-   )
+    map!(
+         alt!( tag!("{{") | tag!("}}") ),
+         |s| Token::Text(s[..1].to_string())
+    )
 );
 
 named!(symbol<Input,Token>,

@@ -21,7 +21,7 @@ current: dmenu / ipc
 
 completor
 ===
-add trigger
+add trigger (Open)
 dmenu
 ctrl shift d
 recency / history
@@ -92,18 +92,19 @@ docs
 ====
 add / remove - curl | sh install
     or install from cargo (google scrftch)
-undocu'd;
-bar/float
-dropdown/label
-workspaces/spacing
-BSPWM_SOCKET
-CAKEYBAR_SOCKET
+pandoc
 GTKTheme can affect bar
-enable-ipc global bool
-.focused class for Bar
 bindsym $mod+m exec -- --message / sxhkdrc
 ipc help
 AUR / shell command (via github release)
+undocu'd;
+    bar/float
+    dropdown/label
+    workspaces/spacing
+    BSPWM_SOCKET
+    CAKEYBAR_SOCKET
+    enable-ipc global bool
+    .focused class for Bar
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
