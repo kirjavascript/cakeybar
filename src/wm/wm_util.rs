@@ -106,6 +106,10 @@ impl WMUtil {
         self.data.borrow().app.add_window(window);
     }
 
+    pub fn run_command(&self, cmd: Command) {
+        wm::ipc::exec::run_command(self, cmd);
+    }
+
     pub fn watch_files(&self) {
         let watcher = Watcher::new(self, &self.data.borrow().config);
         self.data.borrow_mut().watcher = Some(watcher);

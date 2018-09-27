@@ -21,6 +21,7 @@ current: dmenu / ipc
 
 completor
 ===
+wmutil.run_command()
 add trigger (Open)
 dmenu
 ctrl shift d
@@ -43,6 +44,7 @@ default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
+strip out show/hide
 interval float for /s Timer::get_interval(config) ::from_config
 
 tray

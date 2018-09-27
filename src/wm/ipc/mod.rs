@@ -1,7 +1,8 @@
 pub mod commands;
 mod display;
 mod listen;
-mod parser;
+pub mod parser;
+pub mod exec;
 pub use self::listen::listen;
 
 use std::env;

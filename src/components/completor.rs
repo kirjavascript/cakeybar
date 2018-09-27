@@ -4,6 +4,8 @@ use config::ConfigGroup;
 use gtk;
 use gdk;
 use gtk::prelude::*;
+use wm;
+use wm::ipc::parser::parse_message;
 
 pub struct Completor {
     config: ConfigGroup,
@@ -29,40 +31,49 @@ impl Completor {
 
         // TODO: transparency
 
-        let window = gtk::Window::new(gtk::WindowType::Toplevel);
-        window.set_type_hint(gdk::WindowTypeHint::Utility);
-        window.set_skip_pager_hint(false);
-        window.set_skip_taskbar_hint(false);
-        window.set_default_size(1, 1);
-        window.set_decorated(false);
-        window.set_title(&config.name);
-        window.stick();
+        // let window = gtk::Window::new(gtk::WindowType::Toplevel);
+        // window.set_type_hint(gdk::WindowTypeHint::Utility);
+        // window.set_skip_pager_hint(false);
+        // window.set_skip_taskbar_hint(false);
+        // window.set_default_size(1, 1);
+        // window.set_decorated(false);
+        // window.set_title(&config.name);
+        // window.stick();
         // super::init_widget(&wrapper, &config, bar, container);
 
-        let entry = gtk::Entry::new();
-        entry.set_has_frame(false);
-        entry.show();
-        window.show();
-        window.add(&entry);
-        bar.wm_util.add_window(&window);
-        entry.grab_focus();
-        entry.connect_activate(move |e| {
-            println!("{:#?}", e.get_text());
-        });
+        // let entry = gtk::Entry::new();
+        // entry.set_has_frame(false);
+        // entry.show();
+        // window.show();
+        // window.add(&entry);
+        // wm::gtk::disable_shadow(&window);
+        // bar.wm_util.add_window(&window);
+        // entry.grab_focus();
 
-        entry.connect_key_press_event(move |e, t| {
-            println!("{:#?}", t);
-            gtk::Inhibit(false)
-        });
+        // let wm_util = bar.wm_util.clone();
+        // let w_clone = window.clone();
+        // entry.connect_activate(move |e| {
+        //     if let Some(text) = e.get_text() {
+        //         if let Ok(cmd) = parse_message(&text) {
+        //             wm_util.run_command(cmd);
+        //         }
+        //     }
+        //     w_clone.destroy();
+        // });
 
-        window.connect_focus_out_event(move |w, _| {
-            // println!("{:#?}", "out");
-            // w.grab_focus();
-            // w.show();
-            // entry.grab_focus();
-            w.destroy();
-            gtk::Inhibit(false)
-        });
+        // entry.connect_key_press_event(move |e, t| {
+        //     println!("{:#?}", t);
+        //     gtk::Inhibit(false)
+        // });
+
+        // window.connect_focus_out_event(move |w, _| {
+        //     // println!("{:#?}", "out");
+        //     // w.grab_focus();
+        //     // w.show();
+        //     // entry.grab_focus();
+        //     w.destroy();
+        //     gtk::Inhibit(false)
+        // });
 
         // get window events
 

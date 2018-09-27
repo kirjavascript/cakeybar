@@ -12,8 +12,9 @@ entry {
     background-color: black;
     border: 2px solid @blue;
     padding: 0 15px;
-    font-size: 16px;
+    min-width: 300px;
 }
+
 
 #left, #right {
     min-height: 27px;
