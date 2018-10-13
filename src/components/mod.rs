@@ -6,7 +6,7 @@ use {glib, gtk};
 mod bandwidth;
 mod battery;
 mod clock;
-mod completor;
+// mod completor;
 mod container;
 mod cpu;
 mod disk;
@@ -44,7 +44,7 @@ pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) 
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
-        "completor" => completor::Completor::init,
+        // "completor" => completor::Completor::init,
         "container" => container::Container::init,
         "cpu" => cpu::CPU::init,
         "disk" => disk::Disk::init,

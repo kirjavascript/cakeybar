@@ -17,10 +17,9 @@ extern crate systemstat;
 extern crate toml;
 extern crate inotify;
 extern crate xcb;
-#[macro_use]
-extern crate nom;
-#[macro_use]
-extern crate crossbeam_channel;
+#[macro_use] extern crate lazy_static;
+#[macro_use] extern crate nom;
+#[macro_use] extern crate crossbeam_channel;
 
 use clap::{App, Arg};
 use gio::prelude::*;
