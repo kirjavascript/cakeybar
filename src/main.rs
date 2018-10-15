@@ -93,7 +93,7 @@ fn main() {
         } else {
             gio::ApplicationFlags::empty()
         },
-    ).expect("Initialization failed...");
+    ).expect("initialization failed...");
 
     application.connect_startup(move |app| {
         // get config path

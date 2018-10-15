@@ -37,6 +37,7 @@ macro_rules! message {
         }
     }};
 }
+
 #[macro_export]
 macro_rules! error {
     ( $x:expr, $( $y:expr ),* ) => {
