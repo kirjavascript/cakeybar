@@ -47,9 +47,9 @@ impl WMUtil {
     pub fn new(
         app: gtk::Application, config: Config, matches: &ArgMatches
     ) -> Self {
-        let wm_type = if let Ok(_) = wm::i3::connect() {
+        let wm_type = if wm::i3::connect().is_ok() {
             WMType::I3
-        } else if let Ok(_) = wm::bsp::connect() {
+        } else if wm::bsp::connect().is_ok() {
             WMType::Bsp
         } else {
             WMType::Unknown
@@ -214,7 +214,7 @@ impl WMUtil {
         self.bars.borrow_mut().append(&mut bars);
     }
 
-    pub fn display_bars(&self, names: Vec<String>, show: bool) {
+    pub fn display_bars(&self, names: &[String], show: bool) {
         for bar in self.bars.borrow().iter() {
             if names.contains(&bar.config.name) {
                 if show {
@@ -227,11 +227,11 @@ impl WMUtil {
     }
 
     pub fn display_components(
-        &self, bar_names: Vec<String>, selectors: Selectors, show: bool
+        &self, bar_names: &[String], selectors: &Selectors, show: bool
     ) {
         for bar in self.bars.borrow().iter() {
-            if bar_names.len() == 0 || bar_names.contains(&bar.config.name) {
-                bar.display_components(&selectors, show);
+            if bar_names.is_empty() || bar_names.contains(&bar.config.name) {
+                bar.display_components(selectors, show);
             }
         }
     }
@@ -248,8 +248,8 @@ impl WMUtil {
 
     pub fn get_component_config(&self, name: &str) -> Option<ConfigGroup> {
         self.data.borrow().config.components.iter().find(|x| {
-            &x.name == name
-        }) .map(|x| x.clone())
+            x.name == name
+        }).cloned()
     }
 
     pub fn get_path(&self, filename: &str) -> String {
@@ -294,7 +294,7 @@ impl WMUtil {
         }
     }
 
-    pub fn focus_workspace(&self, workspace_name: &String) {
+    pub fn focus_workspace(&self, workspace_name: &str) {
         match self.data.borrow().wm_type {
             WMType::I3 => {
                 let command = format!("workspace {}", workspace_name);
@@ -321,12 +321,8 @@ impl WMUtil {
     }
 
     pub fn set_padding(&self, is_top: bool, padding: i32) {
-        match self.data.borrow().wm_type {
-            WMType::Bsp => {
-                wm::bsp::set_padding(is_top, padding);
-            }
-            // don't need to do this in i3
-            _ => {}
+        if WMType::Bsp == self.data.borrow().wm_type {
+            wm::bsp::set_padding(is_top, padding);
         }
     }
 }
