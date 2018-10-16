@@ -214,7 +214,7 @@ use `ls /sys/class/power_supply/` to see devices
 [component.disk]
 type = "disk"
 mounts = ["/"] # omit to show all
-format = "{free}" # symbols are; free, total, type, name, path
+format = "{free}" # symbols are; free, used, total, fs, mount
 ```
 
 #### clock

@@ -136,11 +136,8 @@ impl Tray {
 
                 let (s_events, r_events) = channel::unbounded();
                 thread::spawn(clone!(conn move || {
-                    loop {
-                        match conn.wait_for_event() {
-                            Some(event) => { s_events.send(event); },
-                            None => { break; }
-                        }
+                    while let Some(event) = conn.wait_for_event() {
+                        s_events.send(event)
                     }
                 }));
 
