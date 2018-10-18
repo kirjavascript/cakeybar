@@ -150,7 +150,7 @@ impl Bar {
 
         bar.load_components();
 
-        if is_new {
+        if is_new && bar.config.get_bool_or("disable-shadow", true) {
             wm::gtk::disable_shadow(&bar.window);
         }
 

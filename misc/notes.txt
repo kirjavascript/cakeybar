@@ -100,12 +100,10 @@ bindsym $mod+m exec -- --message / sxhkdrc
 ipc help
 AUR / shell command (via github release)
 undocu'd;
-    bar/float
     dropdown/label
     workspaces/spacing
     BSPWM_SOCKET
     CAKEYBAR_SOCKET
-    enable-ipc global bool
     .focused class for Bar
 
 type thing

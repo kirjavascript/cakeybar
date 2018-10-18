@@ -48,6 +48,9 @@ see the [examples](examples) for more
 ```toml
 # path to theme. paths can be relative or absolute
 theme = "theme.css"
+
+# dictate IPC usage
+enable-ipc = true
 ```
 
 ### bar config
@@ -67,6 +70,12 @@ layout = [ "component", "names", "go", "here" ]
 
 # if enabled, will bind workspace next/prev actions to scroll events
 workspace-scroll = false
+
+# disable shadows in compton
+disable-shadow = true
+
+# floating bars will not reserve space on the desktop
+float = false
 ```
 
 you can define as many bars as you like as long as they have unique names. the name is also used as the CSS selector for that bar: `#bar_name`
