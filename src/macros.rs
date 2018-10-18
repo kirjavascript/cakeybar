@@ -1,5 +1,3 @@
-use std::env;
-
 // clone
 
 #[macro_export]
@@ -20,15 +18,11 @@ macro_rules! clone {
 
 // messages
 
-lazy_static! {
-    pub static ref NO_COLOR: bool = env::var("NO_COLOR").is_ok();
-}
-
 macro_rules! message {
     ($c:ident, $m:expr, $p:expr) => {{
         let padding = String::from_utf8(vec![b' '; 12 - $m.len()]).unwrap();
         let file_line = format!("{}:{}", file!(), line!());
-        if *$crate::macros::NO_COLOR {
+        if *$crate::config::NO_COLOR {
             eprintln!("{}{} {} {}", padding, $m, $p, file_line);
         } else {
             use $crate::ansi_term::Colour::{$c, Fixed};

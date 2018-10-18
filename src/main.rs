@@ -40,6 +40,11 @@ fn main() {
 
     let matches = App::new(NAME)
         .version(VERSION)
+        .setting(if *config::NO_COLOR {
+            clap::AppSettings::ColorNever
+        } else {
+            clap::AppSettings::ColorAuto
+        })
         .arg(Arg::with_name("config")
             .short("c")
             .long("config")

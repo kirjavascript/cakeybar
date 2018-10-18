@@ -5,6 +5,11 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
+use std::env;
+
+lazy_static! {
+    pub static ref NO_COLOR: bool = env::var("NO_COLOR").is_ok();
+}
 
 #[derive(Debug)]
 pub struct Config {
