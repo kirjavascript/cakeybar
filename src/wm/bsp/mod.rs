@@ -5,14 +5,11 @@ pub use self::listen::listen;
 use wm;
 use wm::workspace::Workspace;
 
-use std::env;
 use std::io::{Error, Read, Write};
 use std::os::unix::net::UnixStream;
 
 pub fn connect() -> Result<UnixStream, Error> {
-    let stream_file = env::var("BSPWM_SOCKET").unwrap_or("/tmp/bspwm_0_0-socket".to_string());
-
-    UnixStream::connect(stream_file)
+    UnixStream::connect(&*::config::BSPWM_SOCKET)
 }
 
 //https://github.com/baskerville/bspwm/blob/336095739e2de94109e55e544c806770316c822c/doc/bspwm.1.asciidoc

@@ -11,7 +11,7 @@ use std::os::unix::net::{UnixListener, UnixStream};
 use std::thread;
 
 pub fn listen(wm_util: &WMUtil) {
-    let socket_path = ipc::get_socket_path();
+    let socket_path = ::config::CAKEYBAR_SOCKET.to_owned();
     // remove from last time
     remove_file(&socket_path).ok();
 

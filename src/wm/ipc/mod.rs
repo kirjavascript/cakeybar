@@ -5,14 +5,11 @@ pub mod parser;
 pub mod exec;
 pub use self::listen::listen;
 
-use std::env;
 use std::io::{Error, Read, Write};
 use std::os::unix::net::UnixStream;
 
-const DEFAULT_SOCKET: &str = "/tmp/cakeybar";
-
 pub fn send(input: &str) -> Result<String, Error> {
-    let mut conn = UnixStream::connect(get_socket_path())?;
+    let mut conn = UnixStream::connect(::config::CAKEYBAR_SOCKET.to_owned())?;
     conn.write(input.as_bytes())?;
     let mut data = String::new();
     conn.read_to_string(&mut data)?;
@@ -32,13 +29,5 @@ pub fn send_message(input: &str) {
             }
         }
         Err(err) => error!("{}", err),
-    }
-}
-
-pub fn get_socket_path() -> String {
-    if let Ok(env) = env::var("CAKEYBAR_SOCKET") {
-        format!("/tmp/{}", env)
-    } else {
-        DEFAULT_SOCKET.to_string()
     }
 }

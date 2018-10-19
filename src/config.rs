@@ -9,6 +9,10 @@ use std::env;
 
 lazy_static! {
     pub static ref NO_COLOR: bool = env::var("NO_COLOR").is_ok();
+    pub static ref BSPWM_SOCKET: String = env::var("BSPWM_SOCKET")
+        .unwrap_or_else(|_| "/tmp/bspwm_0_0-socket".to_string());
+    pub static ref CAKEYBAR_SOCKET: String = env::var("CAKEYBAR_SOCKET")
+        .unwrap_or_else(|_| "/tmp/cakeybar".to_string());
 }
 
 #[derive(Debug)]
