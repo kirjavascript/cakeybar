@@ -73,14 +73,14 @@ impl Bandwidth {
                                     "name" => name.to_string(),
                                     "down/s" => {
                                         format!("{}/s", format_bytes(if rx > 0 {
-                                            rx_now - rx
+                                            rx_now.max(rx) - rx
                                         } else {
                                             0
                                         } / interval))
                                     },
                                     "up/s" => {
                                         format!("{}/s", format_bytes(if tx > 0 {
-                                            tx_now - tx
+                                            tx_now.max(tx) - tx
                                         } else {
                                             0
                                         } / interval))

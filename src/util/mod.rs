@@ -39,7 +39,7 @@ pub fn read_file(path: &str) -> Result<String, Error> {
 
 pub fn format_bytes(bytes: u64) -> String {
     if bytes == 0 {
-        return "0B".to_string();
+        return "0B".to_string()
     }
     const LEN: usize = 5;
     let bytes = bytes as f64;
