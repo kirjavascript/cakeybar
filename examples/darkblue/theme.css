@@ -15,7 +15,6 @@ entry {
     min-width: 300px;
 }
 
-
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;

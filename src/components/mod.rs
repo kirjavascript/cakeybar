@@ -3,6 +3,7 @@ use config::ConfigGroup;
 use gtk::{Align, ContainerExt, OverlayExt, StyleContextExt, WidgetExt};
 use {glib, gtk};
 
+mod backlight;
 mod bandwidth;
 mod battery;
 mod clock;
@@ -41,6 +42,7 @@ pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) 
     }
     // decide which component to load
     (match config.get_str_or("type", "void") {
+        "backlight" => backlight::Backlight::init,
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,

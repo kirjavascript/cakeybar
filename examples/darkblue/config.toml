@@ -1,9 +1,13 @@
+[component.backlight]
+type = "backlight"
+
 # bars
 
 [bar.left]
 monitor = 0
 position = "top"
 layout = [
+    "backlight",
     "menu",
     "workspaces",
     "mode",
@@ -34,8 +38,6 @@ monitor = 1
 position = "bottom"
 workspace-scroll = true
 
-[component.completor]
-type = "completor"
 
 # tray
 
