@@ -2,7 +2,6 @@ extern crate ansi_term;
 extern crate cairo;
 extern crate chrono;
 extern crate clap;
-extern crate dft;
 extern crate gdk;
 extern crate gdk_sys;
 extern crate gio;
