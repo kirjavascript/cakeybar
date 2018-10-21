@@ -12,6 +12,7 @@ use gtk::Label;
 
 pub struct Backlight {
     config: ConfigGroup,
+    label: Label,
 }
 
 impl Component for Backlight {
@@ -19,15 +20,22 @@ impl Component for Backlight {
         &self.config
     }
     fn show(&self) {
-        // self.image.show();
+        self.label.show();
     }
     fn hide(&self) {
-        // self.image.hide();
+        self.label.hide();
     }
     fn destroy(&self) {
-        // self.image.destroy();
+        self.label.destroy();
     }
 }
+
+// fn get_value(name: &str) -> Result<f32, String> {
+//     read_file(&format!("/sys/class/backlight/intel_backlight/{}", name))
+//         .map_err(|e| e.to_string())
+//         .parse::<f32>()
+//         .map_err(|e| e.to_string())
+// }
 
 impl Backlight {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
@@ -36,14 +44,7 @@ impl Backlight {
         super::init_widget(&label, &config, bar, container);
         label.show();
 
-        // get max brightness initially
-        // inotify brightness
-
-        // let configfile = config.get_filename();
-        // let theme = config.get_theme();
-
         let (s, r) = channel::unbounded();
-        // let (s_dead, r_dead) = channel::unbounded();
 
         let brightness: &str = "/sys/class/backlight/intel_backlight/brightness";
 
@@ -69,13 +70,14 @@ impl Backlight {
 
         let timer = Timer::add_ms(50, clone!(label move || {
             if let Some(pct) = r.try_recv() {
-                label.set_markup(&format!("{}%", pct as u32));
+                label.set_markup(&format!("{:?}%", pct as u32));
             }
             gtk::Continue(true)
         }));
 
         bar.add_component(Box::new(Backlight {
             config,
+            label,
         }));
     }
 }
