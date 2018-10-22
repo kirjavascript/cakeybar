@@ -13,6 +13,7 @@ use gtk::Label;
 pub struct Backlight {
     config: ConfigGroup,
     label: Label,
+    timer: Timer,
 }
 
 impl Component for Backlight {
@@ -27,6 +28,7 @@ impl Component for Backlight {
     }
     fn destroy(&self) {
         self.label.destroy();
+        self.timer.remove();
     }
 }
 
@@ -43,7 +45,6 @@ impl Backlight {
         super::init_widget(&label, &config, bar, container);
         label.show();
 
-        // let initial = read_file(brightness).unwrap().parse::<f32>().unwrap();
 
         match get_value("brightness") {
             Ok(initial) => {
@@ -57,34 +58,44 @@ impl Backlight {
                 thread::spawn(move || {
                     let mut inotify = Inotify::init().unwrap();
 
-        let brightness: &str = "/sys/class/backlight/intel_backlight/brightness";
-                    let wd_res = inotify.add_watch(brightness, WatchMask::MODIFY);
-                    println!("{:#?}", wd_res);
+                    let wd_res = inotify.add_watch(
+                        "/sys/class/backlight/intel_backlight/brightness",
+                        WatchMask::MODIFY,
+                    );
+                    println!("{:#?}", wd_res); // TODO
 
 
 
                     let mut buffer = [0; 1024];
                     loop {
                         let events = inotify.read_events(&mut buffer)
-                            .expect("error reading events");
-                        for event in events {
-                            let now = read_file(brightness).unwrap().parse::<f32>().unwrap();
+                            .expect("error reading events"); // TODO
+                        for _ in events {
+                            let now = get_value("brightness").unwrap();
                             s.send((now/max)*100.);
                         }
+                        // if message, else
+                        thread::sleep(time::Duration::from_millis(50));
                     }
                 });
 
+                let symbols = SymbolFmt::new(config.get_str_or("format", "{pct}"));
+
                 let timer = Timer::add_ms(50, clone!(label move || {
                     if let Some(pct) = r.try_recv() {
-                        label.set_markup(&format!("{:?}%", pct as u32));
+                        label.set_markup(&symbols.format(|sym| match sym {
+                            "pct" => format!("{:?}%", pct as u32),
+                            _ => sym.to_string(),
+                        }));
                     }
                     gtk::Continue(true)
                 }));
 
-                // bar.add_component(Box::new(Backlight {
-                //     config,
-                //     label,
-                // }));
+                bar.add_component(Box::new(Backlight {
+                    config,
+                    label,
+                    timer,
+                }));
 
             },
             Err(err) => {
