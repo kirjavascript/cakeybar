@@ -35,7 +35,7 @@ pub trait Component {
     fn destroy(&self);
 }
 
-/// each component MUST call bar.add_component
+/// each component should call bar.add_component
 pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
     fn void(config: ConfigGroup, _: &mut Bar, _: &gtk::Box) {
         warn!("a valid type is required for #{}", config.name)

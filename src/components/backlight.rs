@@ -30,54 +30,66 @@ impl Component for Backlight {
     }
 }
 
-// fn get_value(name: &str) -> Result<f32, String> {
-//     read_file(&format!("/sys/class/backlight/intel_backlight/{}", name))
-//         .map_err(|e| e.to_string())
-//         .parse::<f32>()
-//         .map_err(|e| e.to_string())
-// }
+fn get_value(name: &str) -> Result<f32, String> {
+    read_file(&format!("/sys/class/backlight/intel_backlight/{}", name))
+        .map_err(|e| e.to_string())?
+        .parse::<f32>()
+        .map_err(|e| e.to_string())
+}
 
 impl Backlight {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
-
         let label = Label::new(None);
         super::init_widget(&label, &config, bar, container);
         label.show();
 
-        let (s, r) = channel::unbounded();
+        // let initial = read_file(brightness).unwrap().parse::<f32>().unwrap();
+
+        match get_value("brightness") {
+            Ok(initial) => {
+                let (s, r) = channel::unbounded();
+                let max = get_value("max_brightness").unwrap_or(initial);
+
+                // messages - rip/err/symbols
+
+                s.send((initial/max)*100.);
+
+                thread::spawn(move || {
+                    let mut inotify = Inotify::init().unwrap();
 
         let brightness: &str = "/sys/class/backlight/intel_backlight/brightness";
-
-        thread::spawn(move || {
-            let mut inotify = Inotify::init().unwrap();
-
-            let wd_res = inotify.add_watch(brightness, WatchMask::MODIFY);
-            println!("{:#?}", wd_res);
+                    let wd_res = inotify.add_watch(brightness, WatchMask::MODIFY);
+                    println!("{:#?}", wd_res);
 
 
-            let max = read_file("/sys/class/backlight/intel_backlight/max_brightness").unwrap().parse::<f32>().unwrap();
 
-            let mut buffer = [0; 1024];
-            loop {
-                let events = inotify.read_events(&mut buffer)
-                    .expect("error reading events");
-                for event in events {
-                    let now = read_file(brightness).unwrap().parse::<f32>().unwrap();
-                    s.send((now/max)*100.);
-                }
-            }
-        });
+                    let mut buffer = [0; 1024];
+                    loop {
+                        let events = inotify.read_events(&mut buffer)
+                            .expect("error reading events");
+                        for event in events {
+                            let now = read_file(brightness).unwrap().parse::<f32>().unwrap();
+                            s.send((now/max)*100.);
+                        }
+                    }
+                });
 
-        let timer = Timer::add_ms(50, clone!(label move || {
-            if let Some(pct) = r.try_recv() {
-                label.set_markup(&format!("{:?}%", pct as u32));
-            }
-            gtk::Continue(true)
-        }));
+                let timer = Timer::add_ms(50, clone!(label move || {
+                    if let Some(pct) = r.try_recv() {
+                        label.set_markup(&format!("{:?}%", pct as u32));
+                    }
+                    gtk::Continue(true)
+                }));
 
-        bar.add_component(Box::new(Backlight {
-            config,
-            label,
-        }));
+                // bar.add_component(Box::new(Backlight {
+                //     config,
+                //     label,
+                // }));
+
+            },
+            Err(err) => {
+                error!("reading brightness {}", err);
+            },
+        }
     }
 }
