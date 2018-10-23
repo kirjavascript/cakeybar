@@ -5,7 +5,6 @@ use bar::Bar;
 use components::Component;
 use config::ConfigGroup;
 use gtk;
-use gdk;
 use gtk::prelude::*;
 use util::{read_file, SymbolFmt, Timer};
 use gtk::Label;
@@ -14,6 +13,7 @@ pub struct Backlight {
     config: ConfigGroup,
     label: Label,
     timer: Timer,
+    watcher: channel::Sender<()>,
 }
 
 impl Component for Backlight {
@@ -29,6 +29,7 @@ impl Component for Backlight {
     fn destroy(&self) {
         self.label.destroy();
         self.timer.remove();
+        self.watcher.send(());
     }
 }
 
@@ -45,41 +46,48 @@ impl Backlight {
         super::init_widget(&label, &config, bar, container);
         label.show();
 
-
         match get_value("brightness") {
             Ok(initial) => {
                 let (s, r) = channel::unbounded();
-                let max = get_value("max_brightness").unwrap_or(initial);
+                let (s_dead, r_dead) = channel::unbounded();
 
-                // messages - rip/err/symbols
+                let max = get_value("max_brightness").unwrap_or(initial);
 
                 s.send((initial/max)*100.);
 
                 thread::spawn(move || {
                     let mut inotify = Inotify::init().unwrap();
 
-                    let wd_res = inotify.add_watch(
+                    let wd_res =inotify.add_watch(
                         "/sys/class/backlight/intel_backlight/brightness",
                         WatchMask::MODIFY,
                     );
-                    println!("{:#?}", wd_res); // TODO
 
-
-
-                    let mut buffer = [0; 1024];
-                    loop {
-                        let events = inotify.read_events(&mut buffer)
-                            .expect("error reading events"); // TODO
-                        for _ in events {
-                            let now = get_value("brightness").unwrap();
-                            s.send((now/max)*100.);
-                        }
-                        // if message, else
-                        thread::sleep(time::Duration::from_millis(50));
+                    match wd_res {
+                        Ok(wd) => {
+                            let mut buffer = [0; 1024];
+                            loop {
+                                let events = inotify.read_events(&mut buffer)
+                                    .expect("error reading events");
+                                for _ in events {
+                                    let now = get_value("brightness").unwrap();
+                                    s.send((now/max)*100.);
+                                }
+                                if r_dead.try_recv().is_some() {
+                                    inotify.rm_watch(wd).ok();
+                                    break;
+                                } else {
+                                    thread::sleep(time::Duration::from_millis(50));
+                                }
+                            }
+                        },
+                        Err(err) => {
+                            error!("{}", err.to_string());
+                        },
                     }
                 });
 
-                let symbols = SymbolFmt::new(config.get_str_or("format", "{pct}"));
+                let symbols = SymbolFmt::new(config.get_str_or("format", "{percent}"));
 
                 let timer = Timer::add_ms(50, clone!(label move || {
                     if let Some(pct) = r.try_recv() {
@@ -95,6 +103,7 @@ impl Backlight {
                     config,
                     label,
                     timer,
+                    watcher: s_dead,
                 }));
 
             },

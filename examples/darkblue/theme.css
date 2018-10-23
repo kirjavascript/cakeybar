@@ -19,6 +19,9 @@ entry {
     min-height: 27px;
     border-bottom: 2px solid @blue;
     background-color: black;
+    background-image: url("/home/thom/156568.svg");
+    background-size: 600px;
+    background-position: 100% 38%;
 }
 
 #left-scroll, #right-scroll {

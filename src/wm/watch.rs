@@ -55,7 +55,7 @@ impl Watcher {
                         error!("this should never happen");
                     }
                 }
-                if let Some(_) = r_dead.try_recv() {
+                if r_dead.try_recv().is_some() {
                     // remove watchers
                     if let Some((_, wd)) = file_wd {
                         inotify.rm_watch(wd).ok();

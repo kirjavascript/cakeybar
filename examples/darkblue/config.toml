@@ -1,6 +1,3 @@
-[component.backlight]
-type = "backlight"
-
 # bars
 
 [bar.left]
@@ -10,7 +7,6 @@ layout = [
     "menu",
     "workspaces",
     "mode",
-    "backlight",
     "title",
     "box1",
     "tray",

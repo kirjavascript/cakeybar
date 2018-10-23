@@ -217,6 +217,14 @@ classes for battery charge are: `full | high | medium | low`
 
 use `ls /sys/class/power_supply/` to see devices
 
+#### backlight
+
+```toml
+[component.backlight]
+type = "backlight"
+format = "{percent}"
+```
+
 #### disk
 
 ```toml
