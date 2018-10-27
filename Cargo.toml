@@ -37,4 +37,3 @@ probes = "0.1.3"
 sysinfo = "0.5.6"
 # pulse-simple = { git = "https://github.com/astro/rust-pulse-simple" }
 # dft = "0.5.5"
-# backlight = "0.1.1"
