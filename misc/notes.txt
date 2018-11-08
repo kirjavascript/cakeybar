@@ -16,6 +16,8 @@ https://github.com/Rahix/pa-visualizer
 https://github.com/onodera-punpun/melonbar - openbox
 GTK_DEBUG=interactive
 
+https://unix.stackexchange.com/questions/14129/gtk-enable-set-dark-theme-on-a-per-application-basis
+
 features for 1.0.0: xkb, completor, start menu, tray bugs
 current: dmenu
 

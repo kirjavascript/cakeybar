@@ -19,7 +19,7 @@ use xcb;
 
 mod manager;
 
-// mutable statics should be safe within the same thread
+// only used in the main thread
 static mut TRAY_LOADED: bool = false;
 
 #[derive(PartialEq)]
