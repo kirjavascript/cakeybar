@@ -30,7 +30,7 @@ impl Bar {
         existing_window: Option<Window>,
     ) -> Bar {
         // TODO: check if the type differs to existing window
-        let is_floating = config.get_bool_or("float", false);`
+        let is_floating = config.get_bool_or("float", false);
         let window_type = if is_floating {
             WindowType::Popup
         } else {
