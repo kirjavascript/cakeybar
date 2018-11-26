@@ -16,10 +16,10 @@ https://github.com/Rahix/pa-visualizer
 https://github.com/onodera-punpun/melonbar - openbox
 GTK_DEBUG=interactive
 https://unix.stackexchange.com/questions/14129/gtk-enable-set-dark-theme-on-a-per-application-basis
-GTK_THEME=Adwaita:light
+GTK_THEME=Adwaita:light -> std::env::Set_Var
 
-features for 1.0.0: xkb, completor, start menu, tray bugs
-current: dmenu
+features for 1.0.0: tray bugs
+update rust, recompile cakeybar
 
 completor
 ===
@@ -42,6 +42,11 @@ watch / unwatch
 
 wm refactoring
 ===
+give wmutil a static lifetime
+    I've been considering replacing something that uses an Rc<RefCell<_>> with a global static mut
+    would mean less reference counting and easier to use code
+    is there anything you can do to ensure you can only use a static in the main thread
+
 default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
