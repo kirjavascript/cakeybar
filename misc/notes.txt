@@ -18,6 +18,7 @@ GTK_DEBUG=interactive
 https://unix.stackexchange.com/questions/14129/gtk-enable-set-dark-theme-on-a-per-application-basis
 GTK_THEME=Adwaita:light -> std::env::Set_Var
 
+0.4.0: static wm_util
 features for 1.0.0: tray bugs
 update rust, recompile cakeybar
 
