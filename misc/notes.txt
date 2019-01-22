@@ -18,8 +18,8 @@ GTK_DEBUG=interactive
 https://unix.stackexchange.com/questions/14129/gtk-enable-set-dark-theme-on-a-per-application-basis
 GTK_THEME=Adwaita:light -> std::env::Set_Var
 
-0.4.0: static wm_util
-features for 1.0.0: tray bugs
+0.4.0: static wm_util, 2018 edition
+features for 1.0.0: tray bugs, window title onload bug
 update rust, recompile cakeybar
 
 completor
@@ -122,11 +122,12 @@ https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable
 osx top bar (hover) / pice of cake / powerline (half transparency w/ small window title) / hexagons (visualizer + overhang via bar/float) / busy (all stats)
 crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
 live reload gifcurry
+https://github.com/sharkdp/hexyl
 https://i.imgur.com/oe8pbEz.png
 https://i.imgur.com/haiUWbT.png
 https://i.imgur.com/TF69nPa.png
 https://i.imgur.com/TePyRmw.png
-blue rope / plain background
+SVG blobs
 slanted workspace names with SVG
 mspaint, duplex
 gifcurry
