@@ -20,7 +20,7 @@ GTK_THEME=Adwaita:light -> std::env::Set_Var
 
 0.4.0: static wm_util, 2018 edition
 features for 1.0.0: tray bugs, window title onload bug
-update rust, recompile cakeybar
+remove show/hide, reduce component trait to just destroy
 
 completor
 ===
