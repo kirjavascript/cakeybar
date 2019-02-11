@@ -17,9 +17,13 @@ https://github.com/onodera-punpun/melonbar - openbox
 GTK_DEBUG=interactive
 https://unix.stackexchange.com/questions/14129/gtk-enable-set-dark-theme-on-a-per-application-basis
 GTK_THEME=Adwaita:light -> std::env::Set_Var
+https://0x46.net/thoughts/2019/02/01/dotfile-madness/
+testing:
+Xephyr -br -ac -noreset -screen 1200x800 :1
+DISPLAY=:1 i3
 
 0.4.0: static wm_util, 2018 edition
-features for 1.0.0: tray bugs, window title onload bug
+features for 1.0.0: tray bugs, window title onload bug, multiple install options
 remove show/hide, reduce component trait to just destroy
 
 completor
@@ -108,6 +112,7 @@ bindsym $mod+m exec -- --message / sxhkdrc
 ipc help
 AUR / shell command (via github release)
 file watcher
+add polybar example
 undocu'd;
     dropdown/label
     workspaces/spacing
@@ -123,13 +128,8 @@ osx top bar (hover) / pice of cake / powerline (half transparency w/ small windo
 crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
 live reload gifcurry
 https://github.com/sharkdp/hexyl
-https://i.imgur.com/oe8pbEz.png
-https://i.imgur.com/haiUWbT.png
-https://i.imgur.com/TF69nPa.png
-https://i.imgur.com/TePyRmw.png
 SVG blobs
 slanted workspace names with SVG
-mspaint, duplex
 gifcurry
 
 https://alpha.wallhaven.cc/
