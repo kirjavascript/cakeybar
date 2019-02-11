@@ -86,6 +86,7 @@ script - classes for return code
 prompt -> ipc command
 remote ip
 active window xprop
+windows
 onclick = ""
 mpd ipc
 dmenu gtk::WindowType::Popup
