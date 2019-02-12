@@ -48,7 +48,11 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                 match cookie.get_reply() {
                     Ok(reply) => {
                         let value: &[u32] = reply.value();
-                        let window = value[0];
+                        let window = if value.is_empty() {
+                            xcb::NONE
+                        } else {
+                            value[0]
+                        };
 
                         if is_active_event && current_window != window {
                             // unsubscribe old window

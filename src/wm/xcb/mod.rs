@@ -20,6 +20,9 @@ pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xc
     match cookie.get_reply() {
         Ok(reply) => {
             let value: &[u32] = reply.value();
+            if value.is_empty() {
+                return false;
+            }
             // get wm state
             let cookie = xcb::get_property(
                 &conn,
