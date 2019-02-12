@@ -8,7 +8,7 @@ a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
 * expressive theming with CSS
-* windowmanager neutral design
+* windowmanager neutral config
 * system tray integration
 * more rice than feudal japan
 

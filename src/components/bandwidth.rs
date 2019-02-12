@@ -35,6 +35,7 @@ impl Component for Bandwidth {
 
 impl Bandwidth {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+
         let label_group = LabelGroup::new();
         super::init_widget(&label_group.wrapper, &config, bar, container);
 

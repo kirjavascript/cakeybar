@@ -23,7 +23,7 @@ Xephyr -br -ac -noreset -screen 1200x800 :1
 DISPLAY=:1 i3
 
 0.4.0: static wm_util, 2018 edition, "is already running" message
-features for 1.0.0: tray bugs, window title onload bug, multiple install options
+features for 1.0.0: tray bugs, multiple install options
 remove show/hide, reduce component trait to just destroy
 
 completor
