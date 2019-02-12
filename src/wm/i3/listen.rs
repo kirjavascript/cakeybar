@@ -1,9 +1,9 @@
 use gtk;
 use i3ipc::event::Event as I3Event;
 use i3ipc::{I3EventListener, Subscription};
-use wm::events::{Event, EventValue};
-use wm::i3;
-use wm::workspace::Workspace;
+use crate::wm::events::{Event, EventValue};
+use crate::wm::i3;
+use crate::wm::workspace::Workspace;
 
 use std::sync::mpsc;
 use std::thread;
@@ -13,7 +13,7 @@ enum I3Msg {
     Workspace(Vec<Workspace>),
 }
 
-pub fn listen(wm_util: &::wm::WMUtil) {
+pub fn listen(wm_util: &crate::wm::WMUtil) {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {

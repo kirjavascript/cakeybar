@@ -1,6 +1,6 @@
-use bar::Bar;
-use components::Component;
-use config::{ConfigGroup, Property};
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::{ConfigGroup, Property};
 use gtk;
 use gtk::prelude::*;
 use gtk::{EventBox, Label, Menu as GtkMenu, MenuItem as GtkMenuItem, WidgetExt};
@@ -92,7 +92,7 @@ impl Dropdown {
                 let item = GtkMenuItem::new_with_label(label);
                 menu.append(&item);
                 item.connect_activate(clone!(command move |_| {
-                        ::util::run_command(command.to_string());
+                        crate::util::run_command(command.to_string());
                     }));
             }
             MenuItem::SubMenu(label, items) => {

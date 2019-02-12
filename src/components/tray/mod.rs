@@ -1,20 +1,20 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gdk::{WindowExt, RGBA};
 use glib::translate::ToGlib;
 use glib_sys::g_source_remove;
 use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
-use util::Timer;
+use crate::util::Timer;
 
 use crossbeam_channel as channel;
 use glib;
 use std::sync::Arc;
 use std::time::Duration;
 use std::{process, thread};
-use wm;
+use crate::wm;
 use xcb;
 
 mod manager;

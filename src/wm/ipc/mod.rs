@@ -9,7 +9,7 @@ use std::io::{Error, Read, Write};
 use std::os::unix::net::UnixStream;
 
 pub fn send(input: &str) -> Result<String, Error> {
-    let mut conn = UnixStream::connect(::config::CAKEYBAR_SOCKET.to_owned())?;
+    let mut conn = UnixStream::connect(crate::config::CAKEYBAR_SOCKET.to_owned())?;
     conn.write(input.as_bytes())?;
     let mut data = String::new();
     conn.read_to_string(&mut data)?;

@@ -1,11 +1,11 @@
-use bar::Bar;
+use crate::bar::Bar;
 use chrono::Local;
-use components::Component;
-use config::ConfigGroup;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
-use util::{SymbolFmt, Timer};
+use crate::util::{SymbolFmt, Timer};
 
 pub struct Clock {
     config: ConfigGroup,

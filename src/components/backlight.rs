@@ -1,12 +1,12 @@
 use inotify::{Inotify, WatchMask};
 use crossbeam_channel as channel;
 use std::{thread, time};
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
-use util::{read_file, SymbolFmt, Timer};
+use crate::util::{read_file, SymbolFmt, Timer};
 use gtk::Label;
 
 pub struct Backlight {

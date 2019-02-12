@@ -1,15 +1,15 @@
-use bar::Bar;
-use config::{Config, ConfigGroup, parse_config};
-use wm::events::{Event, EventEmitter, EventId, EventValue};
-use wm::ipc::commands::*;
-use wm::workspace::Workspace;
-use wm::watch::Watcher;
+use crate::bar::Bar;
+use crate::config::{Config, ConfigGroup, parse_config};
+use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
+use crate::wm::ipc::commands::*;
+use crate::wm::workspace::Workspace;
+use crate::wm::watch::Watcher;
 use clap::ArgMatches;
 
 use gtk;
 use gtk::prelude::*;
 use gtk::CssProvider;
-use wm;
+use crate::wm;
 
 use std::cell::RefCell;
 use std::fmt;

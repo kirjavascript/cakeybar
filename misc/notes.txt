@@ -22,7 +22,7 @@ testing:
 Xephyr -br -ac -noreset -screen 1200x800 :1
 DISPLAY=:1 i3
 
-0.4.0: static wm_util, 2018 edition, "is already running" message
+0.4.0: static wm_util, "is already running" message
 features for 1.0.0: tray bugs, multiple install options
 remove show/hide, reduce component trait to just destroy
 
@@ -111,6 +111,7 @@ pandoc
 GTKTheme can affect bar
 bindsym $mod+m exec -- --message / sxhkdrc
 ipc help
+cli help
 AUR / shell command (via github release)
 file watcher
 add polybar example
@@ -126,6 +127,7 @@ https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable
 
 ===
 osx top bar (hover) / pice of cake / powerline (half transparency w/ small window title) / hexagons (visualizer + overhang via bar/float) / busy (all stats)
+autohide bar example (animations?)
 crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
 live reload gifcurry
 https://github.com/sharkdp/hexyl

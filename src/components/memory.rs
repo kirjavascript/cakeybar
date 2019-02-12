@@ -1,10 +1,10 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
-use util::{format_bytes, SymbolFmt, Timer};
+use crate::util::{format_bytes, SymbolFmt, Timer};
 
 use probes::memory;
 

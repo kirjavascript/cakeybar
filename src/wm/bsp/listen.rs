@@ -5,10 +5,10 @@ use std::thread;
 
 use std::io::Read; // Error, Write,
 
-use wm::bsp;
-use wm::events::{Event, EventValue};
+use crate::wm::bsp;
+use crate::wm::events::{Event, EventValue};
 
-pub fn listen(wm_util: &::wm::WMUtil) {
+pub fn listen(wm_util: &crate::wm::WMUtil) {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || match bsp::connect() {

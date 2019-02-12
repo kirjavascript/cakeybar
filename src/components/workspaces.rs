@@ -1,17 +1,17 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use glib::markup_escape_text;
 use glib::signal::SignalHandlerId;
 use gtk;
 use gtk::prelude::*;
 use gtk::{EventBox, Label, LabelExt, Orientation, StyleContextExt, WidgetExt};
 
-use util::SymbolFmt;
-use wm;
-use wm::events::{Event, EventId, EventValue};
-use wm::workspace::Workspace;
-use wm::WMUtil;
+use crate::util::SymbolFmt;
+use crate::wm;
+use crate::wm::events::{Event, EventId, EventValue};
+use crate::wm::workspace::Workspace;
+use crate::wm::WMUtil;
 
 use std::cell::RefCell;
 use std::mem::replace;
@@ -80,7 +80,7 @@ impl Workspaces {
             clone!((wrapper, elabels, wm_util) move |workspaces_opt| {
                 if let Some(EventValue::Workspaces(workspaces)) = workspaces_opt {
 
-                    let mut workspaces = filter_by_name(&workspaces, show_all, &name_opt);
+                    let workspaces = filter_by_name(&workspaces, show_all, &name_opt);
 
                     for (i, workspace) in workspaces.iter().enumerate() {
                         let added_new = if let Some(elabel) = elabels.borrow_mut().get_mut(i) {

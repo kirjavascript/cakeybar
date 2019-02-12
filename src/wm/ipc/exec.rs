@@ -1,5 +1,5 @@
-use wm::ipc::commands::*;
-use wm::WMUtil;
+use crate::wm::ipc::commands::*;
+use crate::wm::WMUtil;
 
 pub fn run_command(wm_util: &WMUtil, cmd: Command) {
     match cmd {

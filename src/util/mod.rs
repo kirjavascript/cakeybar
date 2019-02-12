@@ -17,11 +17,11 @@ use std::path::Path;
 
 pub fn get_config_dir() -> String {
     if let Ok(xdg_path) = env::var("XDG_CONFIG_HOME") {
-        format!("{}/{}", xdg_path, ::NAME)
+        format!("{}/{}", xdg_path, crate::NAME)
     } else if let Ok(home_path) = env::var("HOME") {
-        format!("{}/.config/{}", home_path, ::NAME)
+        format!("{}/.config/{}", home_path, crate::NAME)
     } else {
-        format!("~/.config/{}", ::NAME)
+        format!("~/.config/{}", crate::NAME)
     }
 }
 

@@ -1,6 +1,6 @@
 use nom::types::CompleteStr as Input;
 use nom::*;
-use wm::ipc::commands::*;
+use crate::wm::ipc::commands::*;
 
 named!(selector<Input,Selector>,
     do_parse!(

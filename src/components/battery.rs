@@ -1,11 +1,11 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::{Label, StyleContextExt};
 use std::io::Error;
-use util::{read_file, SymbolFmt, Timer};
+use crate::util::{read_file, SymbolFmt, Timer};
 
 pub struct Battery {
     config: ConfigGroup,

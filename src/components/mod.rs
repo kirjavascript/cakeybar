@@ -1,5 +1,5 @@
-use bar::Bar;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::config::ConfigGroup;
 use gtk::{Align, ContainerExt, OverlayExt, StyleContextExt, WidgetExt};
 use {glib, gtk};
 

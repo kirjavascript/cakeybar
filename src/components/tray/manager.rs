@@ -1,6 +1,6 @@
 use super::Action;
 use crossbeam_channel::Sender;
-use wm::atom;
+use crate::wm::atom;
 use xcb;
 
 const CLIENT_MESSAGE: u8 = xcb::CLIENT_MESSAGE | 0x80; // 0x80 flag for client messages
@@ -68,7 +68,7 @@ impl<'a> Manager<'a> {
             xcb::ATOM_WM_CLASS,
             xcb::ATOM_STRING,
             8,
-            format!("{0}\0{0}", ::NAME).as_bytes(),
+            format!("{0}\0{0}", crate::NAME).as_bytes(),
         );
         self.set_property(
             self.atoms.get(atom::_NET_SYSTEM_TRAY_ORIENTATION),

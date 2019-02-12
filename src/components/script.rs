@@ -1,6 +1,6 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
@@ -9,7 +9,7 @@ use std::process::{Command, Stdio};
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
-use util::{SymbolFmt, Timer};
+use crate::util::{SymbolFmt, Timer};
 
 pub struct Script {
     config: ConfigGroup,

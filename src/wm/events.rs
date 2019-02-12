@@ -1,4 +1,4 @@
-use wm::workspace::Workspace;
+use crate::wm::workspace::Workspace;
 
 // data
 

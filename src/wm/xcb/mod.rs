@@ -2,7 +2,7 @@ mod listen;
 
 pub use self::listen::listen;
 
-use wm::atom;
+use crate::wm::atom;
 use xcb;
 
 pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xcb::Screen) -> bool {

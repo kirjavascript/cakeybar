@@ -1,9 +1,9 @@
 use inotify::{Inotify, WatchMask};
 use crossbeam_channel as channel;
 use std::{thread, time};
-use util::Timer;
-use wm::WMUtil;
-use config::Config;
+use crate::util::Timer;
+use crate::wm::WMUtil;
+use crate::config::Config;
 use gtk;
 
 enum WriteType {

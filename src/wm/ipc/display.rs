@@ -1,5 +1,5 @@
 use std::fmt;
-use wm::ipc::commands::*;
+use crate::wm::ipc::commands::*;
 
 impl fmt::Display for Selectors {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

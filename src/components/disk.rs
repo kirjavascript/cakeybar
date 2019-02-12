@@ -1,9 +1,9 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
-use util::{format_bytes, LabelGroup, SymbolFmt, Timer};
+use crate::util::{format_bytes, LabelGroup, SymbolFmt, Timer};
 
 use probes::disk_usage;
 

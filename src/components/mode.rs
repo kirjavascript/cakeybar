@@ -1,13 +1,13 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use glib::markup_escape_text;
 use gtk;
 use gtk::prelude::*;
 use gtk::{Label, Orientation};
-use util::SymbolFmt;
-use wm::events::{Event, EventId, EventValue};
-use wm::WMUtil;
+use crate::util::SymbolFmt;
+use crate::wm::events::{Event, EventId, EventValue};
+use crate::wm::WMUtil;
 
 pub struct Mode {
     config: ConfigGroup,

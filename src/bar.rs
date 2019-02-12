@@ -3,14 +3,14 @@ use gtk::prelude::*;
 use gtk::{Orientation, Overlay, Rectangle, Window, WindowType};
 use glib::SignalHandlerId;
 use glib::translate::{ToGlib, from_glib};
-use {cairo, gdk, gtk, wm, NAME};
+use crate::{cairo, gdk, gtk, wm, NAME};
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use components::{load_component, Component};
-use config::ConfigGroup;
-use wm::ipc::commands::*;
+use crate::components::{load_component, Component};
+use crate::config::ConfigGroup;
+use crate::wm::ipc::commands::*;
 
 pub struct Bar {
     pub config: ConfigGroup,
