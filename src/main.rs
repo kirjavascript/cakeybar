@@ -100,6 +100,7 @@ fn main() {
         },
     ).expect("initialization failed...");
 
+
     application.connect_startup(move |app| {
         // get config path
         let config_path = match matches.value_of("config") {
@@ -116,7 +117,12 @@ fn main() {
             error!("{}", msg);
         }
     });
-    application.connect_activate(|_| {});
+    application.connect_activate(|_| { });
 
     application.run(&Vec::new()); // dont pass any arguments to GTK
+
+    if application.get_is_remote() {
+        warn!("{} is already running (use -D to force)", NAME);
+    }
+
 }
