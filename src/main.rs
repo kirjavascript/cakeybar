@@ -121,7 +121,7 @@ fn main() {
 
     application.run(&Vec::new()); // dont pass any arguments to GTK
 
-    if application.get_is_remote() {
+    if application.get_is_remote() && !matches.is_present("multi") {
         warn!("{} is already running (use -D to force)", NAME);
     }
 
