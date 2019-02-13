@@ -90,6 +90,7 @@ fn main() {
         error!("{} (requires 3.22+)", err);
     }
 
+
     let application = gtk::Application::new(
         format!("com.kirjava.{}", NAME).as_str(),
         if matches.is_present("multi") {

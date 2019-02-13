@@ -23,8 +23,8 @@ Xephyr -br -ac -noreset -screen 1200x800 :1
 DISPLAY=:1 i3
 
 0.4.0: static wm_util, "is already running" message
-features for 1.0.0: tray bugs, multiple install options
 remove show/hide, reduce component trait to just destroy
+features for 1.0.0: tray bugs, multiple install options
 
 completor
 ===
