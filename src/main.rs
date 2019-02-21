@@ -90,10 +90,11 @@ fn main() {
         error!("{} (requires 3.22+)", err);
     }
 
+    let is_multi = matches.is_present("multi");
 
     let application = gtk::Application::new(
         format!("com.kirjava.{}", NAME).as_str(),
-        if matches.is_present("multi") {
+        if is_multi {
             gio::ApplicationFlags::NON_UNIQUE
         } else {
             gio::ApplicationFlags::empty()
@@ -121,7 +122,7 @@ fn main() {
 
     application.run(&Vec::new()); // dont pass any arguments to GTK
 
-    if application.get_is_remote() && !matches.is_present("multi") {
+    if application.get_is_remote() && !is_multi {
         warn!("{} is already running (use -D to force)", NAME);
     }
 

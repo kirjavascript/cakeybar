@@ -4,7 +4,6 @@ use crate::config::ConfigGroup;
 use gdk::{WindowExt, RGBA};
 use glib::translate::ToGlib;
 use glib_sys::g_source_remove;
-use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
 use crate::util::Timer;
@@ -28,6 +27,7 @@ pub enum Action {
     Move(u32, u32),
     BgColor(u32),
     IconSize(u16),
+    IconSpacing(u16),
     Show,
     Hide,
     Quit,
@@ -99,10 +99,14 @@ impl Tray {
             s_main.send(Action::BgColor(bg_color));
         }
 
-        // set icon size
+        // set icon size/spacing
         let icon_size = config.get_int_or("icon-size", 20);
         if icon_size != 20 {
             s_main.send(Action::IconSize(icon_size as u16));
+        }
+        let icon_spacing = config.get_int_or("icon-spacing", 0);
+        if icon_spacing != 0 {
+            s_main.send(Action::IconSpacing(icon_spacing as u16));
         }
 
         // send resize event

@@ -2,7 +2,7 @@
 @define-color darkgrey #7f787f;
 
 label {
-    font-family: Tahoma;
+    font-family: "Microsoft Sans Serif", Tahoma;
     font-size: 11px;
     color: black;
     font-weight: 500;
@@ -32,7 +32,9 @@ label {
 }
 
 #tray {
-    background-color: @darkgrey;
+    background-color: @grey;
+    background-image: url("./assets/bg.png");
+    margin: 0 8px;
 }
 
 #workspaces label {

@@ -39,6 +39,7 @@ workspace-scroll = true
 
 [component.tray]
 type = "tray"
+icon-spacing = 2
 
 # wm stuff
 
@@ -123,7 +124,7 @@ items = [
         { label = "nonsense", command = "termite -e \"genact\"" },
     ] },
     { label = "change background", children = [
-        { label = "forest bg", command = "feh --bg-fill \"/home/thom/backgrounds/forest.png\" --bg-fill \"/home/thom/backgrounds/mac.jpg\"" },
-        { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
+        { label = "forest bg", command = "feh --bg-fill \"~/backgrounds/forest.png\" --bg-fill \"~/backgrounds/mac.jpg\"" },
+        { label = "mountain bg", command = "feh --bg-fill ~/backgrounds/white.png" },
     ] },
 ]
