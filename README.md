@@ -262,6 +262,7 @@ format = "{stdout}" # symbols are; stdout, stderr, code
 [component.tray]
 type = "tray"
 icon-size = 20
+icon-spacing = 0
 ```
 
 the `background-color` style needs to be set explicitly for it to work

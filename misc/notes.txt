@@ -21,9 +21,11 @@ https://0x46.net/thoughts/2019/02/01/dotfile-madness/
 testing:
 Xephyr -br -ac -noreset -screen 1200x800 :1
 DISPLAY=:1 i3
+openbox: push to back, get desktops
 
-0.4.0: static wm_util, "is already running" message
 remove show/hide, reduce component trait to just destroy
+add floats for above/below/autohide
+show overlay win95 when press start
 features for 1.0.0: tray bugs, multiple install options
 
 completor
@@ -40,17 +42,10 @@ force focus
 ipc
 ====
 help
+two way
 allow ipc in menu objs
-rustyline
 Open(Selector) completor/startmenu // checkselector(config)
 watch / unwatch
-
-wm refactoring
-===
-give wmutil a static lifetime
-    I've been considering replacing something that uses an Rc<RefCell<_>> with a global static mut
-    would mean less reference counting and easier to use code
-    is there anything you can do to ensure you can only use a static in the main thread
 
 default-layout global prop
 config.has_type("workspace") to disable listeners, etc
@@ -102,6 +97,7 @@ gtk3-widget-factory
 modal
 workspace multiple rows
 about splashscreen
+wildcards in device names
 
 docs
 ====
