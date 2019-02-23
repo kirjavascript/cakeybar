@@ -8,20 +8,10 @@ use gtk::{EventBox, Label, Menu as GtkMenu, MenuItem as GtkMenuItem, WidgetExt};
 // gtk context menu
 
 pub struct Dropdown {
-    config: ConfigGroup,
     wrapper: EventBox,
 }
 
 impl Component for Dropdown {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.wrapper.show();
-    }
-    fn hide(&self) {
-        self.wrapper.hide();
-    }
     fn destroy(&self) {
         self.wrapper.destroy();
     }
@@ -81,7 +71,6 @@ impl Dropdown {
         }));
 
         bar.add_component(Box::new(Dropdown {
-            config,
             wrapper: ebox,
         }));
     }

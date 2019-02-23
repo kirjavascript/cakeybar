@@ -10,22 +10,12 @@ use crate::util::{read_file, SymbolFmt, Timer};
 use gtk::Label;
 
 pub struct Backlight {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
     watcher: channel::Sender<()>,
 }
 
 impl Component for Backlight {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.label.destroy();
         self.timer.remove();
@@ -100,7 +90,6 @@ impl Backlight {
                 }));
 
                 bar.add_component(Box::new(Backlight {
-                    config,
                     label,
                     timer,
                     watcher: s_dead,

@@ -133,11 +133,11 @@ a container to create more complex layouts and group components
 [component.stats_box]
 type = "container"
 spacing = 0
-direction = "vertical"
+direction = "horizontal"
 layout = [ "component", "names", "go", "here" ]
 ```
 
-possible directions: `column | row` or `horizontal | vertical`
+possible directions: `horizontal` or `vertical`
 
 #### window
 

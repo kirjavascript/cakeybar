@@ -25,11 +25,12 @@ openbox: push to back, get desktops
 
 remove show/hide, reduce component trait to just destroy
 add floats for above/below/autohide
-show overlay win95 when press start
+show overlay win95 when press start / runbox
 features for 1.0.0: tray bugs, multiple install options
 
 completor
 ===
+just use a gtk::Entry instead of a window
 wmutil.run_command()
 add trigger (Open)
 dmenu
@@ -41,6 +42,7 @@ force focus
 
 ipc
 ====
+classList
 help
 two way
 allow ipc in menu objs
@@ -127,6 +129,7 @@ crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
 live reload gifcurry
 https://github.com/sharkdp/hexyl
 SVG blobs
+<a>request something new</a>
 slanted workspace names with SVG
 gifcurry
 

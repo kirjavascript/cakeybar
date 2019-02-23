@@ -18,14 +18,11 @@ pub enum HelpTopic {
 pub struct Selectors(pub Vec<Selector>);
 
 impl Selectors {
-    pub fn len(&self) -> usize {
-        self.0.len()
+    pub fn contains_id(&self, name: &str) -> bool {
+        self.0.contains(&Selector::Id(name.to_owned()))
     }
-    pub fn contains_id(&self, name: String) -> bool {
-        self.0.contains(&Selector::Id(name))
-    }
-    pub fn contains_class(&self, name: String) -> bool {
-        self.0.contains(&Selector::Class(name))
+    pub fn _contains_class(&self, name: &str) -> bool {
+        self.0.contains(&Selector::Class(name.to_owned()))
     }
 }
 
@@ -36,7 +33,7 @@ pub enum Selector {
 }
 
 impl Selector {
-    pub fn get_name(&self) -> String {
+    pub fn _get_name(&self) -> String {
         match self {
             Selector::Id(name) => name.to_string(),
             Selector::Class(name) => name.to_string(),

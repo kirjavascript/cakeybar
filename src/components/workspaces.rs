@@ -18,22 +18,12 @@ use std::mem::replace;
 use std::rc::Rc;
 
 pub struct Workspaces {
-    config: ConfigGroup,
     wrapper: gtk::Box,
     event_id: EventId,
     wm_util: WMUtil,
 }
 
 impl Component for Workspaces {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.wrapper.show();
-    }
-    fn hide(&self) {
-        self.wrapper.hide();
-    }
     fn destroy(&self) {
         self.wm_util.remove_listener(Event::Workspace, self.event_id);
         self.wrapper.destroy();
@@ -118,7 +108,6 @@ impl Workspaces {
 
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Workspaces {
-            config,
             wrapper,
             wm_util,
             event_id,

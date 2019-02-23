@@ -28,30 +28,20 @@ pub enum Action {
     BgColor(u32),
     IconSize(u16),
     IconSpacing(u16),
+    #[allow(dead_code)]
     Show,
+    #[allow(dead_code)]
     Hide,
     Quit,
 }
 
 pub struct Tray {
-    config: ConfigGroup,
     base_widget: gtk::Box,
     timer: Timer,
     sender: channel::Sender<Action>,
 }
 
 impl Component for Tray {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.base_widget.show();
-        self.sender.send(Action::Show);
-    }
-    fn hide(&self) {
-        self.base_widget.hide();
-        self.sender.send(Action::Hide);
-    }
     fn destroy(&self) {
         self.base_widget.destroy();
         self.timer.remove();
@@ -210,7 +200,6 @@ impl Tray {
         }));
 
         bar.add_component(Box::new(Tray {
-            config,
             base_widget,
             timer,
             sender: s_main,

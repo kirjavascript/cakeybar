@@ -10,7 +10,6 @@ use std::rc::Rc;
 
 use crate::components::{load_component, Component};
 use crate::config::ConfigGroup;
-use crate::wm::ipc::commands::*;
 
 pub struct Bar {
     pub config: ConfigGroup,
@@ -183,29 +182,6 @@ impl Bar {
                 load_component(config, self, &container);
             } else {
                 warn!("missing component #{}", name);
-            }
-        }
-    }
-
-    pub fn display_components(&self, selectors: &Selectors, show: bool) {
-        for component in self.components.iter() {
-            let display = || {
-                if show {
-                    component.show();
-                } else {
-                    component.hide();
-                }
-            };
-            let config = component.get_config();
-            let name = config.name.to_string();
-            let class_opt = config.get_string("class");
-            if let Some(class) = class_opt {
-                if selectors.contains_class(class) {
-                    display();
-                }
-            }
-            if selectors.contains_id(name) {
-                display();
             }
         }
     }

@@ -9,21 +9,11 @@ use crate::util::{read_file, SymbolFmt, Timer};
 use sysinfo::{ProcessorExt, System, SystemExt};
 
 pub struct CPU {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
 }
 
 impl Component for CPU {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.label.destroy();
@@ -78,7 +68,6 @@ impl CPU {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(CPU {
-            config,
             label,
             timer,
         }));
