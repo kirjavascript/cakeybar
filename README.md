@@ -8,6 +8,8 @@ a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
 * expressive theming with CSS
+* inter-process communication
+* hot config reloading
 * windowmanager neutral config
 * system tray integration
 * more rice than feudal japan
@@ -265,7 +267,7 @@ icon-size = 20
 icon-spacing = 0
 ```
 
-the `background-color` style needs to be set explicitly for it to work
+the `background-color` style property needs to be set explicitly for it to work
 
 #### dropdown
 

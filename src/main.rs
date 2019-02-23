@@ -1,21 +1,6 @@
-extern crate ansi_term;
-extern crate cairo;
-extern crate chrono;
-extern crate clap;
-extern crate gdk;
-extern crate gdk_sys;
-extern crate gio;
-extern crate glib;
-extern crate glib_sys;
-extern crate gtk;
-extern crate i3ipc;
-extern crate libc;
-extern crate probes;
-extern crate sysinfo;
-extern crate systemstat;
-extern crate toml;
-extern crate inotify;
-extern crate xcb;
+
+// TODO: remove these
+
 #[macro_use] extern crate lazy_static;
 #[macro_use] extern crate nom;
 #[macro_use] extern crate crossbeam_channel;

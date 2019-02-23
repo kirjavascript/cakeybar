@@ -62,7 +62,6 @@ reload event -> ???
 ipc doesn't show/hide (fullscreen? )
 wm restart event restack tray
 send multiple IPC commands at once
-spacing
 bug: on no icons width = 1
 
 file watcher

@@ -3,7 +3,7 @@ use gtk::prelude::*;
 use gtk::{Orientation, Overlay, Rectangle, Window, WindowType};
 use glib::SignalHandlerId;
 use glib::translate::{ToGlib, from_glib};
-use crate::{cairo, gdk, gtk, wm, NAME};
+use crate::{wm, NAME};
 
 use std::cell::RefCell;
 use std::rc::Rc;
