@@ -3,6 +3,7 @@ pub enum Command {
     ReloadTheme(Option<String>),
     Show(Selectors),
     Hide(Selectors),
+    Focus(Selector),
     Help(HelpTopic),
 }
 
@@ -33,7 +34,7 @@ pub enum Selector {
 }
 
 impl Selector {
-    pub fn _get_name(&self) -> String {
+    pub fn get_name(&self) -> String {
         match self {
             Selector::Id(name) => name.to_string(),
             Selector::Class(name) => name.to_string(),

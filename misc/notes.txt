@@ -23,26 +23,22 @@ Xephyr -br -ac -noreset -screen 1200x800 :1
 DISPLAY=:1 i3
 openbox: push to back, get desktops
 
-remove show/hide, reduce component trait to just destroy
-add floats for above/below/autohide
+features for 0.4.0: add floats for above/below/autohide
 show overlay win95 when press start / runbox
 features for 1.0.0: tray bugs, multiple install options
 
 completor
 ===
-just use a gtk::Entry instead of a window
-wmutil.run_command()
-add trigger (Open)
+fullscreen no
+!shell | /find
 dmenu
-ctrl shift d
+ctrl tux d
 recency / history
-command / !shell cmd / /find
-use event listener
-force focus
 
 ipc
 ====
-classList
+classList / support classes for selectors
+&& in DSL
 help
 two way
 allow ipc in menu objs
@@ -53,12 +49,12 @@ default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
-strip out show/hide
 interval float for /s Timer::get_interval(config) ::from_config
 
 tray
 ====
 fix tray fullscreen latency/mm bug with events
+background colour sets the background of th icons too
 reload theme -> wm_util event
 reload event -> ???
 ipc doesn't show/hide (fullscreen? )

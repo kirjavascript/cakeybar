@@ -1,6 +1,5 @@
 use gdk::{Display, DisplayExt, MonitorExt, Screen};
 use glib::Error;
-use gtk;
 use gtk::{CssProvider, CssProviderExt, Rectangle, StyleContext};
 
 mod window;

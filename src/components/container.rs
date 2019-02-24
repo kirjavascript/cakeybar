@@ -1,7 +1,6 @@
 use crate::bar::Bar;
 use crate::components::Component;
 use crate::config::ConfigGroup;
-use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
 

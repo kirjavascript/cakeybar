@@ -4,7 +4,6 @@ use std::{thread, time};
 use crate::bar::Bar;
 use crate::components::Component;
 use crate::config::ConfigGroup;
-use gtk;
 use gtk::prelude::*;
 use crate::util::{read_file, SymbolFmt, Timer};
 use gtk::Label;
@@ -32,12 +31,12 @@ fn get_value(name: &str) -> Result<f32, String> {
 
 impl Backlight {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
-        let label = Label::new(None);
-        super::init_widget(&label, &config, bar, container);
-        label.show();
-
         match get_value("brightness") {
             Ok(initial) => {
+                let label = Label::new(None);
+                super::init_widget(&label, &config, bar, container);
+                label.show();
+
                 let (s, r) = channel::unbounded();
                 let (s_dead, r_dead) = channel::unbounded();
 

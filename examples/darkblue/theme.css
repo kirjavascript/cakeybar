@@ -9,10 +9,14 @@ label, entry {
 }
 
 entry {
-    background-color: black;
-    border: 2px solid @blue;
-    padding: 0 15px;
+    /* border: none; */
+    /* border-right: 2px solid @blue; */
+    /* border-bottom: 2px solid @blue; */
+    /* border-left: 2px solid @blue; */
+    border: 5px solid red;
+    padding: 5px;
     min-width: 300px;
+    min-height: 17px;
 }
 
 #left, #right {
@@ -33,19 +37,6 @@ entry {
     background-size: contain;
     background-repeat: no-repeat;
 }
-
-/* #menu_popup { */
-/*     background-color: black; */
-/*     padding: 5px; */
-/* } */
-
-/* #menu_popup label { */
-/*     padding: 5px; */
-/* } */
-
-/* #menu_popup label:focus { */
-/*     background-color: @blue; */
-/* } */
 
 #tray {
     padding-right: 7px;

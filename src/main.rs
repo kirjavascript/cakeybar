@@ -1,8 +1,4 @@
-
-// TODO: remove these
-
-#[macro_use] extern crate lazy_static;
-#[macro_use] extern crate nom;
+// TODO: remove
 #[macro_use] extern crate crossbeam_channel;
 
 use clap::{App, Arg};
