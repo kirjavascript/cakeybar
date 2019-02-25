@@ -3,6 +3,7 @@ pub enum Command {
     ReloadTheme(Option<String>),
     Show(Selectors),
     Hide(Selectors),
+    Focus(Selector),
     Help(HelpTopic),
 }
 
@@ -18,14 +19,11 @@ pub enum HelpTopic {
 pub struct Selectors(pub Vec<Selector>);
 
 impl Selectors {
-    pub fn len(&self) -> usize {
-        self.0.len()
+    pub fn contains_id(&self, name: &str) -> bool {
+        self.0.contains(&Selector::Id(name.to_owned()))
     }
-    pub fn contains_id(&self, name: String) -> bool {
-        self.0.contains(&Selector::Id(name))
-    }
-    pub fn contains_class(&self, name: String) -> bool {
-        self.0.contains(&Selector::Class(name))
+    pub fn _contains_class(&self, name: &str) -> bool {
+        self.0.contains(&Selector::Class(name.to_owned()))
     }
 }
 

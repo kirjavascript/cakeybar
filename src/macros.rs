@@ -25,7 +25,7 @@ macro_rules! message {
         if *$crate::config::NO_COLOR {
             eprintln!("{}{} {} {}", padding, $m, $p, file_line);
         } else {
-            use $crate::ansi_term::Colour::{$c, Fixed};
+            use ansi_term::Colour::{$c, Fixed};
             eprint!("{}{} {}", padding, $c.bold().paint($m), $p);
             eprintln!(" {}", Fixed(240).paint(file_line));
         }

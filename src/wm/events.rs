@@ -7,6 +7,7 @@ pub enum Event {
     Window,
     Mode,
     Workspace,
+    Focus(String),
 }
 
 #[derive(Debug, Clone)]

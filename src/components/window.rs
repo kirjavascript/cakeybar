@@ -11,22 +11,12 @@ use crate::wm::events::{Event, EventId, EventValue};
 use crate::wm::WMUtil;
 
 pub struct Window {
-    config: ConfigGroup,
     label: Label,
     event_id: EventId,
     wm_util: WMUtil,
 }
 
 impl Component for Window {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.wm_util.remove_listener(Event::Window, self.event_id);
         self.label.destroy();
@@ -73,7 +63,6 @@ impl Window {
 
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Window {
-            config,
             label,
             wm_util,
             event_id,

@@ -8,21 +8,11 @@ use gtk::Label;
 use crate::util::{SymbolFmt, Timer};
 
 pub struct Clock {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
 }
 
 impl Component for Clock {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.label.destroy();
@@ -54,7 +44,6 @@ impl Clock {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(Clock {
-            config,
             label,
             timer,
         }));

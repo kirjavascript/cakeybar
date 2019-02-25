@@ -12,21 +12,11 @@ use std::rc::Rc;
 use probes::network;
 
 pub struct Bandwidth {
-    config: ConfigGroup,
     wrapper: gtk::Box,
     timer: Timer,
 }
 
 impl Component for Bandwidth {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.wrapper.show();
-    }
-    fn hide(&self) {
-        self.wrapper.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.wrapper.destroy();
@@ -108,7 +98,6 @@ impl Bandwidth {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(Bandwidth {
-            config,
             wrapper: label_group.wrapper,
             timer,
         }));

@@ -8,6 +8,8 @@ a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
 * expressive theming with CSS
+* inter-process communication
+* hot config reloading
 * windowmanager neutral config
 * system tray integration
 * more rice than feudal japan
@@ -131,11 +133,11 @@ a container to create more complex layouts and group components
 [component.stats_box]
 type = "container"
 spacing = 0
-direction = "vertical"
+direction = "horizontal"
 layout = [ "component", "names", "go", "here" ]
 ```
 
-possible directions: `column | row` or `horizontal | vertical`
+possible directions: `horizontal` or `vertical`
 
 #### window
 
@@ -265,7 +267,7 @@ icon-size = 20
 icon-spacing = 0
 ```
 
-the `background-color` style needs to be set explicitly for it to work
+the `background-color` style property needs to be set explicitly for it to work
 
 #### dropdown
 

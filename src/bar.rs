@@ -1,16 +1,15 @@
-use gdk::{ScreenExt, ScrollDirection};
+use gdk::ScrollDirection;
 use gtk::prelude::*;
 use gtk::{Orientation, Overlay, Rectangle, Window, WindowType};
 use glib::SignalHandlerId;
 use glib::translate::{ToGlib, from_glib};
-use crate::{cairo, gdk, gtk, wm, NAME};
+use crate::{wm, NAME};
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
 use crate::components::{load_component, Component};
 use crate::config::ConfigGroup;
-use crate::wm::ipc::commands::*;
 
 pub struct Bar {
     pub config: ConfigGroup,
@@ -19,7 +18,7 @@ pub struct Bar {
     pub container: gtk::Box,
     pub wm_util: wm::WMUtil,
     event_ids: Vec<SignalHandlerId>,
-    window: Window,
+    pub window: Window,
 }
 
 impl Bar {
@@ -57,11 +56,7 @@ impl Bar {
             window.set_keep_above(true);
             window.stick();
 
-            // transparency
-            Self::set_visual(&window, &None);
-            window.connect_screen_changed(Self::set_visual);
-            window.connect_draw(Self::draw);
-            window.set_app_paintable(true);
+            wm::gtk::set_transparent(&window);
         }
 
         // init container
@@ -187,29 +182,6 @@ impl Bar {
         }
     }
 
-    pub fn display_components(&self, selectors: &Selectors, show: bool) {
-        for component in self.components.iter() {
-            let display = || {
-                if show {
-                    component.show();
-                } else {
-                    component.hide();
-                }
-            };
-            let config = component.get_config();
-            let name = config.name.to_string();
-            let class_opt = config.get_string("class");
-            if let Some(class) = class_opt {
-                if selectors.contains_class(class) {
-                    display();
-                }
-            }
-            if selectors.contains_id(name) {
-                display();
-            }
-        }
-    }
-
     pub fn relayout(&self) {
         self.window.resize(1, 1);
     }
@@ -245,20 +217,5 @@ impl Bar {
     pub fn destroy(&self) {
         self.unload();
         self.window.destroy();
-    }
-
-    fn set_visual(window: &Window, _screen: &Option<gdk::Screen>) {
-        if let Some(screen) = window.get_screen() {
-            if let Some(visual) = screen.get_rgba_visual() {
-                window.set_visual(&visual);
-            }
-        }
-    }
-
-    fn draw(_window: &Window, ctx: &cairo::Context) -> Inhibit {
-        ctx.set_source_rgba(0., 0., 0., 0.);
-        ctx.set_operator(cairo::enums::Operator::Screen);
-        ctx.paint();
-        Inhibit(false)
     }
 }

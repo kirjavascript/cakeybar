@@ -214,9 +214,9 @@ impl WMUtil {
         self.bars.borrow_mut().append(&mut bars);
     }
 
-    pub fn display_bars(&self, names: &[String], show: bool) {
+    pub fn display_bars(&self, names: &Selectors, show: bool) {
         for bar in self.bars.borrow().iter() {
-            if names.contains(&bar.config.name) {
+            if names.contains_id(&bar.config.name) {
                 if show {
                     bar.show();
                 } else {
@@ -226,21 +226,7 @@ impl WMUtil {
         }
     }
 
-    pub fn display_components(
-        &self, bar_names: &[String], selectors: &Selectors, show: bool
-    ) {
-        for bar in self.bars.borrow().iter() {
-            if bar_names.is_empty() || bar_names.contains(&bar.config.name) {
-                bar.display_components(selectors, show);
-            }
-        }
-    }
-
     // getters
-
-    pub fn get_bar_names(&self) -> Vec<String> {
-        self.bars.borrow().iter().map(|x| x.config.name.clone()).collect()
-    }
 
     pub fn get_wm_type(&self) -> WMType {
         self.data.borrow().wm_type.clone()

@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::env;
+use lazy_static::lazy_static;
 
 lazy_static! {
     pub static ref NO_COLOR: bool = env::var("NO_COLOR").is_ok();

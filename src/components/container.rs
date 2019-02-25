@@ -1,25 +1,14 @@
 use crate::bar::Bar;
 use crate::components::Component;
 use crate::config::ConfigGroup;
-use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
 
 pub struct Container {
-    config: ConfigGroup,
     wrapper: gtk::Box,
 }
 
 impl Component for Container {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.wrapper.show();
-    }
-    fn hide(&self) {
-        self.wrapper.hide();
-    }
     fn destroy(&self) {
         self.wrapper.destroy();
     }
@@ -31,8 +20,8 @@ impl Container {
         let spacing = config.get_int_or("spacing", 0) as i32;
 
         // get direction
-        let direction = match config.get_str_or("direction", "column") {
-            "column" | "horizontal" => Orientation::Horizontal,
+        let direction = match config.get_str_or("direction", "horizontal") {
+            "horizontal" => Orientation::Horizontal,
             _ => Orientation::Vertical,
         };
 
@@ -50,6 +39,6 @@ impl Container {
             }
         }
 
-        bar.add_component(Box::new(Container { config, wrapper }));
+        bar.add_component(Box::new(Container { wrapper }));
     }
 }

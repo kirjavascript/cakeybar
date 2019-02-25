@@ -6,11 +6,13 @@ position = "top"
 layout = [
     "menu",
     "workspaces",
+    "complete",
     "mode",
     "title",
     "box1",
     "tray",
 ]
+
 
 [bar.right]
 monitor = 1
@@ -18,7 +20,6 @@ position = "top"
 layout = [
     "menu",
     "workspaces",
-    "completor",
     "mode",
     "title",
     "box1",
@@ -34,6 +35,8 @@ monitor = 1
 position = "bottom"
 workspace-scroll = true
 
+[component.complete]
+type = "completor"
 
 # tray
 
@@ -63,7 +66,6 @@ type = "mode"
 type = "container"
 layout = [
     "battery",
-    # "memory",
     "cpu",
     "bandwidth",
     "disk",

@@ -7,7 +7,7 @@ mod backlight;
 mod bandwidth;
 mod battery;
 mod clock;
-// mod completor;
+mod completor;
 mod container;
 mod cpu;
 mod disk;
@@ -25,12 +25,6 @@ mod workspaces;
 
 /// defines interface for components
 pub trait Component {
-    /// provide the config object for this component
-    fn get_config(&self) -> &ConfigGroup;
-    /// show component
-    fn show(&self);
-    /// hide component
-    fn hide(&self);
     /// clean up any remaining timeouts, callbacks
     fn destroy(&self);
 }
@@ -46,7 +40,7 @@ pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) 
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
-        // "completor" => completor::Completor::init,
+        "completor" => completor::Completor::init,
         "container" => container::Container::init,
         "cpu" => cpu::CPU::init,
         "disk" => disk::Disk::init,
@@ -123,22 +117,13 @@ fn get_alignment(align: &str) -> Align {
 
 // use bar::Bar;
 // use components::Component;
-// use config::ConfigGroup;
-// use gtk;
+// use crate::config::ConfigGroup;
 // use gtk::prelude::*;
 //
 // pub struct Template {
-//     config: ConfigGroup,
 // }
 //
 // impl Component for Template {
-//     fn get_config(&self) -> &ConfigGroup {
-//         &self.config
-//     }
-//     fn show(&self) {
-//     }
-//     fn hide(&self) {
-//     }
 //     fn destroy(&self) {
 //     }
 // }
@@ -147,8 +132,6 @@ fn get_alignment(align: &str) -> Align {
 //     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 //         //super::init_widget(&entry, &config, bar, container);
 //
-//         bar.add_component(Box::new(Template {
-//             config,
-//         }));
+//         bar.add_component(Box::new(Template));
 //     }
 // }

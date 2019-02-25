@@ -12,22 +12,12 @@ use std::time::Duration;
 use crate::util::{SymbolFmt, Timer};
 
 pub struct Script {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
     tx_term: mpsc::Sender<()>,
 }
 
 impl Component for Script {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.tx_term.send(()).ok();
@@ -80,7 +70,6 @@ impl Script {
             let timer = Timer::add_seconds(interval as u32, tick);
 
             bar.add_component(Box::new(Script {
-                config,
                 label,
                 timer,
                 tx_term,

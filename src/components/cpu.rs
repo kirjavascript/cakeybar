@@ -1,7 +1,6 @@
 use crate::bar::Bar;
 use crate::components::Component;
 use crate::config::ConfigGroup;
-use gtk;
 use gtk::prelude::*;
 use gtk::Label;
 use crate::util::{read_file, SymbolFmt, Timer};
@@ -9,21 +8,11 @@ use crate::util::{read_file, SymbolFmt, Timer};
 use sysinfo::{ProcessorExt, System, SystemExt};
 
 pub struct CPU {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
 }
 
 impl Component for CPU {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.label.destroy();
@@ -78,7 +67,6 @@ impl CPU {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(CPU {
-            config,
             label,
             timer,
         }));
