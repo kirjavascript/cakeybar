@@ -26,7 +26,7 @@ pub fn get_config_dir() -> String {
 }
 
 pub fn run_command(command: String) {
-    Command::new("/bin/sh").arg("-c").arg(command).exec().ok();
+    Command::new("/bin/sh").arg("-c").arg(command).spawn().ok();
 }
 
 pub fn read_file(path: &str) -> Result<String, Error> {

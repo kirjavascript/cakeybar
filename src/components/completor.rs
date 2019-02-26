@@ -82,6 +82,7 @@ impl Completor {
 
                 // TODO: complete on TAB
                 // TODO: set active on wrapper
+                // TODO: error message in wrapper
 
                 wm_util.add_window(&window);
 
@@ -104,10 +105,19 @@ impl Completor {
                 completion.set_minimum_key_length(1);
                 completion.set_text_column(0);
                 entry.set_completion(&completion);
-                store.set(&store.append(), &[0], &[&"hello".to_string()]);
+
+                unsafe { String::from_utf8_unchecked(
+                    std::process::Command::new("ls")
+                        .arg("/usr/bin").output().unwrap().stdout
+                ).split("\n") }.for_each(|s| {
+                    store.set(&store.append(), &[0], &[&s.to_string()]);
+                });
+
+
                 // completion.show();
                 // use cahce for recency
 
+                // ls /usr/bin
                 entry.show_all();
 
                 // styles
