@@ -87,6 +87,22 @@ impl Completor {
                 entry.show();
                 entry.grab_focus();
 
+                // add completion
+
+                // use gtk::EntryCompletionExt;
+                let store = gtk::ListStore::new(&[gtk::Type::String]);
+                let completion = gtk::EntryCompletion::new();
+                completion.set_model(&store);
+                // completion.insert_action_text(0, "hello");
+                completion.set_popup_completion(true);
+                completion.set_minimum_key_length(1);
+                completion.set_text_column(0);
+                entry.set_completion(&completion);
+                store.set(&store.append(), &[0], &[&"hello".to_string()]);
+                // completion.show();
+
+                entry.show_all();
+
                 // styles
                 // TODO: use super::init_widget instead
                 WidgetExt::set_name(&entry, &config.name);
@@ -100,6 +116,8 @@ impl Completor {
                     if let Some(text) = e.get_text() {
                         if text.starts_with(":") {
                             if let Ok(cmd) = parse_message(&text[1..]) {
+                                // TODO: dont run as subcommand of process
+                                // because it closes :(
                                 wm_util.run_command(cmd);
                             }
                         } else {
