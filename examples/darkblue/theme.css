@@ -8,12 +8,8 @@ label, entry {
     font-weight: 600;
 }
 
-entry {
-    /* border: none; */
-    /* border-right: 2px solid @blue; */
-    /* border-bottom: 2px solid @blue; */
-    /* border-left: 2px solid @blue; */
-    border: 5px solid red;
+#complete {
+    border: none;
     padding: 5px;
     min-width: 300px;
     min-height: 17px;

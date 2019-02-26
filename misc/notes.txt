@@ -114,6 +114,7 @@ undocu'd;
     BSPWM_SOCKET
     CAKEYBAR_SOCKET
     .focused class for Bar
+http://gtk-rs.org/docs/requirements.html
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
