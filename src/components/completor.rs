@@ -2,8 +2,8 @@ use crate::bar::Bar;
 use crate::config::ConfigGroup;
 use crate::components::Component;
 use crate::wm::ipc::parser::parse_message;
-use crate::wm::events::Event;
-use crate::wm;
+use crate::wm::events::{Event, EventId};
+use crate::wm::{self, WMUtil};
 
 use gtk::prelude::*;
 use gdk::prelude::*;
@@ -12,16 +12,21 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 pub struct Completor {
+    config: ConfigGroup,
     wrapper: gtk::Box,
     window_opt: Rc<RefCell<Option<gtk::Window>>>,
+    event_id: EventId,
+    wm_util: WMUtil,
 }
 
 impl Component for Completor {
     fn destroy(&self) {
-        self.wrapper.destroy();
+        let event_type = Event::Focus(self.config.name.clone());
+        self.wm_util.remove_listener(event_type, self.event_id);
         if self.window_opt.borrow().is_some() {
             self.window_opt.borrow().as_ref().unwrap().destroy();
         }
+        self.wrapper.destroy();
     }
 }
 
@@ -42,7 +47,7 @@ impl Completor {
         let event_type = Event::Focus(config.name.clone());
         let wm_util = bar.wm_util.clone();
         let event = bar.wm_util.add_listener(event_type,
-            clone!((window_opt, wrapper) move |_| {
+            clone!((window_opt, wrapper, wm_util, config) move |_| {
                 if window_opt.borrow().is_some() {
                     return
                 }
@@ -75,6 +80,7 @@ impl Completor {
                     window.destroy();
                 });
 
+                // TODO: complete on TAB
                 // TODO: set active on wrapper
 
                 wm_util.add_window(&window);
@@ -100,6 +106,7 @@ impl Completor {
                 entry.set_completion(&completion);
                 store.set(&store.append(), &[0], &[&"hello".to_string()]);
                 // completion.show();
+                // use cahce for recency
 
                 entry.show_all();
 
@@ -128,12 +135,10 @@ impl Completor {
                     }
                 }));
 
-                window.connect_delete_event(clone!(window_opt move |e, _| {
+                window.connect_delete_event(clone!(window_opt move |_, _| {
                     window_opt.borrow_mut().take();
                     gtk::Inhibit(false)
                 }));
-
-                // TODO: connect escape, empty or close or <C-c>
 
                 entry.connect_focus_out_event(clone!(window move |e, _| {
                     wm::gtk::keyboard_grab(&window);
@@ -145,6 +150,17 @@ impl Completor {
                 entry.connect_event(|_, e| {
                     Inhibit(e.get_button() == Some(3))
                 });
+
+                // grab keycodes for destroying
+                entry.connect_key_press_event(clone!(destroy move |_, e| {
+                    let (code, mask) = (e.get_keyval(), e.get_state());
+                    let is_escape = code == 65307;
+                    let is_ctrlc = code == 99 && mask == gdk::ModifierType::CONTROL_MASK;
+                    if is_escape || is_ctrlc {
+                        destroy();
+                    }
+                    Inhibit(false)
+                }));
 
                 // stop window moving
                 window.connect_configure_event(clone!(window_opt move |w, e| {
@@ -160,8 +176,11 @@ impl Completor {
         ));
 
         bar.add_component(Box::new(Completor {
+            config,
             wrapper,
             window_opt,
+            event_id: event,
+            wm_util,
         }));
     }
 }
