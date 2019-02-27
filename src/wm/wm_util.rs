@@ -106,7 +106,7 @@ impl WMUtil {
         self.data.borrow().app.add_window(window);
     }
 
-    pub fn _run_command(&self, cmd: Command) {
+    pub fn run_command(&self, cmd: Command) {
         wm::ipc::exec::run_command(self, cmd);
     }
 
