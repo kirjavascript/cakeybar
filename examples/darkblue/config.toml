@@ -6,13 +6,12 @@ position = "top"
 layout = [
     "menu",
     "workspaces",
-    "complete",
+    "autocomplete",
     "mode",
     "title",
     "box1",
     "tray",
 ]
-
 
 [bar.right]
 monitor = 1
@@ -35,7 +34,7 @@ monitor = 1
 position = "bottom"
 workspace-scroll = true
 
-[component.complete]
+[component.autocomplete]
 type = "completor"
 
 # tray
