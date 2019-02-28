@@ -6,13 +6,12 @@ position = "top"
 layout = [
     "menu",
     "workspaces",
-    "complete",
+    "autocomplete",
     "mode",
     "title",
     "box1",
     "tray",
 ]
-
 
 [bar.right]
 monitor = 1
@@ -35,7 +34,7 @@ monitor = 1
 position = "bottom"
 workspace-scroll = true
 
-[component.complete]
+[component.autocomplete]
 type = "completor"
 
 # tray
@@ -90,12 +89,12 @@ adapter = "AC"
 
 [component.ip]
 type = "ip"
-interfaces = ["enp3s0", "wlp58s0", "wlp0s20f0u4", "eth0"]
+interfaces = ["enp3s0", "wlp58s0", "wlp0s20f0u5", "eth0"]
 class = "has-icon"
 
 [component.bandwidth]
 type = "bandwidth"
-interfaces = ["enp3s0", "wlp58s0", "wlp0s20f0u4", "eth0"]
+interfaces = ["enp3s0", "wlp58s0", "wlp0s20f0u5", "eth0"]
 class = "has-icon"
 
 [component.cpu]
