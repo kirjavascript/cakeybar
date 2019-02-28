@@ -22,6 +22,7 @@ testing:
 Xephyr -br -ac -noreset -screen 1200x800 :1
 DISPLAY=:1 i3
 openbox: push to back, get desktops
+https://svartalf.info/posts/2019-02-25-introducing-battery-crate/
 
 features for 0.4.0: add floats for above/below/autohide
 show overlay win95 when press start / runbox

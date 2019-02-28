@@ -100,10 +100,10 @@ impl Completor {
                 let store = gtk::ListStore::new(&[gtk::Type::String]);
                 let completion = gtk::EntryCompletion::new();
                 completion.set_model(&store);
-                // completion.insert_action_text(0, "hello");
                 completion.set_popup_completion(true);
-                completion.set_minimum_key_length(1);
+                completion.set_minimum_key_length(0);
                 completion.set_text_column(0);
+                completion.set_inline_completion(true);
                 entry.set_completion(&completion);
 
                 unsafe { String::from_utf8_unchecked(
@@ -113,9 +113,9 @@ impl Completor {
                     store.set(&store.append(), &[0], &[&s.to_string()]);
                 });
 
+                // TODO: double fork for commands
 
-                // completion.show();
-                // use cahce for recency
+                // TODO: steal dmenu format
 
                 // ls /usr/bin
                 entry.show_all();
@@ -162,12 +162,15 @@ impl Completor {
                 });
 
                 // grab keycodes for destroying
-                entry.connect_key_press_event(clone!(destroy move |_, e| {
+                entry.connect_key_press_event(clone!((destroy, completion) move |_, e| {
                     let (code, mask) = (e.get_keyval(), e.get_state());
-                    let is_escape = code == 65307;
-                    let is_ctrlc = code == 99 && mask == gdk::ModifierType::CONTROL_MASK;
+                    let is_escape = code == gdk::enums::key::Escape;
+                    let is_ctrlc = code == gdk::enums::key::C && mask == gdk::ModifierType::CONTROL_MASK;
                     if is_escape || is_ctrlc {
                         destroy();
+                    } else if code == gdk::enums::key::Tab {
+                        // println!("{:#?}", q);
+                        completion.insert_prefix();
                     }
                     Inhibit(false)
                 }));
