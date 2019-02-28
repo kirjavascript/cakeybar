@@ -8,7 +8,7 @@ label, entry {
     font-weight: 600;
 }
 
-#complete {
+#autocomplete {
     border: none;
     padding: 5px;
     min-width: 300px;

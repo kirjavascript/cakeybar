@@ -69,7 +69,6 @@ where
         }
     }
 
-    #[allow(dead_code)]
     pub fn emit(&self, event: T) {
         if let Some(callbacks) = self.listeners.get(&event) {
             for (_, callback) in callbacks {

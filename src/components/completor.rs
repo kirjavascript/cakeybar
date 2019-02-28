@@ -33,6 +33,8 @@ impl Component for Completor {
 impl Completor {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 
+        // TODO: rename to input and add config
+
         // create wrapper
 
         let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
@@ -80,6 +82,7 @@ impl Completor {
                     window.destroy();
                 });
 
+                // TODO: prompt = ""
                 // TODO: complete on TAB
                 // TODO: set active on wrapper
                 // TODO: error message in wrapper
@@ -96,7 +99,6 @@ impl Completor {
 
                 // add completion
 
-                // use gtk::EntryCompletionExt;
                 let store = gtk::ListStore::new(&[gtk::Type::String]);
                 let completion = gtk::EntryCompletion::new();
                 completion.set_model(&store);
@@ -170,7 +172,7 @@ impl Completor {
                         destroy();
                     } else if code == gdk::enums::key::Tab {
                         // println!("{:#?}", q);
-                        completion.insert_prefix();
+                        // completion.insert_prefix();
                     }
                     Inhibit(false)
                 }));
