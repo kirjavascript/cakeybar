@@ -7,6 +7,8 @@ use crate::wm::{self, WMUtil};
 
 use gtk::prelude::*;
 use gdk::prelude::*;
+use glib::translate::{ToGlib, from_glib};
+use gdk::Rectangle;
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -30,10 +32,30 @@ impl Component for Completor {
     }
 }
 
+
+fn get_abs_rect(wrapper: &gtk::Box) -> Rectangle {
+    let rect = wrapper.get_allocation();
+    let (_zo, xo, yo) = wrapper.get_window().unwrap().get_origin();
+    let x = xo + rect.x;
+    let y = yo + rect.y;
+    Rectangle {
+        x, y,
+        width: rect.width,
+        height: rect.height,
+    }
+}
+
 impl Completor {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 
-        // TODO: rename to input and add config
+        // TODO: rename to ??? and add config
+        // TODO: prompt = ""
+        // TODO: complete on TAB
+        // TODO: set active on wrapper
+        // TODO: error message in wrapper
+        // TODO: up history
+        // TODO: double fork for commands
+        // TODO: steal dmenu format
 
         // create wrapper
 
@@ -54,14 +76,10 @@ impl Completor {
                     return
                 }
 
-                // get coords
-                let rect = wrapper.get_allocation();
-                let (_zo, xo, yo) = wrapper.get_window().unwrap().get_origin();
-                let x = xo + rect.x;
-                let y = yo + rect.y;
+                // get rekt
+                let Rectangle { x, y, width, height } = get_abs_rect(&wrapper);
 
                 // create window
-
                 let window = gtk::Window::new(gtk::WindowType::Toplevel);
                 wm::gtk::set_transparent(&window);
                 window.set_type_hint(gdk::WindowTypeHint::PopupMenu);
@@ -69,23 +87,13 @@ impl Completor {
                 window.set_skip_taskbar_hint(false);
                 window.set_decorated(false);
                 window.set_keep_above(true);
+                window.stick();
                 window.set_title("");
                 window.move_(x, y);
-                window.resize(1, 1);
+                window.resize(width, height);
                 window.set_resizable(false);
                 window.show();
-                window.stick();
                 wm::gtk::disable_shadow(&window);
-
-                let destroy = clone!((window_opt, window) move || {
-                    window_opt.borrow_mut().take();
-                    window.destroy();
-                });
-
-                // TODO: prompt = ""
-                // TODO: complete on TAB
-                // TODO: set active on wrapper
-                // TODO: error message in wrapper
 
                 wm_util.add_window(&window);
 
@@ -108,6 +116,7 @@ impl Completor {
                 completion.set_inline_completion(true);
                 entry.set_completion(&completion);
 
+                // TODO: replace with source
                 unsafe { String::from_utf8_unchecked(
                     std::process::Command::new("ls")
                         .arg("/usr/bin").output().unwrap().stdout
@@ -115,11 +124,6 @@ impl Completor {
                     store.set(&store.append(), &[0], &[&s.to_string()]);
                 });
 
-                // TODO: double fork for commands
-
-                // TODO: steal dmenu format
-
-                // ls /usr/bin
                 entry.show_all();
 
                 // styles
@@ -130,6 +134,30 @@ impl Completor {
                 }
 
                 // events
+
+                // snap to location stuff
+                let size_id = wrapper.connect_size_allocate(
+                    clone!(window move |wrapper, _| {
+                        let rect = get_abs_rect(&wrapper);
+                        window.move_(rect.x, rect.y);
+                        window.resize(rect.width, rect.height);
+                    })
+                ).to_glib();
+
+                // stop window moving
+                window.connect_configure_event(clone!(wrapper move |w, e| {
+                    let Rectangle { x, y, .. } = get_abs_rect(&wrapper);
+                    if Some((x as f64, y as f64)) != e.get_coords() {
+                        w.move_(x, y);
+                    }
+                    false
+                }));
+
+                let destroy = clone!((window_opt, window, wrapper) move || {
+                    wrapper.disconnect(from_glib(size_id));
+                    window_opt.borrow_mut().take();
+                    window.destroy();
+                });
 
                 entry.connect_activate(clone!((wm_util, destroy) move |e| {
                     if let Some(text) = e.get_text() {
@@ -147,8 +175,8 @@ impl Completor {
                     }
                 }));
 
-                window.connect_delete_event(clone!(window_opt move |_, _| {
-                    window_opt.borrow_mut().take();
+                window.connect_delete_event(clone!(destroy move |_, _| {
+                    destroy();
                     gtk::Inhibit(false)
                 }));
 
@@ -165,26 +193,20 @@ impl Completor {
 
                 // grab keycodes for destroying
                 entry.connect_key_press_event(clone!((destroy, completion) move |_, e| {
+                    use gdk::enums::key::{Tab, Escape};
                     let (code, mask) = (e.get_keyval(), e.get_state());
-                    let is_escape = code == gdk::enums::key::Escape;
-                    let is_ctrlc = code == gdk::enums::key::C && mask == gdk::ModifierType::CONTROL_MASK;
+                    let is_escape = code == Escape;
+                    let is_ctrlc = code == 99 && mask == gdk::ModifierType::CONTROL_MASK;
+
                     if is_escape || is_ctrlc {
                         destroy();
-                    } else if code == gdk::enums::key::Tab {
+                    } else if code == Tab {
                         // println!("{:#?}", q);
                         // completion.insert_prefix();
                     }
                     Inhibit(false)
                 }));
 
-                // stop window moving
-                window.connect_configure_event(clone!(window_opt move |w, e| {
-                    if window_opt.borrow().is_some()
-                        && Some((x as f64, y as f64)) != e.get_coords() {
-                        w.move_(x, y);
-                    }
-                    false
-                }));
 
                 *window_opt.borrow_mut() = Some(window);
             }
