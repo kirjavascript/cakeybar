@@ -54,7 +54,6 @@ impl Completor {
         // TODO: set active on wrapper
         // TODO: error message in wrapper
         // TODO: up history
-        // TODO: double fork for commands
         // TODO: steal dmenu format
 
         // create wrapper
@@ -101,6 +100,8 @@ impl Completor {
 
                 let entry = gtk::Entry::new();
                 window.add(&entry);
+                #[allow(deprecated)]
+                entry.set_property_shadow_type(gtk::ShadowType::None);
                 entry.set_has_frame(false);
                 entry.show();
                 entry.grab_focus();
@@ -182,7 +183,7 @@ impl Completor {
 
                 entry.connect_focus_out_event(clone!(window move |e, _| {
                     wm::gtk::keyboard_grab(&window);
-                    e.grab_focus();
+                    e.grab_focus_without_selecting();
                     gtk::Inhibit(false)
                 }));
 
