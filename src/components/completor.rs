@@ -48,13 +48,29 @@ fn get_abs_rect(wrapper: &gtk::Box) -> Rectangle {
 impl Completor {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 
+        // stolen from dmenu https://git.suckless.org/dmenu/file/LICENSE.html
+        let source = config.get_string("source").unwrap_or_else(|| r#"
+            #!/bin/sh
+
+            cachedir="${XDG_CACHE_HOME:-"$HOME/.cache"}"
+            cache="$cachedir/dmenu_run"
+
+            [ ! -e "$cachedir" ] && mkdir -p "$cachedir"
+
+            IFS=:
+            if stest -dqr -n "$cache" $PATH; then
+                stest -flx $PATH | sort -u | tee "$cache"
+            else
+                cat "$cache"
+            fi
+        "#.to_string());
+
         // TODO: rename to ??? and add config
         // TODO: prompt = ""
         // TODO: complete on TAB
         // TODO: set active on wrapper
         // TODO: error message in wrapper
         // TODO: up history
-        // TODO: steal dmenu format
 
         // create wrapper
 
@@ -119,8 +135,8 @@ impl Completor {
 
                 // TODO: replace with source
                 unsafe { String::from_utf8_unchecked(
-                    std::process::Command::new("ls")
-                        .arg("/usr/bin").output().unwrap().stdout
+                    std::process::Command::new("/bin/sh")
+                        .arg("-c").arg(&source).output().unwrap().stdout
                 ).split("\n") }.for_each(|s| {
                     store.set(&store.append(), &[0], &[&s.to_string()]);
                 });
@@ -164,8 +180,6 @@ impl Completor {
                     if let Some(text) = e.get_text() {
                         if text.starts_with(":") {
                             if let Ok(cmd) = parse_message(&text[1..]) {
-                                // TODO: dont run as subcommand of process
-                                // because it closes :(
                                 wm_util.run_command(cmd);
                             }
                         } else {
