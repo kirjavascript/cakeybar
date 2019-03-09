@@ -10,6 +10,7 @@
 * expressive theming with CSS
 * windowmanager neutral design
 * system tray integration
+* auto updates when config changes
 * more rice than feudal japan
 
 *work in progress*  

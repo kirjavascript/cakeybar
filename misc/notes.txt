@@ -21,7 +21,6 @@ current: dmenu / ipc
 
 completor
 ===
-wmutil.run_command()
 add trigger (Open)
 dmenu
 ctrl shift d
