@@ -53,7 +53,7 @@ impl Completor {
             #!/bin/sh
 
             cachedir="${XDG_CACHE_HOME:-"$HOME/.cache"}"
-            cache="$cachedir/dmenu_run"
+            cache="$cachedir/cakeybar_run"
 
             [ ! -e "$cachedir" ] && mkdir -p "$cachedir"
 
@@ -71,7 +71,6 @@ impl Completor {
         // TODO: set active on wrapper
         // TODO: error message in wrapper
         // TODO: up history
-        // TODO: fix fullscreen
         // TODO: replace dropdown with grey text
         // TODO: !shell
         // TODO: recency
@@ -100,6 +99,7 @@ impl Completor {
 
                 // create window
                 let window = gtk::Window::new(gtk::WindowType::Toplevel);
+                wm_util.add_window(&window);
                 wm::gtk::set_transparent(&window);
                 window.set_type_hint(gdk::WindowTypeHint::PopupMenu);
                 window.set_skip_pager_hint(false);
@@ -111,7 +111,6 @@ impl Completor {
                 window.move_(x, y);
                 window.resize(width, height);
                 window.set_resizable(false);
-                wm_util.add_window(&window);
                 window.show();
                 wm::gtk::disable_shadow(&window);
 
@@ -119,8 +118,6 @@ impl Completor {
 
                 let entry = gtk::Entry::new();
                 window.add(&entry);
-                #[allow(deprecated)]
-                entry.set_property_shadow_type(gtk::ShadowType::None);
                 entry.set_has_frame(false);
                 entry.show();
                 entry.grab_focus();
@@ -172,6 +169,16 @@ impl Completor {
                     }
                     false
                 }));
+
+                // stop fullscreen
+                window.connect_window_state_event(move |w, e| {
+                    let state = e.get_new_window_state();
+                    let is_fullscreen = !(state & gdk::WindowState::FULLSCREEN).is_empty();
+                    if is_fullscreen {
+                        w.unfullscreen();
+                    }
+                    Inhibit(false)
+                });
 
                 let destroy = clone!((window_opt, window, wrapper) move || {
                     wrapper.disconnect(from_glib(size_id));
