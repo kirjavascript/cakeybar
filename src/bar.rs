@@ -13,7 +13,7 @@ use crate::config::ConfigGroup;
 
 pub struct Bar {
     pub config: ConfigGroup,
-    pub components: Vec<Box<Component>>,
+    pub components: Vec<Box<dyn Component>>,
     pub overlay: Overlay,
     pub container: gtk::Box,
     pub wm_util: wm::WMUtil,

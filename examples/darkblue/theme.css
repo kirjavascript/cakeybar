@@ -8,11 +8,16 @@ label, entry {
     font-weight: 600;
 }
 
-#autocomplete {
+#autocomplete .entry {
     border: none;
     padding: 5px;
     min-width: 300px;
     min-height: 17px;
+}
+
+#autocomplete .suggestion {
+    padding: 5px;
+    color: grey;
 }
 
 #left, #right {

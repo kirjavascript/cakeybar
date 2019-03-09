@@ -65,15 +65,10 @@ impl Completor {
             fi
         "#.to_string());
 
-        // TODO: rename to ??? and add config
-        // TODO: prompt = ""
-        // TODO: complete on TAB
-        // TODO: set active on wrapper
+        // TODO: rename to ???
         // TODO: error message in wrapper
-        // TODO: up history
-        // TODO: replace dropdown with grey text
+        // TODO: up history / recency
         // TODO: !shell
-        // TODO: recency
 
         // create wrapper
 
@@ -117,37 +112,33 @@ impl Completor {
                 // add entry
 
                 let entry = gtk::Entry::new();
-                window.add(&entry);
                 entry.set_has_frame(false);
-                entry.show();
+
+                // wrappers
+
+                let overlay = gtk::Overlay::new();
+                overlay.add(&entry);
+                window.add(&overlay);
+
+                // autosuggest
+
+                let suggest = gtk::Label::new(None);
+                WidgetExt::set_halign(&suggest, gtk::Align::Start);
+                overlay.add_overlay(&suggest);
+                overlay.set_overlay_pass_through(&suggest, true);
+
+                // show everything
+
+                window.show_all();
                 entry.grab_focus();
 
-                // add completion
-
-                let store = gtk::ListStore::new(&[gtk::Type::String]);
-                let completion = gtk::EntryCompletion::new();
-                completion.set_model(&store);
-                completion.set_popup_completion(true);
-                completion.set_minimum_key_length(0);
-                completion.set_text_column(0);
-                completion.set_inline_completion(true);
-                entry.set_completion(&completion);
-
-                // TODO: replace with source
-                unsafe { String::from_utf8_unchecked(
-                    std::process::Command::new("/bin/sh")
-                        .arg("-c").arg(&source).output().unwrap().stdout
-                ).split("\n") }.for_each(|s| {
-                    store.set(&store.append(), &[0], &[&s.to_string()]);
-                });
-
-                entry.show();
-
                 // styles
-                // TODO: use super::init_widget instead
-                WidgetExt::set_name(&entry, &config.name);
+                WidgetExt::set_name(&window, &config.name);
                 if let Some(ctx) = entry.get_style_context() {
-                    ctx.add_class("active");
+                    ctx.add_class("entry");
+                }
+                if let Some(ctx) = suggest.get_style_context() {
+                    ctx.add_class("suggestion");
                 }
 
                 // events
@@ -216,8 +207,40 @@ impl Completor {
                     Inhibit(e.get_button() == Some(3))
                 });
 
-                // grab keycodes for destroying
-                entry.connect_key_press_event(clone!((destroy, completion) move |_, e| {
+                // provide completion
+                let list = std::process::Command::new("/bin/sh")
+                    .arg("-c").arg(&source).output().unwrap().stdout;
+                let suggestions: Vec<String> = String::from_utf8(list)
+                    .unwrap_or_else(|_| "".to_string())
+                    .split("\n")
+                    .map(|s| s.to_owned())
+                    .collect();
+
+                // find suggestions
+                entry.connect_property_text_notify(
+                    clone!((suggest, suggestions) move |entry| {
+                        let found = suggestions.iter().find(|s| {
+                            s.starts_with(&entry.get_buffer().get_text())
+                        });
+                        if let Some(suggestion) = found {
+                            let len = entry.get_text_length() as usize;
+                            if len != 0 {
+                                suggest.set_text(&format!(
+                                    "{}{}",
+                                    " ".repeat(len),
+                                    &suggestion[len..],
+                                ));
+                            } else {
+                                suggest.set_text("");
+                            }
+                        } else {
+                            suggest.set_text("");
+                        }
+                    })
+                );
+
+                // grab keycodes for destroying / completing
+                entry.connect_key_press_event(clone!(destroy move |entry, e| {
                     use gdk::enums::key::{Tab, Escape};
                     let (code, mask) = (e.get_keyval(), e.get_state());
                     let is_escape = code == Escape;
@@ -226,8 +249,14 @@ impl Completor {
                     if is_escape || is_ctrlc {
                         destroy();
                     } else if code == Tab {
-                        // println!("{:#?}", q);
-                        // completion.insert_prefix();
+                        // complete suggestion
+                        let found = suggestions.iter().find(|s| {
+                            s.starts_with(&entry.get_buffer().get_text())
+                        });
+                        if let Some(suggestion) = found {
+                            entry.set_text(suggestion);
+                            entry.set_position(-1);
+                        }
                     }
                     Inhibit(false)
                 }));
