@@ -8,46 +8,31 @@ label, entry {
     font-weight: 600;
 }
 
-entry {
-    background-color: black;
-    border: 2px solid @blue;
-    padding: 0 15px;
+#autocomplete {
+    border: none;
+    padding: 5px;
     min-width: 300px;
+    min-height: 17px;
 }
-
 
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
     background-color: black;
+    background-size: 600px;
+    background-position: 100% 38%;
 }
 
-#left_scroll, #right_scroll {
+#left-scroll, #right-scroll {
     background-color: black;
 }
 
 #menu label {
-    background-color: @blue;
-    padding: 0 8px;
-    min-width: 28px;
-    background-image: url("./icons/tux.png");
-    background-size: cover;
+    min-width: 30px;
+    background-image: url("./icons/manjaro.svg");
+    background-size: contain;
     background-repeat: no-repeat;
-    background-position: 50% -10%;
 }
-
-/* #menu_popup { */
-/*     background-color: black; */
-/*     padding: 5px; */
-/* } */
-
-/* #menu_popup label { */
-/*     padding: 5px; */
-/* } */
-
-/* #menu_popup label:focus { */
-/*     background-color: @blue; */
-/* } */
 
 #tray {
     padding-right: 7px;
@@ -59,6 +44,7 @@ entry {
 
 #workspaces label {
     padding: 0 8px;
+    border-radius: 2px 2px 0 0;
 }
 
 #workspaces .visible {

@@ -1,8 +1,9 @@
-use bar::Bar;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::config::ConfigGroup;
 use gtk::{Align, ContainerExt, OverlayExt, StyleContextExt, WidgetExt};
 use {glib, gtk};
 
+mod backlight;
 mod bandwidth;
 mod battery;
 mod clock;
@@ -24,23 +25,18 @@ mod workspaces;
 
 /// defines interface for components
 pub trait Component {
-    /// provide the config object for this component
-    fn get_config(&self) -> &ConfigGroup;
-    /// show component
-    fn show(&self);
-    /// hide component
-    fn hide(&self);
     /// clean up any remaining timeouts, callbacks
     fn destroy(&self);
 }
 
-/// each component MUST call bar.add_component
+/// each component should call bar.add_component
 pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
     fn void(config: ConfigGroup, _: &mut Bar, _: &gtk::Box) {
         warn!("a valid type is required for #{}", config.name)
     }
     // decide which component to load
     (match config.get_str_or("type", "void") {
+        "backlight" => backlight::Backlight::init,
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
@@ -121,22 +117,13 @@ fn get_alignment(align: &str) -> Align {
 
 // use bar::Bar;
 // use components::Component;
-// use config::ConfigGroup;
-// use gtk;
+// use crate::config::ConfigGroup;
 // use gtk::prelude::*;
 //
 // pub struct Template {
-//     config: ConfigGroup,
 // }
 //
 // impl Component for Template {
-//     fn get_config(&self) -> &ConfigGroup {
-//         &self.config
-//     }
-//     fn show(&self) {
-//     }
-//     fn hide(&self) {
-//     }
 //     fn destroy(&self) {
 //     }
 // }
@@ -145,8 +132,6 @@ fn get_alignment(align: &str) -> Align {
 //     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 //         //super::init_widget(&entry, &config, bar, container);
 //
-//         bar.add_component(Box::new(Template {
-//             config,
-//         }));
+//         bar.add_component(Box::new(Template));
 //     }
 // }

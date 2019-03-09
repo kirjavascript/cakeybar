@@ -1,28 +1,18 @@
-use bar::Bar;
+use crate::bar::Bar;
 use chrono::Local;
-use components::Component;
-use config::ConfigGroup;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
-use util::{SymbolFmt, Timer};
+use crate::util::{SymbolFmt, Timer};
 
 pub struct Clock {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
 }
 
 impl Component for Clock {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.label.destroy();
@@ -54,7 +44,6 @@ impl Clock {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(Clock {
-            config,
             label,
             timer,
         }));

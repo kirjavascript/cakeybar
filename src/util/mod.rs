@@ -17,11 +17,11 @@ use std::path::Path;
 
 pub fn get_config_dir() -> String {
     if let Ok(xdg_path) = env::var("XDG_CONFIG_HOME") {
-        format!("{}/{}", xdg_path, ::NAME)
+        format!("{}/{}", xdg_path, crate::NAME)
     } else if let Ok(home_path) = env::var("HOME") {
-        format!("{}/.config/{}", home_path, ::NAME)
+        format!("{}/.config/{}", home_path, crate::NAME)
     } else {
-        format!("~/.config/{}", ::NAME)
+        format!("~/.config/{}", crate::NAME)
     }
 }
 
@@ -39,7 +39,7 @@ pub fn read_file(path: &str) -> Result<String, Error> {
 
 pub fn format_bytes(bytes: u64) -> String {
     if bytes == 0 {
-        return "0B".to_string();
+        return "0B".to_string()
     }
     const LEN: usize = 5;
     let bytes = bytes as f64;

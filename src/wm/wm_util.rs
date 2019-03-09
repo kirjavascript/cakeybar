@@ -1,15 +1,15 @@
-use bar::Bar;
-use config::{Config, ConfigGroup, parse_config};
-use wm::events::{Event, EventEmitter, EventId, EventValue};
-use wm::ipc::commands::*;
-use wm::workspace::Workspace;
-use wm::watch::Watcher;
+use crate::bar::Bar;
+use crate::config::{Config, ConfigGroup, parse_config};
+use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
+use crate::wm::ipc::commands::*;
+use crate::wm::workspace::Workspace;
+use crate::wm::watch::Watcher;
+use crate::wm;
 use clap::ArgMatches;
 
 use gtk;
 use gtk::prelude::*;
 use gtk::CssProvider;
-use wm;
 
 use std::cell::RefCell;
 use std::fmt;
@@ -47,9 +47,9 @@ impl WMUtil {
     pub fn new(
         app: gtk::Application, config: Config, matches: &ArgMatches
     ) -> Self {
-        let wm_type = if let Ok(_) = wm::i3::connect() {
+        let wm_type = if wm::i3::connect().is_ok() {
             WMType::I3
-        } else if let Ok(_) = wm::bsp::connect() {
+        } else if wm::bsp::connect().is_ok() {
             WMType::Bsp
         } else {
             WMType::Unknown
@@ -93,6 +93,7 @@ impl WMUtil {
             _ => {}
         }
 
+        wm::gtk::css_reset();
         util.load_theme(None);
         util.load_bars();
         if matches.is_present("watch") {
@@ -214,9 +215,9 @@ impl WMUtil {
         self.bars.borrow_mut().append(&mut bars);
     }
 
-    pub fn display_bars(&self, names: Vec<String>, show: bool) {
+    pub fn display_bars(&self, names: &Selectors, show: bool) {
         for bar in self.bars.borrow().iter() {
-            if names.contains(&bar.config.name) {
+            if names.contains_id(&bar.config.name) {
                 if show {
                     bar.show();
                 } else {
@@ -226,21 +227,7 @@ impl WMUtil {
         }
     }
 
-    pub fn display_components(
-        &self, bar_names: Vec<String>, selectors: Selectors, show: bool
-    ) {
-        for bar in self.bars.borrow().iter() {
-            if bar_names.len() == 0 || bar_names.contains(&bar.config.name) {
-                bar.display_components(&selectors, show);
-            }
-        }
-    }
-
     // getters
-
-    pub fn get_bar_names(&self) -> Vec<String> {
-        self.bars.borrow().iter().map(|x| x.config.name.clone()).collect()
-    }
 
     pub fn get_wm_type(&self) -> WMType {
         self.data.borrow().wm_type.clone()
@@ -248,8 +235,8 @@ impl WMUtil {
 
     pub fn get_component_config(&self, name: &str) -> Option<ConfigGroup> {
         self.data.borrow().config.components.iter().find(|x| {
-            &x.name == name
-        }) .map(|x| x.clone())
+            x.name == name
+        }).cloned()
     }
 
     pub fn get_path(&self, filename: &str) -> String {
@@ -294,7 +281,7 @@ impl WMUtil {
         }
     }
 
-    pub fn focus_workspace(&self, workspace_name: &String) {
+    pub fn focus_workspace(&self, workspace_name: &str) {
         match self.data.borrow().wm_type {
             WMType::I3 => {
                 let command = format!("workspace {}", workspace_name);
@@ -321,12 +308,8 @@ impl WMUtil {
     }
 
     pub fn set_padding(&self, is_top: bool, padding: i32) {
-        match self.data.borrow().wm_type {
-            WMType::Bsp => {
-                wm::bsp::set_padding(is_top, padding);
-            }
-            // don't need to do this in i3
-            _ => {}
+        if WMType::Bsp == self.data.borrow().wm_type {
+            wm::bsp::set_padding(is_top, padding);
         }
     }
 }

@@ -4,10 +4,10 @@ use xcb;
 use std::sync::mpsc;
 use std::thread;
 
-use wm;
-use wm::events::{Event, EventValue};
+use crate::wm;
+use crate::wm::events::{Event, EventValue};
 
-pub fn listen(wm_util: &::wm::WMUtil) {
+pub fn listen(wm_util: &crate::wm::WMUtil) {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
@@ -48,7 +48,11 @@ pub fn listen(wm_util: &::wm::WMUtil) {
                 match cookie.get_reply() {
                     Ok(reply) => {
                         let value: &[u32] = reply.value();
-                        let window = value[0];
+                        let window = if value.is_empty() {
+                            xcb::NONE
+                        } else {
+                            value[0]
+                        };
 
                         if is_active_event && current_window != window {
                             // unsubscribe old window

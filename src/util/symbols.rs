@@ -1,3 +1,4 @@
+use nom::*;
 use nom::types::CompleteStr as Input;
 
 #[derive(Debug, Eq, PartialEq)]

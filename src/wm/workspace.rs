@@ -1,5 +1,5 @@
 use i3ipc::reply::Workspace as I3Workspace;
-use wm;
+use crate::wm;
 
 #[derive(Debug, Clone)]
 pub struct Workspace {

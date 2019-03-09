@@ -1,4 +1,4 @@
-use wm::workspace::Workspace;
+use crate::wm::workspace::Workspace;
 
 // data
 
@@ -7,6 +7,7 @@ pub enum Event {
     Window,
     Mode,
     Workspace,
+    Focus(String),
 }
 
 #[derive(Debug, Clone)]
@@ -68,7 +69,6 @@ where
         }
     }
 
-    #[allow(dead_code)]
     pub fn emit(&self, event: T) {
         if let Some(callbacks) = self.listeners.get(&event) {
             for (_, callback) in callbacks {

@@ -1,29 +1,19 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
-use util::{format_bytes, SymbolFmt, Timer};
+use crate::util::{format_bytes, SymbolFmt, Timer};
 
 use probes::memory;
 
 pub struct Memory {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
 }
 
 impl Component for Memory {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.label.destroy();
@@ -72,7 +62,6 @@ impl Memory {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(Memory {
-            config,
             label,
             timer,
         }));

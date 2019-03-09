@@ -15,46 +15,44 @@ awesome-client
 https://github.com/Rahix/pa-visualizer
 https://github.com/onodera-punpun/melonbar - openbox
 GTK_DEBUG=interactive
+https://unix.stackexchange.com/questions/14129/gtk-enable-set-dark-theme-on-a-per-application-basis
+GTK_THEME=Adwaita:light -> std::env::Set_Var
+https://0x46.net/thoughts/2019/02/01/dotfile-madness/
+testing:
+Xephyr -br -ac -noreset -screen 1200x800 :1
+DISPLAY=:1 i3
+openbox: push to back, get desktops
+https://svartalf.info/posts/2019-02-25-introducing-battery-crate/
 
-features for 1.0.0: xkb, completor, start menu, tray bugs
-current: dmenu / ipc
-
-completor
-===
-add trigger (Open)
-dmenu
-ctrl shift d
-recency / history
-command / !shell cmd / /find
-use event listener
-force focus
+features for 0.4.0: add floats for above/below/autohide
+show overlay win95 when press start / runbox
+features for 1.0.0: tray bugs, multiple install options
 
 ipc
 ====
+classList / support classes for selectors
+&& in DSL
 help
+two way
 allow ipc in menu objs
-rustyline
 Open(Selector) completor/startmenu // checkselector(config)
 watch / unwatch
 
-wm refactoring
-===
 default-layout global prop
 config.has_type("workspace") to disable listeners, etc
 startup animation
 autohide bar
-strip out show/hide
 interval float for /s Timer::get_interval(config) ::from_config
 
 tray
 ====
 fix tray fullscreen latency/mm bug with events
+background colour sets the background of th icons too
 reload theme -> wm_util event
 reload event -> ???
 ipc doesn't show/hide (fullscreen? )
 wm restart event restack tray
 send multiple IPC commands at once
-spacing
 bug: on no icons width = 1
 
 file watcher
@@ -73,6 +71,7 @@ script - classes for return code
 prompt -> ipc command
 remote ip
 active window xprop
+windows
 onclick = ""
 mpd ipc
 dmenu gtk::WindowType::Popup
@@ -88,6 +87,7 @@ gtk3-widget-factory
 modal
 workspace multiple rows
 about splashscreen
+wildcards in device names
 
 docs
 ====
@@ -97,30 +97,30 @@ pandoc
 GTKTheme can affect bar
 bindsym $mod+m exec -- --message / sxhkdrc
 ipc help
+cli help
 AUR / shell command (via github release)
+file watcher
+add polybar example
 undocu'd;
-    bar/float
     dropdown/label
     workspaces/spacing
     BSPWM_SOCKET
     CAKEYBAR_SOCKET
-    enable-ipc global bool
     .focused class for Bar
+http://gtk-rs.org/docs/requirements.html
 
 type thing
 https://play.rust-lang.org/?gist=ed3cac7715890bcebb9c25634429f0ca&version=stable&mode=debug
 
 ===
 osx top bar (hover) / pice of cake / powerline (half transparency w/ small window title) / hexagons (visualizer + overhang via bar/float) / busy (all stats)
+autohide bar example (animations?)
 crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
 live reload gifcurry
-https://i.imgur.com/oe8pbEz.png
-https://i.imgur.com/haiUWbT.png
-https://i.imgur.com/TF69nPa.png
-https://i.imgur.com/TePyRmw.png
-blue rope / plain background
+https://github.com/sharkdp/hexyl
+SVG blobs
+<a>request something new</a>
 slanted workspace names with SVG
-mspaint, duplex
 gifcurry
 
 https://alpha.wallhaven.cc/

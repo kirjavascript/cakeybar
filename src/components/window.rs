@@ -1,32 +1,22 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use glib::markup_escape_text;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
-use util::SymbolFmt;
+use crate::util::SymbolFmt;
 
-use wm::events::{Event, EventId, EventValue};
-use wm::WMUtil;
+use crate::wm::events::{Event, EventId, EventValue};
+use crate::wm::WMUtil;
 
 pub struct Window {
-    config: ConfigGroup,
     label: Label,
     event_id: EventId,
     wm_util: WMUtil,
 }
 
 impl Component for Window {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.wm_util.remove_listener(Event::Window, self.event_id);
         self.label.destroy();
@@ -73,7 +63,6 @@ impl Window {
 
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Window {
-            config,
             label,
             wm_util,
             event_id,

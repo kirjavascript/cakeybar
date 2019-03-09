@@ -1,10 +1,21 @@
 use gdk::{Display, DisplayExt, MonitorExt, Screen};
 use glib::Error;
-use gtk;
 use gtk::{CssProvider, CssProviderExt, Rectangle, StyleContext};
 
 mod window;
 pub use self::window::*;
+
+pub fn css_reset() {
+    let screen = Screen::get_default().unwrap();
+    let provider = CssProvider::new();
+    if provider.load_from_data(include_bytes!("reset.css")).is_ok() {
+        StyleContext::add_provider_for_screen(
+            &screen,
+            &provider,
+            gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
+        );
+    }
+}
 
 pub fn load_theme(path: &str) -> Result<CssProvider, Error> {
     let screen = Screen::get_default().unwrap();
@@ -18,7 +29,7 @@ pub fn load_theme(path: &str) -> Result<CssProvider, Error> {
             );
             Ok(provider)
         }
-        Err(e) => Err(e),
+        Err(e) => Err(e)
     }
 }
 

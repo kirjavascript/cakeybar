@@ -1,6 +1,6 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::Label;
@@ -9,25 +9,15 @@ use std::process::{Command, Stdio};
 use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
-use util::{SymbolFmt, Timer};
+use crate::util::{SymbolFmt, Timer};
 
 pub struct Script {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
     tx_term: mpsc::Sender<()>,
 }
 
 impl Component for Script {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.tx_term.send(()).ok();
@@ -80,7 +70,6 @@ impl Script {
             let timer = Timer::add_seconds(interval as u32, tick);
 
             bar.add_component(Box::new(Script {
-                config,
                 label,
                 timer,
                 tx_term,

@@ -20,13 +20,18 @@ macro_rules! clone {
 
 macro_rules! message {
     ($c:ident, $m:expr, $p:expr) => {{
-        use $crate::ansi_term::Colour::{$c, Fixed};
         let padding = String::from_utf8(vec![b' '; 12 - $m.len()]).unwrap();
-        eprint!("{}{} {}", padding, $c.bold().paint($m), $p);
         let file_line = format!("{}:{}", file!(), line!());
-        eprintln!(" {}", Fixed(240).paint(file_line));
+        if *$crate::config::NO_COLOR {
+            eprintln!("{}{} {} {}", padding, $m, $p, file_line);
+        } else {
+            use ansi_term::Colour::{$c, Fixed};
+            eprint!("{}{} {}", padding, $c.bold().paint($m), $p);
+            eprintln!(" {}", Fixed(240).paint(file_line));
+        }
     }};
 }
+
 #[macro_export]
 macro_rules! error {
     ( $x:expr, $( $y:expr ),* ) => {

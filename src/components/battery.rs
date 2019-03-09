@@ -1,28 +1,18 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
 use gtk::{Label, StyleContextExt};
 use std::io::Error;
-use util::{read_file, SymbolFmt, Timer};
+use crate::util::{read_file, SymbolFmt, Timer};
 
 pub struct Battery {
-    config: ConfigGroup,
     label: Label,
     timer: Timer,
 }
 
 impl Component for Battery {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.label.show();
-    }
-    fn hide(&self) {
-        self.label.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.label.destroy();
@@ -91,7 +81,6 @@ impl Battery {
             let timer = Timer::add_seconds(interval as u32, tick);
 
             bar.add_component(Box::new(Battery {
-                config,
                 label,
                 timer,
             }));

@@ -1,29 +1,19 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
-use util::{LabelGroup, SymbolFmt, Timer};
+use crate::util::{LabelGroup, SymbolFmt, Timer};
 
 use systemstat::data::{IpAddr, Network};
 use systemstat::{Platform, System};
 
 pub struct IP {
-    config: ConfigGroup,
     wrapper: gtk::Box,
     timer: Timer,
 }
 
 impl Component for IP {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.wrapper.show();
-    }
-    fn hide(&self) {
-        self.wrapper.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.wrapper.destroy();
@@ -77,7 +67,6 @@ impl IP {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(IP {
-            config,
             wrapper: label_group.wrapper,
             timer,
         }));

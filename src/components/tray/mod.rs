@@ -1,25 +1,24 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gdk::{WindowExt, RGBA};
 use glib::translate::ToGlib;
 use glib_sys::g_source_remove;
-use gtk;
 use gtk::prelude::*;
 use gtk::Orientation;
-use util::Timer;
+use crate::util::Timer;
 
 use crossbeam_channel as channel;
 use glib;
 use std::sync::Arc;
 use std::time::Duration;
 use std::{process, thread};
-use wm;
+use crate::wm;
 use xcb;
 
 mod manager;
 
-// mutable statics should be safe within the same thread
+// only used in the main thread
 static mut TRAY_LOADED: bool = false;
 
 #[derive(PartialEq)]
@@ -28,30 +27,21 @@ pub enum Action {
     Move(u32, u32),
     BgColor(u32),
     IconSize(u16),
+    IconSpacing(u16),
+    #[allow(dead_code)]
     Show,
+    #[allow(dead_code)]
     Hide,
     Quit,
 }
 
 pub struct Tray {
-    config: ConfigGroup,
     base_widget: gtk::Box,
     timer: Timer,
     sender: channel::Sender<Action>,
 }
 
 impl Component for Tray {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.base_widget.show();
-        self.sender.send(Action::Show);
-    }
-    fn hide(&self) {
-        self.base_widget.hide();
-        self.sender.send(Action::Hide);
-    }
     fn destroy(&self) {
         self.base_widget.destroy();
         self.timer.remove();
@@ -99,10 +89,14 @@ impl Tray {
             s_main.send(Action::BgColor(bg_color));
         }
 
-        // set icon size
+        // set icon size/spacing
         let icon_size = config.get_int_or("icon-size", 20);
         if icon_size != 20 {
             s_main.send(Action::IconSize(icon_size as u16));
+        }
+        let icon_spacing = config.get_int_or("icon-spacing", 0);
+        if icon_spacing != 0 {
+            s_main.send(Action::IconSpacing(icon_spacing as u16));
         }
 
         // send resize event
@@ -136,11 +130,8 @@ impl Tray {
 
                 let (s_events, r_events) = channel::unbounded();
                 thread::spawn(clone!(conn move || {
-                    loop {
-                        match conn.wait_for_event() {
-                            Some(event) => { s_events.send(event); },
-                            None => { break; }
-                        }
+                    while let Some(event) = conn.wait_for_event() {
+                        s_events.send(event)
                     }
                 }));
 
@@ -209,7 +200,6 @@ impl Tray {
         }));
 
         bar.add_component(Box::new(Tray {
-            config,
             base_widget,
             timer,
             sender: s_main,

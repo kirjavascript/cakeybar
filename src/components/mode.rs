@@ -1,31 +1,21 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use glib::markup_escape_text;
 use gtk;
 use gtk::prelude::*;
 use gtk::{Label, Orientation};
-use util::SymbolFmt;
-use wm::events::{Event, EventId, EventValue};
-use wm::WMUtil;
+use crate::util::SymbolFmt;
+use crate::wm::events::{Event, EventId, EventValue};
+use crate::wm::WMUtil;
 
 pub struct Mode {
-    config: ConfigGroup,
     wrapper: gtk::Box,
     event_id: EventId,
     wm_util: WMUtil,
 }
 
 impl Component for Mode {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.wrapper.show();
-    }
-    fn hide(&self) {
-        self.wrapper.hide();
-    }
     fn destroy(&self) {
         self.wm_util.remove_listener(Event::Mode, self.event_id);
         self.wrapper.destroy();
@@ -68,7 +58,6 @@ impl Mode {
 
         let wm_util = bar.wm_util.clone();
         bar.add_component(Box::new(Mode {
-            config,
             wrapper,
             wm_util,
             event_id,

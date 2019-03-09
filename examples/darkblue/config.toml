@@ -7,6 +7,7 @@ layout = [
     "menu",
     "workspaces",
     "mode",
+    "autocomplete",
     "title",
     "box1",
     "tray",
@@ -18,7 +19,6 @@ position = "top"
 layout = [
     "menu",
     "workspaces",
-    "completor",
     "mode",
     "title",
     "box1",
@@ -34,13 +34,14 @@ monitor = 1
 position = "bottom"
 workspace-scroll = true
 
-[component.completor]
+[component.autocomplete]
 type = "completor"
 
 # tray
 
 [component.tray]
 type = "tray"
+icon-spacing = 2
 
 # wm stuff
 
@@ -64,7 +65,6 @@ type = "mode"
 type = "container"
 layout = [
     "battery",
-    # "memory",
     "cpu",
     "bandwidth",
     "disk",
@@ -89,12 +89,12 @@ adapter = "AC"
 
 [component.ip]
 type = "ip"
-interfaces = ["enp3s0", "wlp58s0", "eth0"]
+interfaces = ["enp3s0", "eno1", "wlp0s20f0u5", "eth0"]
 class = "has-icon"
 
 [component.bandwidth]
 type = "bandwidth"
-interfaces = ["enp3s0", "wlp58s0", "eth0"]
+interfaces = ["enp3s0", "eno1", "wlp0s20f0u5", "eth0"]
 class = "has-icon"
 
 [component.cpu]
@@ -125,7 +125,7 @@ items = [
         { label = "nonsense", command = "termite -e \"genact\"" },
     ] },
     { label = "change background", children = [
-        { label = "forest bg", command = "feh --bg-fill \"/home/thom/backgrounds/forest.png\" --bg-fill \"/home/thom/backgrounds/mac.jpg\"" },
-        { label = "mountain bg", command = "feh --bg-fill /home/thom/backgrounds/white.png" },
+        { label = "forest bg", command = "feh --bg-fill \"~/backgrounds/forest.png\" --bg-fill \"~/backgrounds/mac.jpg\"" },
+        { label = "mountain bg", command = "feh --bg-fill ~/backgrounds/white.png" },
     ] },
 ]

@@ -1,26 +1,5 @@
-extern crate ansi_term;
-extern crate cairo;
-extern crate chrono;
-extern crate clap;
-extern crate dft;
-extern crate gdk;
-extern crate gdk_sys;
-extern crate gio;
-extern crate glib;
-extern crate glib_sys;
-extern crate gtk;
-extern crate i3ipc;
-extern crate libc;
-extern crate probes;
-extern crate sysinfo;
-extern crate systemstat;
-extern crate toml;
-extern crate inotify;
-extern crate xcb;
-#[macro_use]
-extern crate nom;
-#[macro_use]
-extern crate crossbeam_channel;
+// TODO: remove
+#[macro_use] extern crate crossbeam_channel;
 
 use clap::{App, Arg};
 use gio::prelude::*;
@@ -41,6 +20,11 @@ fn main() {
 
     let matches = App::new(NAME)
         .version(VERSION)
+        .setting(if *config::NO_COLOR {
+            clap::AppSettings::ColorNever
+        } else {
+            clap::AppSettings::ColorAuto
+        })
         .arg(Arg::with_name("config")
             .short("c")
             .long("config")
@@ -87,14 +71,17 @@ fn main() {
         error!("{} (requires 3.22+)", err);
     }
 
+    let is_multi = matches.is_present("multi");
+
     let application = gtk::Application::new(
         format!("com.kirjava.{}", NAME).as_str(),
-        if matches.is_present("multi") {
+        if is_multi {
             gio::ApplicationFlags::NON_UNIQUE
         } else {
             gio::ApplicationFlags::empty()
         },
-    ).expect("Initialization failed...");
+    ).expect("initialization failed...");
+
 
     application.connect_startup(move |app| {
         // get config path
@@ -112,7 +99,13 @@ fn main() {
             error!("{}", msg);
         }
     });
-    application.connect_activate(|_| {});
+    application.connect_activate(|_| { });
 
     application.run(&Vec::new()); // dont pass any arguments to GTK
+
+    if application.get_is_remote() && !is_multi {
+        warn!("{} is already running (use -D to force)", NAME);
+        wm::ipc::send_message("reload config");
+    }
+
 }

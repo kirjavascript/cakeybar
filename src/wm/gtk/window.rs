@@ -1,11 +1,41 @@
-// x11 stuff
-
 use glib::translate::ToGlibPtr;
 use std::ffi::CString;
 use std::os::raw::c_int;
 
 use gtk::{Rectangle, WidgetExt};
-use {gdk_sys, gtk};
+use gtk::prelude::*;
+use gdk::ScreenExt;
+
+pub fn set_transparent(window: &gtk::Window) {
+    set_visual(&window, &None);
+    window.connect_screen_changed(set_visual);
+    window.connect_draw(draw);
+    window.set_app_paintable(true);
+}
+
+fn set_visual(window: &gtk::Window, _screen: &Option<gdk::Screen>) {
+    if let Some(screen) = window.get_screen() {
+        if let Some(visual) = screen.get_rgba_visual() {
+            window.set_visual(&visual);
+        }
+    }
+}
+
+fn draw(_window: &gtk::Window, ctx: &cairo::Context) -> Inhibit {
+    ctx.set_source_rgba(0., 0., 0., 0.);
+    ctx.set_operator(cairo::enums::Operator::Screen);
+    ctx.paint();
+    Inhibit(false)
+}
+
+pub fn keyboard_grab(window: &gtk::Window) {
+    let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
+    unsafe {
+        gdk_sys::gdk_keyboard_grab(ptr, 0, 0);
+    }
+}
+
+// x11 stuff
 
 pub fn disable_shadow(window: &gtk::Window) {
     let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
@@ -47,7 +77,7 @@ pub fn set_strut(window: &gtk::Window, is_top: bool, rect: Rectangle) {
         // strut
         let format: c_int = 16; // number of bits (must be 8, 16 or 32)
         let mode: c_int = 0; // PROP_MODE_REPLACE
-                             // get height bytes
+        // get height bytes
         let (lo, hi) = ((rect.height & 0xFF) as u8, (rect.height >> 8) as u8);
         let data = if is_top {
             [

@@ -1,9 +1,9 @@
-use bar::Bar;
-use components::Component;
-use config::ConfigGroup;
+use crate::bar::Bar;
+use crate::components::Component;
+use crate::config::ConfigGroup;
 use gtk;
 use gtk::prelude::*;
-use util::{format_bytes, LabelGroup, SymbolFmt, Timer};
+use crate::util::{format_bytes, LabelGroup, SymbolFmt, Timer};
 
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -12,21 +12,11 @@ use std::rc::Rc;
 use probes::network;
 
 pub struct Bandwidth {
-    config: ConfigGroup,
     wrapper: gtk::Box,
     timer: Timer,
 }
 
 impl Component for Bandwidth {
-    fn get_config(&self) -> &ConfigGroup {
-        &self.config
-    }
-    fn show(&self) {
-        self.wrapper.show();
-    }
-    fn hide(&self) {
-        self.wrapper.hide();
-    }
     fn destroy(&self) {
         self.timer.remove();
         self.wrapper.destroy();
@@ -35,6 +25,7 @@ impl Component for Bandwidth {
 
 impl Bandwidth {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+
         let label_group = LabelGroup::new();
         super::init_widget(&label_group.wrapper, &config, bar, container);
 
@@ -73,14 +64,14 @@ impl Bandwidth {
                                     "name" => name.to_string(),
                                     "down/s" => {
                                         format!("{}/s", format_bytes(if rx > 0 {
-                                            rx_now - rx
+                                            rx_now.max(rx) - rx
                                         } else {
                                             0
                                         } / interval))
                                     },
                                     "up/s" => {
                                         format!("{}/s", format_bytes(if tx > 0 {
-                                            tx_now - tx
+                                            tx_now.max(tx) - tx
                                         } else {
                                             0
                                         } / interval))
@@ -107,7 +98,6 @@ impl Bandwidth {
         let timer = Timer::add_seconds(interval as u32, tick);
 
         bar.add_component(Box::new(Bandwidth {
-            config,
             wrapper: label_group.wrapper,
             timer,
         }));

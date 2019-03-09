@@ -4,13 +4,14 @@
 </div>
 <br>
 
-**cakeybar** is a user friendly tool for creating custom statusbars
+a customizable statusbar for your windowmanager 
 
 * multibar/multimonitor support
 * expressive theming with CSS
-* windowmanager neutral design
+* inter-process communication
+* hot config reloading
+* windowmanager neutral config
 * system tray integration
-* auto updates when config changes
 * more rice than feudal japan
 
 *work in progress*  
@@ -49,6 +50,9 @@ see the [examples](examples) for more
 ```toml
 # path to theme. paths can be relative or absolute
 theme = "theme.css"
+
+# dictate IPC usage
+enable-ipc = true
 ```
 
 ### bar config
@@ -68,6 +72,12 @@ layout = [ "component", "names", "go", "here" ]
 
 # if enabled, will bind workspace next/prev actions to scroll events
 workspace-scroll = false
+
+# floating bars will not reserve space on the desktop
+float = false
+
+# disable shadows in compton
+disable-shadow = true
 ```
 
 you can define as many bars as you like as long as they have unique names. the name is also used as the CSS selector for that bar: `#bar_name`
@@ -123,11 +133,11 @@ a container to create more complex layouts and group components
 [component.stats_box]
 type = "container"
 spacing = 0
-direction = "vertical"
+direction = "horizontal"
 layout = [ "component", "names", "go", "here" ]
 ```
 
-possible directions: `column | row` or `horizontal | vertical`
+possible directions: `horizontal` or `vertical`
 
 #### window
 
@@ -209,13 +219,21 @@ classes for battery charge are: `full | high | medium | low`
 
 use `ls /sys/class/power_supply/` to see devices
 
+#### backlight
+
+```toml
+[component.backlight]
+type = "backlight"
+format = "{percent}"
+```
+
 #### disk
 
 ```toml
 [component.disk]
 type = "disk"
 mounts = ["/"] # omit to show all
-format = "{free}" # symbols are; free, total, type, name, path
+format = "{free}" # symbols are; free, used, total, fs, mount
 ```
 
 #### clock
@@ -246,9 +264,10 @@ format = "{stdout}" # symbols are; stdout, stderr, code
 [component.tray]
 type = "tray"
 icon-size = 20
+icon-spacing = 0
 ```
 
-the `background-color` style needs to be set explicitly for it to work
+the `background-color` style property needs to be set explicitly for it to work
 
 #### dropdown
 

@@ -1,7 +1,7 @@
 mod listen;
 
-use wm;
-use wm::workspace::{i3_to_generic, Workspace};
+use crate::wm;
+use crate::wm::workspace::{i3_to_generic, Workspace};
 
 // reexported public interface
 pub use self::listen::listen;

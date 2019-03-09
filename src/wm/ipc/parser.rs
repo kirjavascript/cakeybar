@@ -1,6 +1,6 @@
 use nom::types::CompleteStr as Input;
 use nom::*;
-use wm::ipc::commands::*;
+use crate::wm::ipc::commands::*;
 
 named!(selector<Input,Selector>,
     do_parse!(
@@ -64,6 +64,14 @@ named!(reload<Input,Command>,
     alt!( reload_theme | reload_config | reload_help )
 );
 
+named!(focus<Input,Command>,
+    do_parse!(
+        multispace0 >> tag!("focus") >>
+        selector: selector >>
+        (Command::Focus(selector))
+    )
+);
+
 named!(show<Input,Command>,
     do_parse!(
         multispace0 >> tag!("show") >>
@@ -120,7 +128,7 @@ named!(help<Input,Command>,
 );
 
 named!(get_command<Input,Command>,
-    alt!( show | hide | reload | help )
+    alt!( show | hide | focus | reload | help )
 );
 
 pub fn parse_message(input: &str) -> Result<Command, String> {

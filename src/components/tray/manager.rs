@@ -1,6 +1,6 @@
 use super::Action;
 use crossbeam_channel::Sender;
-use wm::atom;
+use crate::wm::atom;
 use xcb;
 
 const CLIENT_MESSAGE: u8 = xcb::CLIENT_MESSAGE | 0x80; // 0x80 flag for client messages
@@ -15,6 +15,7 @@ pub struct Manager<'a> {
     atoms: &'a atom::Atoms<'a>,
     screen: &'a xcb::Screen<'a>,
     icon_size: u16,
+    icon_spacing: u16,
     window: xcb::Window,
     children: Vec<xcb::Window>,
     timestamp: xcb::Timestamp,
@@ -35,6 +36,7 @@ impl<'a> Manager<'a> {
             atoms: atoms,
             screen: screen,
             icon_size: 20,
+            icon_spacing: 0,
             window: conn.generate_id(),
             children: vec![],
             timestamp: 0,
@@ -68,7 +70,7 @@ impl<'a> Manager<'a> {
             xcb::ATOM_WM_CLASS,
             xcb::ATOM_STRING,
             8,
-            format!("{0}\0{0}", ::NAME).as_bytes(),
+            format!("{0}\0{0}", crate::NAME).as_bytes(),
         );
         self.set_property(
             self.atoms.get(atom::_NET_SYSTEM_TRAY_ORIENTATION),
@@ -251,7 +253,8 @@ impl<'a> Manager<'a> {
     }
 
     pub fn adopt(&mut self, window: xcb::Window) {
-        let offset = (self.children.len() as u16 * self.icon_size) as i16;
+        let spacing = (self.children.len() as u16 * self.icon_spacing) as i16;
+        let offset = spacing + (self.children.len() as u16 * self.icon_size) as i16;
         xcb::change_window_attributes(
             self.conn,
             window,
@@ -294,7 +297,8 @@ impl<'a> Manager<'a> {
     }
 
     pub fn reposition(&mut self) {
-        let width = self.children.len() as u16 * self.icon_size;
+        let spacing = (self.children.len().max(1) as u16 * self.icon_spacing) - self.icon_spacing;
+        let width = spacing + (self.children.len() as u16 * self.icon_size);
         self.s_tray.send(Action::Width(width));
         if width > 0 {
             xcb::configure_window(
@@ -366,21 +370,27 @@ impl<'a> Manager<'a> {
             }
             Action::IconSize(size) => {
                 self.icon_size = size;
-                for (i, child) in self.children.iter().enumerate() {
-                    let window = *child;
-                    xcb::configure_window(
-                        self.conn,
-                        window,
-                        &[
-                            (xcb::CONFIG_WINDOW_WIDTH as u16, self.icon_size as u32),
-                            (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
-                            (
-                                xcb::CONFIG_WINDOW_X as u16,
-                                ((i as u16) * self.icon_size) as u32,
-                            ),
-                        ],
-                    );
-                }
+                // this code is only needed if we want to send more than one event
+                //
+                // for (i, child) in self.children.iter().enumerate() {
+                //     let window = *child;
+                //     xcb::configure_window(
+                //         self.conn,
+                //         window,
+                //         &[
+                //             (xcb::CONFIG_WINDOW_WIDTH as u16, self.icon_size as u32),
+                //             (xcb::CONFIG_WINDOW_HEIGHT as u16, self.icon_size as u32),
+                //             (
+                //                 xcb::CONFIG_WINDOW_X as u16,
+                //                 ((i as u16) * self.icon_size) as u32,
+                //             ),
+                //         ],
+                //     );
+                // }
+                self.reposition();
+            }
+            Action::IconSpacing(spacing) => {
+                self.icon_spacing = spacing;
                 self.reposition();
             }
             Action::Show => {

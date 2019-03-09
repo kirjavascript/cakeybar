@@ -1,8 +1,8 @@
 use gtk;
-use wm::ipc;
-use wm::ipc::commands::*;
-use wm::ipc::exec::run_command;
-use wm::WMUtil;
+use crate::wm::ipc;
+use crate::wm::ipc::commands::*;
+use crate::wm::ipc::exec::run_command;
+use crate::wm::WMUtil;
 
 use crossbeam_channel as channel;
 use std::fs::remove_file;
@@ -11,7 +11,7 @@ use std::os::unix::net::{UnixListener, UnixStream};
 use std::thread;
 
 pub fn listen(wm_util: &WMUtil) {
-    let socket_path = ipc::get_socket_path();
+    let socket_path = crate::config::CAKEYBAR_SOCKET.to_owned();
     // remove from last time
     remove_file(&socket_path).ok();
 
