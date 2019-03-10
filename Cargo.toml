@@ -5,6 +5,7 @@ edition = "2018"
 
 [profile.release]
 lto = true
+panic = "abort"
 
 [dependencies.gtk]
 git = "https://github.com/gtk-rs/gtk.git"

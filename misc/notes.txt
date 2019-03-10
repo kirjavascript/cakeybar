@@ -37,6 +37,7 @@ two way
 allow ipc in menu objs
 Open(Selector) completor/startmenu // checkselector(config)
 watch / unwatch
+clear cache
 
 default-layout global prop
 config.has_type("workspace") to disable listeners, etc
@@ -88,6 +89,7 @@ modal
 workspace multiple rows
 about splashscreen
 wildcards in device names
+add current process to cpu/mem
 
 docs
 ====
@@ -100,13 +102,13 @@ ipc help
 cli help
 AUR / shell command (via github release)
 file watcher
-add polybar example
 undocu'd;
     dropdown/label
     workspaces/spacing
     BSPWM_SOCKET
     CAKEYBAR_SOCKET
     .focused class for Bar
+shadow-exclude = [ "_NET_WM_WINDOW_TYPE@:32a *= '_NET_WM_WINDOW_TYPE_POPUP_MENU'" ];
 http://gtk-rs.org/docs/requirements.html
 
 type thing

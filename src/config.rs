@@ -8,13 +8,28 @@ use std::path::{Path, PathBuf};
 use std::env;
 use lazy_static::lazy_static;
 
+// env settings
+
+fn get_xdg(path: &str, default: &str) -> String {
+    if let Ok(xdg_path) = env::var(path) {
+        format!("{}/{}", xdg_path, crate::NAME)
+    } else {
+        let home = env::var("HOME").expect("set a $HOME directory");
+        format!("{}/{}/{}", home, default, crate::NAME)
+    }
+}
+
 lazy_static! {
     pub static ref NO_COLOR: bool = env::var("NO_COLOR").is_ok();
     pub static ref BSPWM_SOCKET: String = env::var("BSPWM_SOCKET")
         .unwrap_or_else(|_| "/tmp/bspwm_0_0-socket".to_string());
     pub static ref CAKEYBAR_SOCKET: String = env::var("CAKEYBAR_SOCKET")
         .unwrap_or_else(|_| "/tmp/cakeybar".to_string());
+    pub static ref CONFIG_DIR: String = get_xdg("XDG_CONFIG_HOME", ".config");
+    pub static ref CACHE_DIR: String = get_xdg("XDG_CACHE_HOME", ".cache");
 }
+
+// config files
 
 #[derive(Debug)]
 pub struct Config {
@@ -118,7 +133,9 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
     let config_file = file_path.file_name().ok_or("getting config filename")?;
 
     // get file
-    let mut file_result = File::open(filename).map_err(|x| x.to_string())?;
+    let mut file_result = File::open(filename).map_err(|x| {
+        format!("{}: {}", file_path.display(), x.to_string().to_lowercase())
+    })?;
 
     let mut contents = String::new();
     file_result
@@ -238,13 +255,13 @@ fn get_path(file: String, directory: &Path) -> String {
 }
 
 fn value_to_property(value: &Value) -> Property {
-    match value {
-        &Value::String(ref str_) => Property::String(str_.to_string()),
-        &Value::Integer(ref int) => Property::Integer(*int),
-        &Value::Float(ref float) => Property::Float(*float),
-        &Value::Array(ref arr) => Property::Array(arr.iter().map(value_to_property).collect()),
-        &Value::Boolean(ref boolean) => Property::Boolean(*boolean),
-        &Value::Table(ref table) => {
+    match &value {
+        Value::String(str_) => Property::String(str_.to_string()),
+        Value::Integer(int) => Property::Integer(*int),
+        Value::Float(float) => Property::Float(*float),
+        Value::Array(arr) => Property::Array(arr.iter().map(value_to_property).collect()),
+        Value::Boolean(boolean) => Property::Boolean(*boolean),
+        Value::Table(table) => {
             let mut properties: HashMap<String, Property> = HashMap::new();
             table.iter().for_each(|(k, v)| {
                 properties.insert(k.to_string(), value_to_property(v));

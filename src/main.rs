@@ -87,7 +87,7 @@ fn main() {
         // get config path
         let config_path = match matches.value_of("config") {
             Some(path) => path.to_string(),
-            None => format!("{}/config.toml", util::get_config_dir()),
+            None => format!("{}/config.toml", *config::CONFIG_DIR),
         };
 
         let config_res = config::parse_config(&config_path);

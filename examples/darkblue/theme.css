@@ -8,18 +8,6 @@ label, entry {
     font-weight: 600;
 }
 
-#autocomplete .entry {
-    border: none;
-    padding: 5px;
-    min-width: 300px;
-    min-height: 17px;
-}
-
-#autocomplete .suggestion {
-    padding: 5px;
-    color: grey;
-}
-
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
@@ -37,6 +25,18 @@ label, entry {
     background-image: url("./icons/manjaro.svg");
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+#autocomplete .entry {
+    border: none;
+    padding: 5px;
+    min-width: 300px;
+    min-height: 17px;
+}
+
+#autocomplete .suggestion {
+    padding: 5px;
+    color: grey;
 }
 
 #tray {
