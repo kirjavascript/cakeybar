@@ -260,6 +260,10 @@ impl Completor {
                                 entry.set_position(-1);
                                 // add to the start of the list
                                 suggestions.borrow_mut().insert(0, suggestion);
+
+                                // let cached_suggestions = suggestions.borrow().join("\n");
+                                // let cache_path = format!("{}/suggest", *crate::config::CACHE_DIR);
+                                // crate::util::write_file(&cache_path, &cached_suggestions);
                             }
                         }
                         Inhibit(false)
