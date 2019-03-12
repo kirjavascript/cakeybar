@@ -35,7 +35,7 @@ position = "bottom"
 workspace-scroll = true
 
 [component.autocomplete]
-type = "completor"
+type = "command_input"
 
 # tray
 

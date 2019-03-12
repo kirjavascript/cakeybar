@@ -13,7 +13,9 @@ use gdk::Rectangle;
 use std::cell::RefCell;
 use std::rc::Rc;
 
-pub struct Completor {
+mod autosuggest;
+
+pub struct CommandInput {
     config: ConfigGroup,
     wrapper: gtk::Box,
     window_opt: Rc<RefCell<Option<gtk::Window>>>,
@@ -21,7 +23,7 @@ pub struct Completor {
     wm_util: WMUtil,
 }
 
-impl Component for Completor {
+impl Component for CommandInput {
     fn destroy(&self) {
         let event_type = Event::Focus(self.config.name.clone());
         self.wm_util.remove_listener(event_type, self.event_id);
@@ -45,7 +47,7 @@ fn get_abs_rect(wrapper: &gtk::Box) -> Rectangle {
     }
 }
 
-impl Completor {
+impl CommandInput {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 
         let source = config.get_string("source").unwrap_or_else(|| r#"
@@ -75,6 +77,8 @@ impl Completor {
         // TODO: pamac- (find next best)
         // TODO: merge new with cache
         // TODO: clear cache
+
+        // autosuggest struct
 
         // create wrapper
 
@@ -274,7 +278,7 @@ impl Completor {
             }
         ));
 
-        bar.add_component(Box::new(Completor {
+        bar.add_component(Box::new(CommandInput {
             config,
             wrapper,
             window_opt,

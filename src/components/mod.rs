@@ -7,7 +7,7 @@ mod backlight;
 mod bandwidth;
 mod battery;
 mod clock;
-mod completor;
+mod command_input;
 mod container;
 mod cpu;
 mod disk;
@@ -40,7 +40,7 @@ pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) 
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
-        "completor" => completor::Completor::init,
+        "command_input" => command_input::CommandInput::init,
         "container" => container::Container::init,
         "cpu" => cpu::CPU::init,
         "disk" => disk::Disk::init,

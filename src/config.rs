@@ -14,7 +14,7 @@ fn get_xdg(path: &str, default: &str) -> String {
     if let Ok(xdg_path) = env::var(path) {
         format!("{}/{}", xdg_path, crate::NAME)
     } else {
-        let home = env::var("HOME").expect("set a $HOME directory");
+        let home = env::var("HOME").expect("POSIX requires you to set $HOME");
         format!("{}/{}/{}", home, default, crate::NAME)
     }
 }
