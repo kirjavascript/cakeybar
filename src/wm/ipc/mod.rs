@@ -28,6 +28,6 @@ pub fn send_message(input: &str) {
                 info!("{}", res);
             }
         }
-        Err(err) => error!("{}", err),
+        Err(err) => error!("{}", err.to_string().to_lowercase()),
     }
 }

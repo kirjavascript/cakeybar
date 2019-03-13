@@ -15,6 +15,8 @@ use std::rc::Rc;
 
 mod autosuggest;
 
+use autosuggest::Suggestions;
+
 pub struct CommandInput {
     config: ConfigGroup,
     wrapper: gtk::Box,
@@ -50,35 +52,12 @@ fn get_abs_rect(wrapper: &gtk::Box) -> Rectangle {
 impl CommandInput {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 
-        let source = config.get_string("source").unwrap_or_else(|| r#"
-            #!/bin/sh
-            IFS=:
-            if stest -dqr $PATH; then
-                stest -flx $PATH | sort -u
-            fi
-        "#.to_string());
-
-        // get suggestions list
-        let list = std::process::Command::new("/bin/sh")
-            .arg("-c").arg(&source).output().unwrap().stdout;
-        let suggestions: Vec<String> = String::from_utf8(list)
-            .unwrap_or_else(|_| "".to_string())
-            .split("\n")
-            .map(|s| s.to_owned())
-            .collect();
-        let suggestions = Rc::new(RefCell::new(suggestions));
-
-        // TODO: rename to ???
         // TODO: error message in wrapper
         // TODO: monitor focus
-        // TODO: !shell
-        // TODO: recency / history
+        // TODO: poll for blur
         // TODO: TAB for word, Right for all
-        // TODO: pamac- (find next best)
-        // TODO: merge new with cache
-        // TODO: clear cache
 
-        // autosuggest struct
+        let suggestions = Suggestions::init();
 
         // create wrapper
 
@@ -221,13 +200,11 @@ impl CommandInput {
                 // find suggestions
                 entry.connect_property_text_notify(
                     clone!((suggest, suggestions) move |entry| {
-                        let found = suggestions.borrow().iter().find(|s| {
-                            s.starts_with(&entry.get_buffer().get_text())
-                        }).map(|s| s.to_owned());
+                        let text = entry.get_buffer().get_text();
 
                         let len = entry.get_text_length() as usize;
-                        match &found {
-                            Some(suggestion) if len != 0 =>  {
+                        match &suggestions.find(&text) {
+                            Some(suggestion) if len != 0 => {
                                 suggest.set_text(&format!(
                                     "{}{}",
                                     " ".repeat(len),
@@ -252,22 +229,11 @@ impl CommandInput {
                         if is_escape || is_ctrlc {
                             destroy();
                         } else if code == Tab {
-                            // complete suggestion
-                            let pos_opt = suggestions.borrow().iter().position(|s| {
-                                s.starts_with(&entry.get_buffer().get_text())
-                            });
-                            if let Some(position) = pos_opt {
-                                // remove chosen item
-                                let suggestion = suggestions.borrow_mut()
-                                    .swap_remove(position);
+                            let text = entry.get_buffer().get_text();
+
+                            if let Some(suggestion) = suggestions.complete(&text) {
                                 entry.set_text(&suggestion);
                                 entry.set_position(-1);
-                                // add to the start of the list
-                                suggestions.borrow_mut().insert(0, suggestion);
-
-                                // let cached_suggestions = suggestions.borrow().join("\n");
-                                // let cache_path = format!("{}/suggest", *crate::config::CACHE_DIR);
-                                // crate::util::write_file(&cache_path, &cached_suggestions);
                             }
                         }
                         Inhibit(false)
