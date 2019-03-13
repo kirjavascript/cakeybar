@@ -1,6 +1,6 @@
 use std::cell::{RefCell, Ref};
 use std::rc::Rc;
-use std::fs::{self, DirEntry};
+use std::fs;
 use std::path::Path;
 use std::os::unix::fs::PermissionsExt;
 use std::env;
@@ -17,7 +17,7 @@ struct Data {
 // TODO: pamac- (find next best)
 // TODO: clear cache
 
-fn get_installed_programs() -> Vec<String> {
+fn get_installed_programs(sort: bool) -> Vec<String> {
     let mut programs = HashSet::new();
 
     env::var("PATH").unwrap_or_else(|_| "/usr/bin".to_string())
@@ -40,9 +40,11 @@ fn get_installed_programs() -> Vec<String> {
             }
         });
 
-    // TODO: optionally sort unique
+    let mut programs = programs.iter().cloned().collect::<Vec<String>>();
 
-    let programs = programs.iter().cloned().collect::<Vec<String>>();
+    if sort {
+        programs.sort();
+    }
 
     programs
 }
@@ -55,10 +57,8 @@ impl Suggestions {
         let programs_path = format!("{}/programs", *crate::config::CACHE_DIR);
         let programs = match read_file(&programs_path) {
             Ok(programs) => programs.split("\n").map(|s| s.to_owned()).collect(),
-            Err(_) => get_installed_programs(),
+            Err(_) => get_installed_programs(true),
         };
-        let q = get_installed_programs();
-        println!("{:#?}", q);
         let data = Data {
             programs,
         };
