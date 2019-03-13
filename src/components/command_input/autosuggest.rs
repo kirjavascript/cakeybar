@@ -1,11 +1,9 @@
 use std::cell::{RefCell, Ref};
 use std::rc::Rc;
-use std::fs;
-use std::path::Path;
-use std::os::unix::fs::PermissionsExt;
-use std::env;
 use std::collections::HashSet;
-use crate::util::{write_file, read_file};
+use std::iter::FromIterator;
+
+use crate::util::{self, write_file, read_file};
 
 #[derive(Clone)]
 pub struct Suggestions(Rc<RefCell<Data>>);
@@ -15,50 +13,30 @@ struct Data {
 }
 
 // TODO: pamac- (find next best)
-// TODO: clear cache
-
-fn get_installed_programs(sort: bool) -> Vec<String> {
-    let mut programs = HashSet::new();
-
-    env::var("PATH").unwrap_or_else(|_| "/usr/bin".to_string())
-        .split(":")
-        .for_each(|path| {
-            if let Ok(listing) = fs::read_dir(Path::new(&path)) {
-                for entry in listing {
-                    if let Ok(entry) = entry {
-                        if let Ok(metadata) = entry.metadata() {
-                            let is_exec = metadata.permissions()
-                                .mode() & 0o111 != 0;
-                            if is_exec && metadata.is_file() {
-                                if let Ok(filename) = entry.file_name().into_string() {
-                                    programs.insert(filename);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-    let mut programs = programs.iter().cloned().collect::<Vec<String>>();
-
-    if sort {
-        programs.sort();
-    }
-
-    programs
-}
+// bincode?
 
 impl Suggestions {
 
-    pub fn init() -> Self {
+    pub fn load() -> Self {
         // TODO: load from history
         // TODO: merge from cache
+        // TODO: add new programs to start
         let programs_path = format!("{}/programs", *crate::config::CACHE_DIR);
         let programs = match read_file(&programs_path) {
-            Ok(programs) => programs.split("\n").map(|s| s.to_owned()).collect(),
-            Err(_) => get_installed_programs(true),
+            Ok(programs) => {
+                let mut cache: Vec<String> = programs.split("\n").map(|s| s.to_owned()).collect();
+                // check if new programs were added
+                let programs_set = util::get_programs_set();
+                let cache_set: HashSet<String> = HashSet::from_iter(cache.iter().cloned());
+
+                let new_programs = programs_set.difference(&cache_set);
+                println!("{:#?}", new_programs);
+                cache
+            },
+            Err(_) => util::get_programs_vec(),
         };
+
+        // println!("{:#?}", &programs[..100]);
         let data = Data {
             programs,
         };
@@ -66,6 +44,7 @@ impl Suggestions {
     }
 
     // TODO: reload_programs
+    // TODO: clear_cache
 
     pub fn find(&self, input: &str) -> Option<String> {
         self.0.borrow().programs.iter()

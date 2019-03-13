@@ -123,6 +123,7 @@ autohide bar example (animations?)
 crosspost on unixporn / r/rust [OC] a piece of cakeybar / r/fui
 live reload gifcurry
 https://github.com/sharkdp/hexyl
+https://github.com/kimond/awesome-statusbars
 SVG blobs
 <a>request something new</a>
 slanted workspace names with SVG

@@ -57,7 +57,7 @@ impl CommandInput {
         // TODO: poll for blur
         // TODO: TAB for word, Right for all
 
-        let suggestions = Suggestions::init();
+        let suggestions = Suggestions::load();
 
         // create wrapper
 
@@ -142,13 +142,13 @@ impl CommandInput {
                 ).to_glib();
 
                 // stop window moving
-                window.connect_configure_event(clone!(wrapper move |w, e| {
-                    let Rectangle { x, y, .. } = get_abs_rect(&wrapper);
-                    if Some((x as f64, y as f64)) != e.get_coords() {
-                        w.move_(x, y);
-                    }
-                    false
-                }));
+                // window.connect_configure_event(clone!(wrapper move |w, e| {
+                //     let Rectangle { x, y, .. } = get_abs_rect(&wrapper);
+                //     if Some((x as f64, y as f64)) != e.get_coords() {
+                //         w.move_(x, y);
+                //     }
+                //     false
+                // }));
 
                 // stop fullscreen
                 window.connect_window_state_event(move |w, e| {
