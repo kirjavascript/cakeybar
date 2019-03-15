@@ -28,10 +28,10 @@ fn draw(_window: &gtk::Window, ctx: &cairo::Context) -> Inhibit {
     Inhibit(false)
 }
 
-pub fn keyboard_grab(window: &gtk::Window) {
+pub fn keyboard_grab(window: &gtk::Window) -> i32 {
     let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
     unsafe {
-        gdk_sys::gdk_keyboard_grab(ptr, 0, 0);
+        gdk_sys::gdk_keyboard_grab(ptr, 0, 0)
     }
 }
 

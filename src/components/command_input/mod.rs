@@ -57,8 +57,6 @@ impl CommandInput {
         // TODO: poll for blur
         // TODO: TAB for word, Right for all
 
-        let suggestions = Suggestions::load();
-
         // create wrapper
 
         let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
@@ -77,6 +75,8 @@ impl CommandInput {
                 if window_opt.borrow().is_some() {
                     return
                 }
+
+                let suggestions = Suggestions::load();
 
                 // get rekt
                 let Rectangle { x, y, width, height } = get_abs_rect(&wrapper);
@@ -116,11 +116,6 @@ impl CommandInput {
                 overlay.add_overlay(&suggest);
                 overlay.set_overlay_pass_through(&suggest, true);
 
-                // show everything
-
-                window.show_all();
-                entry.grab_focus();
-
                 // styles
                 WidgetExt::set_name(&window, &config.name);
                 if let Some(ctx) = entry.get_style_context() {
@@ -142,13 +137,13 @@ impl CommandInput {
                 ).to_glib();
 
                 // stop window moving
-                // window.connect_configure_event(clone!(wrapper move |w, e| {
-                //     let Rectangle { x, y, .. } = get_abs_rect(&wrapper);
-                //     if Some((x as f64, y as f64)) != e.get_coords() {
-                //         w.move_(x, y);
-                //     }
-                //     false
-                // }));
+                window.connect_configure_event(clone!(wrapper move |w, e| {
+                    let Rectangle { x, y, .. } = get_abs_rect(&wrapper);
+                    if Some((x as f64, y as f64)) != e.get_coords() {
+                        w.move_(x, y);
+                    }
+                    false
+                }));
 
                 // stop fullscreen
                 window.connect_window_state_event(move |w, e| {
@@ -160,7 +155,17 @@ impl CommandInput {
                     Inhibit(false)
                 });
 
-                let destroy = clone!((window_opt, window, wrapper) move || {
+                // focus out event
+                let focus_id = {
+                    entry.connect_focus_out_event(clone!(window move |e, _| {
+                        wm::gtk::keyboard_grab(&window);
+                        e.grab_focus_without_selecting();
+                        Inhibit(false)
+                    })).to_glib()
+                };
+
+                let destroy = clone!((window_opt, window, wrapper, entry) move || {
+                    entry.disconnect(from_glib(focus_id));
                     wrapper.disconnect(from_glib(size_id));
                     window_opt.borrow_mut().take();
                     window.destroy();
@@ -176,19 +181,12 @@ impl CommandInput {
                         } else {
                             crate::util::run_command(text.to_owned());
                         }
-                        e.destroy();
                         destroy();
                     }
                 }));
 
                 window.connect_delete_event(clone!(destroy move |_, _| {
                     destroy();
-                    gtk::Inhibit(false)
-                }));
-
-                entry.connect_focus_out_event(clone!(window move |e, _| {
-                    wm::gtk::keyboard_grab(&window);
-                    e.grab_focus_without_selecting();
                     gtk::Inhibit(false)
                 }));
 
@@ -239,6 +237,14 @@ impl CommandInput {
                         Inhibit(false)
                     })
                 );
+
+                // show everything, grab keyboard
+
+                window.show_all();
+
+                let q =wm::gtk::keyboard_grab(&window);
+                println!("{:#?}", q);
+                entry.grab_focus();
 
                 *window_opt.borrow_mut() = Some(window);
             }

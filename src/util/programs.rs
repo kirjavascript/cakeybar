@@ -4,6 +4,8 @@ use std::os::unix::fs::PermissionsExt;
 use std::env;
 use std::collections::HashSet;
 
+// get installed programs
+
 pub fn get_programs_set() -> HashSet<String> {
     let mut programs = HashSet::new();
 
