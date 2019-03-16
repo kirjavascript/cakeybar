@@ -3,14 +3,31 @@ use std::rc::Rc;
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
-use crate::util::{self, write_file, read_file};
+use serde::{Serialize, Deserialize};
+use bincode::{serialize, deserialize};
+
+use crate::util;
 
 #[derive(Clone)]
 pub struct Suggestions(Rc<RefCell<Data>>);
 
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 struct Data {
     programs: Vec<String>,
 }
+
+// fn main() {
+//     let world = World(vec![Entity { x: 0.0, y: 4.0 }, Entity { x: 10.0, y: 20.5 }]);
+
+//     let encoded: Vec<u8> = serialize(&world).unwrap();
+
+//     // 8 bytes for the length of the vector, 4 bytes per float.
+//     assert_eq!(encoded.len(), 8 + 4 * 4);
+
+//     let decoded: World = deserialize(&encoded[..]).unwrap();
+
+//     assert_eq!(world, decoded);
+// }
 
 // TODO: pamac- (find next best)
 // bincode?
@@ -22,7 +39,7 @@ impl Suggestions {
         // TODO: merge from cache
         // TODO: add new programs to start
         let programs_path = format!("{}/programs", *crate::config::CACHE_DIR);
-        let programs = match read_file(&programs_path) {
+        let programs = match util::read_file(&programs_path) {
             Ok(programs) => {
                 let mut cache: Vec<String> = programs.split("\n").map(|s| s.to_owned()).collect();
                 // check if new programs were added
@@ -40,6 +57,11 @@ impl Suggestions {
         let data = Data {
             programs,
         };
+
+        // let programs_bin = format!("{}/programs.bin", *crate::config::CACHE_DIR);
+        // let encoded: Vec<u8> = serialize(&data).unwrap();
+        // println!("{:#?}", encoded);
+
         Suggestions(Rc::new(RefCell::new(data)))
     }
 
@@ -82,7 +104,7 @@ impl Suggestions {
             let programs_text = data.programs.join("\n");
             let programs_path = format!("{}/programs", *crate::config::CACHE_DIR);
 
-            if let Err(err) = write_file(&programs_path, &programs_text) {
+            if let Err(err) = util::write_file(&programs_path, &programs_text) {
                 error!(
                     "tried to save program cache {}",
                     err.to_string().to_lowercase(),

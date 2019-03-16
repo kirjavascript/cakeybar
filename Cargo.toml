@@ -13,7 +13,11 @@ features = ["v3_22"]
 
 [dependencies.xcb]
 version = "0.8.2"
-features = [ "thread" ]
+features = ["thread"]
+
+[dependencies.serde]
+version = "1.0.89"
+features = ["derive"]
 
 [dependencies]
 glib = { git = "https://github.com/gtk-rs/glib.git" }
@@ -32,6 +36,7 @@ nom = "4"
 ansi_term = "0.11"
 inotify = "0.6.1"
 crossbeam-channel = "0.2"
+bincode = "1.1.2"
 
 # stats
 systemstat = "0.1.3"

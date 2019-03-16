@@ -241,9 +241,7 @@ impl CommandInput {
                 // show everything, grab keyboard
 
                 window.show_all();
-
-                let q =wm::gtk::keyboard_grab(&window);
-                println!("{:#?}", q);
+                wm::gtk::keyboard_grab(&window);
                 entry.grab_focus();
 
                 *window_opt.borrow_mut() = Some(window);
