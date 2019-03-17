@@ -1,4 +1,4 @@
-use std::cell::RefCell;
+use std::cell::{RefCell, RefMut};
 use std::rc::Rc;
 use std::collections::HashSet;
 use std::iter::FromIterator;
@@ -32,16 +32,14 @@ impl Data {
 }
 
 impl Suggestions {
-    // fn borrow<F>(&self, cb: F) where F: Fn(&Ref<'_, Data>) {
-    //     cb(&self.0.borrow());
-    // }
+    fn borrow_mut<F>(&self, cb: F) where F: Fn(&mut RefMut<'_, Data>) {
+        cb(&mut self.0.borrow_mut());
+    }
 
     pub fn load() -> Self {
         // TODO: pamac- (find next best)
         // TODO: load from history
         // TODO: remove uninstalled
-        // TODO: only save when actually used, not just completion?
-        // TODO: fix ordering bug (swap_remove)
 
         let data = match util::read_data::<Data>(&Data::get_path()) {
             Ok(mut data) => {
@@ -91,28 +89,54 @@ impl Suggestions {
             .map(|s| s.to_owned())
     }
 
-    pub fn complete(&self, input: &str) -> Option<String> {
-        let position_opt = self.0.borrow().programs.iter().position(|s| {
-            s.starts_with(input)
-        });
-
-        if let Some(position) = position_opt {
-            // remove chosen item
-            let suggestion = self.0.borrow_mut().programs.swap_remove(position);
-
-            // add to the start of the list
-            self.0.borrow_mut().programs.insert(0, suggestion.to_owned());
-
-            // increase priority index if needed
-            if position >= self.0.borrow().priority_index {
-                self.0.borrow_mut().priority_index += 1;
+    pub fn select(&self, input: &str) {
+        self.borrow_mut(|data| {
+            let input = input.to_string();
+            if data.programs.contains(&input) {
+                // if found in programs list
+                let position_opt = data.programs.iter().position(|s| {
+                    s == &input
+                });
+                if let Some(position) = position_opt {
+                    // remove chosen item
+                    data.programs.retain(|item| item != &input);
+                    // add to start of list
+                    data.programs.insert(0, input);
+                    // increase priority index if needed
+                    if position >= data.priority_index {
+                        data.priority_index += 1;
+                    }
+                    data.save();
+                }
+            } else {
+                // TODO: add to history
             }
 
-            self.0.borrow().save();
-
-            Some(suggestion)
-        } else {
-            None
-        }
+        });
     }
+
+    // pub fn complete(&self, input: &str) -> Option<String> {
+    //     let position_opt = self.0.borrow().programs.iter().position(|s| {
+    //         s.starts_with(input)
+    //     });
+
+    //     if let Some(position) = position_opt {
+    //         // remove chosen item
+    //         let suggestion = self.0.borrow_mut().programs.swap_remove(position);
+
+    //         // add to the start of the list
+    //         self.0.borrow_mut().programs.insert(0, suggestion.to_owned());
+
+    //         // increase priority index if needed
+    //         if position >= self.0.borrow().priority_index {
+    //             self.0.borrow_mut().priority_index += 1;
+    //         }
+
+    //         self.0.borrow().save();
+
+    //         Some(suggestion)
+    //     } else {
+    //         None
+    //     }
+    // }
 }

@@ -4,7 +4,7 @@
 </div>
 <br>
 
-a customizable statusbar for your windowmanager 
+a customizable statusbar for your windowmanager
 
 * multibar/multimonitor support
 * expressive theming with CSS
@@ -13,6 +13,8 @@ a customizable statusbar for your windowmanager
 * windowmanager neutral config
 * system tray integration
 * more rice than feudal japan
+
+cakeybar is written in Rust using GTK and XCB
 
 *work in progress*  
 not stable yet  

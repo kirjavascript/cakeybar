@@ -171,9 +171,10 @@ impl CommandInput {
                     window.destroy();
                 });
 
-                entry.connect_activate(clone!((wm_util, destroy) move |e| {
-                    // TODO: move into wm_util
+                entry.connect_activate(clone!((wm_util, destroy, suggestions) move |e| {
                     if let Some(text) = e.get_text() {
+                        suggestions.select(&text);
+                        // TODO: move into wm_util
                         if text.starts_with(":") {
                             if let Ok(cmd) = parse_message(&text[1..]) {
                                 wm_util.run_command(cmd);
@@ -229,7 +230,7 @@ impl CommandInput {
                         } else if code == Tab {
                             let text = entry.get_buffer().get_text();
 
-                            if let Some(suggestion) = suggestions.complete(&text) {
+                            if let Some(suggestion) = suggestions.find(&text) {
                                 entry.set_text(&suggestion);
                                 entry.set_position(-1);
                             }
