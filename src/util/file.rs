@@ -26,12 +26,14 @@ pub fn write_raw(path: &str, data: &[u8]) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn write_file(path: &str, data: &str) -> Result<(), Error> {
+pub fn _write_file(path: &str, data: &str) -> Result<(), Error> {
     write_raw(path, data.as_bytes())?;
     Ok(())
 }
 
-pub fn write_data<T: Serialize>(path: &str, data: T) -> Result<(), BoxErr> {
+pub fn write_data<T>(path: &str, data: T) -> Result<(), BoxErr>
+    where T: Serialize
+{
     let encoded: Vec<u8> = serialize(&data)?;
     write_raw(path, &encoded)?;
     Ok(())

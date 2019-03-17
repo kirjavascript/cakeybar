@@ -1,72 +1,89 @@
-use std::cell::{RefCell, Ref};
+use std::cell::RefCell;
 use std::rc::Rc;
 use std::collections::HashSet;
 use std::iter::FromIterator;
 
 use serde::{Serialize, Deserialize};
-use bincode::{serialize, deserialize};
 
 use crate::util;
 
 #[derive(Clone)]
 pub struct Suggestions(Rc<RefCell<Data>>);
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize)]
 struct Data {
     programs: Vec<String>,
+    priority_index: usize, // below which, recent programs live
 }
 
-// fn main() {
-//     let world = World(vec![Entity { x: 0.0, y: 4.0 }, Entity { x: 10.0, y: 20.5 }]);
+impl Data {
+    fn get_path() -> String {
+        format!("{}/suggestions", *crate::config::CACHE_DIR)
+    }
 
-//     let encoded: Vec<u8> = serialize(&world).unwrap();
-
-//     // 8 bytes for the length of the vector, 4 bytes per float.
-//     assert_eq!(encoded.len(), 8 + 4 * 4);
-
-//     let decoded: World = deserialize(&encoded[..]).unwrap();
-
-//     assert_eq!(world, decoded);
-// }
-
-// TODO: pamac- (find next best)
-// bincode?
+    fn save(&self) {
+        if let Err(err) = util::write_data(&Self::get_path(), &self) {
+            error!(
+                "tried to save program cache {}",
+                err.to_string().to_lowercase(),
+            );
+        }
+    }
+}
 
 impl Suggestions {
+    // fn borrow<F>(&self, cb: F) where F: Fn(&Ref<'_, Data>) {
+    //     cb(&self.0.borrow());
+    // }
 
     pub fn load() -> Self {
+        // TODO: pamac- (find next best)
         // TODO: load from history
-        // TODO: merge from cache
-        // TODO: add new programs to start
-        let programs_path = format!("{}/programs", *crate::config::CACHE_DIR);
-        let programs = match util::read_file(&programs_path) {
-            Ok(programs) => {
-                let mut cache: Vec<String> = programs.split("\n").map(|s| s.to_owned()).collect();
+        // TODO: remove uninstalled
+        // TODO: only save when actually used, not just completion?
+        // TODO: fix ordering bug (swap_remove)
+
+        let data = match util::read_data::<Data>(&Data::get_path()) {
+            Ok(mut data) => {
                 // check if new programs were added
                 let programs_set = util::get_programs_set();
-                let cache_set: HashSet<String> = HashSet::from_iter(cache.iter().cloned());
-
-                let new_programs = programs_set.difference(&cache_set);
-                println!("{:#?}", new_programs);
-                cache
+                let cache_set = HashSet::from_iter(data.programs.iter().cloned());
+                let difference: Vec<&String> = programs_set.difference(&cache_set).collect();
+                if !difference.is_empty() {
+                    difference.iter().for_each(|program| {
+                        let sorted_slice = &data.programs[data.priority_index..];
+                        let search_res = sorted_slice.binary_search(&program);
+                        // if not found...
+                        if let Err(index) = search_res {
+                            // add priority index to get absolute index
+                            let index = index + data.priority_index;
+                            data.programs.insert(index, program.to_string());
+                        }
+                    });
+                    data.save();
+                }
+                println!("{:#?}", (
+                    data.priority_index,
+                    &data.programs[..20],
+                ));
+                data
             },
-            Err(_) => util::get_programs_vec(),
+            Err(err) => {
+                warn!(
+                    "creating new command cache - {}",
+                    err.to_string().to_lowercase(),
+                );
+                let data = Data {
+                    programs: util::get_programs_vec(),
+                    priority_index: 0,
+                };
+                data.save();
+                data
+            },
         };
-
-        // println!("{:#?}", &programs[..100]);
-        let data = Data {
-            programs,
-        };
-
-        // let programs_bin = format!("{}/programs.bin", *crate::config::CACHE_DIR);
-        // let encoded: Vec<u8> = serialize(&data).unwrap();
-        // println!("{:#?}", encoded);
 
         Suggestions(Rc::new(RefCell::new(data)))
     }
-
-    // TODO: reload_programs
-    // TODO: clear_cache
 
     pub fn find(&self, input: &str) -> Option<String> {
         self.0.borrow().programs.iter()
@@ -86,30 +103,16 @@ impl Suggestions {
             // add to the start of the list
             self.0.borrow_mut().programs.insert(0, suggestion.to_owned());
 
-            self.save_cache();
+            // increase priority index if needed
+            if position >= self.0.borrow().priority_index {
+                self.0.borrow_mut().priority_index += 1;
+            }
+
+            self.0.borrow().save();
 
             Some(suggestion)
         } else {
             None
         }
-    }
-
-    fn borrow<F>(&self, cb: F) where F: Fn(&Ref<'_, Data>) {
-        cb(&self.0.borrow());
-    }
-
-    fn save_cache(&self) {
-        self.borrow(|data| {
-            // save program order
-            let programs_text = data.programs.join("\n");
-            let programs_path = format!("{}/programs", *crate::config::CACHE_DIR);
-
-            if let Err(err) = util::write_file(&programs_path, &programs_text) {
-                error!(
-                    "tried to save program cache {}",
-                    err.to_string().to_lowercase(),
-                );
-            }
-        });
     }
 }
