@@ -39,16 +39,15 @@ impl Suggestions {
     pub fn load() -> Self {
         // TODO: pamac- (find next best)
         // TODO: load from history
-        // TODO: remove uninstalled
 
         let data = match util::read_data::<Data>(&Data::get_path()) {
             Ok(mut data) => {
-                // check if new programs were added
                 let programs_set = util::get_programs_set();
                 let cache_set = HashSet::from_iter(data.programs.iter().cloned());
-                let difference: Vec<&String> = programs_set.difference(&cache_set).collect();
-                if !difference.is_empty() {
-                    difference.iter().for_each(|program| {
+                // check if new programs were added
+                let diff_new: Vec<&String> = programs_set.difference(&cache_set).collect();
+                if !diff_new.is_empty() {
+                    diff_new.iter().for_each(|program| {
                         let sorted_slice = &data.programs[data.priority_index..];
                         let search_res = sorted_slice.binary_search(&program);
                         // if not found...
@@ -60,10 +59,24 @@ impl Suggestions {
                     });
                     data.save();
                 }
-                println!("{:#?}", (
-                    data.priority_index,
-                    &data.programs[..20],
-                ));
+                // check if old programs were removed
+                let diff_old: Vec<&String> = cache_set.difference(&programs_set).collect();
+                if !diff_old.is_empty() {
+                    diff_old.iter().for_each(|program| {
+                        let position_opt = data.programs.iter().position(|s| {
+                            &s == program
+                        });
+                        if let Some(position) = position_opt {
+                            // remove item
+                            data.programs.retain(|item| &item != program);
+                            // adjust index
+                            if position < data.priority_index {
+                                data.priority_index -= 1;
+                            }
+                        }
+                    });
+                    data.save();
+                }
                 data
             },
             Err(err) => {
@@ -114,29 +127,4 @@ impl Suggestions {
 
         });
     }
-
-    // pub fn complete(&self, input: &str) -> Option<String> {
-    //     let position_opt = self.0.borrow().programs.iter().position(|s| {
-    //         s.starts_with(input)
-    //     });
-
-    //     if let Some(position) = position_opt {
-    //         // remove chosen item
-    //         let suggestion = self.0.borrow_mut().programs.swap_remove(position);
-
-    //         // add to the start of the list
-    //         self.0.borrow_mut().programs.insert(0, suggestion.to_owned());
-
-    //         // increase priority index if needed
-    //         if position >= self.0.borrow().priority_index {
-    //             self.0.borrow_mut().priority_index += 1;
-    //         }
-
-    //         self.0.borrow().save();
-
-    //         Some(suggestion)
-    //     } else {
-    //         None
-    //     }
-    // }
 }
