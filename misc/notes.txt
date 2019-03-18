@@ -26,7 +26,7 @@ https://svartalf.info/posts/2019-02-25-introducing-battery-crate/
 
 features for 0.4.0: add floats for above/below/autohide
 show overlay win95 when press start / runbox
-features for 1.0.0: tray bugs, multiple install options
+features for 1.0.0: tray bugs, multiple install options, stacking order
 
 wm.util!(data => {})
 wm.util.borrow(|| {})
@@ -128,6 +128,7 @@ SVG blobs
 <a>request something new</a>
 slanted workspace names with SVG
 gifcurry
+request a feature
 
 https://alpha.wallhaven.cc/
 http://simpledesktops.com

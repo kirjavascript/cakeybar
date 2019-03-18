@@ -53,7 +53,7 @@ impl Bar {
             #[allow(deprecated)]
             window.set_wmclass(NAME, NAME);
             window.set_type_hint(gdk::WindowTypeHint::Dock);
-            window.set_keep_above(true);
+            window.set_keep_below(true);
             window.stick();
 
             wm::gtk::set_transparent(&window);
