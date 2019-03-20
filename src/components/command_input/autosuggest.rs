@@ -40,7 +40,6 @@ impl Suggestions {
 
     pub fn load() -> Self {
         // TODO: add complete for just a word
-        // TODO: history
 
         let data = match util::read_data::<Data>(&Data::get_path()) {
             Ok(mut data) => {
@@ -79,12 +78,10 @@ impl Suggestions {
                     });
                     data.save();
                 }
-                // history
-                // TODO: slice to limit
-                println!("{:#?}", (
-                    &data.history[..data.history.len().min(10)],
-                    data.history_limit,
-                ));
+                // limit history to N items
+                if data.history.len() > data.history_limit {
+                    data.history.drain(data.history_limit..);
+                }
                 data
             },
             Err(err) => {
@@ -140,7 +137,11 @@ impl Suggestions {
             } else {
                 // add to history
                 data.history.insert(0, input);
-                // TODO: slice history
+                // ensure we dont hit the limit
+                let limit = data.history_limit;
+                if data.history.len() > limit {
+                    data.history.drain(limit..);
+                }
                 data.save();
             }
 
