@@ -132,8 +132,12 @@ impl Suggestions {
                     }
                     data.save();
                 }
+            } else if data.history.contains(&input) {
+                // bump history item to top
+                // TODO: bump to top
             } else {
-                // TODO: add to history
+                // add to history
+                data.history.insert(0, input);
             }
 
         });
