@@ -38,7 +38,9 @@ impl Suggestions {
 
     pub fn load() -> Self {
         // TODO: pamac- (find next best)
+        // TODO: add complete for just a word
         // TODO: load from history
+        // TODO: get washing
 
         let data = match util::read_data::<Data>(&Data::get_path()) {
             Ok(mut data) => {
