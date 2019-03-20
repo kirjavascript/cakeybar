@@ -39,7 +39,6 @@ impl Suggestions {
     }
 
     pub fn load() -> Self {
-        // TODO: pamac- (find next best)
         // TODO: add complete for just a word
         // TODO: history
 
@@ -83,7 +82,7 @@ impl Suggestions {
                 // history
                 // TODO: slice to limit
                 println!("{:#?}", (
-                    &data.history[..10],
+                    &data.history[..data.history.len().min(10)],
                     data.history_limit,
                 ));
                 data
@@ -109,6 +108,7 @@ impl Suggestions {
 
     pub fn find(&self, input: &str) -> Option<String> {
         self.0.borrow().programs.iter()
+            .chain(self.0.borrow().history.iter())
             .find(|s| s.starts_with(input))
             .map(|s| s.to_owned())
     }
@@ -134,10 +134,14 @@ impl Suggestions {
                 }
             } else if data.history.contains(&input) {
                 // bump history item to top
-                // TODO: bump to top
+                data.history.retain(|item| item != &input);
+                data.history.insert(0, input);
+                data.save();
             } else {
                 // add to history
                 data.history.insert(0, input);
+                // TODO: slice history
+                data.save();
             }
 
         });

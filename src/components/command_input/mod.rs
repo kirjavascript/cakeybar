@@ -55,7 +55,8 @@ impl CommandInput {
         // TODO: error message in wrapper
         // TODO: monitor focus
         // TODO: poll for blur
-        // TODO: fix in bspwm / others (appears behind bar)
+        // TODO: config: history
+        // TODO: fix in bspwm / others (appears behind bar / test i3 reload)
         // TODO: TAB for word, Right for all
 
         // create wrapper
