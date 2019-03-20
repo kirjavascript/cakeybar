@@ -12,6 +12,8 @@ pub struct Suggestions(Rc<RefCell<Data>>);
 
 #[derive(Serialize, Deserialize)]
 struct Data {
+    history: Vec<String>,
+    history_limit: usize,
     programs: Vec<String>,
     priority_index: usize, // below which, recent programs live
 }
@@ -23,8 +25,8 @@ impl Data {
 
     fn save(&self) {
         if let Err(err) = util::write_data(&Self::get_path(), &self) {
-            error!(
-                "tried to save program cache {}",
+            info!(
+                "creating new program cache - {}",
                 err.to_string().to_lowercase(),
             );
         }
@@ -39,8 +41,7 @@ impl Suggestions {
     pub fn load() -> Self {
         // TODO: pamac- (find next best)
         // TODO: add complete for just a word
-        // TODO: load from history
-        // TODO: get washing
+        // TODO: history
 
         let data = match util::read_data::<Data>(&Data::get_path()) {
             Ok(mut data) => {
@@ -79,6 +80,12 @@ impl Suggestions {
                     });
                     data.save();
                 }
+                // history
+                // TODO: slice to limit
+                println!("{:#?}", (
+                    &data.history[..10],
+                    data.history_limit,
+                ));
                 data
             },
             Err(err) => {
@@ -87,6 +94,8 @@ impl Suggestions {
                     err.to_string().to_lowercase(),
                 );
                 let data = Data {
+                    history: Vec::new(),
+                    history_limit: 1000,
                     programs: util::get_programs_vec(),
                     priority_index: 0,
                 };
@@ -123,8 +132,12 @@ impl Suggestions {
                     }
                     data.save();
                 }
+            } else if data.history.contains(&input) {
+                // bump history item to top
+                // TODO: bump to top
             } else {
-                // TODO: add to history
+                // add to history
+                data.history.insert(0, input);
             }
 
         });

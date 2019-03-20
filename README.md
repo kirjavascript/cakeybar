@@ -161,7 +161,7 @@ show-all = false # show workspaces from every monitor
 format = "{number}" # symbols are; number, name
 ```
 
-each `label` element in a workspace can have the focused, visibile and urgent classes which can be targeted with `#workspace_list label .focused`
+each `label` element in a workspace can have the focused, visible and urgent classes which can be targeted with `#workspace_list label .focused`
 
 #### mode
 
