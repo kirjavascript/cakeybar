@@ -222,7 +222,7 @@ impl CommandInput {
                 // grab keycodes for destroying / completing
                 entry.connect_key_press_event(
                     clone!((suggestions, destroy) move |entry, e| {
-                        use gdk::enums::key::{Tab, Escape};
+                        use gdk::enums::key::{Tab, Escape, Right};
                         let (code, mask) = (e.get_keyval(), e.get_state());
                         let is_escape = code == Escape;
                         let is_ctrlc = code == 99 && mask == gdk::ModifierType::CONTROL_MASK;
@@ -231,12 +231,18 @@ impl CommandInput {
                             destroy();
                         } else if code == Tab {
                             let text = entry.get_buffer().get_text();
-
+                            if let Some(suggestion) = suggestions.find_word(&text) {
+                                entry.set_text(&suggestion);
+                                entry.set_position(-1);
+                            }
+                        } else if code == Right {
+                            let text = entry.get_buffer().get_text();
                             if let Some(suggestion) = suggestions.find(&text) {
                                 entry.set_text(&suggestion);
                                 entry.set_position(-1);
                             }
                         }
+
                         Inhibit(false)
                     })
                 );

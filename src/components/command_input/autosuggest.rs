@@ -39,8 +39,6 @@ impl Suggestions {
     }
 
     pub fn load() -> Self {
-        // TODO: add complete for just a word
-
         let data = match util::read_data::<Data>(&Data::get_path()) {
             Ok(mut data) => {
                 let programs_set = util::get_programs_set();
@@ -104,10 +102,20 @@ impl Suggestions {
     }
 
     pub fn find(&self, input: &str) -> Option<String> {
-        self.0.borrow().programs.iter()
-            .chain(self.0.borrow().history.iter())
+        self.0.borrow().history.iter()
+            .chain(self.0.borrow().programs.iter())
             .find(|s| s.starts_with(input))
             .map(|s| s.to_owned())
+    }
+
+    pub fn find_word(&self, input: &str) -> Option<String> {
+        if let Some(mut suggestion) = self.find(input) {
+            let rest = suggestion.split_off(input.len());
+            println!("{:#?}", rest);
+            None
+        } else {
+            None
+        }
     }
 
     pub fn select(&self, input: &str) {
