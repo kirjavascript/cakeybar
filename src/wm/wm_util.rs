@@ -47,6 +47,7 @@ impl WMUtil {
     pub fn new(
         app: gtk::Application, config: Config, matches: &ArgMatches
     ) -> Self {
+        // TODO: replace detection with checking the root window
         let wm_type = if wm::i3::connect().is_ok() {
             WMType::I3
         } else if wm::bsp::connect().is_ok() {

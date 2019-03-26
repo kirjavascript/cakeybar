@@ -6,9 +6,8 @@ use crate::wm::events::{Event, EventId};
 use crate::wm::{self, WMUtil};
 
 use gtk::prelude::*;
-use gdk::prelude::*;
 use glib::translate::{ToGlib, from_glib};
-use gdk::Rectangle;
+use gdk::{Rectangle, WindowExt};
 
 use std::cell::RefCell;
 use std::rc::Rc;
@@ -55,7 +54,8 @@ impl CommandInput {
         // TODO: error message in wrapper
         // TODO: monitor focus
         // TODO: poll for blur
-        // TODO: fix in bspwm / others (appears behind bar / test i3 reload)
+        // TODO: fix in bspwm - send bar to below layer - bspc node SEL -l below
+        // TODO: move command into wm_util
 
         // DOC: history, tab/right
 
@@ -101,6 +101,9 @@ impl CommandInput {
                 window.resize(width, height);
                 window.set_resizable(false);
                 window.show();
+                if let Some(window) = window.get_window() {
+                    window.raise();
+                }
                 wm::gtk::disable_shadow(&window);
 
                 // add entry
@@ -179,7 +182,6 @@ impl CommandInput {
                 entry.connect_activate(clone!((wm_util, destroy, suggestions) move |e| {
                     if let Some(text) = e.get_text() {
                         suggestions.select(&text);
-                        // TODO: move into wm_util
                         if text.starts_with(":") {
                             if let Ok(cmd) = parse_message(&text[1..]) {
                                 wm_util.run_command(cmd);
