@@ -55,9 +55,11 @@ impl CommandInput {
         // TODO: error message in wrapper
         // TODO: monitor focus
         // TODO: poll for blur
-        // TODO: config: history
         // TODO: fix in bspwm / others (appears behind bar / test i3 reload)
-        // TODO: TAB for word, Right for all
+
+        // DOC: history, tab/right
+
+        let history_limit = config.get_int_or("history", 1000) as usize;
 
         // create wrapper
 
@@ -78,7 +80,8 @@ impl CommandInput {
                     return
                 }
 
-                let suggestions = Suggestions::load();
+
+                let suggestions = Suggestions::load(history_limit);
 
                 // get rekt
                 let Rectangle { x, y, width, height } = get_abs_rect(&wrapper);

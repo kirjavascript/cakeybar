@@ -38,7 +38,7 @@ impl Suggestions {
         cb(&mut self.0.borrow_mut());
     }
 
-    pub fn load() -> Self {
+    pub fn load(history_limit: usize) -> Self {
         let data = match util::read_data::<Data>(&Data::get_path()) {
             Ok(mut data) => {
                 let programs_set = util::get_programs_set();
@@ -76,6 +76,8 @@ impl Suggestions {
                     });
                     data.save();
                 }
+                // set history from config
+                data.history_limit = history_limit;
                 // limit history to N items
                 if data.history.len() > data.history_limit {
                     data.history.drain(data.history_limit..);
@@ -89,7 +91,7 @@ impl Suggestions {
                 );
                 let data = Data {
                     history: Vec::new(),
-                    history_limit: 1000,
+                    history_limit,
                     programs: util::get_programs_vec(),
                     priority_index: 0,
                 };
@@ -109,10 +111,14 @@ impl Suggestions {
     }
 
     pub fn find_word(&self, input: &str) -> Option<String> {
-        if let Some(mut suggestion) = self.find(input) {
-            let rest = suggestion.split_off(input.len());
-            println!("{:#?}", rest);
-            None
+        if let Some(suggestion) = self.find(input) {
+            let len = input.len();
+            let ws_opt = &suggestion[len..].find(char::is_whitespace);
+            if let Some(index) = ws_opt {
+                Some(suggestion[..*index+len+1].to_owned())
+            } else {
+                Some(suggestion)
+            }
         } else {
             None
         }
