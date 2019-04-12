@@ -72,6 +72,7 @@ components
 bspwm mode
 gmail -> plugins in examples folder
 script - classes for return code
+script tail
 prompt -> ipc command
 remote ip
 active window xprop
