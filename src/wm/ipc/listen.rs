@@ -35,7 +35,7 @@ pub fn listen(wm_util: &WMUtil) {
 
     // receive events
     gtk::timeout_add(10, clone!(wm_util move || {
-        if let Some((input, cmd)) = r.try_recv() {
+        if let Ok((input, cmd)) = r.try_recv() {
             info!("received {:?} via IPC...", input);
             run_command(&wm_util, cmd);
         }
@@ -58,7 +58,7 @@ fn handle_stream(mut stream: UnixStream, s: channel::Sender<(String, Command)>) 
             // send IPC response
             stream.write(format!("{}", cmd).as_bytes()).ok();
             // send to main thread
-            s.send((input, cmd));
+            s.send((input, cmd)).unwrap();
         }
         Err(_err) => {
             stream

@@ -299,7 +299,7 @@ impl<'a> Manager<'a> {
     pub fn reposition(&mut self) {
         let spacing = (self.children.len().max(1) as u16 * self.icon_spacing) - self.icon_spacing;
         let width = spacing + (self.children.len() as u16 * self.icon_size);
-        self.s_tray.send(Action::Width(width));
+        self.s_tray.send(Action::Width(width)).unwrap();
         if width > 0 {
             xcb::configure_window(
                 self.conn,

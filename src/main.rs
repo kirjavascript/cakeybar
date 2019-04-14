@@ -1,6 +1,3 @@
-// TODO: remove
-#[macro_use] extern crate crossbeam_channel;
-
 use clap::{App, Arg};
 use gio::prelude::*;
 

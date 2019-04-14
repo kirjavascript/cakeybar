@@ -18,7 +18,7 @@ impl Component for Backlight {
     fn destroy(&self) {
         self.label.destroy();
         self.timer.remove();
-        self.watcher.send(());
+        self.watcher.send(()).ok();
     }
 }
 
@@ -42,7 +42,7 @@ impl Backlight {
 
                 let max = get_value("max_brightness").unwrap_or(initial);
 
-                s.send((initial/max)*100.);
+                s.send((initial/max)*100.).ok();
 
                 thread::spawn(move || {
                     let mut inotify = Inotify::init().unwrap();
@@ -60,9 +60,9 @@ impl Backlight {
                                     .expect("error reading events");
                                 for _ in events {
                                     let now = get_value("brightness").unwrap();
-                                    s.send((now/max)*100.);
+                                    s.send((now/max)*100.).unwrap();
                                 }
-                                if r_dead.try_recv().is_some() {
+                                if r_dead.try_recv().is_ok() {
                                     inotify.rm_watch(wd).ok();
                                     break;
                                 } else {
@@ -79,7 +79,7 @@ impl Backlight {
                 let symbols = SymbolFmt::new(config.get_str_or("format", "{percent}"));
 
                 let timer = Timer::add_ms(50, clone!(label move || {
-                    if let Some(pct) = r.try_recv() {
+                    if let Ok(pct) = r.try_recv() {
                         label.set_markup(&symbols.format(|sym| match sym {
                             "pct" => format!("{:?}%", pct as u32),
                             _ => sym.to_string(),
