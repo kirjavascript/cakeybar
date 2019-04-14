@@ -51,14 +51,6 @@ fn get_abs_rect(wrapper: &gtk::Box) -> Rectangle {
 impl CommandInput {
     pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
 
-        // TODO: error message in wrapper
-        // TODO: monitor focus
-        // TODO: poll for blur
-        // TODO: fix in bspwm - send bar to below layer - bspc node SEL -l below
-        // TODO: move command into wm_util
-
-        // DOC: history, tab/right
-
         let history_limit = config.get_int_or("history", 1000) as usize;
 
         // create wrapper
