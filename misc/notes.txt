@@ -60,7 +60,7 @@ fix tray fullscreen latency/mm bug with events
 background colour sets the background of th icons too
 reload theme -> wm_util event
 reload event -> ???
-ipc doesn't show/hide (fullscreen? )
+show/hide bar should hide tray
 wm restart event restack tray
 send multiple IPC commands at once
 bug: on no icons width = 1

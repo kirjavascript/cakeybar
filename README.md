@@ -75,8 +75,8 @@ layout = [ "component", "names", "go", "here" ]
 # if enabled, will bind workspace next/prev actions to scroll events
 workspace-scroll = false
 
-# floating bars will not reserve space on the desktop
-float = false
+# decide if the bar should reserve space on the desktop
+reserve-space = true
 
 # disable shadows in compton
 disable-shadow = true

@@ -29,11 +29,11 @@ impl Bar {
         existing_window: Option<Window>,
     ) -> Bar {
         // TODO: check if the type differs to existing window
-        let is_floating = config.get_bool_or("float", false);
-        let window_type = if is_floating {
-            WindowType::Popup
-        } else {
+        let reserve_space = config.get_bool_or("reserve-space", true);
+        let window_type = if reserve_space {
             WindowType::Toplevel
+        } else {
+            WindowType::Popup
         };
 
         // use existing or create new window
@@ -104,7 +104,7 @@ impl Bar {
                 if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
                     *is_set.borrow_mut() = true;
                     window.move_(xpos, ypos);
-                    if !is_floating {
+                    if reserve_space {
                         wm_util.set_padding(is_top, rect.height);
                     }
                     // set_strut crashes here :/
