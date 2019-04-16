@@ -3,13 +3,14 @@ use gtk::prelude::*;
 use gtk::{Orientation, Overlay, Rectangle, Window, WindowType};
 use glib::SignalHandlerId;
 use glib::translate::{ToGlib, from_glib};
-use crate::{wm, NAME};
 
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use crate::{wm, NAME};
 use crate::components::{load_component, Component};
 use crate::config::ConfigGroup;
+use crate::wm::ipc::commands::Selectors;
 
 pub struct Bar {
     pub config: ConfigGroup,
@@ -19,6 +20,35 @@ pub struct Bar {
     pub wm_util: wm::WMUtil,
     event_ids: Vec<SignalHandlerId>,
     pub window: Window,
+}
+
+impl wm::Window for Bar {
+    fn destroy(&self) {
+        self.unload();
+        self.window.destroy();
+    }
+
+    fn show(&self) {
+        self.window.show();
+    }
+
+    fn hide(&self) {
+        self.window.hide();
+    }
+
+    fn relayout(&self) {
+        self.window.resize(1, 1);
+    }
+
+    fn to_window(&self) -> Window {
+        self.unload();
+        self.window.clone()
+    }
+
+    fn matches_selectors(&self, selectors: &Selectors) -> bool {
+
+        false
+    }
 }
 
 impl Bar {
@@ -182,18 +212,6 @@ impl Bar {
         }
     }
 
-    pub fn relayout(&self) {
-        self.window.resize(1, 1);
-    }
-
-    pub fn show(&self) {
-        self.window.show();
-    }
-
-    pub fn hide(&self) {
-        self.window.hide();
-    }
-
     fn unload(&self) {
         // destroy components
         for component in self.components.iter() {
@@ -209,13 +227,4 @@ impl Bar {
         self.window.get_children().iter().for_each(|w| w.destroy());
     }
 
-    pub fn to_window(&self) -> Window {
-        self.unload();
-        self.window.clone()
-    }
-
-    pub fn destroy(&self) {
-        self.unload();
-        self.window.destroy();
-    }
 }

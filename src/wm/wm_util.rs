@@ -31,7 +31,7 @@ impl fmt::Display for WMType {
 #[derive(Clone)]
 pub struct WMUtil{
     data: Rc<RefCell<Data>>,
-    bars: Rc<RefCell<Vec<Bar>>>,
+    bars: Rc<RefCell<Vec<Box<dyn wm::Window>>>>,
 }
 
 struct Data {
@@ -192,22 +192,23 @@ impl WMUtil {
         let monitors = wm::gtk::get_monitor_geometry();
         // clone is here to ensure we're not borrowing during Bar::load_components
         let bars = self.data.borrow().config.bars.clone();
-        let mut bars = bars.iter().fold(Vec::new(), |mut acc, bar_config| {
-            let monitor_index = bar_config.get_int_or("monitor", 0);
-            let monitor_option = monitors.get(monitor_index as usize);
+        let mut bars: Vec<Box<dyn wm::Window>> =
+            bars.iter().fold(Vec::new(), |mut acc, bar_config| {
+                let monitor_index = bar_config.get_int_or("monitor", 0);
+                let monitor_option = monitors.get(monitor_index as usize);
 
-            if let Some(monitor) = monitor_option {
-                acc.push(Bar::new(
-                    bar_config.clone(),
-                    self.clone(),
-                    monitor,
-                    windows.pop(),
-                ));
-            } else {
-                warn!("no monitor at index {}", monitor_index);
-            }
-            acc
-        });
+                if let Some(monitor) = monitor_option {
+                    acc.push(Box::new(Bar::new(
+                        bar_config.clone(),
+                        self.clone(),
+                        monitor,
+                        windows.pop(),
+                    )));
+                } else {
+                    warn!("no monitor at index {}", monitor_index);
+                }
+                acc
+            });
 
         // destroy old (now unused) windows
         windows.iter().for_each(|w| w.destroy());
@@ -218,7 +219,7 @@ impl WMUtil {
 
     pub fn display_bars(&self, names: &Selectors, show: bool) {
         for bar in self.bars.borrow().iter() {
-            if names.contains_id(&bar.config.name) {
+            if bar.matches_selectors(names) {
                 if show {
                     bar.show();
                 } else {
