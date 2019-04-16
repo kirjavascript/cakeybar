@@ -22,7 +22,7 @@ impl Selectors {
     pub fn contains_id(&self, name: &str) -> bool {
         self.0.contains(&Selector::Id(name.to_owned()))
     }
-    pub fn _contains_class(&self, name: &str) -> bool {
+    pub fn contains_class(&self, name: &str) -> bool {
         self.0.contains(&Selector::Class(name.to_owned()))
     }
 }
