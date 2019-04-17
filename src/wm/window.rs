@@ -1,9 +1,9 @@
 use crate::wm::ipc::commands::Selectors;
 
-enum WindowType {
-    Bar,
-    Float,
-}
+// enum WindowType {
+//     Bar,
+//     Float,
+// }
 
 
 pub trait Window {

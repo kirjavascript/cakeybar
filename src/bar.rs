@@ -46,11 +46,10 @@ impl wm::Window for Bar {
     }
 
     fn matches_selectors(&self, selectors: &Selectors) -> bool {
-        let class = self.config.get_string("class");
-        selectors.contains_id(&self.config.name) || (
-            class.is_some() &&
-            selectors.contains_class(&class.unwrap())
-        )
+        selectors.contains_id(&self.config.name) || {
+            let class = self.config.get_string("class");
+            class.is_some() && selectors.contains_class(&class.unwrap())
+        }
     }
 }
 

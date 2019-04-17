@@ -18,7 +18,9 @@ impl Component for Backlight {
     fn destroy(&self) {
         self.label.destroy();
         self.timer.remove();
-        self.watcher.send(()).ok();
+        if let Err(err) = self.watcher.send(()) {
+            error!("unwatch signal not sent - {}", err);
+        }
     }
 }
 
@@ -42,7 +44,9 @@ impl Backlight {
 
                 let max = get_value("max_brightness").unwrap_or(initial);
 
-                s.send((initial/max)*100.).ok();
+                if let Err(err) = s.send((initial/max)*100.) {
+                    error!("{}", err);
+                }
 
                 thread::spawn(move || {
                     let mut inotify = Inotify::init().unwrap();
@@ -60,7 +64,9 @@ impl Backlight {
                                     .expect("error reading events");
                                 for _ in events {
                                     let now = get_value("brightness").unwrap();
-                                    s.send((now/max)*100.).unwrap();
+                                    if let Err(err) = s.send((now/max)*100.) {
+                                        error!("{}", err);
+                                    }
                                 }
                                 if r_dead.try_recv().is_ok() {
                                     inotify.rm_watch(wd).ok();

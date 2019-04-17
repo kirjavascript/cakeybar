@@ -45,7 +45,9 @@ impl Component for Tray {
     fn destroy(&self) {
         self.base_widget.destroy();
         self.timer.remove();
-        self.sender.send(Action::Quit).unwrap();
+        if let Err(err) = self.sender.send(Action::Quit) {
+            error!("{}", err);
+        }
         unsafe {
             TRAY_LOADED = false;
         }
@@ -105,7 +107,9 @@ impl Tray {
             let (_zo, xo, yo) = w.get_origin();
             let y = (yo + (rect.y + ((rect.height - (icon_size as i32))/2))) as u32;
             let x = (xo + rect.x) as u32;
-            s_main.send(Action::Move(x, y)).unwrap();
+            if let Err(err) = s_main.send(Action::Move(x, y)) {
+                error!("{}", err);
+            }
         }));
 
         let fullscreen_tick = channel::tick(Duration::from_millis(100));
@@ -131,7 +135,7 @@ impl Tray {
                 let (s_events, r_events) = channel::unbounded();
                 thread::spawn(clone!(conn move || {
                     while let Some(event) = conn.wait_for_event() {
-                        s_events.send(event).unwrap();
+                        s_events.send(event).ok();
                     }
                 }));
 

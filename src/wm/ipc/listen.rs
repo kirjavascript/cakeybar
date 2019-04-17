@@ -58,7 +58,9 @@ fn handle_stream(mut stream: UnixStream, s: channel::Sender<(String, Command)>) 
             // send IPC response
             stream.write(format!("{}", cmd).as_bytes()).ok();
             // send to main thread
-            s.send((input, cmd)).unwrap();
+            if let Err(err) = s.send((input, cmd)) {
+                error!("{}", err);
+            }
         }
         Err(_err) => {
             stream

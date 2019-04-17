@@ -43,11 +43,17 @@ impl Watcher {
                 for event in events {
                     if let &Some((_, ref wd)) = &file_wd {
                         if wd == &event.wd {
-                            s.send(WriteType::Config).unwrap();
-                            info!("updated {}", &configfile);
+                            if let Err(err) = s.send(WriteType::Config) {
+                                error!("{}", err);
+                            } else {
+                                info!("updated {}", &configfile);
+                            }
                         } else {
-                            s.send(WriteType::Theme).unwrap();
-                            info!("updated {}", &theme);
+                            if let Err(err) = s.send(WriteType::Theme) {
+                                error!("{}", err);
+                            } else {
+                                info!("updated {}", &theme);
+                            }
                         }
                     } else if let Some(_) = &theme_wd {
                         // doesn't work when there's no valid config file
@@ -89,6 +95,8 @@ impl Watcher {
     }
     pub fn unwatch(&self) {
         self.timer.remove();
-        self.sender.send(()).unwrap();
+        if let Err(err) = self.sender.send(()) {
+            error!("unwatch signal not sent - {}", err);
+        }
     }
 }
