@@ -8,9 +8,9 @@ mod battery;
 mod clock;
 mod command_input;
 mod container;
-// mod cpu;
-// mod disk;
-// mod dropdown;
+mod cpu;
+mod disk;
+mod dropdown;
 // mod image;
 // mod ip;
 // mod memory;
@@ -46,9 +46,9 @@ pub fn load_component(params: ComponentParams) {
         "clock" => clock::Clock::init,
         "command-input" => command_input::CommandInput::init,
         "container" => container::Container::init,
-        // "cpu" => cpu::CPU::init,
-        // "disk" => disk::Disk::init,
-        // "dropdown" => dropdown::Dropdown::init,
+        "cpu" => cpu::CPU::init,
+        "disk" => disk::Disk::init,
+        "dropdown" => dropdown::Dropdown::init,
         // "image" => image::Image::init,
         // "ip" => ip::IP::init,
         // "memory" => memory::Memory::init,
