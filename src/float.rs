@@ -37,6 +37,8 @@ impl Float {
             window
         };
 
+        // config:
+
         // maybe pull from CSS context
         let width = config.get_int_or("width", 200) as i32;
         let height = config.get_int_or("height", 200) as i32;
@@ -47,7 +49,7 @@ impl Float {
         // set base values
         window.resize(width, height);
         if is_new {
-            window.set_title("");
+            window.set_title(config.get_str_or("title", ""));
             window.set_type_hint(gdk::WindowTypeHint::PopupMenu);
             window.set_keep_below(true);
             window.set_skip_pager_hint(false);
