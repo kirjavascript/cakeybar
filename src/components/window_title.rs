@@ -1,6 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
+use crate::components::{Component, ComponentParams};
 use glib::markup_escape_text;
 use gtk;
 use gtk::prelude::*;
@@ -10,29 +8,30 @@ use crate::util::SymbolFmt;
 use crate::wm::events::{Event, EventId, EventValue};
 use crate::wm::WMUtil;
 
-pub struct Window {
+pub struct WindowTitle {
     label: Label,
     event_id: EventId,
     wm_util: WMUtil,
 }
 
-impl Component for Window {
+impl Component for WindowTitle {
     fn destroy(&self) {
         self.wm_util.remove_listener(Event::Window, self.event_id);
         self.label.destroy();
     }
 }
 
-impl Window {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+impl WindowTitle {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, wm_util, .. } = params;
         let label = Label::new(None);
-        super::init_widget(&label, &config, bar, container);
+        super::init_widget(&label, &config, &window, None);
         label.show();
 
         let trunc = config.get_int_or("truncate", 100) as usize;
         let symbols = SymbolFmt::new(config.get_str_or("format", "{title}"));
 
-        let event_id = bar.wm_util.add_listener(Event::Window, clone!(label
+        let event_id = wm_util.add_listener(Event::Window, clone!(label
             move |event_opt| {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;
@@ -61,8 +60,8 @@ impl Window {
             }
         ));
 
-        let wm_util = bar.wm_util.clone();
-        bar.add_component(Box::new(Window {
+        let wm_util = wm_util.clone();
+        window.add_component(Box::new(WindowTitle {
             label,
             wm_util,
             event_id,

@@ -28,6 +28,11 @@ features for 0.4.0: add floats for above/below/autohide
 show overlay win95 when press start / runbox
 features for 1.0.0: tray bugs, multiple install options, stacking order
 
+floats
+======
+CommandParams
+load_components in wm_util
+
 command_input
 ====
 // DOC: history, tab/right

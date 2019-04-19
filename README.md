@@ -141,13 +141,13 @@ layout = [ "component", "names", "go", "here" ]
 
 possible directions: `horizontal` or `vertical`
 
-#### window
+#### window-title
 
 displays the current active window's title
 
 ```toml
 [component.window_title]
-type = "window"
+type = "window-title"
 format = "{title}"
 truncate = 100
 ```

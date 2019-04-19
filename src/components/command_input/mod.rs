@@ -80,7 +80,7 @@ impl CommandInput {
 
                 // create window
                 let window = gtk::Window::new(gtk::WindowType::Toplevel);
-                wm_util.add_window(&window);
+                wm_util.add_gtk_window(&window);
                 wm::gtk::set_transparent(&window);
                 window.set_type_hint(gdk::WindowTypeHint::PopupMenu);
                 window.set_skip_pager_hint(false);

@@ -72,7 +72,7 @@ impl Component for Menu {
         //     window.hide();
         //     Inhibit(false)
         // }));
-        bar.application.add_window(&window);
+        bar.application.add_gtk_window(&window);
         // TODO: get bar position (for under/over)
         // TODO: get alignment (set for text and popup position)
 

@@ -21,7 +21,6 @@ label, entry {
 }
 
 #menu label {
-    min-width: 30px;
     background-image: url("./icons/manjaro.svg");
     background-size: contain;
     background-repeat: no-repeat;

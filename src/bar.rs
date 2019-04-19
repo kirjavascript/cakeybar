@@ -8,7 +8,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use crate::{wm, NAME};
-use crate::components::{load_component, Component};
+use crate::components::Component;
 use crate::config::ConfigGroup;
 use crate::wm::ipc::commands::Selectors;
 
@@ -20,37 +20,6 @@ pub struct Bar {
     pub wm_util: wm::WMUtil,
     event_ids: Vec<SignalHandlerId>,
     pub window: Window,
-}
-
-impl wm::Window for Bar {
-    fn destroy(&self) {
-        self.unload();
-        self.window.destroy();
-    }
-
-    fn show(&self) {
-        self.window.show();
-    }
-
-    fn hide(&self) {
-        self.window.hide();
-    }
-
-    fn relayout(&self) {
-        self.window.resize(1, 1);
-    }
-
-    fn to_window(&self) -> Window {
-        self.unload();
-        self.window.clone()
-    }
-
-    fn matches_selectors(&self, selectors: &Selectors) -> bool {
-        selectors.contains_id(&self.config.name) || {
-            let class = self.config.get_string("class");
-            class.is_some() && selectors.contains_class(&class.unwrap())
-        }
-    }
 }
 
 impl Bar {
@@ -74,7 +43,7 @@ impl Bar {
             existing
         } else {
             let window = Window::new(window_type);
-            wm_util.add_window(&window);
+            wm_util.add_gtk_window(&window);
             window
         };
 
@@ -178,41 +147,25 @@ impl Bar {
             event_ids,
         };
 
-        bar.load_components();
-
         if is_new && bar.config.get_bool_or("disable-shadow", true) {
             wm::gtk::disable_shadow(&bar.window);
         }
 
-        wm::gtk::set_strut(
-            &bar.window,
-            is_top,
-            Rectangle {
-                x: monitor.x,
-                y: monitor.y,
-                width: monitor.width,
-                height: bar.window.get_size().1,
-            },
-        );
+        // TODO: do this after load_components
+        if reserve_space {
+            wm::gtk::set_strut(
+                &bar.window,
+                is_top,
+                Rectangle {
+                    x: monitor.x,
+                    y: monitor.y,
+                    width: monitor.width,
+                    height: bar.window.get_size().1,
+                },
+            );
+        }
 
         bar
-    }
-        // builder pattern
-
-    pub fn add_component(&mut self, component: Box<dyn Component>) {
-        self.components.push(component);
-    }
-
-    pub fn load_components(&mut self) {
-        let container = self.container.clone();
-        for name in self.config.get_string_vec("layout") {
-            let config_opt = self.wm_util.get_component_config(&name);
-            if let Some(config) = config_opt {
-                load_component(config, self, &container);
-            } else {
-                warn!("missing component #{}", name);
-            }
-        }
     }
 
     fn unload(&self) {
@@ -230,4 +183,47 @@ impl Bar {
         self.window.get_children().iter().for_each(|w| w.destroy());
     }
 
+}
+
+impl wm::Window for Bar {
+    fn destroy(&self) {
+        self.unload();
+        self.window.destroy();
+    }
+
+    fn show(&self) {
+        self.window.show();
+    }
+
+    fn hide(&self) {
+        self.window.hide();
+    }
+
+    fn relayout(&self) {
+        self.window.resize(1, 1);
+    }
+
+    fn to_window(&self) -> Window {
+        self.unload();
+        self.window.clone()
+    }
+
+    fn get_container(&self) -> &gtk::Box {
+        &self.container
+    }
+
+    fn get_overlay(&self) -> &gtk::Overlay {
+        &self.overlay
+    }
+
+    fn add_component(&mut self, component: Box<dyn Component>) {
+        self.components.push(component);
+    }
+
+    fn matches_selectors(&self, selectors: &Selectors) -> bool {
+        selectors.contains_id(&self.config.name) || {
+            let class = self.config.get_string("class");
+            class.is_some() && selectors.contains_class(&class.unwrap())
+        }
+    }
 }

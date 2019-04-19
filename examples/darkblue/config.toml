@@ -35,7 +35,7 @@ position = "bottom"
 workspace-scroll = true
 
 [component.autocomplete]
-type = "command_input"
+type = "command-input"
 
 # tray
 
@@ -46,7 +46,7 @@ icon-spacing = 2
 # wm stuff
 
 [component.title]
-type = "window"
+type = "window-title"
 fixed = true
 format = '''
     <span fgcolor="#0A83FD">«</span> {title} <span fgcolor="#0A83FD">»</span>

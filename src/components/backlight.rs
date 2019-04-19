@@ -1,9 +1,7 @@
 use inotify::{Inotify, WatchMask};
 use crossbeam_channel as channel;
 use std::{thread, time};
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use crate::util::{read_file, SymbolFmt, Timer};
 use gtk::Label;
@@ -32,11 +30,12 @@ fn get_value(name: &str) -> Result<f32, String> {
 }
 
 impl Backlight {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, wm_util, .. } = params;
         match get_value("brightness") {
             Ok(initial) => {
                 let label = Label::new(None);
-                super::init_widget(&label, &config, bar, container);
+                super::init_widget(&label, &config, &window, None);
                 label.show();
 
                 let (s, r) = channel::unbounded();
@@ -94,7 +93,7 @@ impl Backlight {
                     gtk::Continue(true)
                 }));
 
-                bar.add_component(Box::new(Backlight {
+                window.add_component(Box::new(Backlight {
                     label,
                     timer,
                     watcher: s_dead,
