@@ -1,14 +1,13 @@
 use crate::config::ConfigGroup;
 use crate::wm;
 use gtk::{Align, ContainerExt, OverlayExt, StyleContextExt, WidgetExt};
-use {glib, gtk};
 
 mod backlight;
 mod bandwidth;
-// mod battery;
-// mod clock;
+mod battery;
+mod clock;
 // mod command_input;
-// mod container;
+mod container;
 // mod cpu;
 // mod disk;
 // mod dropdown;
@@ -43,10 +42,10 @@ pub fn load_component(params: ComponentParams) {
     (match params.config.get_str_or("type", "void") {
         "backlight" => backlight::Backlight::init,
         "bandwidth" => bandwidth::Bandwidth::init,
-        // "battery" => battery::Battery::init,
-        // "clock" => clock::Clock::init,
+        "battery" => battery::Battery::init,
+        "clock" => clock::Clock::init,
         // "command-input" => command_input::CommandInput::init,
-        // "container" => container::Container::init,
+        "container" => container::Container::init,
         // "cpu" => cpu::CPU::init,
         // "disk" => disk::Disk::init,
         // "dropdown" => dropdown::Dropdown::init,
@@ -66,7 +65,7 @@ pub fn init_widget<'a, T>(
     widget: &T,
     config: &ConfigGroup,
     window: &Box<&'a mut dyn wm::Window>,
-    container: Option<&gtk::Box>
+    container: &gtk::Box
 ) where
     T: gtk::IsA<gtk::Widget> + gtk::IsA<gtk::Object> + glib::value::SetValue,
 {
@@ -109,11 +108,6 @@ pub fn init_widget<'a, T>(
             overlay.set_overlay_pass_through(widget, true);
         }
     } else {
-        let container = if let Some(container) = container {
-            container
-        } else {
-            window.get_container()
-        };
         container.add(widget);
     }
 }
@@ -141,8 +135,8 @@ fn get_alignment(align: &str) -> Align {
 //
 // impl Template {
 //     pub fn init(params: ComponentParams) {
-//         //let ComponentParams { config, window, wm_util, .. } = params;
-//         //super::init_widget(&entry, &config, &window, None);
+//         //let ComponentParams { config, window, container, .. } = params;
+//         //super::init_widget(&entry, &config, &window, container);
 //         window.add_component(Box::new(Template));
 //     }
 // }

@@ -22,10 +22,10 @@ impl Component for Bandwidth {
 
 impl Bandwidth {
     pub fn init(params: ComponentParams) {
-        let ComponentParams { config, window, .. } = params;
+        let ComponentParams { config, window, container, .. } = params;
 
         let label_group = LabelGroup::new();
-        super::init_widget(&label_group.wrapper, &config, &window, None);
+        super::init_widget(&label_group.wrapper, &config, &window, container);
 
         let interfaces = config.get_string_vec("interfaces");
         let interval = config.get_int_or("interval", 3).max(1) as u64;

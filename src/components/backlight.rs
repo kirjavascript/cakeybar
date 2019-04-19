@@ -31,11 +31,11 @@ fn get_value(name: &str) -> Result<f32, String> {
 
 impl Backlight {
     pub fn init(params: ComponentParams) {
-        let ComponentParams { config, window, wm_util, .. } = params;
+        let ComponentParams { config, window, wm_util, container } = params;
         match get_value("brightness") {
             Ok(initial) => {
                 let label = Label::new(None);
-                super::init_widget(&label, &config, &window, None);
+                super::init_widget(&label, &config, &window, container);
                 label.show();
 
                 let (s, r) = channel::unbounded();

@@ -23,9 +23,9 @@ impl Component for WindowTitle {
 
 impl WindowTitle {
     pub fn init(params: ComponentParams) {
-        let ComponentParams { config, window, wm_util, .. } = params;
+        let ComponentParams { config, window, wm_util, container } = params;
         let label = Label::new(None);
-        super::init_widget(&label, &config, &window, None);
+        super::init_widget(&label, &config, &window, container);
         label.show();
 
         let trunc = config.get_int_or("truncate", 100) as usize;

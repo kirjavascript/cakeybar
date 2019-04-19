@@ -1,8 +1,5 @@
-use crate::bar::Bar;
+use crate::components::{Component, ComponentParams};
 use chrono::Local;
-use crate::components::Component;
-use crate::config::ConfigGroup;
-use gtk;
 use gtk::prelude::*;
 use gtk::Label;
 use crate::util::{SymbolFmt, Timer};
@@ -20,9 +17,10 @@ impl Component for Clock {
 }
 
 impl Clock {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
         let label = Label::new(None);
-        super::init_widget(&label, &config, bar, container);
+        super::init_widget(&label, &config, &window, container);
         label.show();
 
         // get config
@@ -43,7 +41,7 @@ impl Clock {
         });
         let timer = Timer::add_seconds(interval as u32, tick);
 
-        bar.add_component(Box::new(Clock {
+        window.add_component(Box::new(Clock {
             label,
             timer,
         }));

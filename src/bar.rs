@@ -137,7 +137,7 @@ impl Bar {
         window.show_all();
 
         // create Bar
-        let mut bar = Bar {
+        let bar = Bar {
             config,
             components: Vec::new(),
             wm_util,
