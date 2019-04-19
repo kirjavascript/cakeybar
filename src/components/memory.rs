@@ -1,7 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
-use gtk;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use gtk::Label;
 use crate::util::{format_bytes, SymbolFmt, Timer};
@@ -21,9 +18,10 @@ impl Component for Memory {
 }
 
 impl Memory {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
         let label = Label::new(None);
-        super::init_widget(&label, &config, bar, container);
+        super::init_widget(&label, &config, &window, container);
         label.show();
 
         let symbols = SymbolFmt::new(config.get_str_or("format", "{free-pct}"));
@@ -61,7 +59,7 @@ impl Memory {
         let interval = config.get_int_or("interval", 3).max(1);
         let timer = Timer::add_seconds(interval as u32, tick);
 
-        bar.add_component(Box::new(Memory {
+        window.add_component(Box::new(Memory {
             label,
             timer,
         }));
