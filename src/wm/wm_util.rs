@@ -204,7 +204,7 @@ impl WMUtil {
                 if let Some(monitor) = monitor_option {
                     let mut bar = Bar::new(
                         bar_config.clone(),
-                        self.clone(),
+                        &self,
                         monitor,
                         gtk_windows.pop(),
                     );
@@ -214,12 +214,11 @@ impl WMUtil {
                     for name in bar_config.get_string_vec("layout") {
                         let config_opt = self.get_component_config(&name);
                         if let Some(config) = config_opt {
-                            load_component(ComponentParams {
-                                container,
+                            bar.load_component(
                                 config,
-                                window: Box::new(&mut bar),
-                                wm_util: &self,
-                            });
+                                container,
+                                &self
+                            );
                         } else {
                             warn!("missing component #{}", name);
                         }

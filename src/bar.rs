@@ -17,7 +17,6 @@ pub struct Bar {
     pub components: Vec<Box<dyn Component>>,
     pub overlay: Overlay,
     pub container: gtk::Box,
-    pub wm_util: wm::WMUtil,
     event_ids: Vec<SignalHandlerId>,
     pub window: Window,
 }
@@ -25,7 +24,7 @@ pub struct Bar {
 impl Bar {
     pub fn new(
         config: ConfigGroup,
-        wm_util: wm::WMUtil,
+        wm_util: &wm::WMUtil,
         monitor: &Rectangle,
         existing_window: Option<Window>,
     ) -> Bar {
@@ -140,7 +139,6 @@ impl Bar {
         let bar = Bar {
             config,
             components: Vec::new(),
-            wm_util,
             overlay,
             container,
             window,
@@ -218,6 +216,15 @@ impl wm::Window for Bar {
 
     fn add_component(&mut self, component: Box<dyn Component>) {
         self.components.push(component);
+    }
+
+    fn load_component(&mut self, config: ConfigGroup, container: &gtk::Box, wm_util: &wm::WMUtil) {
+        crate::components::load_component(crate::components::ComponentParams {
+            container,
+            config,
+            window: Box::new(self),
+            wm_util,
+        });
     }
 
     fn matches_selectors(&self, selectors: &Selectors) -> bool {

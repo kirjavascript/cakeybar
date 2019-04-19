@@ -33,13 +33,7 @@ impl Container {
             // let wrapper = wrapper.clone();
             let config_opt = wm_util.get_component_config(&name);
             if let Some(config) = config_opt {
-                // super::load_component(&wm_util, config, &window, Some(&wrapper));
-                // super::load_component(ComponentParams {
-                //     container: &wrapper,
-                //     config,
-                //     window,
-                //     wm_util,
-                // });
+                window.load_component(config, &wrapper, &wm_util);
             } else {
                 warn!("missing component #{}", name);
             }
