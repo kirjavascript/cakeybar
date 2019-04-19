@@ -31,6 +31,8 @@ features for 1.0.0: tray bugs, multiple install options, stacking order
 floats
 ======
 T: wm::Window instead of dyn wm::Window
+:move #info 25 300 animation
+stick
 
 command_input
 ====

@@ -4,6 +4,7 @@ use gio::prelude::*;
 #[macro_use]
 mod macros;
 mod bar;
+mod float;
 mod components;
 mod config;
 mod util;

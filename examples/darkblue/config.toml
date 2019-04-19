@@ -6,7 +6,7 @@ position = "top"
 layout = [
     "menu",
     "workspaces",
-    "autocomplete",
+    # "autocomplete",
     "mode",
     "title",
     "box1",
@@ -33,6 +33,13 @@ workspace-scroll = true
 monitor = 1
 position = "bottom"
 workspace-scroll = true
+
+# floats
+
+[float.info]
+layout = [ "autocomplete" ]
+
+# command input
 
 [component.autocomplete]
 type = "command-input"
@@ -104,6 +111,7 @@ class = "has-icon"
 [component.clock]
 type = "clock"
 class = "has-icon"
+format = "{timestamp}"
 
 # menu
 

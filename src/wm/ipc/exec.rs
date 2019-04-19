@@ -11,10 +11,10 @@ pub fn run_command(wm_util: &WMUtil, cmd: Command) {
             wm_util.reload_config(path_opt);
         },
         Command::Show(selectors) => {
-            wm_util.display_bars(&selectors, true);
+            wm_util.display_windows(&selectors, true);
         },
         Command::Hide(selectors) => {
-            wm_util.display_bars(&selectors, false);
+            wm_util.display_windows(&selectors, false);
         },
         Command::Focus(selector) => {
             wm_util.emit(Event::Focus(selector.get_name()));

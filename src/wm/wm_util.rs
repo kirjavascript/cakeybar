@@ -1,4 +1,5 @@
 use crate::bar::Bar;
+use crate::float::Float;
 use crate::config::{Config, ConfigGroup, parse_config};
 use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
 use crate::wm::ipc::commands::*;
@@ -229,14 +230,51 @@ impl WMUtil {
                 acc
             });
 
+        let floats = self.data.borrow().config.floats.clone();
+        let mut floats: Vec<Box<dyn wm::Window>> =
+            floats.iter().fold(Vec::new(), |mut acc, float_config| {
+                let monitor_index = float_config.get_int_or("monitor", 0);
+                let monitor_option = monitors.get(monitor_index as usize);
+
+                if let Some(monitor) = monitor_option {
+                    let mut bar = Float::new(
+                        float_config.clone(),
+                        &self,
+                        monitor,
+                        gtk_windows.pop(),
+                    );
+
+                    // load components
+                    let container = &bar.get_container().clone();
+                    for name in float_config.get_string_vec("layout") {
+                        let config_opt = self.get_component_config(&name);
+                        if let Some(config) = config_opt {
+                            bar.load_component(
+                                config,
+                                container,
+                                &self
+                            );
+                        } else {
+                            warn!("missing component #{}", name);
+                        }
+                    }
+
+                    acc.push(Box::new(bar));
+                } else {
+                    warn!("no monitor at index {}", monitor_index);
+                }
+                acc
+            });
+
         // destroy old (now unused) windows
         gtk_windows.iter().for_each(|w| w.destroy());
         // update new window vec
         self.windows.borrow_mut().clear();
         self.windows.borrow_mut().append(&mut bars);
+        self.windows.borrow_mut().append(&mut floats);
     }
 
-    pub fn display_bars(&self, names: &Selectors, show: bool) {
+    pub fn display_windows(&self, names: &Selectors, show: bool) {
         for bar in self.windows.borrow().iter() {
             if bar.matches_selectors(names) {
                 if show {

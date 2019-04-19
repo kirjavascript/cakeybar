@@ -30,7 +30,6 @@ impl Container {
 
         // load layout
         for name in config.get_string_vec("layout") {
-            // let wrapper = wrapper.clone();
             let config_opt = wm_util.get_component_config(&name);
             if let Some(config) = config_opt {
                 window.load_component(config, &wrapper, &wm_util);
