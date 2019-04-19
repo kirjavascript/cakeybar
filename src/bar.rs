@@ -197,8 +197,9 @@ impl Bar {
 
         bar
     }
+        // builder pattern
 
-    pub fn add_component(&mut self, component: Box<Component>) {
+    pub fn add_component(&mut self, component: Box<dyn Component>) {
         self.components.push(component);
     }
 

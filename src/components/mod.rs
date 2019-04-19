@@ -1,27 +1,26 @@
 use crate::bar::Bar;
 use crate::config::ConfigGroup;
+use crate::wm;
 use gtk::{Align, ContainerExt, OverlayExt, StyleContextExt, WidgetExt};
 use {glib, gtk};
 
 mod backlight;
-mod bandwidth;
-mod battery;
-mod clock;
-mod command_input;
-mod container;
-mod cpu;
-mod disk;
-mod dropdown;
-// mod equalizer;
-mod image;
-mod ip;
-mod memory;
-// mod menu;
-mod mode;
-mod script;
-mod tray;
-mod window;
-mod workspaces;
+// mod bandwidth;
+// mod battery;
+// mod clock;
+// mod command_input;
+// mod container;
+// mod cpu;
+// mod disk;
+// mod dropdown;
+// mod image;
+// mod ip;
+// mod memory;
+// mod mode;
+// mod script;
+// mod tray;
+// mod window;
+// mod workspaces;
 
 /// defines interface for components
 pub trait Component {
@@ -37,24 +36,22 @@ pub fn load_component(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) 
     // decide which component to load
     (match config.get_str_or("type", "void") {
         "backlight" => backlight::Backlight::init,
-        "bandwidth" => bandwidth::Bandwidth::init,
-        "battery" => battery::Battery::init,
-        "clock" => clock::Clock::init,
-        "command_input" => command_input::CommandInput::init,
-        "container" => container::Container::init,
-        "cpu" => cpu::CPU::init,
-        "disk" => disk::Disk::init,
-        "dropdown" => dropdown::Dropdown::init,
-        // "equalizer" | "equaliser" => equalizer::Equalizer::init,
-        "image" => image::Image::init,
-        "ip" => ip::IP::init,
-        "memory" => memory::Memory::init,
-        // "menu" => menu::Menu::init,
-        "mode" => mode::Mode::init,
-        "script" => script::Script::init,
-        "tray" => tray::Tray::init,
-        "window" => window::Window::init,
-        "workspaces" => workspaces::Workspaces::init,
+        // "bandwidth" => bandwidth::Bandwidth::init,
+        // "battery" => battery::Battery::init,
+        // "clock" => clock::Clock::init,
+        // "command_input" => command_input::CommandInput::init,
+        // "container" => container::Container::init,
+        // "cpu" => cpu::CPU::init,
+        // "disk" => disk::Disk::init,
+        // "dropdown" => dropdown::Dropdown::init,
+        // "image" => image::Image::init,
+        // "ip" => ip::IP::init,
+        // "memory" => memory::Memory::init,
+        // "mode" => mode::Mode::init,
+        // "script" => script::Script::init,
+        // "tray" => tray::Tray::init,
+        // "window" => window::Window::init,
+        // "workspaces" => workspaces::Workspaces::init,
         _ => void,
     })(config, bar, container);
 }
@@ -72,23 +69,23 @@ where
     // set name
     widget.set_name(&config.name);
     // class
-    let class_str = config.get_str_or("class", "null");
-    if class_str != "null" {
+    let class_str = config.get_str_or("class", "void");
+    if class_str != "void" {
         if let Some(ctx) = widget.get_style_context() {
             ctx.add_class(class_str);
         }
     }
     let is_fixed = config.get_bool_or("fixed", false);
     // set alignment
-    let halign_str = config.get_str_or("halign", "null");
-    if halign_str != "null" {
+    let halign_str = config.get_str_or("halign", "void");
+    if halign_str != "void" {
         WidgetExt::set_halign(widget, get_alignment(halign_str));
         if !is_fixed {
             WidgetExt::set_hexpand(widget, true);
         }
     }
-    let valign_str = config.get_str_or("valign", "null");
-    if valign_str != "null" {
+    let valign_str = config.get_str_or("valign", "void");
+    if valign_str != "void" {
         WidgetExt::set_valign(widget, get_alignment(valign_str));
         if !is_fixed {
             WidgetExt::set_vexpand(widget, true);

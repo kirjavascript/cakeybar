@@ -33,7 +33,7 @@ impl Container {
         for name in config.get_string_vec("layout") {
             let config_opt = bar.wm_util.get_component_config(&name);
             if let Some(config) = config_opt {
-                super::load_component(config, bar, &wrapper);
+                super::load_component(&bar.wm_util, config, bar, &wrapper);
             } else {
                 warn!("missing component #{}", name);
             }
