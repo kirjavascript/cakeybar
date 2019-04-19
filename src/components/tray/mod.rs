@@ -1,6 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
+use crate::components::{Component, ComponentParams};
 use gdk::{WindowExt, RGBA};
 use glib::translate::ToGlib;
 use glib_sys::g_source_remove;
@@ -55,23 +53,24 @@ impl Component for Tray {
 }
 
 impl Tray {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
         if unsafe { !TRAY_LOADED } {
             unsafe {
                 TRAY_LOADED = true;
             }
-            Tray::be_a_tray(config, bar, container);
+            Tray::be_a_tray(params);
         } else {
             warn!("tray component is already loaded");
         }
     }
-    fn be_a_tray(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn be_a_tray(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
         // extra surrounding base widget added for margins, etc
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
         let base_widget = gtk::Box::new(Orientation::Horizontal, 0);
         base_widget.add(&wrapper);
         base_widget.show_all();
-        super::init_widget(&base_widget, &config, bar, container);
+        super::init_widget(&base_widget, &config, &window, container);
 
         // communication
         let (s_main, r_main) = channel::unbounded();
@@ -203,7 +202,7 @@ impl Tray {
             gtk::Continue(true)
         }));
 
-        bar.add_component(Box::new(Tray {
+        window.add_component(Box::new(Tray {
             base_widget,
             timer,
             sender: s_main,

@@ -1,6 +1,5 @@
 use crate::components::{Component, ComponentParams};
-use crate::config::{ConfigGroup, Property};
-use gtk;
+use crate::config::Property;
 use gtk::prelude::*;
 use gtk::{EventBox, Label, Menu as GtkMenu, MenuItem as GtkMenuItem, WidgetExt};
 

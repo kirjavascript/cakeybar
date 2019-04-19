@@ -14,11 +14,11 @@ mod dropdown;
 mod image;
 mod ip;
 mod memory;
-// mod mode;
-// mod script;
-// mod tray;
+mod mode;
+mod script;
+mod tray;
 mod window_title;
-// mod workspaces;
+mod workspaces;
 
 /// defines interface for components
 pub trait Component {
@@ -52,11 +52,11 @@ pub fn load_component(params: ComponentParams) {
         "image" => image::Image::init,
         "ip" => ip::IP::init,
         "memory" => memory::Memory::init,
-        // "mode" => mode::Mode::init,
-        // "script" => script::Script::init,
-        // "tray" => tray::Tray::init,
+        "mode" => mode::Mode::init,
+        "script" => script::Script::init,
+        "tray" => tray::Tray::init,
         "window-title" => window_title::WindowTitle::init,
-        // "workspaces" => workspaces::Workspaces::init,
+        "workspaces" => workspaces::Workspaces::init,
         _ => void,
     })(params);
 }

@@ -30,8 +30,7 @@ features for 1.0.0: tray bugs, multiple install options, stacking order
 
 floats
 ======
-CommandParams
-load_components in wm_util
+T: wm::Window instead of dyn wm::Window
 
 command_input
 ====

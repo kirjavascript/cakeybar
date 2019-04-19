@@ -31,7 +31,7 @@ fn get_value(name: &str) -> Result<f32, String> {
 
 impl Backlight {
     pub fn init(params: ComponentParams) {
-        let ComponentParams { config, window, wm_util, container } = params;
+        let ComponentParams { config, window, container, .. } = params;
         match get_value("brightness") {
             Ok(initial) => {
                 let label = Label::new(None);

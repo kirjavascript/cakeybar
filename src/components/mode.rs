@@ -1,6 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
+use crate::components::{Component, ComponentParams};
 use glib::markup_escape_text;
 use gtk;
 use gtk::prelude::*;
@@ -23,16 +21,17 @@ impl Component for Mode {
 }
 
 impl Mode {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, wm_util } = params;
         let label = Label::new(None);
         let wrapper = gtk::Box::new(Orientation::Horizontal, 0);
-        super::init_widget(&label, &config, bar, &wrapper);
+        super::init_widget(&label, &config, &window, &wrapper);
         container.add(&wrapper);
         wrapper.show();
 
         let symbols = SymbolFmt::new(config.get_str_or("format", "{mode}"));
 
-        let event_id = bar.wm_util.add_listener(
+        let event_id = wm_util.add_listener(
             Event::Mode,
             clone!(label
             move |event_opt| {
@@ -56,8 +55,8 @@ impl Mode {
         ),
         );
 
-        let wm_util = bar.wm_util.clone();
-        bar.add_component(Box::new(Mode {
+        let wm_util = wm_util.clone();
+        window.add_component(Box::new(Mode {
             wrapper,
             wm_util,
             event_id,

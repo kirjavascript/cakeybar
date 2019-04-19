@@ -18,7 +18,7 @@ impl Component for Battery {
 
 impl Battery {
     pub fn init(params: ComponentParams) {
-        let ComponentParams { config, window, wm_util, container } = params;
+        let ComponentParams { config, window, container, .. } = params;
         let label = Label::new(None);
         super::init_widget(&label, &config, &window, container);
         label.show();

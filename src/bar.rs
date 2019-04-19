@@ -214,6 +214,10 @@ impl wm::Window for Bar {
         &self.overlay
     }
 
+    fn get_monitor_index(&self) -> usize {
+        self.config.get_int_or("monitor", 0) as _
+    }
+
     fn add_component(&mut self, component: Box<dyn Component>) {
         self.components.push(component);
     }

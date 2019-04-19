@@ -4,7 +4,7 @@ use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
 use crate::wm::ipc::commands::*;
 use crate::wm::workspace::Workspace;
 use crate::wm::watch::Watcher;
-use crate::wm::Window;
+use crate::wm::Window as _;
 use crate::wm;
 use clap::ArgMatches;
 
@@ -199,7 +199,6 @@ impl WMUtil {
                 let monitor_index = bar_config.get_int_or("monitor", 0);
                 let monitor_option = monitors.get(monitor_index as usize);
 
-                // TODO: can remove a wm_util from bar
                 if let Some(monitor) = monitor_option {
                     let mut bar = Bar::new(
                         bar_config.clone(),

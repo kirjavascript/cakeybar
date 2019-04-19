@@ -1,7 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
-use gtk;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use gtk::Label;
 use std::io::Error;
@@ -26,7 +23,8 @@ impl Component for Script {
 }
 
 impl Script {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
         if let Some(src) = config.get_string("src") {
             let (tx, rx) = mpsc::channel();
             let (tx_term, rx_term) = mpsc::channel();
@@ -51,7 +49,7 @@ impl Script {
             }));
 
             let label = Label::new(None);
-            super::init_widget(&label, &config, bar, container);
+            super::init_widget(&label, &config, &window, container);
             label.show();
 
             let tick = clone!(label move || {
@@ -69,7 +67,7 @@ impl Script {
             });
             let timer = Timer::add_seconds(interval as u32, tick);
 
-            bar.add_component(Box::new(Script {
+            window.add_component(Box::new(Script {
                 label,
                 timer,
                 tx_term,
