@@ -8,7 +8,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use crate::{wm, NAME};
-use crate::components::Component;
+use crate::components::{Component, ComponentParams, load_component};
 use crate::config::ConfigGroup;
 use crate::wm::ipc::commands::Selectors;
 
@@ -219,7 +219,7 @@ impl wm::Window for Bar {
     }
 
     fn load_component(&mut self, config: ConfigGroup, container: &gtk::Box, wm_util: &wm::WMUtil) {
-        crate::components::load_component(crate::components::ComponentParams {
+        load_component(ComponentParams {
             container,
             config,
             window: Box::new(self),

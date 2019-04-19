@@ -6,7 +6,7 @@ mod backlight;
 mod bandwidth;
 mod battery;
 mod clock;
-// mod command_input;
+mod command_input;
 mod container;
 // mod cpu;
 // mod disk;
@@ -44,7 +44,7 @@ pub fn load_component(params: ComponentParams) {
         "bandwidth" => bandwidth::Bandwidth::init,
         "battery" => battery::Battery::init,
         "clock" => clock::Clock::init,
-        // "command-input" => command_input::CommandInput::init,
+        "command-input" => command_input::CommandInput::init,
         "container" => container::Container::init,
         // "cpu" => cpu::CPU::init,
         // "disk" => disk::Disk::init,

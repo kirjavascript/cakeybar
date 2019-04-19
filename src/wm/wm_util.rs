@@ -1,6 +1,5 @@
 use crate::bar::Bar;
 use crate::config::{Config, ConfigGroup, parse_config};
-use crate::components::{ComponentParams, load_component};
 use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
 use crate::wm::ipc::commands::*;
 use crate::wm::workspace::Workspace;

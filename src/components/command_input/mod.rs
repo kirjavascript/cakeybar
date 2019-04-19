@@ -1,6 +1,5 @@
-use crate::bar::Bar;
+use crate::components::{Component, ComponentParams};
 use crate::config::ConfigGroup;
-use crate::components::Component;
 use crate::wm::ipc::parser::parse_message;
 use crate::wm::events::{Event, EventId};
 use crate::wm::{self, WMUtil};
@@ -49,14 +48,15 @@ fn get_abs_rect(wrapper: &gtk::Box) -> Rectangle {
 }
 
 impl CommandInput {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, wm_util } = params;
 
         let history_limit = config.get_int_or("history", 1000) as usize;
 
         // create wrapper
 
         let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-        super::init_widget(&wrapper, &config, bar, container);
+        super::init_widget(&wrapper, &config, &window, container);
         wrapper.show();
 
         let window_opt: Rc<RefCell<Option<gtk::Window>>>
@@ -65,8 +65,8 @@ impl CommandInput {
         // get focus event
 
         let event_type = Event::Focus(config.name.clone());
-        let wm_util = bar.wm_util.clone();
-        let event = bar.wm_util.add_listener(event_type,
+        let wm_util = wm_util.clone();
+        let event = wm_util.add_listener(event_type,
             clone!((window_opt, wrapper, wm_util, config) move |_| {
                 if window_opt.borrow().is_some() {
                     return
@@ -254,7 +254,7 @@ impl CommandInput {
             }
         ));
 
-        bar.add_component(Box::new(CommandInput {
+        window.add_component(Box::new(CommandInput {
             config,
             wrapper,
             window_opt,
