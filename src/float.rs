@@ -76,7 +76,7 @@ impl Float {
         let &Rectangle { x, y, .. } = monitor;
         let is_set = Rc::new(RefCell::new(false));
         // TODO: start at wrong side bug
-        let size_id = window.connect_size_allocate(clone!((is_set, wm_util)
+        let size_id = window.connect_size_allocate(clone!(is_set
             move |window, _rect| {
                 let xpos = x + 1200;
                 let ypos = y + 200;

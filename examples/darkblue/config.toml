@@ -36,8 +36,8 @@ workspace-scroll = true
 
 # floats
 
-# [float.info]
-# layout = [ "clock" ]
+[float.info]
+layout = [ "box1" ]
 
 # command input
 
