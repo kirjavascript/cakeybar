@@ -50,21 +50,21 @@ cargo run --release -- -c examples/darkblue/config.toml
 
 ## command syntax
 
-used for IPC and in the *command-input* component
+used for IPC and in the **command-input** component
 
-`show [selector-list]`
+`show [selector-list]`  
 `hide [selector-list]`
 
 used to show/hide windows. example: `show .stats, #bar`
 
-`reload config [path]`
+`reload config [path]`  
 `reload theme [path]`
 
 used to reload the theme or the entire config. the path is optional
 
 `focus [selector]`
 
-(currently) used to focus on a *command-input* component
+(currently) used to focus on a **command-input** component
 
 ## configuration
 
@@ -93,6 +93,9 @@ enable-ipc = true
 # define a bar with the name `bar_name`
 [bar.bar_name]
 
+# provide a class for the bar
+class = ""
+
 # monitor index the bar appears on. a list of monitors can be seen with `cakeybar -M`
 monitor = 0
 
@@ -114,14 +117,20 @@ disable-shadow = true
 
 you can define as many bars as you like as long as they have unique names. the name is also used as the CSS selector for that bar: `#bar_name`
 
-### float config
+### floating window config
 
 ```toml
 # define a floating window with the name `float_name`
 [float.float_name]
 
+# provide a class for the window
+class = ""
+
 # provide a title for the window
 title = ""
+
+# a list of components to add to the window, identified by name
+layout = [ "component", "names", "go", "here" ]
 
 ...TBC...
 ```
