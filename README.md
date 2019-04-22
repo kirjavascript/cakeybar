@@ -44,7 +44,7 @@ cargo run --release -- -c examples/darkblue/config.toml
     -M, --monitors             Shows information about monitors
     -V, --version              Prints version information
     -w, --watch                Watch config files and reload on changes
-    -c, --config <FILE>        Specify a config path
+    -c, --config <FILE>         Specify a config path
     -m, --message <MESSAGE>    Send an IPC message
 ```
 
@@ -60,11 +60,11 @@ used to show/hide windows. example: `show .stats, #bar`
 `reload config [path]`  
 `reload theme [path]`
 
-used to reload the theme or the entire config. the path is optional
+used to reload (or change) the theme or the entire config. the path is optional
 
 `focus [selector]`
 
-(currently) used to focus on a **command-input** component
+(currently) used to focus on a **command-input** component. example: `focus #autocomplete`
 
 ## configuration
 
@@ -94,7 +94,7 @@ enable-ipc = true
 [bar.bar_name]
 
 # provide a class for the bar
-class = ""
+class = "class-name"
 
 # monitor index the bar appears on. a list of monitors can be seen with `cakeybar -M`
 monitor = 0
@@ -124,7 +124,7 @@ you can define as many bars as you like as long as they have unique names. the n
 [float.float_name]
 
 # provide a class for the window
-class = ""
+class = "class-name"
 
 # provide a title for the window
 title = ""
