@@ -20,7 +20,7 @@ cakeybar is written in Rust using GTK and XCB
 *work in progress*  
 currently testing in i3wm/bspwm
 
-[https://github.com/kirjavascript/cakeybar/issues](request a feature or file a bug)
+![https://github.com/kirjavascript/cakeybar/issues](request a feature or file a bug)
 
 ## quickstart
 
