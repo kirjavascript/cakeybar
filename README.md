@@ -10,6 +10,7 @@ a customizable statusbar for your windowmanager
 * expressive theming with CSS
 * inter-process communication
 * hot config reloading
+* floating windows
 * windowmanager neutral config
 * system tray integration
 * more rice than feudal japan
@@ -35,6 +36,35 @@ cd cakeybar
 # run example
 cargo run --release -- -c examples/darkblue/config.toml
 ```
+
+## CLI options
+
+```
+    -h, --help                 Prints help information
+    -M, --monitors             Shows information about monitors
+    -V, --version              Prints version information
+    -w, --watch                Watch config files and reload on changes
+    -c, --config <FILE>        Specify a config path
+    -m, --message <MESSAGE>    Send an IPC message
+```
+
+## command syntax
+
+used for IPC and in the *command-input* component
+
+`show [selector-list]`
+`hide [selector-list]`
+
+used to show/hide windows. example: `show .stats, #bar`
+
+`reload config [path]`
+`reload theme [path]`
+
+used to reload the theme or the entire config. the path is optional
+
+`focus [selector]`
+
+(currently) used to focus on a *command-input* component
 
 ## configuration
 
@@ -84,7 +114,21 @@ disable-shadow = true
 
 you can define as many bars as you like as long as they have unique names. the name is also used as the CSS selector for that bar: `#bar_name`
 
+### float config
+
+```toml
+# define a floating window with the name `float_name`
+[float.float_name]
+
+# provide a title for the window
+title = ""
+
+...TBC...
+```
+
 ### component config
+
+components can be used in either bars or floating windows
 
 #### common properties
 
@@ -141,6 +185,22 @@ layout = [ "component", "names", "go", "here" ]
 
 possible directions: `horizontal` or `vertical`
 
+#### command-input
+
+an input box with autosuggestions and history for running programs and commands
+
+```toml
+[component.autocomplete]
+type = "command-input"
+history = 1000
+```
+
+will run installed programs, or prefix with `:` to run an IPC-style command (eg `:show #info`)
+
+`Tab` is used for completing a word and `Right` is used for completing to the end
+
+see the command syntax section to see how to focus the input
+
 #### window-title
 
 displays the current active window's title
@@ -158,6 +218,7 @@ truncate = 100
 [component.workspace_list]
 type = "workspaces"
 show-all = false # show workspaces from every monitor
+spacing = 0 # gap between items
 format = "{number}" # symbols are; number, name
 ```
 

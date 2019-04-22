@@ -38,6 +38,7 @@ impl Float {
         };
 
         // TODO: grab close event
+        // TODO: sticky
 
         // config: min-width, min-height, title
 
@@ -80,7 +81,6 @@ impl Float {
         let &Rectangle { x, y, .. } = monitor;
         let is_set = Rc::new(RefCell::new(false));
         // TODO: start at wrong side bug
-        // TODO:
         let size_id = window.connect_size_allocate(clone!(is_set
             move |window, _rect| {
                 let xpos = x + 1200;

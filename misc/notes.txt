@@ -26,20 +26,17 @@ https://svartalf.info/posts/2019-02-25-introducing-battery-crate/
 animations:
 https://gist.github.com/ptomato/0fb634ef4098bb89026f
 
-features for 0.4.0: add floats for above/below/autohide
 show overlay win95 when press start / runbox
 features for 1.0.0: tray bugs, multiple install options, stacking order
 
 floats
 ======
-// DOC
 :move #info 25 300 animation
 sticky
-title config
+autohide?
 
 command_input
 ====
-// DOC: history, tab/right
 error message in wrapper
 monitor focus
 poll for blur
@@ -48,12 +45,10 @@ move command into wm_util
 
 ipc
 ====
-classList / support classes for selectors
 && in DSL
 help
 two way
 allow ipc in menu objs
-Open(Selector) completor/startmenu // checkselector(config)
 watch / unwatch
 clear cache
 
@@ -116,16 +111,11 @@ add / remove - curl | sh install
     or install from cargo (google scrftch)
 pandoc
 GTKTheme can affect bar
-bindsym $mod+m exec -- --message / sxhkdrc
-ipc help
-cli help
 AUR / shell command (via github release)
-file watcher
 https://gtk-rs.org/docs/gtk/struct.CssProvider.html
+
 undocu'd;
-    command_input
     dropdown/label
-    workspaces/spacing
     BSPWM_SOCKET
     CAKEYBAR_SOCKET
     .focused class for Bar
