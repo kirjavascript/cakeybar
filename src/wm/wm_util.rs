@@ -2,6 +2,7 @@ use crate::bar::Bar;
 use crate::float::Float;
 use crate::config::{Config, ConfigGroup, parse_config};
 use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
+use crate::wm::ipc::parser::parse_message;
 use crate::wm::ipc::commands::*;
 use crate::wm::workspace::Workspace;
 use crate::wm::watch::Watcher;
@@ -111,8 +112,19 @@ impl WMUtil {
         self.data.borrow().app.add_window(window);
     }
 
-    pub fn run_command(&self, cmd: Command) {
-        wm::ipc::exec::run_command(self, cmd);
+    pub fn run_command(&self, cmd: &str) {
+        if cmd.starts_with(":") {
+            match parse_message(&cmd[1..]) {
+                Ok(cmd) => {
+                    wm::ipc::exec::run_command(self, cmd);
+                },
+                Err(_) => {
+                    error!("problem parsing command {}", cmd);
+                },
+            }
+        } else {
+            crate::util::run_command(cmd.to_owned());
+        }
     }
 
     pub fn watch_files(&self) {

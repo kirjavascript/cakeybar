@@ -1,6 +1,5 @@
 use crate::components::{Component, ComponentParams};
 use crate::config::ConfigGroup;
-use crate::wm::ipc::parser::parse_message;
 use crate::wm::events::{Event, EventId};
 use crate::wm::{self, WMUtil};
 
@@ -174,13 +173,7 @@ impl CommandInput {
                 entry.connect_activate(clone!((wm_util, destroy, suggestions) move |e| {
                     if let Some(text) = e.get_text() {
                         suggestions.select(&text);
-                        if text.starts_with(":") {
-                            if let Ok(cmd) = parse_message(&text[1..]) {
-                                wm_util.run_command(cmd);
-                            }
-                        } else {
-                            crate::util::run_command(text.to_owned());
-                        }
+                        wm_util.run_command(&text);
                         destroy();
                     }
                 }));

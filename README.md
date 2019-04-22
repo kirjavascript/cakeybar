@@ -18,8 +18,9 @@ a customizable statusbar for your windowmanager
 cakeybar is written in Rust using GTK and XCB
 
 *work in progress*  
-not stable yet  
 currently testing in i3wm/bspwm
+
+[https://github.com/kirjavascript/cakeybar/issues](request a feature or file a bug)
 
 ## quickstart
 
@@ -87,7 +88,7 @@ theme = "theme.css"
 enable-ipc = true
 ```
 
-### bar config
+### statusbar config
 
 ```toml
 # define a bar with the name `bar_name`
@@ -116,6 +117,8 @@ disable-shadow = true
 ```
 
 you can define as many bars as you like as long as they have unique names. the name is also used as the CSS selector for that bar: `#bar_name`
+
+bars and floating windows will add a `.focused` class when you mouseover them
 
 ### floating window config
 

@@ -41,7 +41,6 @@ error message in wrapper
 monitor focus
 poll for blur
 fix in bspwm - send bar to below layer - bspc node SEL -l below
-move command into wm_util
 
 ipc
 ====
@@ -113,12 +112,10 @@ pandoc
 GTKTheme can affect bar
 AUR / shell command (via github release)
 https://gtk-rs.org/docs/gtk/struct.CssProvider.html
-
 undocu'd;
     dropdown/label
     BSPWM_SOCKET
     CAKEYBAR_SOCKET
-    .focused class for Bar
 shadow-exclude = [ "_NET_WM_WINDOW_TYPE@:32a *= '_NET_WM_WINDOW_TYPE_POPUP_MENU'" ];
 http://gtk-rs.org/docs/requirements.html
 
