@@ -7,15 +7,16 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="353"
+   width="353.66159"
    height="184.47362"
-   viewBox="0 0 93.397915 48.808646"
+   viewBox="0 0 93.57296 48.808645"
    version="1.1"
    id="svg28"
    sodipodi:docname="logo.svg"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
    inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   inkscape:export-ydpi="96"
+   inkscape:export-filename="/home/cake/dev/cakeybar/misc/logo.svg.png">
   <metadata
      id="metadata34">
     <rdf:RDF>
@@ -45,7 +46,7 @@
      showgrid="false"
      inkscape:zoom="1.3493784"
      inkscape:cx="36.124412"
-     inkscape:cy="85.735313"
+     inkscape:cy="85.735327"
      inkscape:window-x="1920"
      inkscape:window-y="29"
      inkscape:window-maximized="0"
