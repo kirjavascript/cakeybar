@@ -191,80 +191,66 @@ impl WMUtil {
             windows.iter().map(|b| b.to_window()).collect();
         gtk_windows.reverse();
 
+        macro_rules! get_windows {
+            ($config_list:expr, $monitors:expr, $constructor:path $(,)?) => {
+                {
+                    let bars: Vec<Box<dyn wm::Window>> =
+                        $config_list.iter().fold(Vec::new(), |mut acc, bar_config| {
+                            let monitor_index = bar_config.get_int_or("monitor", 0);
+                            let monitor_option = $monitors.get(monitor_index as usize);
+
+                            if let Some(monitor) = monitor_option {
+                                let mut bar = $constructor(
+                                    bar_config.clone(),
+                                    &self,
+                                    monitor,
+                                    gtk_windows.pop(),
+                                );
+
+                                // load components
+                                let container = &bar.get_container().clone();
+                                for name in bar_config.get_string_vec("layout") {
+                                    let config_opt = self.get_component_config(&name);
+                                    if let Some(config) = config_opt {
+                                        bar.load_component(
+                                            config,
+                                            container,
+                                            &self
+                                        );
+                                    } else {
+                                        warn!("missing component #{}", name);
+                                    }
+                                }
+
+                                acc.push(Box::new(bar));
+                            } else {
+                                warn!("no monitor at index {}", monitor_index);
+                            }
+                            acc
+                        });
+
+                    bars
+                }
+            }
+        }
+
         // get monitor info
         let monitors = wm::gtk::get_monitor_geometry();
+
         // clone is here to ensure we're not borrowing during component loading
-        let bars = self.data.borrow().config.bars.clone();
-        let mut bars: Vec<Box<dyn wm::Window>> =
-            bars.iter().fold(Vec::new(), |mut acc, bar_config| {
-                let monitor_index = bar_config.get_int_or("monitor", 0);
-                let monitor_option = monitors.get(monitor_index as usize);
+        let bars_config = self.data.borrow().config.bars.clone();
+        let mut bars = get_windows!(
+            bars_config,
+            monitors,
+            Bar::new
+        );
 
-                if let Some(monitor) = monitor_option {
-                    let mut bar = Bar::new(
-                        bar_config.clone(),
-                        &self,
-                        monitor,
-                        gtk_windows.pop(),
-                    );
-
-                    // load components
-                    let container = &bar.get_container().clone();
-                    for name in bar_config.get_string_vec("layout") {
-                        let config_opt = self.get_component_config(&name);
-                        if let Some(config) = config_opt {
-                            bar.load_component(
-                                config,
-                                container,
-                                &self
-                            );
-                        } else {
-                            warn!("missing component #{}", name);
-                        }
-                    }
-
-                    acc.push(Box::new(bar));
-                } else {
-                    warn!("no monitor at index {}", monitor_index);
-                }
-                acc
-            });
-
-        let floats = self.data.borrow().config.floats.clone();
-        let mut floats: Vec<Box<dyn wm::Window>> =
-            floats.iter().fold(Vec::new(), |mut acc, float_config| {
-                let monitor_index = float_config.get_int_or("monitor", 0);
-                let monitor_option = monitors.get(monitor_index as usize);
-
-                if let Some(monitor) = monitor_option {
-                    let mut bar = Float::new(
-                        float_config.clone(),
-                        &self,
-                        monitor,
-                        gtk_windows.pop(),
-                    );
-
-                    // load components
-                    let container = &bar.get_container().clone();
-                    for name in float_config.get_string_vec("layout") {
-                        let config_opt = self.get_component_config(&name);
-                        if let Some(config) = config_opt {
-                            bar.load_component(
-                                config,
-                                container,
-                                &self
-                            );
-                        } else {
-                            warn!("missing component #{}", name);
-                        }
-                    }
-
-                    acc.push(Box::new(bar));
-                } else {
-                    warn!("no monitor at index {}", monitor_index);
-                }
-                acc
-            });
+        let floats_config = self.data.borrow().config.floats.clone();
+        let mut floats = get_windows!(
+            floats_config,
+            monitors,
+            Float::new
+        );
 
         // destroy old (now unused) windows
         gtk_windows.iter().for_each(|w| w.destroy());
