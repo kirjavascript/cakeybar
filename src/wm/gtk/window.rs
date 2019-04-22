@@ -28,6 +28,31 @@ fn draw(_window: &gtk::Window, ctx: &cairo::Context) -> Inhibit {
     Inhibit(false)
 }
 
+// binding wrappers
+
+pub fn get_style_property_uint(ctx: &gtk::StyleContext, name: &str) -> u32 {
+    let prop = CString::new(name).unwrap();
+    let prop_ptr = prop.as_ptr();
+    let ctx_ptr: *mut gtk_sys::GtkStyleContext = ctx.to_glib_none().0;
+    let mut gval = gobject_sys::GValue {
+        g_type: 0,
+        data: [
+            gobject_sys::GValue_data { v_int: 0 },
+            gobject_sys::GValue_data { v_int: 0 },
+        ],
+    };
+    let gval_ptr: *mut gobject_sys::GValue = &mut gval;
+    unsafe {
+        gtk_sys::gtk_style_context_get_property(
+            ctx_ptr,
+            prop_ptr,
+            0,
+            gval_ptr,
+        );
+        gval.data[0].v_uint
+    }
+}
+
 pub fn keyboard_grab(window: &gtk::Window) -> i32 {
     let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
     unsafe {

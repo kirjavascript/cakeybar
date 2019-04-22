@@ -26,6 +26,8 @@ gdk = { git = "https://github.com/gtk-rs/gdk.git" }
 cairo-rs = { git = "https://github.com/gtk-rs/cairo.git" }
 gdk-sys = { git = "https://github.com/gtk-rs/sys.git" }
 glib-sys = { git = "https://github.com/gtk-rs/sys.git" }
+gtk-sys = { git = "https://github.com/gtk-rs/sys.git" }
+gobject-sys = { git = "https://github.com/gtk-rs/sys.git" }
 libc = "0.2"
 chrono = "0.4"
 clap = "2.31.2"

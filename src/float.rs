@@ -37,17 +37,14 @@ impl Float {
             window
         };
 
-        // config:
+        // TODO: grab close event
 
-        // maybe pull from CSS context
-        let width = config.get_int_or("width", 200) as i32;
-        let height = config.get_int_or("height", 200) as i32;
+        // config: min-width, min-height, title
+
         // let x = config.get_int_or("x", 200);
         // let y = config.get_int_or("y", 200);
 
-
         // set base values
-        window.resize(width, height);
         if is_new {
             window.set_title(config.get_str_or("title", ""));
             window.set_type_hint(gdk::WindowTypeHint::PopupMenu);
@@ -65,6 +62,13 @@ impl Float {
         WidgetExt::set_name(&container, &config.name);
         WidgetExt::set_name(&window, &config.name);
 
+        // get width/height from CSS context
+        if let Some(ctx) = container.get_style_context() {
+            let width = wm::gtk::get_style_property_uint(&ctx, "min-width");
+            let height = wm::gtk::get_style_property_uint(&ctx, "min-height");
+            window.resize(width.max(1) as i32, height.max(1) as i32);
+        }
+
         // create overlay
         let overlay = Overlay::new();
 
@@ -76,6 +80,7 @@ impl Float {
         let &Rectangle { x, y, .. } = monitor;
         let is_set = Rc::new(RefCell::new(false));
         // TODO: start at wrong side bug
+        // TODO:
         let size_id = window.connect_size_allocate(clone!(is_set
             move |window, _rect| {
                 let xpos = x + 1200;
@@ -159,9 +164,11 @@ impl wm::Window for Float {
     }
 
     fn relayout(&self) {
-        let width = self.config.get_int_or("width", 200) as i32;
-        let height = self.config.get_int_or("height", 200) as i32;
-        self.window.resize(width, height);
+        if let Some(ctx) = self.container.get_style_context() {
+            let width = wm::gtk::get_style_property_uint(&ctx, "min-width");
+            let height = wm::gtk::get_style_property_uint(&ctx, "min-height");
+            self.window.resize(width.max(1) as i32, height.max(1) as i32);
+        }
     }
 
     fn to_window(&self) -> Window {
