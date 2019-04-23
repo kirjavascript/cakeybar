@@ -1,9 +1,12 @@
 use crate::bar::Bar;
+use crate::float::Float;
 use crate::config::{Config, ConfigGroup, parse_config};
 use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
+use crate::wm::ipc::parser::parse_message;
 use crate::wm::ipc::commands::*;
 use crate::wm::workspace::Workspace;
 use crate::wm::watch::Watcher;
+use crate::wm::Window as _;
 use crate::wm;
 use clap::ArgMatches;
 
@@ -31,7 +34,7 @@ impl fmt::Display for WMType {
 #[derive(Clone)]
 pub struct WMUtil{
     data: Rc<RefCell<Data>>,
-    bars: Rc<RefCell<Vec<Bar>>>,
+    windows: Rc<RefCell<Vec<Box<dyn wm::Window>>>>,
 }
 
 struct Data {
@@ -47,10 +50,11 @@ impl WMUtil {
     pub fn new(
         app: gtk::Application, config: Config, matches: &ArgMatches
     ) -> Self {
-        // TODO: replace detection with checking the root window
         let wm_type = if wm::i3::connect().is_ok() {
             WMType::I3
         } else if wm::bsp::connect().is_ok() {
+            // TODO: for bspwm, replace detection with checking the root window so we can give
+            // better errors
             WMType::Bsp
         } else {
             WMType::Unknown
@@ -71,9 +75,9 @@ impl WMUtil {
             wm_type,
         }));
 
-        let bars = Rc::new(RefCell::new(Vec::new()));
+        let windows = Rc::new(RefCell::new(Vec::new()));
 
-        let util = WMUtil { data, bars };
+        let util = WMUtil { data, windows };
 
         // start IPC
         if util.data.borrow().config.global.get_bool_or("enable-ipc", true) {
@@ -96,7 +100,7 @@ impl WMUtil {
 
         wm::gtk::css_reset();
         util.load_theme(None);
-        util.load_bars();
+        util.load_windows();
         if matches.is_present("watch") {
             util.watch_files();
         }
@@ -104,12 +108,23 @@ impl WMUtil {
         util
     }
 
-    pub fn add_window(&self, window: &gtk::Window) {
+    pub fn add_gtk_window(&self, window: &gtk::Window) {
         self.data.borrow().app.add_window(window);
     }
 
-    pub fn run_command(&self, cmd: Command) {
-        wm::ipc::exec::run_command(self, cmd);
+    pub fn run_command(&self, cmd: &str) {
+        if cmd.starts_with(":") {
+            match parse_message(&cmd[1..]) {
+                Ok(cmd) => {
+                    wm::ipc::exec::run_command(self, cmd);
+                },
+                Err(_) => {
+                    error!("problem parsing command {}", cmd);
+                },
+            }
+        } else {
+            crate::util::run_command(cmd.to_owned());
+        }
     }
 
     pub fn watch_files(&self) {
@@ -144,15 +159,15 @@ impl WMUtil {
             // update config
             self.data.borrow_mut().config = config;
             if change_config {
-                // unload old bars if changing the config
-                self.bars.borrow_mut().iter().for_each(|b| b.destroy());
-                self.bars.borrow_mut().clear();
+                // unload old windows if changing the config
+                self.windows.borrow_mut().iter().for_each(|b| b.destroy());
+                self.windows.borrow_mut().clear();
                 // watch different files
                 self.rewatch_files();
             }
             // reload everything
             self.load_theme(None);
-            self.load_bars();
+            self.load_windows();
         } else if let Err(msg) = config_res {
             error!("{}", msg);
         }
@@ -162,7 +177,7 @@ impl WMUtil {
         // unload old theme
         if let Some(ref provider) = self.data.borrow().css_provider {
             wm::gtk::unload_theme(provider);
-            self.bars.borrow().iter().for_each(|bar| bar.relayout());
+            self.windows.borrow().iter().for_each(|window| window.relayout());
         }
         // update path
         if let Some(new_path) = new_path {
@@ -181,44 +196,85 @@ impl WMUtil {
         }
     }
 
-    pub fn load_bars(&self) {
-        // unload old bars and retain gtk::Window
-        let bars = self.bars.borrow_mut().split_off(0);
-        let mut windows: Vec<gtk::Window> =
-            bars.iter().map(|b| b.to_window()).collect();
-        windows.reverse();
+    fn load_windows(&self) {
+        // unload old windows and retain gtk::Window
+        let windows = self.windows.borrow_mut().split_off(0);
+        let mut gtk_windows: Vec<gtk::Window> =
+            windows.iter().map(|b| b.to_window()).collect();
+        gtk_windows.reverse();
+
+        macro_rules! get_windows {
+            ($config_list:expr, $monitors:expr, $constructor:path $(,)?) => {
+                {
+                    let bars: Vec<Box<dyn wm::Window>> =
+                        $config_list.iter().fold(Vec::new(), |mut acc, bar_config| {
+                            let monitor_index = bar_config.get_int_or("monitor", 0);
+                            let monitor_option = $monitors.get(monitor_index as usize);
+
+                            if let Some(monitor) = monitor_option {
+                                let mut bar = $constructor(
+                                    bar_config.clone(),
+                                    &self,
+                                    monitor,
+                                    gtk_windows.pop(),
+                                );
+
+                                // load components
+                                let container = &bar.get_container().clone();
+                                for name in bar_config.get_string_vec("layout") {
+                                    let config_opt = self.get_component_config(&name);
+                                    if let Some(config) = config_opt {
+                                        bar.load_component(
+                                            config,
+                                            container,
+                                            &self
+                                        );
+                                    } else {
+                                        warn!("missing component #{}", name);
+                                    }
+                                }
+
+                                acc.push(Box::new(bar));
+                            } else {
+                                warn!("no monitor at index {}", monitor_index);
+                            }
+                            acc
+                        });
+
+                    bars
+                }
+            }
+        }
 
         // get monitor info
         let monitors = wm::gtk::get_monitor_geometry();
-        // clone is here to ensure we're not borrowing during Bar::load_components
-        let bars = self.data.borrow().config.bars.clone();
-        let mut bars = bars.iter().fold(Vec::new(), |mut acc, bar_config| {
-            let monitor_index = bar_config.get_int_or("monitor", 0);
-            let monitor_option = monitors.get(monitor_index as usize);
 
-            if let Some(monitor) = monitor_option {
-                acc.push(Bar::new(
-                    bar_config.clone(),
-                    self.clone(),
-                    monitor,
-                    windows.pop(),
-                ));
-            } else {
-                warn!("no monitor at index {}", monitor_index);
-            }
-            acc
-        });
+        // clone is here to ensure we're not borrowing during component loading
+        let bars_config = self.data.borrow().config.bars.clone();
+        let mut bars = get_windows!(
+            bars_config,
+            monitors,
+            Bar::new
+        );
+
+        let floats_config = self.data.borrow().config.floats.clone();
+        let mut floats = get_windows!(
+            floats_config,
+            monitors,
+            Float::new
+        );
 
         // destroy old (now unused) windows
-        windows.iter().for_each(|w| w.destroy());
-        // update new bar vec
-        self.bars.borrow_mut().clear();
-        self.bars.borrow_mut().append(&mut bars);
+        gtk_windows.iter().for_each(|w| w.destroy());
+        // update new window vec
+        self.windows.borrow_mut().clear();
+        self.windows.borrow_mut().append(&mut bars);
+        self.windows.borrow_mut().append(&mut floats);
     }
 
-    pub fn display_bars(&self, names: &Selectors, show: bool) {
-        for bar in self.bars.borrow().iter() {
-            if names.contains_id(&bar.config.name) {
+    pub fn display_windows(&self, names: &Selectors, show: bool) {
+        for bar in self.windows.borrow().iter() {
+            if bar.matches_selectors(names) {
                 if show {
                     bar.show();
                 } else {

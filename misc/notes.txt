@@ -23,22 +23,31 @@ Xephyr -br -ac -noreset -screen 1200x800 :1
 DISPLAY=:1 i3
 openbox: push to back, get desktops
 https://svartalf.info/posts/2019-02-25-introducing-battery-crate/
+animations:
+https://gist.github.com/ptomato/0fb634ef4098bb89026f
 
-features for 0.4.0: add floats for above/below/autohide
 show overlay win95 when press start / runbox
 features for 1.0.0: tray bugs, multiple install options, stacking order
 
-wm.util!(data => {})
-wm.util.borrow(|| {})
+floats
+======
+:move #info 25 300 animation
+sticky
+autohide?
+
+command_input
+====
+error message in wrapper
+monitor focus
+poll for blur
+fix in bspwm - send bar to below layer - bspc node SEL -l below
 
 ipc
 ====
-classList / support classes for selectors
 && in DSL
 help
 two way
 allow ipc in menu objs
-Open(Selector) completor/startmenu // checkselector(config)
 watch / unwatch
 clear cache
 
@@ -54,7 +63,7 @@ fix tray fullscreen latency/mm bug with events
 background colour sets the background of th icons too
 reload theme -> wm_util event
 reload event -> ???
-ipc doesn't show/hide (fullscreen? )
+show/hide bar should hide tray
 wm restart event restack tray
 send multiple IPC commands at once
 bug: on no icons width = 1
@@ -72,6 +81,7 @@ components
 bspwm mode
 gmail -> plugins in examples folder
 script - classes for return code
+script tail
 prompt -> ipc command
 remote ip
 active window xprop
@@ -100,17 +110,12 @@ add / remove - curl | sh install
     or install from cargo (google scrftch)
 pandoc
 GTKTheme can affect bar
-bindsym $mod+m exec -- --message / sxhkdrc
-ipc help
-cli help
 AUR / shell command (via github release)
-file watcher
+https://gtk-rs.org/docs/gtk/struct.CssProvider.html
 undocu'd;
     dropdown/label
-    workspaces/spacing
     BSPWM_SOCKET
     CAKEYBAR_SOCKET
-    .focused class for Bar
 shadow-exclude = [ "_NET_WM_WINDOW_TYPE@:32a *= '_NET_WM_WINDOW_TYPE_POPUP_MENU'" ];
 http://gtk-rs.org/docs/requirements.html
 

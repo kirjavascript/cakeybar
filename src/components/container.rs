@@ -1,6 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use gtk::Orientation;
 
@@ -15,7 +13,8 @@ impl Component for Container {
 }
 
 impl Container {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, wm_util, container } = params;
         // get spacing
         let spacing = config.get_int_or("spacing", 0) as i32;
 
@@ -26,19 +25,19 @@ impl Container {
         };
 
         let wrapper = gtk::Box::new(direction, spacing);
-        super::init_widget(&wrapper, &config, bar, container);
+        super::init_widget(&wrapper, &config, &window, container);
         wrapper.show();
 
         // load layout
         for name in config.get_string_vec("layout") {
-            let config_opt = bar.wm_util.get_component_config(&name);
+            let config_opt = wm_util.get_component_config(&name);
             if let Some(config) = config_opt {
-                super::load_component(config, bar, &wrapper);
+                window.load_component(config, &wrapper, &wm_util);
             } else {
                 warn!("missing component #{}", name);
             }
         }
 
-        bar.add_component(Box::new(Container { wrapper }));
+        window.add_component(Box::new(Container { wrapper }));
     }
 }

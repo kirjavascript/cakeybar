@@ -1,9 +1,7 @@
 use inotify::{Inotify, WatchMask};
 use crossbeam_channel as channel;
 use std::{thread, time};
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use crate::util::{read_file, SymbolFmt, Timer};
 use gtk::Label;
@@ -18,7 +16,9 @@ impl Component for Backlight {
     fn destroy(&self) {
         self.label.destroy();
         self.timer.remove();
-        self.watcher.send(());
+        if let Err(err) = self.watcher.send(()) {
+            error!("unwatch signal not sent - {}", err);
+        }
     }
 }
 
@@ -30,11 +30,12 @@ fn get_value(name: &str) -> Result<f32, String> {
 }
 
 impl Backlight {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
         match get_value("brightness") {
             Ok(initial) => {
                 let label = Label::new(None);
-                super::init_widget(&label, &config, bar, container);
+                super::init_widget(&label, &config, &window, container);
                 label.show();
 
                 let (s, r) = channel::unbounded();
@@ -42,7 +43,9 @@ impl Backlight {
 
                 let max = get_value("max_brightness").unwrap_or(initial);
 
-                s.send((initial/max)*100.);
+                if let Err(err) = s.send((initial/max)*100.) {
+                    error!("{}", err);
+                }
 
                 thread::spawn(move || {
                     let mut inotify = Inotify::init().unwrap();
@@ -60,9 +63,11 @@ impl Backlight {
                                     .expect("error reading events");
                                 for _ in events {
                                     let now = get_value("brightness").unwrap();
-                                    s.send((now/max)*100.);
+                                    if let Err(err) = s.send((now/max)*100.) {
+                                        error!("{}", err);
+                                    }
                                 }
-                                if r_dead.try_recv().is_some() {
+                                if r_dead.try_recv().is_ok() {
                                     inotify.rm_watch(wd).ok();
                                     break;
                                 } else {
@@ -79,7 +84,7 @@ impl Backlight {
                 let symbols = SymbolFmt::new(config.get_str_or("format", "{percent}"));
 
                 let timer = Timer::add_ms(50, clone!(label move || {
-                    if let Some(pct) = r.try_recv() {
+                    if let Ok(pct) = r.try_recv() {
                         label.set_markup(&symbols.format(|sym| match sym {
                             "pct" => format!("{:?}%", pct as u32),
                             _ => sym.to_string(),
@@ -88,7 +93,7 @@ impl Backlight {
                     gtk::Continue(true)
                 }));
 
-                bar.add_component(Box::new(Backlight {
+                window.add_component(Box::new(Backlight {
                     label,
                     timer,
                     watcher: s_dead,

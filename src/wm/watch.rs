@@ -43,11 +43,17 @@ impl Watcher {
                 for event in events {
                     if let &Some((_, ref wd)) = &file_wd {
                         if wd == &event.wd {
-                            s.send(WriteType::Config);
-                            info!("updated {}", &configfile);
+                            if let Err(err) = s.send(WriteType::Config) {
+                                error!("{}", err);
+                            } else {
+                                info!("updated {}", &configfile);
+                            }
                         } else {
-                            s.send(WriteType::Theme);
-                            info!("updated {}", &theme);
+                            if let Err(err) = s.send(WriteType::Theme) {
+                                error!("{}", err);
+                            } else {
+                                info!("updated {}", &theme);
+                            }
                         }
                     } else if let Some(_) = &theme_wd {
                         // doesn't work when there's no valid config file
@@ -55,7 +61,7 @@ impl Watcher {
                         error!("this should never happen");
                     }
                 }
-                if r_dead.try_recv().is_some() {
+                if r_dead.try_recv().is_ok() {
                     // remove watchers
                     if let Some((_, wd)) = file_wd {
                         inotify.rm_watch(wd).ok();
@@ -72,7 +78,7 @@ impl Watcher {
         });
 
         let timer = Timer::add_ms(50, clone!(wm_util move || {
-            if let Some(wtype) = r.try_recv() {
+            if let Ok(wtype) = r.try_recv() {
                 match wtype {
                     WriteType::Config => {
                         wm_util.reload_config(None);
@@ -89,6 +95,8 @@ impl Watcher {
     }
     pub fn unwatch(&self) {
         self.timer.remove();
-        self.sender.send(());
+        if let Err(err) = self.sender.send(()) {
+            error!("unwatch signal not sent - {}", err);
+        }
     }
 }

@@ -1,7 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
-use gtk;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use gtk::{Label, StyleContextExt};
 use std::io::Error;
@@ -20,9 +17,10 @@ impl Component for Battery {
 }
 
 impl Battery {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
         let label = Label::new(None);
-        super::init_widget(&label, &config, bar, container);
+        super::init_widget(&label, &config, &window, container);
         label.show();
 
         let adapter = config.get_str_or("adapter", "AC").to_string();
@@ -80,7 +78,7 @@ impl Battery {
             let interval = config.get_int_or("interval", 3).max(1);
             let timer = Timer::add_seconds(interval as u32, tick);
 
-            bar.add_component(Box::new(Battery {
+            window.add_component(Box::new(Battery {
                 label,
                 timer,
             }));

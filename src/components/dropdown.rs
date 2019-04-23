@@ -1,7 +1,5 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::{ConfigGroup, Property};
-use gtk;
+use crate::components::{Component, ComponentParams};
+use crate::config::Property;
 use gtk::prelude::*;
 use gtk::{EventBox, Label, Menu as GtkMenu, MenuItem as GtkMenuItem, WidgetExt};
 
@@ -47,7 +45,8 @@ fn get_menu(items: Vec<Property>) -> Vec<MenuItem> {
 }
 
 impl Dropdown {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
         let label = Label::new(None);
         {
             let label_text = config.get_str_or("label", "");
@@ -57,7 +56,7 @@ impl Dropdown {
         let ebox = EventBox::new();
         ebox.add(&label);
         ebox.show_all();
-        super::init_widget(&ebox, &config, bar, container);
+        super::init_widget(&ebox, &config, &window, container);
 
         let menu_items = get_menu(config.get_vec_or("items", vec![]));
 
@@ -70,7 +69,7 @@ impl Dropdown {
             Inhibit(false)
         }));
 
-        bar.add_component(Box::new(Dropdown {
+        window.add_component(Box::new(Dropdown {
             wrapper: ebox,
         }));
     }

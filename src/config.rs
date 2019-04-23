@@ -35,6 +35,7 @@ lazy_static! {
 pub struct Config {
     pub global: ConfigGroup,
     pub bars: Vec<ConfigGroup>,
+    pub floats: Vec<ConfigGroup>,
     pub components: Vec<ConfigGroup>,
     pub config_dir: PathBuf,
 }
@@ -145,26 +146,6 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
     // parse file
     let parsed = contents.parse::<toml::Value>().map_err(|x| x.to_string())?;
 
-    // bar assertions
-
-    let bar_table = parsed
-        .get("bar")
-        .ok_or(format!("{}: no bars specified", filename))?
-        .as_table()
-        .ok_or(format!(
-            "{}: bar needs to be a table like [bar.name]",
-            filename
-        ))?;
-
-    let bars: Vec<(&String, &Value)> = bar_table.iter().filter(|&(_k, v)| v.is_table()).collect();
-
-    if bars.len() == 0 {
-        return Err(format!(
-            "{}: no bars defined (bars need a name like [bar.name])",
-            filename,
-        ));
-    }
-
     // getters
 
     let get_table_config = |&(key, value): &(&String, &Value)| {
@@ -226,6 +207,7 @@ pub fn parse_config(filename: &str) -> Result<Config, String> {
     let config = Config {
         global,
         bars: get_table_config_list("bar"),
+        floats: get_table_config_list("float"),
         components: get_table_config_list("component"),
         config_dir: config_dir.to_path_buf(),
     };

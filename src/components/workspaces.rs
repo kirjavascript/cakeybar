@@ -1,9 +1,6 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
+use crate::components::{Component, ComponentParams};
 use glib::markup_escape_text;
 use glib::signal::SignalHandlerId;
-use gtk;
 use gtk::prelude::*;
 use gtk::{EventBox, Label, LabelExt, Orientation, StyleContextExt, WidgetExt};
 
@@ -31,8 +28,9 @@ impl Component for Workspaces {
 }
 
 impl Workspaces {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
-        let monitor_index = bar.config.get_int_or("monitor", 0) as i32;
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, wm_util } = params;
+        let monitor_index = window.get_monitor_index() as i32;
 
         // get spacing
         let spacing = config.get_int_or("spacing", 0) as i32;
@@ -45,19 +43,19 @@ impl Workspaces {
         let wrapper = gtk::Box::new(Orientation::Horizontal, spacing);
 
         // add to container and show
-        super::init_widget(&wrapper, &config, bar, container);
+        super::init_widget(&wrapper, &config, &window, container);
         wrapper.show();
 
         let name_opt = wm::gtk::get_monitor_name(monitor_index);
 
-        let workspaces = bar.wm_util.get_workspaces().unwrap_or(vec![]);
+        let workspaces = wm_util.get_workspaces().unwrap_or(vec![]);
         let workspaces = filter_by_name(&workspaces, show_all, &name_opt);
 
         // create initial UI
 
         let elabels: Rc<RefCell<Vec<EventLabel>>> = Rc::new(RefCell::new(Vec::new()));
 
-        let wm_util = bar.wm_util.clone();
+        let wm_util = wm_util.clone();
 
         for workspace in workspaces.iter() {
             let elabel = EventLabel::new(&wrapper, &wm_util, &workspace, &symbols);
@@ -106,8 +104,8 @@ impl Workspaces {
         ),
         );
 
-        let wm_util = bar.wm_util.clone();
-        bar.add_component(Box::new(Workspaces {
+        let wm_util = wm_util.clone();
+        window.add_component(Box::new(Workspaces {
             wrapper,
             wm_util,
             event_id,

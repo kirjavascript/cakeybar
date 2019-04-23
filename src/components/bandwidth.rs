@@ -1,7 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
-use gtk;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use crate::util::{format_bytes, LabelGroup, SymbolFmt, Timer};
 
@@ -24,10 +21,11 @@ impl Component for Bandwidth {
 }
 
 impl Bandwidth {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, .. } = params;
 
         let label_group = LabelGroup::new();
-        super::init_widget(&label_group.wrapper, &config, bar, container);
+        super::init_widget(&label_group.wrapper, &config, &window, container);
 
         let interfaces = config.get_string_vec("interfaces");
         let interval = config.get_int_or("interval", 3).max(1) as u64;
@@ -97,7 +95,7 @@ impl Bandwidth {
         });
         let timer = Timer::add_seconds(interval as u32, tick);
 
-        bar.add_component(Box::new(Bandwidth {
+        window.add_component(Box::new(Bandwidth {
             wrapper: label_group.wrapper,
             timer,
         }));

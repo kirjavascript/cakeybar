@@ -33,7 +33,7 @@ type = "equalizer"
 # wm stuff
 
 [component.title]
-type = "window"
+type = "window-title"
 fixed = true
 
 [component.workspaces]

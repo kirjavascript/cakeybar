@@ -1,7 +1,5 @@
-use crate::bar::Bar;
+use crate::components::{Component, ComponentParams};
 use crate::config::ConfigGroup;
-use crate::components::Component;
-use crate::wm::ipc::parser::parse_message;
 use crate::wm::events::{Event, EventId};
 use crate::wm::{self, WMUtil};
 
@@ -49,22 +47,15 @@ fn get_abs_rect(wrapper: &gtk::Box) -> Rectangle {
 }
 
 impl CommandInput {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
-
-        // TODO: error message in wrapper
-        // TODO: monitor focus
-        // TODO: poll for blur
-        // TODO: fix in bspwm - send bar to below layer - bspc node SEL -l below
-        // TODO: move command into wm_util
-
-        // DOC: history, tab/right
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, wm_util } = params;
 
         let history_limit = config.get_int_or("history", 1000) as usize;
 
         // create wrapper
 
         let wrapper = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-        super::init_widget(&wrapper, &config, bar, container);
+        super::init_widget(&wrapper, &config, &window, container);
         wrapper.show();
 
         let window_opt: Rc<RefCell<Option<gtk::Window>>>
@@ -73,8 +64,8 @@ impl CommandInput {
         // get focus event
 
         let event_type = Event::Focus(config.name.clone());
-        let wm_util = bar.wm_util.clone();
-        let event = bar.wm_util.add_listener(event_type,
+        let wm_util = wm_util.clone();
+        let event = wm_util.add_listener(event_type,
             clone!((window_opt, wrapper, wm_util, config) move |_| {
                 if window_opt.borrow().is_some() {
                     return
@@ -88,7 +79,7 @@ impl CommandInput {
 
                 // create window
                 let window = gtk::Window::new(gtk::WindowType::Toplevel);
-                wm_util.add_window(&window);
+                wm_util.add_gtk_window(&window);
                 wm::gtk::set_transparent(&window);
                 window.set_type_hint(gdk::WindowTypeHint::PopupMenu);
                 window.set_skip_pager_hint(false);
@@ -182,13 +173,7 @@ impl CommandInput {
                 entry.connect_activate(clone!((wm_util, destroy, suggestions) move |e| {
                     if let Some(text) = e.get_text() {
                         suggestions.select(&text);
-                        if text.starts_with(":") {
-                            if let Ok(cmd) = parse_message(&text[1..]) {
-                                wm_util.run_command(cmd);
-                            }
-                        } else {
-                            crate::util::run_command(text.to_owned());
-                        }
+                        wm_util.run_command(&text);
                         destroy();
                     }
                 }));
@@ -262,7 +247,7 @@ impl CommandInput {
             }
         ));
 
-        bar.add_component(Box::new(CommandInput {
+        window.add_component(Box::new(CommandInput {
             config,
             wrapper,
             window_opt,

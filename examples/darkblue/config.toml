@@ -34,8 +34,15 @@ monitor = 1
 position = "bottom"
 workspace-scroll = true
 
+# floats
+
+[float.info]
+layout = [ "box1" ]
+
+# command input
+
 [component.autocomplete]
-type = "command_input"
+type = "command-input"
 
 # tray
 
@@ -46,7 +53,7 @@ icon-spacing = 2
 # wm stuff
 
 [component.title]
-type = "window"
+type = "window-title"
 fixed = true
 format = '''
     <span fgcolor="#0A83FD">«</span> {title} <span fgcolor="#0A83FD">»</span>
@@ -104,6 +111,7 @@ class = "has-icon"
 [component.clock]
 type = "clock"
 class = "has-icon"
+format = "{timestamp}"
 
 # menu
 

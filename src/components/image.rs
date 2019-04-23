@@ -1,7 +1,4 @@
-use crate::bar::Bar;
-use crate::components::Component;
-use crate::config::ConfigGroup;
-use gtk;
+use crate::components::{Component, ComponentParams};
 use gtk::prelude::*;
 use gtk::Image as GtkImage;
 
@@ -16,10 +13,12 @@ impl Component for Image {
 }
 
 impl Image {
-    pub fn init(config: ConfigGroup, bar: &mut Bar, container: &gtk::Box) {
+
+    pub fn init(params: ComponentParams) {
+        let ComponentParams { config, window, container, wm_util } = params;
         if let Some(src) = config.get_string("src") {
-            let img: GtkImage = GtkImage::new_from_file(&bar.wm_util.get_path(&src));
-            super::init_widget(&img, &config, bar, container);
+            let img: GtkImage = GtkImage::new_from_file(&wm_util.get_path(&src));
+            super::init_widget(&img, &config, &window, container);
 
             // wait a tick, otherwise we get negative height warnings
             gtk::idle_add(clone!(img move || {
@@ -27,7 +26,7 @@ impl Image {
                 gtk::Continue(false)
             }));
 
-            bar.add_component(Box::new(Image { image: img }));
+            window.add_component(Box::new(Image { image: img }));
         } else {
             warn!("#{} missing src property", config.name);
         }

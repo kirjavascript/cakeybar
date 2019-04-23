@@ -8,6 +8,8 @@ label, entry {
     font-weight: 600;
 }
 
+/* bars */
+
 #left, #right {
     min-height: 27px;
     border-bottom: 2px solid @blue;
@@ -19,6 +21,18 @@ label, entry {
 #left-scroll, #right-scroll {
     background-color: black;
 }
+
+/* floats */
+
+#info {
+    padding: 25px;
+    background-color: red;
+    border: 2px solid @blue;
+    background-color: rgba(0,0,0,0.7);
+    border-radius: 25px 25px 25px 0;
+}
+
+/* components */
 
 #menu label {
     min-width: 30px;

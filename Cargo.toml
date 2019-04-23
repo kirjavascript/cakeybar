@@ -1,11 +1,12 @@
 [package]
 name = "cakeybar"
-version = "0.3.2"
+version = "0.4.0"
 edition = "2018"
+license = "MIT OR Unlicence"
 
 [profile.release]
 lto = true
-panic = "abort"
+# panic = "abort"
 
 [dependencies.gtk]
 git = "https://github.com/gtk-rs/gtk.git"
@@ -26,16 +27,18 @@ gdk = { git = "https://github.com/gtk-rs/gdk.git" }
 cairo-rs = { git = "https://github.com/gtk-rs/cairo.git" }
 gdk-sys = { git = "https://github.com/gtk-rs/sys.git" }
 glib-sys = { git = "https://github.com/gtk-rs/sys.git" }
+gtk-sys = { git = "https://github.com/gtk-rs/sys.git" }
+gobject-sys = { git = "https://github.com/gtk-rs/sys.git" }
 libc = "0.2"
 chrono = "0.4"
 clap = "2.31.2"
 toml = "0.4"
 i3ipc = "0.8.2"
 lazy_static = "1.0.0"
-nom = "4"
+nom = "4.2"
 ansi_term = "0.11"
 inotify = "0.6.1"
-crossbeam-channel = "0.2"
+crossbeam-channel = "0.3"
 bincode = "1.1.2"
 
 # stats
