@@ -207,24 +207,24 @@ impl WMUtil {
             ($config_list:expr, $monitors:expr, $constructor:path $(,)?) => {
                 {
                     let bars: Vec<Box<dyn wm::Window>> =
-                        $config_list.iter().fold(Vec::new(), |mut acc, bar_config| {
-                            let monitor_index = bar_config.get_int_or("monitor", 0);
+                        $config_list.iter().fold(Vec::new(), |mut acc, win_config| {
+                            let monitor_index = win_config.get_int_or("monitor", 0);
                             let monitor_option = $monitors.get(monitor_index as usize);
 
                             if let Some(monitor) = monitor_option {
-                                let mut bar = $constructor(
-                                    bar_config.clone(),
+                                let mut window = $constructor(
+                                    win_config.clone(),
                                     &self,
                                     monitor,
                                     gtk_windows.pop(),
                                 );
 
                                 // load components
-                                let container = &bar.get_container().clone();
-                                for name in bar_config.get_string_vec("layout") {
+                                let container = &window.get_container().clone();
+                                for name in win_config.get_string_vec("layout") {
                                     let config_opt = self.get_component_config(&name);
                                     if let Some(config) = config_opt {
-                                        bar.load_component(
+                                        window.load_component(
                                             config,
                                             container,
                                             &self
@@ -234,7 +234,7 @@ impl WMUtil {
                                     }
                                 }
 
-                                acc.push(Box::new(bar));
+                                acc.push(Box::new(window));
                             } else {
                                 warn!("no monitor at index {}", monitor_index);
                             }

@@ -372,7 +372,7 @@ impl<'a> Manager<'a> {
             }
             Action::IconSize(size) => {
                 self.icon_size = size;
-                // this code is only needed if we want to send more than one event
+                // this code is only needed if we want to send more than one IconSize event
                 //
                 // for (i, child) in self.children.iter().enumerate() {
                 //     let window = *child;

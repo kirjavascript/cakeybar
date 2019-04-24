@@ -83,8 +83,8 @@ impl Float {
         // TODO: start at wrong side bug
         let size_id = window.connect_size_allocate(clone!(is_set
             move |window, _rect| {
-                let xpos = x + 1200;
-                let ypos = y + 200;
+                let xpos = x + 0;
+                let ypos = y + 0;
                 if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
                     *is_set.borrow_mut() = true;
                     window.move_(xpos, ypos);
@@ -127,6 +127,11 @@ impl Float {
 
         if is_new && float.config.get_bool_or("disable-shadow", true) {
             wm::gtk::disable_shadow(&float.window);
+        }
+
+        if let Some(ctx) = float.container.get_style_context() {
+            let left = wm::gtk::get_style_property_uint(&ctx, "left");
+            info!("{}", left);
         }
 
         float
