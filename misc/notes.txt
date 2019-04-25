@@ -41,6 +41,7 @@ error message in wrapper
 monitor focus
 poll for blur
 fix in bspwm - send bar to below layer - bspc node SEL -l below
+command aliases
 
 ipc
 ====

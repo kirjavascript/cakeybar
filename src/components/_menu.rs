@@ -98,8 +98,8 @@ impl Component for Menu {
         window.add(&wrapper);
 
         // set window id
-        let window_id = config.get_str_or("window_id", "null");
-        if window_id != "null" {
+        let window_id = config.get_str_or("window_id", "void");
+        if window_id != "void" {
             WidgetExt::set_name(&wrapper, &window_id);
             WidgetExt::set_name(&window, &window_id);
         }
