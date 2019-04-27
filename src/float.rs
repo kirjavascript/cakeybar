@@ -77,6 +77,10 @@ impl Float {
         overlay.add(&container);
         window.add(&overlay);
 
+        // get_pos
+        // set_pos
+        // monitor
+
         // set position
         let &Rectangle { x, y, .. } = monitor;
         let is_set = Rc::new(RefCell::new(false));
@@ -114,6 +118,9 @@ impl Float {
 
         // show window
         window.show_all();
+        if config.get_bool_or("hidden", false) {
+            window.hide();
+        }
 
         // create Float
         let float = Float {

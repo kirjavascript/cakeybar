@@ -45,7 +45,7 @@ cargo run --release -- -c examples/darkblue/config.toml
     -M, --monitors             Shows information about monitors
     -V, --version              Prints version information
     -w, --watch                Watch config files and reload on changes
-    -c, --config <FILE>         Specify a config path
+    -c, --config <FILE>        Specify a config path
     -m, --message <MESSAGE>    Send an IPC message
 ```
 
@@ -97,7 +97,7 @@ enable-ipc = true
 # provide a class for the bar
 class = "class-name"
 
-# monitor index the bar appears on. a list of monitors can be seen with `cakeybar -M`
+# monitor index the bar appears on
 monitor = 0
 
 # where to show the bar. options are: top | bottom
@@ -111,6 +111,9 @@ workspace-scroll = false
 
 # decide if the bar should reserve space on the desktop
 reserve-space = true
+
+# start hidden
+hidden = false
 
 # disable shadows in compton
 disable-shadow = true
@@ -134,6 +137,9 @@ title = ""
 
 # a list of components to add to the window, identified by name
 layout = [ "component", "names", "go", "here" ]
+
+# start hidden
+hidden = false
 
 ...TBC...
 ```
@@ -163,9 +169,6 @@ valign = "void"
 # disabling pass-through allows the fixed component to capture mouse events
 fixed = false
 pass-through = true
-
-# the update interval in seconds
-interval = 3
 
 # format strings use a basic syntax for replacing named symbols with data
 format = "label: {symbol-name}"
@@ -246,11 +249,23 @@ format = "{mode}"
 
 will be hidden in the default mode
 
+#### tray
+
+```toml
+[component.tray]
+type = "tray"
+icon-size = 20
+icon-spacing = 0
+```
+
+the `background-color` style property needs to be set explicitly for it to work
+
 #### cpu
 ```toml
 [component.cpu]
 type = "cpu"
 format = "{usage}" # symbols are; usage, temp, dumbtemp
+interval = 3
 ```
 
 #### memory
@@ -258,6 +273,7 @@ format = "{usage}" # symbols are; usage, temp, dumbtemp
 [component.memory]
 type = "memory"
 format = "{free-pct}" # symbols are; total, free, free-pct, used, used-pct, swap-total, swap-used
+interval = 3
 ```
 
 #### bandwidth
@@ -267,6 +283,7 @@ format = "{free-pct}" # symbols are; total, free, free-pct, used, used-pct, swap
 type = "bandwidth"
 interfaces = ["eth0"] # omit to show all
 format = "{down/s}" # symbols are; name, down/s, up/s, down/total, up/total
+interval = 3
 ```
 
 #### ip
@@ -276,6 +293,7 @@ format = "{down/s}" # symbols are; name, down/s, up/s, down/total, up/total
 type = "ip"
 interfaces = ["eth0"] # omit to show all
 format = "{ipv4}" # symbols are; name, ipv4, ipv6
+interval = 3
 ```
 
 #### battery
@@ -286,6 +304,7 @@ type = "battery"
 battery = "BAT0"
 adapter = "AC"
 format = "{percent}" # symbols are; percent, remaining, plugged
+interval = 3
 ```
 
 you can target the class `#battery.plugged` when AC is plugged in
@@ -309,6 +328,7 @@ format = "{percent}"
 type = "disk"
 mounts = ["/"] # omit to show all
 format = "{free}" # symbols are; free, used, total, fs, mount
+interval = 3
 ```
 
 #### clock
@@ -318,6 +338,7 @@ format = "{free}" # symbols are; free, used, total, fs, mount
 type = "clock"
 timestamp = "%Y-%m-%d %H:%M:%S"
 format = "{timestamp}"
+interval = 1
 ```
 
 [timestamp formatting guide](https://docs.rs/chrono/0.4.2/chrono/format/strftime/index.html)
@@ -331,18 +352,8 @@ src = '''
     uptime | sed -r "s/.*average: (.*)$/\\1/"
 '''
 format = "{stdout}" # symbols are; stdout, stderr, code
+interval = 3
 ```
-
-#### tray
-
-```toml
-[component.tray]
-type = "tray"
-icon-size = 20
-icon-spacing = 0
-```
-
-the `background-color` style property needs to be set explicitly for it to work
 
 #### dropdown
 

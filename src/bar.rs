@@ -134,6 +134,9 @@ impl Bar {
 
         // show window
         window.show_all();
+        if config.get_bool_or("hidden", false) {
+            window.hide();
+        }
 
         // create Bar
         let bar = Bar {

@@ -103,7 +103,5 @@ fn main() {
 
     if application.get_is_remote() && !is_multi {
         warn!("{} is already running (use -D to force)", NAME);
-        wm::ipc::send_message("reload config");
     }
-
 }

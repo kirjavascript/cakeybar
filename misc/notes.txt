@@ -27,11 +27,15 @@ animations:
 https://gist.github.com/ptomato/0fb634ef4098bb89026f
 
 show overlay win95 when press start / runbox
+mpd now playing
 features for 1.0.0: tray bugs, multiple install options, stacking order
 
 floats
 ======
-:move #info 25 300 animation
+animation spring
+px and %
+:move #info 25 300 animation then
+Move event
 sticky
 autohide?
 
@@ -76,6 +80,7 @@ restart position bug
 
 components
 ====
+emoji picker
 17:10:12 <+isk> Kirjava: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/Uno_Slave_Reader/Visualizer.h
 17:10:45 <+isk> also if you're interested in terminal ascii visual representation: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/fade.cpp
 1D colour red-green lerping equalizer
