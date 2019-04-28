@@ -76,13 +76,16 @@ impl Config {
 }
 
 impl ConfigGroup {
-    pub fn get_int_or(&self, prop: &str, or: i64) -> i64 {
+    pub fn get_int(&self, prop: &str) -> Option<i64> {
         let value_option = self.properties.get(prop);
         if let Some(&Property::Integer(ref val)) = value_option {
-            *val
+            Some(*val)
         } else {
-            or
+            None
         }
+    }
+    pub fn get_int_or(&self, prop: &str, or: i64) -> i64 {
+        self.get_int(prop).unwrap_or(or)
     }
     pub fn get_bool_or(&self, prop: &str, or: bool) -> bool {
         let value_option = self.properties.get(prop);

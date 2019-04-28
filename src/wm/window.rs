@@ -8,6 +8,7 @@ pub trait Window {
     fn relayout(&self);
     fn show(&self);
     fn hide(&self);
+    // fn move_(&self) {}
     fn to_window(&self) -> gtk::Window;
     fn get_container(&self) -> &gtk::Box;
     fn get_overlay(&self) -> &gtk::Overlay;

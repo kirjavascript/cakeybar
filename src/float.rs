@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use crate::components::{Component, ComponentParams, load_component};
-use crate::config::ConfigGroup;
+use crate::config::{ConfigGroup, Property};
 use crate::wm::ipc::commands::Selectors;
 use crate::wm;
 
@@ -17,6 +17,7 @@ pub struct Float {
     overlay: Overlay,
     container: gtk::Box,
     event_ids: Vec<SignalHandlerId>,
+    monitor: Rectangle,
     window: Window,
 }
 
@@ -40,11 +41,6 @@ impl Float {
         // TODO: grab close event
         // TODO: sticky
 
-        // config: min-width, min-height, title
-
-        // let x = config.get_int_or("x", 200);
-        // let y = config.get_int_or("y", 200);
-
         // set base values
         if is_new {
             window.set_title(config.get_str_or("title", ""));
@@ -64,11 +60,13 @@ impl Float {
         WidgetExt::set_name(&window, &config.name);
 
         // get width/height from CSS context
+        // TODO: move into set_pos
         if let Some(ctx) = container.get_style_context() {
             let width = wm::gtk::get_style_property_uint(&ctx, "min-width");
             let height = wm::gtk::get_style_property_uint(&ctx, "min-height");
             window.resize(width.max(1) as i32, height.max(1) as i32);
         }
+
 
         // create overlay
         let overlay = Overlay::new();
@@ -79,6 +77,7 @@ impl Float {
 
         // get_pos
         // set_pos
+        // get_bbox
         // monitor
 
         // set position
@@ -87,12 +86,12 @@ impl Float {
         // TODO: start at wrong side bug
         let size_id = window.connect_size_allocate(clone!(is_set
             move |window, _rect| {
-                let xpos = x + 0;
-                let ypos = y + 0;
-                if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
-                    *is_set.borrow_mut() = true;
-                    window.move_(xpos, ypos);
-                }
+                // let xpos = x + 0;
+                // let ypos = y + 0;
+                // if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
+                //     *is_set.borrow_mut() = true;
+                //     window.move_(xpos, ypos);
+                // }
             }
         ));
 
@@ -128,6 +127,7 @@ impl Float {
             components: Vec::new(),
             overlay,
             container,
+            monitor: *monitor,
             window,
             event_ids,
         };
@@ -136,14 +136,57 @@ impl Float {
             wm::gtk::disable_shadow(&float.window);
         }
 
-        if let Some(ctx) = float.container.get_style_context() {
-            let left = wm::gtk::get_style_property_uint(&ctx, "left");
-            info!("{}", left);
-        }
+        float.set_pos(); // TODO: rename
 
         float
     }
 
+    fn set_pos(&self) {
+        // do width / height
+        let (top, left, right, down) = (
+            self.config.get_int("top"),
+            self.config.get_int("left"),
+            self.config.get_int("right"),
+            self.config.get_int("down"),
+        );
+
+        let window_rect = self.window.get_allocation();
+        let monitor_rect = &self.monitor;
+
+        let x = if left.is_some() && right.is_some() {
+            let (left, right) = (left.unwrap() as f32, right.unwrap() as f32);
+            let right = (monitor_rect.width - window_rect.width) as f32 - right;
+            ((right/2.) - left) as i32
+        } else if right.is_some() {
+            monitor_rect.width - window_rect.width - right.unwrap() as i32
+        } else if left.is_some() {
+            left.unwrap() as i32
+        } else {
+            0
+        } + monitor_rect.x;
+
+        let y = 0;
+
+        self.window.move_(x, y);
+
+
+        // move_resize
+        // move_to_rect
+        // get_frame_extents
+        // get_allocation
+    }
+
+    // fn get_pos(&self) -> (x, y) {
+    //     let &Rectangle { x, y, .. } = &self.monitor;
+    //     let (xpos, ypox) = self.window.get_position();
+    // }
+
+    //             let xpos = x + 0;
+    //             let ypos = y + 0;
+    //             if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
+    //                 *is_set.borrow_mut() = true;
+    //                 window.move_(xpos, ypos);
+    //             }
     fn unload(&self) {
         // destroy components
         for component in self.components.iter() {

@@ -33,7 +33,7 @@ features for 1.0.0: tray bugs, multiple install options, stacking order
 floats
 ======
 animation spring
-px and %
+percet when you get both sides
 :move #info 25 300 animation then
 Move event
 sticky
@@ -50,6 +50,7 @@ command aliases
 ipc
 ====
 && in DSL
+addclass
 help
 two way
 allow ipc in menu objs
