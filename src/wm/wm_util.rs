@@ -206,7 +206,7 @@ impl WMUtil {
         macro_rules! get_windows {
             ($config_list:expr, $monitors:expr, $constructor:path $(,)?) => {
                 {
-                    let bars: Vec<Box<dyn wm::Window>> =
+                    let windows: Vec<Box<dyn wm::Window>> =
                         $config_list.iter().fold(Vec::new(), |mut acc, win_config| {
                             let monitor_index = win_config.get_int_or("monitor", 0);
                             let monitor_option = $monitors.get(monitor_index as usize);
@@ -241,7 +241,7 @@ impl WMUtil {
                             acc
                         });
 
-                    bars
+                    windows
                 }
             }
         }

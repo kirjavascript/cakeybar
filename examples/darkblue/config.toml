@@ -39,8 +39,9 @@ workspace-scroll = true
 [float.info]
 layout = [ "box1" ]
 # hidden = true
+right = 0
 left = 0
-# right = 0
+bottom = 20
 
 # command input
 

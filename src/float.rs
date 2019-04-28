@@ -80,20 +80,7 @@ impl Float {
         // get_bbox
         // monitor
 
-        // set position
-        let &Rectangle { x, y, .. } = monitor;
-        let is_set = Rc::new(RefCell::new(false));
-        // TODO: start at wrong side bug
-        let size_id = window.connect_size_allocate(clone!(is_set
-            move |window, _rect| {
-                // let xpos = x + 0;
-                // let ypos = y + 0;
-                // if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
-                //     *is_set.borrow_mut() = true;
-                //     window.move_(xpos, ypos);
-                // }
-            }
-        ));
+        let mut event_ids = vec![];
 
         // set .focused
         let focus_id = window.connect_enter_notify_event(clone!(container
@@ -104,6 +91,8 @@ impl Float {
                 Inhibit(false)
             })
         );
+        event_ids.push(focus_id);
+
         let unfocus_id = window.connect_leave_notify_event(clone!(container
              move |_, _| {
                  if let Some(ctx) = container.get_style_context() {
@@ -112,8 +101,7 @@ impl Float {
                  Inhibit(false)
              })
         );
-
-        let event_ids = vec![size_id, focus_id, unfocus_id];
+        event_ids.push(unfocus_id);
 
         // show window
         window.show_all();
@@ -121,8 +109,12 @@ impl Float {
             window.hide();
         }
 
+        if is_new && config.get_bool_or("disable-shadow", true) {
+            wm::gtk::disable_shadow(&window);
+        }
+
         // create Float
-        let float = Float {
+        let mut float = Float {
             config,
             components: Vec::new(),
             overlay,
@@ -132,42 +124,60 @@ impl Float {
             event_ids,
         };
 
-        if is_new && float.config.get_bool_or("disable-shadow", true) {
-            wm::gtk::disable_shadow(&float.window);
-        }
+        // set position
+        let &Rectangle { x, y, .. } = monitor;
+        let is_set = Rc::new(RefCell::new(false));
+        // let _float = Rc::new(RefCell::new(&float));
+        // TODO: start at wrong side bug
+        let size_id = float.window.connect_size_allocate(clone!(is_set
+            move |window, _rect| {
+                // _float.borrow().set_pos();
+                // let xpos = x + 0;
+                // let ypos = y + 0;
+                // if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
+                //     *is_set.borrow_mut() = true;
+                //     window.move_(xpos, ypos);
+                // }
+            }
+        ));
+        // float.event_ids.push(size_id);
 
         float.set_pos(); // TODO: rename
+        // TODO: call setpos in show
 
         float
     }
 
     fn set_pos(&self) {
         // do width / height
-        let (top, left, right, down) = (
+        let (top, left, right, bottom) = (
             self.config.get_int("top"),
             self.config.get_int("left"),
             self.config.get_int("right"),
-            self.config.get_int("down"),
+            self.config.get_int("bottom"),
         );
 
+        fn calc_pos(one: Option<i64>, two: Option<i64>, msize: i32, wsize: i32) -> i32 {
+            if one.is_some() && two.is_some() {
+                let (one, two) = (one.unwrap() as i32, two.unwrap() as i32);
+                let centre = msize as f32 / 2. - wsize as f32 / 2.;
+                centre as i32 + (two - one)
+            } else if two.is_some() {
+                msize - wsize - two.unwrap() as i32
+            } else if one.is_some() {
+                one.unwrap() as i32
+            } else {
+                0
+            }
+        }
         let window_rect = self.window.get_allocation();
         let monitor_rect = &self.monitor;
+        println!("{:#?}", window_rect);
 
-        let x = if left.is_some() && right.is_some() {
-            let (left, right) = (left.unwrap() as f32, right.unwrap() as f32);
-            let right = (monitor_rect.width - window_rect.width) as f32 - right;
-            ((right/2.) - left) as i32
-        } else if right.is_some() {
-            monitor_rect.width - window_rect.width - right.unwrap() as i32
-        } else if left.is_some() {
-            left.unwrap() as i32
-        } else {
-            0
-        } + monitor_rect.x;
+        let x = calc_pos(left, right, monitor_rect.width, window_rect.width);
+        let y = calc_pos(top, bottom, monitor_rect.height, window_rect.height);
 
-        let y = 0;
-
-        self.window.move_(x, y);
+        self.window.move_(x + monitor_rect.x, y + monitor_rect.y);
 
 
         // move_resize
