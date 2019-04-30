@@ -4,7 +4,7 @@
 </div>
 <br>
 
-a customizable windows for your windowmanager
+customizable windows for your windowmanager
 
 * multibar/multimonitor support
 * expressive theming with CSS

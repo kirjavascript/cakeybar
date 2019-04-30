@@ -17,8 +17,54 @@ pub struct Float {
     overlay: Overlay,
     container: gtk::Box,
     event_ids: Vec<SignalHandlerId>,
+    window: Rc<RefCell<RCWindow>>,
+}
+
+struct RCWindow {
     monitor: Rectangle,
-    window: Window,
+    gtkwindow: Window,
+    position: [Option<i32>; 4], // top, bottom, left, right
+}
+
+impl RCWindow {
+    fn new(
+        monitor: Rectangle,
+        gtkwindow: Window,
+        position: [Option<i32>; 4],
+    ) -> RCWindow {
+        RCWindow {
+            monitor,
+            gtkwindow,
+            position,
+        }
+    }
+
+    fn move_test(&self) {
+        let window_rect = self.gtkwindow.get_allocation();
+        let monitor_rect = &self.monitor;
+        let [top, bottom, left, right] = self.position;
+        let x = Self::calc_pos(left, right, monitor_rect.width, window_rect.width);
+        let y = Self::calc_pos(top, bottom, monitor_rect.height, window_rect.height);
+        self.set_pos(x, y);
+    }
+
+    fn set_pos(&self, x: i32, y: i32) {
+        self.gtkwindow.move_(self.monitor.x + x, self.monitor.y + y);
+    }
+
+    fn calc_pos(one: Option<i32>, two: Option<i32>, msize: i32, wsize: i32) -> i32 {
+        if one.is_some() && two.is_some() {
+            let (one, two) = (one.unwrap(), two.unwrap());
+            let centre = msize as f32 / 2. - wsize as f32 / 2.;
+            centre as i32 + (two - one)
+        } else if two.is_some() {
+            msize - wsize - two.unwrap()
+        } else if one.is_some() {
+            one.unwrap()
+        } else {
+            0
+        }
+    }
 }
 
 impl Float {
@@ -75,35 +121,7 @@ impl Float {
         overlay.add(&container);
         window.add(&overlay);
 
-        // get_pos
-        // set_pos
-        // get_bbox
-        // monitor
-
-        let mut event_ids = vec![];
-
-        // set .focused
-        let focus_id = window.connect_enter_notify_event(clone!(container
-            move |_, _| {
-                if let Some(ctx) = container.get_style_context() {
-                    StyleContextExt::add_class(&ctx, "focused");
-                }
-                Inhibit(false)
-            })
-        );
-        event_ids.push(focus_id);
-
-        let unfocus_id = window.connect_leave_notify_event(clone!(container
-             move |_, _| {
-                 if let Some(ctx) = container.get_style_context() {
-                     StyleContextExt::remove_class(&ctx, "focused");
-                 }
-                 Inhibit(false)
-             })
-        );
-        event_ids.push(unfocus_id);
-
-        // show window
+        // show window (needs to do this at least once)
         window.show_all();
         if config.get_bool_or("hidden", false) {
             window.hide();
@@ -113,78 +131,117 @@ impl Float {
             wm::gtk::disable_shadow(&window);
         }
 
-        // create Float
-        let mut float = Float {
+        let position = [
+            config.get_int("top").map(|x| x as i32),
+            config.get_int("bottom").map(|x| x as i32),
+            config.get_int("left").map(|x| x as i32),
+            config.get_int("right").map(|x| x as i32),
+        ];
+
+        let window = Rc::new(RefCell::new(
+            RCWindow::new(*monitor, window, position)
+        ));
+
+        // TODO: move event ids into rcwindow
+
+        let mut event_ids = vec![];
+
+        // set .focused
+        let focus_id = window.borrow().gtkwindow
+            .connect_enter_notify_event(clone!(container
+                move |_, _| {
+                    if let Some(ctx) = container.get_style_context() {
+                        StyleContextExt::add_class(&ctx, "focused");
+                    }
+                    Inhibit(false)
+                })
+            );
+        event_ids.push(focus_id);
+
+        let unfocus_id = window.borrow().gtkwindow
+            .connect_leave_notify_event(clone!(container
+                 move |_, _| {
+                     if let Some(ctx) = container.get_style_context() {
+                         StyleContextExt::remove_class(&ctx, "focused");
+                     }
+                     Inhibit(false)
+                 })
+            );
+        event_ids.push(unfocus_id);
+
+        // let &Rectangle { x, y, .. } = monitor;
+        // let position = Rc::new(RefCell::new((0, 0)));
+        // TODO: start at wrong side bug
+        let size_id = window.borrow().gtkwindow
+            .connect_size_allocate(clone!(window
+                move |_window, _rect| {
+                    window.borrow().move_test();
+                    // let (x, y) = *position.borrow();
+                    // window.move_(x, y);
+                    // println!("{:#?}", (x, y));
+                    // weak.borrow().set_pos();
+                    // let xpos = x + 0;
+                    // let ypos = y + 0;
+                    // if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
+                    //     *is_set.borrow_mut() = true;
+                    //     window.move_(xpos, ypos);
+                    // }
+                    // info!("{:?}", weak.upgrade().is_some());
+                }
+            ));
+        event_ids.push(size_id);
+
+        window.borrow().move_test();
+
+        Float {
             config,
             components: Vec::new(),
             overlay,
             container,
-            monitor: *monitor,
             window,
             event_ids,
-        };
-
-        // set position
-        let &Rectangle { x, y, .. } = monitor;
-        let is_set = Rc::new(RefCell::new(false));
-        // let _float = Rc::new(RefCell::new(&float));
-        // TODO: start at wrong side bug
-        let size_id = float.window.connect_size_allocate(clone!(is_set
-            move |window, _rect| {
-                // _float.borrow().set_pos();
-                // let xpos = x + 0;
-                // let ypos = y + 0;
-                // if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
-                //     *is_set.borrow_mut() = true;
-                //     window.move_(xpos, ypos);
-                // }
-            }
-        ));
-        // float.event_ids.push(size_id);
-
-        float.set_pos(); // TODO: rename
-        // TODO: call setpos in show
-
-        float
-    }
-
-    fn set_pos(&self) {
-        // do width / height
-        let (top, left, right, bottom) = (
-            self.config.get_int("top"),
-            self.config.get_int("left"),
-            self.config.get_int("right"),
-            self.config.get_int("bottom"),
-        );
-
-        fn calc_pos(one: Option<i64>, two: Option<i64>, msize: i32, wsize: i32) -> i32 {
-            if one.is_some() && two.is_some() {
-                let (one, two) = (one.unwrap() as i32, two.unwrap() as i32);
-                let centre = msize as f32 / 2. - wsize as f32 / 2.;
-                centre as i32 + (two - one)
-            } else if two.is_some() {
-                msize - wsize - two.unwrap() as i32
-            } else if one.is_some() {
-                one.unwrap() as i32
-            } else {
-                0
-            }
+            // position,
         }
-        let window_rect = self.window.get_allocation();
-        let monitor_rect = &self.monitor;
-        println!("{:#?}", window_rect);
-
-        let x = calc_pos(left, right, monitor_rect.width, window_rect.width);
-        let y = calc_pos(top, bottom, monitor_rect.height, window_rect.height);
-
-        self.window.move_(x + monitor_rect.x, y + monitor_rect.y);
-
-
-        // move_resize
-        // move_to_rect
-        // get_frame_extents
-        // get_allocation
     }
+
+    // fn set_pos(&self) {
+    //     // do width / height
+    //     let (top, left, right, bottom) = (
+    //         self.config.get_int("top"),
+    //         self.config.get_int("left"),
+    //         self.config.get_int("right"),
+    //         self.config.get_int("bottom"),
+    //     );
+
+    //     fn calc_pos(one: Option<i64>, two: Option<i64>, msize: i32, wsize: i32) -> i32 {
+    //         if one.is_some() && two.is_some() {
+    //             let (one, two) = (one.unwrap() as i32, two.unwrap() as i32);
+    //             let centre = msize as f32 / 2. - wsize as f32 / 2.;
+    //             centre as i32 + (two - one)
+    //         } else if two.is_some() {
+    //             msize - wsize - two.unwrap() as i32
+    //         } else if one.is_some() {
+    //             one.unwrap() as i32
+    //         } else {
+    //             0
+    //         }
+    //     }
+    //     let window_rect = self.window.get_allocation();
+    //     let monitor_rect = &self.monitor;
+    //     println!("{:#?}", window_rect);
+
+    //     let x = calc_pos(left, right, monitor_rect.width, window_rect.width);
+    //     let y = calc_pos(top, bottom, monitor_rect.height, window_rect.height);
+
+    //     // self.window.move_(x + monitor_rect.x, y + monitor_rect.y);
+
+    //     // *self.position.borrow_mut() = (x, y);
+
+    //     // move_resize
+    //     // move_to_rect
+    //     // get_frame_extents
+    //     // get_allocation
+    // }
 
     // fn get_pos(&self) -> (x, y) {
     //     let &Rectangle { x, y, .. } = &self.monitor;
@@ -202,14 +259,15 @@ impl Float {
         for component in self.components.iter() {
             component.destroy();
         }
+        // TODO: move into RCWindow
         // remove events
         let window = self.window.clone();
         self.event_ids.iter().for_each(move |id| {
             // immutable signal copy
-            window.disconnect(from_glib(id.to_glib()));
+            window.borrow().gtkwindow.disconnect(from_glib(id.to_glib()));
         });
         // remove widgets
-        self.window.get_children().iter().for_each(|w| w.destroy());
+        self.window.borrow().gtkwindow.get_children().iter().for_each(|w| w.destroy());
     }
 
 }
@@ -217,28 +275,29 @@ impl Float {
 impl wm::Window for Float {
     fn destroy(&self) {
         self.unload();
-        self.window.destroy();
+        self.window.borrow().gtkwindow.destroy();
     }
 
     fn show(&self) {
-        self.window.show();
+        self.window.borrow().gtkwindow.show();
     }
 
     fn hide(&self) {
-        self.window.hide();
+        self.window.borrow().gtkwindow.hide();
     }
 
     fn relayout(&self) {
         if let Some(ctx) = self.container.get_style_context() {
             let width = wm::gtk::get_style_property_uint(&ctx, "min-width");
             let height = wm::gtk::get_style_property_uint(&ctx, "min-height");
-            self.window.resize(width.max(1) as i32, height.max(1) as i32);
+            self.window.borrow().gtkwindow
+                .resize(width.max(1) as i32, height.max(1) as i32);
         }
     }
 
     fn to_window(&self) -> Window {
         self.unload();
-        self.window.clone()
+        self.window.borrow().gtkwindow.clone()
     }
 
     fn get_container(&self) -> &gtk::Box {

@@ -132,7 +132,7 @@ impl Bar {
 
         let event_ids = vec![size_id, focus_id, unfocus_id];
 
-        // show window
+        // show window (needs to do this at least once)
         window.show_all();
         if config.get_bool_or("hidden", false) {
             window.hide();
