@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use crate::components::{Component, ComponentParams, load_component};
-use crate::config::{ConfigGroup, Property};
+use crate::config::ConfigGroup;
 use crate::wm::ipc::commands::Selectors;
 use crate::wm;
 
