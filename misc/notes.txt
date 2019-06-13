@@ -25,6 +25,10 @@ openbox: push to back, get desktops
 https://svartalf.info/posts/2019-02-25-introducing-battery-crate/
 animations:
 https://gist.github.com/ptomato/0fb634ef4098bb89026f
+// formatting
+https://github.com/misterhat/livelook/blob/master/README.md
+workspaces: (alt bar)
+https://github.com/mjkillough/cnx
 
 show overlay win95 when press start / runbox
 mpd now playing
@@ -46,6 +50,9 @@ monitor focus
 poll for blur
 fix in bspwm - send bar to below layer - bspc node SEL -l below
 command aliases
+trim suggestions
+only do right complete if at end of word
+up / down for history
 
 ipc
 ====
@@ -78,6 +85,11 @@ file watcher
 ===
 window change from popup to toplevel bug
 restart position bug
+
+extra
+===
+custom window decorations
+left/right bars
 
 components
 ====
@@ -137,7 +149,6 @@ live reload gifcurry
 https://github.com/sharkdp/hexyl
 https://github.com/kimond/awesome-statusbars
 SVG blobs
-<a>request something new</a>
 slanted workspace names with SVG
 gifcurry
 request a feature

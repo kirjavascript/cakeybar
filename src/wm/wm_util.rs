@@ -18,7 +18,7 @@ use std::cell::RefCell;
 use std::fmt;
 use std::rc::Rc;
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum WMType {
     I3,
     Bsp,
@@ -287,7 +287,7 @@ impl WMUtil {
     // getters
 
     pub fn get_wm_type(&self) -> WMType {
-        self.data.borrow().wm_type.clone()
+        self.data.borrow().wm_type
     }
 
     pub fn get_component_config(&self, name: &str) -> Option<ConfigGroup> {

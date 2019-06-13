@@ -200,60 +200,9 @@ impl Float {
             container,
             window,
             event_ids,
-            // position,
         }
     }
 
-    // fn set_pos(&self) {
-    //     // do width / height
-    //     let (top, left, right, bottom) = (
-    //         self.config.get_int("top"),
-    //         self.config.get_int("left"),
-    //         self.config.get_int("right"),
-    //         self.config.get_int("bottom"),
-    //     );
-
-    //     fn calc_pos(one: Option<i64>, two: Option<i64>, msize: i32, wsize: i32) -> i32 {
-    //         if one.is_some() && two.is_some() {
-    //             let (one, two) = (one.unwrap() as i32, two.unwrap() as i32);
-    //             let centre = msize as f32 / 2. - wsize as f32 / 2.;
-    //             centre as i32 + (two - one)
-    //         } else if two.is_some() {
-    //             msize - wsize - two.unwrap() as i32
-    //         } else if one.is_some() {
-    //             one.unwrap() as i32
-    //         } else {
-    //             0
-    //         }
-    //     }
-    //     let window_rect = self.window.get_allocation();
-    //     let monitor_rect = &self.monitor;
-    //     println!("{:#?}", window_rect);
-
-    //     let x = calc_pos(left, right, monitor_rect.width, window_rect.width);
-    //     let y = calc_pos(top, bottom, monitor_rect.height, window_rect.height);
-
-    //     // self.window.move_(x + monitor_rect.x, y + monitor_rect.y);
-
-    //     // *self.position.borrow_mut() = (x, y);
-
-    //     // move_resize
-    //     // move_to_rect
-    //     // get_frame_extents
-    //     // get_allocation
-    // }
-
-    // fn get_pos(&self) -> (x, y) {
-    //     let &Rectangle { x, y, .. } = &self.monitor;
-    //     let (xpos, ypox) = self.window.get_position();
-    // }
-
-    //             let xpos = x + 0;
-    //             let ypos = y + 0;
-    //             if !*is_set.borrow() || (xpos, ypos) != window.get_position() {
-    //                 *is_set.borrow_mut() = true;
-    //                 window.move_(xpos, ypos);
-    //             }
     fn unload(&self) {
         // destroy components
         for component in self.components.iter() {
