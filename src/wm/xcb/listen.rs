@@ -1,5 +1,7 @@
 use std::sync::mpsc;
 use std::thread;
+use std::error::Error;
+use xcb_util::ewmh;
 
 use crate::wm;
 use crate::wm::events::{Event, EventValue};
@@ -8,105 +10,56 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
     let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
-        if let Ok((conn, screen_num)) = xcb::Connection::connect(None) {
-            let atoms = wm::atom::Atoms::new(&conn);
-            let screen_num = screen_num as usize;
+        if let Ok((xcb_conn, screen_num)) = xcb::Connection::connect(None) {
+            let root = xcb_conn.get_setup()
+                .roots().nth(screen_num as usize).unwrap().root();
 
-            let setup = conn.get_setup();
-            let screen = setup.roots().nth(screen_num).unwrap();
+            let ewmh_conn = ewmh::Connection::connect(xcb_conn)
+                .map_err(|(e, _)| e).unwrap();
+            let conn = ewmh_conn;
 
-            xcb::change_window_attributes_checked(
+            xcb::change_window_attributes(
                 &conn,
-                screen.root(),
+                root,
                 &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE)],
             );
 
             conn.flush();
 
-            let _active_window = atoms.get(wm::atom::_NET_ACTIVE_WINDOW);
-            let _current_desktop = atoms.get(wm::atom::_NET_CURRENT_DESKTOP);
-            let _visible_name = atoms.get(wm::atom::_NET_WM_VISIBLE_NAME);
-            let _wm_name = atoms.get(wm::atom::_NET_WM_NAME);
-            let _utf8_string = atoms.get(wm::atom::UTF8_STRING);
-
-            let mut current_window = xcb::NONE;
-
-            let mut get_title = |is_active_event: bool| {
-                let cookie = xcb::get_property(
-                    &conn,
-                    false,
-                    screen.root(),
-                    _active_window,
-                    xcb::ATOM_WINDOW,
-                    0,
-                    8,
-                );
-
-                match cookie.get_reply() {
-                    Ok(reply) => {
-                        let value: &[u32] = reply.value();
-                        let window = if value.is_empty() {
-                            xcb::NONE
-                        } else {
-                            value[0]
-                        };
-
-                        if is_active_event && current_window != window {
-                            // unsubscribe old window
-                            if current_window != xcb::NONE {
-                                xcb::change_window_attributes_checked(
-                                    &conn,
-                                    current_window,
-                                    &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_NO_EVENT)],
-                                );
-                            }
-                            // subscribe to new one
-                            if window != xcb::NONE {
-                                xcb::change_window_attributes_checked(
-                                    &conn,
-                                    window,
-                                    &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE)],
-                                );
-                            }
-                            current_window = window;
-                        }
-                        if window == xcb::NONE {
-                            tx.send(Ok("".to_string())).unwrap();
-                        } else {
-                            let title = wm::xcb::get_string(&conn, window, _utf8_string, _wm_name);
-                            tx.send(Ok(title.trim().to_string())).unwrap();
-                        }
-                    }
-                    Err(err) => {
-                        warn!("xcb cookie error {:?}", err);
-                    }
-                }
-            };
-
-            get_title(true);
-
             loop {
                 match conn.wait_for_event() {
                     Some(event) => {
-                        let response_type = event.response_type();
-
-                        match response_type {
+                        // TODO: active event
+                        match event.response_type() {
                             xcb::PROPERTY_NOTIFY => {
                                 let event: &xcb::PropertyNotifyEvent = unsafe {
                                     xcb::cast_event(&event)
                                 };
+
                                 let event_atom = event.atom();
-                                let is_active_event = event_atom == _active_window;
-                                let is_title = is_active_event
-                                    || event_atom == _current_desktop
-                                    || event_atom == _visible_name
-                                    || event_atom == _wm_name;
+                                let is_title = event_atom == conn.ACTIVE_WINDOW()
+                                    || event_atom == conn.WM_NAME();
 
                                 if is_title {
-                                    get_title(is_active_event);
+                                    let title = ewmh::get_active_window(&conn, screen_num)
+                                        .get_reply()
+                                        .and_then(|active_window| {
+                                            xcb::change_window_attributes(
+                                                &conn,
+                                                active_window,
+                                                &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE)
+                                            ]);
+                                            conn.flush();
+
+                                            ewmh::get_wm_name(&conn, active_window).get_reply()
+                                        })
+                                        .map(|reply| reply.string().to_owned())
+                                        .unwrap_or_else(|_| "".to_owned());
+
+                                    tx.send(Ok(title)).unwrap();
                                 }
-                            }
-                            _ => {}
+                            },
+                            _ => {},
                         }
                     }
                     None => {
@@ -115,9 +68,9 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                     }
                 }
             }
+
         } else {
-            tx.send(Err(format!("could not connect to X server")))
-                .unwrap();
+            tx.send(Err(format!("could not connect to X server"))).unwrap();
         }
     });
 
