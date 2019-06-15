@@ -27,14 +27,8 @@ currently testing in i3wm/bspwm
 ### from source
 
 ```bash
-# install rustup (if you don't have cargo)
-curl https://sh.rustup.rs -sSf | sh
-
-# clone repo
 git clone https://github.com/kirjavascript/cakeybar.git
 cd cakeybar
-
-# run example
 cargo run --release -- -c examples/darkblue/config.toml
 ```
 

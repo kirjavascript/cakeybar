@@ -8,19 +8,8 @@ license = "Unlicence OR MIT"
 lto = true
 # panic = "abort"
 
-[dependencies.gtk]
-git = "https://github.com/gtk-rs/gtk.git"
-features = ["v3_22"]
-
-[dependencies.xcb]
-version = "0.8.2"
-features = ["thread"]
-
-[dependencies.serde]
-version = "1.0.89"
-features = ["derive"]
-
 [dependencies]
+gtk = { git = "https://github.com/gtk-rs/gtk.git", features = ["v3_22"] }
 glib = { git = "https://github.com/gtk-rs/glib.git" }
 gio = { git = "https://github.com/gtk-rs/gio.git" }
 gdk = { git = "https://github.com/gtk-rs/gdk.git" }
@@ -29,8 +18,10 @@ gdk-sys = { git = "https://github.com/gtk-rs/sys.git" }
 glib-sys = { git = "https://github.com/gtk-rs/sys.git" }
 gtk-sys = { git = "https://github.com/gtk-rs/sys.git" }
 gobject-sys = { git = "https://github.com/gtk-rs/sys.git" }
+xcb = { version = "0.8.2", features = ["thread"] }
+xcb-util = { version = "0.2.1", features = ["ewmh"] }
+serde = { version = "1.0.89", features = ["derive"] }
 libc = "0.2"
-xcb-util = "0.2.1"
 chrono = "0.4"
 clap = "2.31.2"
 toml = "0.4"
