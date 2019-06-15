@@ -1,6 +1,3 @@
-use gtk;
-use xcb;
-
 use std::sync::mpsc;
 use std::thread;
 

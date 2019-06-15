@@ -24,7 +24,7 @@ use std::hash::Hash;
 pub type EventId = u32;
 
 pub struct EventEmitter<T: Hash + Eq, V: Clone> {
-    listeners: HashMap<T, Vec<(EventId, Box<Fn(Option<V>)>)>>,
+    listeners: HashMap<T, Vec<(EventId, Box<dyn Fn(Option<V>)>)>>,
     next_id: EventId,
 }
 

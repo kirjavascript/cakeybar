@@ -6,7 +6,7 @@ use std::path::Path;
 use serde::{Serialize, Deserialize};
 use bincode::{serialize, deserialize};
 
-type BoxErr = Box<std::error::Error>;
+type BoxErr = Box<dyn std::error::Error>;
 
 pub fn read_file(path: &str) -> Result<String, Error> {
     let path = Path::new(path);
