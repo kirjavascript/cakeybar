@@ -35,7 +35,6 @@ atoms!(
     WM_DELETE_WINDOW,
     WM_PROTOCOLS,
     _COMPTON_SHADOW,
-    UTF8_STRING,
     MANAGER,
 );
 

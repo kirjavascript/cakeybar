@@ -1,9 +1,7 @@
 use std::sync::mpsc;
 use std::thread;
-use std::error::Error;
 use xcb_util::ewmh;
 
-use crate::wm;
 use crate::wm::events::{Event, EventValue};
 
 pub fn listen(wm_util: &crate::wm::WMUtil) {
@@ -14,9 +12,8 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
             let root = xcb_conn.get_setup()
                 .roots().nth(screen_num as usize).unwrap().root();
 
-            let ewmh_conn = ewmh::Connection::connect(xcb_conn)
-                .map_err(|(e, _)| e).unwrap();
-            let conn = ewmh_conn;
+            let conn = ewmh::Connection::connect(xcb_conn)
+                .map_err(|(e, _)| e).expect("no ewmh connection");
 
             xcb::change_window_attributes(
                 &conn,
@@ -26,10 +23,11 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
 
             conn.flush();
 
+            let mut current_window = xcb::NONE;
+
             loop {
                 match conn.wait_for_event() {
                     Some(event) => {
-                        // TODO: active event
                         match event.response_type() {
                             xcb::PROPERTY_NOTIFY => {
                                 let event: &xcb::PropertyNotifyEvent = unsafe {
@@ -44,13 +42,26 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                     let title = ewmh::get_active_window(&conn, screen_num)
                                         .get_reply()
                                         .and_then(|active_window| {
-                                            xcb::change_window_attributes(
-                                                &conn,
-                                                active_window,
-                                                &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE)
-                                            ]);
-                                            conn.flush();
-
+                                            if current_window != active_window {
+                                                // unsubscribe old window
+                                                if current_window != xcb::NONE {
+                                                    xcb::change_window_attributes_checked(
+                                                        &conn,
+                                                        current_window,
+                                                        &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_NO_EVENT)],
+                                                    );
+                                                }
+                                                // subscribe to new one
+                                                if active_window != xcb::NONE {
+                                                    xcb::change_window_attributes_checked(
+                                                        &conn,
+                                                        active_window,
+                                                        &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_PROPERTY_CHANGE)],
+                                                    );
+                                                }
+                                                current_window = active_window;
+                                                conn.flush();
+                                            }
                                             ewmh::get_wm_name(&conn, active_window).get_reply()
                                         })
                                         .map(|reply| reply.string().to_owned())
@@ -86,7 +97,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                 },
                 Err(err) => {
                     warn!("{}, restarting thread", err.to_lowercase());
-                    gtk::timeout_add(100, clone!(wm_util move || {
+                    gtk::timeout_add(1000, clone!(wm_util move || {
                         listen(&wm_util);
                         gtk::Continue(false)
                     }));
