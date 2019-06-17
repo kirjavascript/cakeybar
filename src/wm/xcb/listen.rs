@@ -4,6 +4,7 @@ use std::thread;
 use xcb_util::ewmh;
 use gdk::{DisplayExt, MonitorExt};
 
+use crate::wm::workspace::Workspace;
 use crate::wm::events::{Event, EventValue};
 
 pub fn connect() -> Result<(ewmh::Connection, i32), &'static str> {
@@ -118,12 +119,35 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                             Err(_) => Vec::new(),
                                         };
 
-                                        let vp_reply = ewmh::get_desktop_viewport(&conn, screen_num).get_reply();
+                                        let viewports_reply = ewmh::get_desktop_viewport(&conn, screen_num).get_reply();
 
-                                        let mut vp = match vp_reply {
-                                            Ok(ref r) => r.desktop_viewports().iter().map(|vp| (vp.x, vp.y)).collect(),
+                                        let mut viewports = match viewports_reply {
+                                            Ok(ref r) => r.desktop_viewports().iter()
+                                                .map(|vp| (vp.x as i32, vp.y as i32)).collect(),
                                             Err(_) => Vec::new(),
                                         };
+
+                                        println!("{:#?}", current);
+
+                                        // let mut workspaces = Vec::new();
+                                        // let default_monitor = monitors.get(0)
+                                        //     .unwrap_or_else(|| &(0, 0, "[unknown]".to_string()));
+                                        for (i, name) in names.iter().enumerate() {
+                                            let focused = i == current;
+                                            //name
+                                            //number
+                                            //urgent
+                                            let (vpx, vpy) = viewports.get(i).unwrap_or_else(|| &(0, 0));
+                                            // get index
+                                            let output = monitors.iter().find(|(x, y, _)| {
+                                                (x, y) == (vpx, vpy)
+                                            });
+                                            println!("{:#?}", output);
+                                        }
+
+                                        // TODO: add number
+
+
 
 
                                         // println!("{:#?}", (names, vp, &monitors));
