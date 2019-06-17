@@ -100,6 +100,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
 
                                     // get workspaces
 
+                                    // TODO: add wm_type check
                                     let is_workspace = event_atom == conn.NUMBER_OF_DESKTOPS()
                                         || event_atom == conn.CURRENT_DESKTOP()
                                         || event_atom == conn.DESKTOP_NAMES();
@@ -127,30 +128,29 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                             Err(_) => Vec::new(),
                                         };
 
-                                        println!("{:#?}", current);
-
-                                        // let mut workspaces = Vec::new();
-                                        // let default_monitor = monitors.get(0)
-                                        //     .unwrap_or_else(|| &(0, 0, "[unknown]".to_string()));
+                                        let fallback_monitor = (0, 0, "[unknown]".to_string());
+                                        let default_monitor = monitors.get(0).unwrap_or(&fallback_monitor);
+                                        let mut workspaces = Vec::new();
                                         for (i, name) in names.iter().enumerate() {
                                             let focused = i == current;
-                                            //name
-                                            //number
-                                            //urgent
                                             let (vpx, vpy) = viewports.get(i).unwrap_or_else(|| &(0, 0));
-                                            // get index
-                                            let output = monitors.iter().find(|(x, y, _)| {
-                                                (x, y) == (vpx, vpy)
-                                            });
-                                            println!("{:#?}", output);
+                                            // get monitor data
+                                            let (mindex, (_, _, output)) = monitors.iter()
+                                                .enumerate()
+                                                .find(|(_, (x, y, _))| (x, y) == (vpx, vpy))
+                                                .unwrap_or((0, default_monitor));
+
+                                            workspaces.push((name, focused, mindex, output));
                                         }
 
-                                        // TODO: add number
+                                        workspaces.sort_by(|a, b| a.2.cmp(&b.2));
+
+                                        // into_iter -> number starts from 1
+                                        // println!("{:#?}", workspaces);
 
 
+                                        // number / urgent
 
-
-                                        // println!("{:#?}", (names, vp, &monitors));
 
                                     }
 
