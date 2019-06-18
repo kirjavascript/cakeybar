@@ -18,7 +18,6 @@ customizable windows for your windowmanager
 cakeybar is written in Rust using GTK and XCB
 
 *work in progress*  
-currently testing in i3wm/bspwm
 
 [request a feature or file a bug](https://github.com/kirjavascript/cakeybar/issues)
 

@@ -7,6 +7,11 @@ use gdk::{DisplayExt, MonitorExt};
 use crate::wm::workspace::Workspace;
 use crate::wm::events::{Event, EventValue};
 
+enum XCBMsg {
+    WindowTitle(String),
+    Workspace(Vec<Workspace>),
+}
+
 pub fn connect() -> Result<(ewmh::Connection, i32), &'static str> {
     let (connection, screen_num) = xcb::Connection::connect(None)
         .map_err(|_| "could not connect to X server")?;
@@ -31,9 +36,8 @@ fn get_monitor_coords() -> Vec<(i32, i32, String)> {
 pub fn listen(wm_util: &crate::wm::WMUtil) {
     let (tx, rx) = mpsc::channel();
 
-    // get monitor coordinates
-
     let monitors = get_monitor_coords();
+    let is_unknown = wm_util.get_wm_type() == crate::wm::WMType::Unknown;
 
     thread::spawn(move || {
         match connect() {
@@ -95,21 +99,21 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                         .map(|reply| reply.string().to_owned())
                                             .unwrap_or_else(|_| "".to_owned());
 
-                                        tx.send(Ok(title)).unwrap();
+                                        tx.send(Ok(XCBMsg::WindowTitle(title))).unwrap();
                                     }
 
                                     // get workspaces
 
-                                    // TODO: add wm_type check
-                                    let is_workspace = event_atom == conn.NUMBER_OF_DESKTOPS()
+                                    // TODO: urgent / visible
+                                    // WM_HINTS
+
+                                    let is_workspace = is_unknown && (
+                                        event_atom == conn.NUMBER_OF_DESKTOPS()
                                         || event_atom == conn.CURRENT_DESKTOP()
-                                        || event_atom == conn.DESKTOP_NAMES();
+                                        || event_atom == conn.DESKTOP_NAMES()
+                                    );
 
                                     if is_workspace {
-
-                                        let number = ewmh::get_number_of_desktops(&conn, screen_num)
-                                            .get_reply()
-                                            .unwrap_or(0) as usize;
 
                                         let current = ewmh::get_current_desktop(&conn, screen_num)
                                             .get_reply()
@@ -143,22 +147,26 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                             workspaces.push((name, focused, mindex, output));
                                         }
 
+                                        // sort by monitors
                                         workspaces.sort_by(|a, b| a.2.cmp(&b.2));
 
-                                        // into_iter -> number starts from 1
-                                        // println!("{:#?}", workspaces);
+                                        let workspaces = workspaces.into_iter()
+                                            .enumerate()
+                                            .map(|(i, (name, focused, _, output))| {
+                                                Workspace {
+                                                    number: i as i32 + 1,
+                                                    name: name.to_string(),
+                                                    visible: focused == true,
+                                                    focused,
+                                                    urgent: false,
+                                                    output: output.to_string(),
+                                                }
+                                            })
+                                            .collect::<Vec<Workspace>>();
 
-
-                                        // number / urgent
-
+                                        tx.send(Ok(XCBMsg::Workspace(workspaces))).unwrap();
 
                                     }
-
-                                    // NUMBER_OF_DESKTOPS,
-                                    // CURRENT_DESKTOP,
-                                    // DESKTOP_NAMES
-                                    //
-                                    // WM_HINTS
                                 },
                                 _ => {},
                             }
@@ -180,11 +188,20 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
         if let Ok(msg_result) = rx.try_recv() {
             match msg_result {
                 Ok(msg) => {
-                    // only window title currently received
-                    wm_util.emit_value(
-                        Event::Window,
-                        EventValue::String(msg),
-                        );
+                    match msg {
+                        XCBMsg::WindowTitle(value) => {
+                            wm_util.emit_value(
+                                Event::Window,
+                                EventValue::String(value),
+                            );
+                        },
+                        XCBMsg::Workspace(workspaces) => {
+                            wm_util.emit_value(
+                                Event::Workspace,
+                                EventValue::Workspaces(workspaces),
+                            );
+                        },
+                    }
                 },
                 Err(err) => {
                     warn!("{}, restarting thread", err.to_lowercase());
