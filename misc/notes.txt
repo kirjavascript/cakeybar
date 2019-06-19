@@ -34,6 +34,11 @@ show overlay win95 when press start / runbox
 mpd now playing
 features for 1.0.0: tray bugs, multiple install options, stacking order
 
+unknownwm
+=========
+move to desktop when scroll / click
+request desktops on boot
+
 floats
 ======
 animation spring
