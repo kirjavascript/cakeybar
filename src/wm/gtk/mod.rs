@@ -50,6 +50,19 @@ pub fn get_monitor_geometry() -> Vec<Rectangle> {
     monitors
 }
 
+pub fn get_monitor_coords() -> Vec<(i32, i32, String)> {
+    let display = gdk::Display::get_default().unwrap();
+    let mut monitors = Vec::new();
+    for i in 0..display.get_n_monitors() {
+        if let Some(monitor) = display.get_monitor(i) {
+            let gtk::Rectangle { x, y, .. } = monitor.get_geometry();
+            let name = monitor.get_model().unwrap_or_else(|| "[unknown]".to_string());
+            monitors.push((x, y, name));
+        }
+    }
+    monitors
+}
+
 pub fn get_monitor_name(monitor_index: i32) -> Option<String> {
     let display = Display::get_default()?;
     let monitor = display.get_monitor(monitor_index)?;

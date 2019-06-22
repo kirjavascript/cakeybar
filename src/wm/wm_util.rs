@@ -334,7 +334,17 @@ impl WMUtil {
                 Ok(mut connection) => Some(wm::bsp::get_workspaces(&mut connection)),
                 Err(_) => None,
             },
-            _ => None,
+            WMType::Unknown => match wm::xcb::connect_ewmh() {
+                Ok((connection, screen_num)) => {
+                    let monitors = wm::gtk::get_monitor_coords();
+                    Some(wm::xcb::get_workspaces(
+                        &connection,
+                        screen_num,
+                        &monitors
+                    ))
+                },
+                Err(_) => None,
+            },
         }
     }
 

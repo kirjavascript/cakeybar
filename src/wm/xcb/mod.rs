@@ -1,9 +1,19 @@
 mod listen;
+mod workspaces;
 
 pub use self::listen::listen;
+pub use self::workspaces::*;
 
 use crate::wm::atom;
-use xcb;
+use xcb_util::ewmh;
+
+pub fn connect_ewmh() -> Result<(ewmh::Connection, i32), &'static str> {
+    let (connection, screen_num) = xcb::Connection::connect(None)
+        .map_err(|_| "could not connect to X server")?;
+    let connection = ewmh::Connection::connect(connection)
+        .map_err(|_| "cannot get EWMH connection")?;
+    Ok((connection, screen_num))
+}
 
 pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xcb::Screen) -> bool {
     // get active window
