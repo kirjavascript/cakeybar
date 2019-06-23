@@ -379,7 +379,9 @@ impl WMUtil {
             WMType::Bsp => {
                 wm::bsp::cycle_workspace(forward, monitor_index);
             }
-            _ => {}
+            WMType::Unknown => {
+                wm::xcb::cycle_workspace(forward, monitor_index);
+            }
         }
     }
 

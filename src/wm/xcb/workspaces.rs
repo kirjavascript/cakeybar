@@ -1,4 +1,5 @@
 use xcb_util::ewmh;
+use crate::wm;
 use crate::wm::workspace::Workspace;
 
 pub fn focus_workspace(
@@ -81,4 +82,22 @@ pub fn get_workspaces(
             }
         })
     .collect::<Vec<Workspace>>()
+}
+
+pub fn cycle_workspace(forward: bool, monitor_index: i32) {
+    match wm::xcb::connect_ewmh() {
+        Ok((conn, screen_num)) => {
+            let monitors = wm::gtk::get_monitor_coords();
+            let workspaces = get_workspaces(&conn, screen_num, &monitors);
+
+            let next_opt = wm::workspace::get_next(&workspaces, forward, monitor_index);
+
+            if let Some(next) = next_opt {
+                focus_workspace(&conn, screen_num, &next.name);
+            }
+        }
+        Err(err) => {
+            error!("{}", err);
+        }
+    }
 }
