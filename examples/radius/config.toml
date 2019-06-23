@@ -41,4 +41,4 @@ type = "workspaces"
 show-all = false
 
 [component.mode]
-type = "mode"
+type = "i3-mode"

@@ -232,11 +232,11 @@ format = "{number}" # symbols are; number, name
 
 each `label` element in a workspace can have the focused, visible and urgent classes which can be targeted with `#workspace_list label .focused`
 
-#### mode
+#### i3-mode
 
 ```toml
 [component.current_mode]
-type = "mode"
+type = "i3-mode"
 format = "{mode}"
 ```
 
