@@ -358,7 +358,16 @@ impl WMUtil {
                 let command = format!("desktop -f {}", workspace_name);
                 wm::bsp::run_command(command).ok();
             }
-            _ => {}
+            WMType::Unknown => match wm::xcb::connect_ewmh() {
+                Ok((connection, screen_num)) => {
+                    wm::xcb::focus_workspace(
+                        &connection,
+                        screen_num,
+                        workspace_name,
+                    );
+                },
+                Err(err) => error!("{}", err),
+            },
         }
     }
 

@@ -1,6 +1,32 @@
 use xcb_util::ewmh;
 use crate::wm::workspace::Workspace;
 
+pub fn focus_workspace(
+    conn: &ewmh::Connection,
+    screen_num: i32,
+    workspace_name: &str,
+) {
+    let names_reply = ewmh::get_desktop_names(&conn, screen_num).get_reply();
+    let names = match &names_reply {
+        Ok(r) => r.strings(),
+        Err(_) => Vec::new(),
+    };
+    let index = names.iter().position(|s| s == &workspace_name);
+    if let Some(index) = index {
+        let desktop_check = ewmh::request_change_current_desktop(
+            &conn,
+            screen_num,
+            index as u32,
+            0,
+        ).request_check();
+        if desktop_check.is_err() {
+            warn!("failed to set workspace to {}", workspace_name);
+        }
+    } else {
+        warn!("cannot find workspace {}", workspace_name);
+    }
+}
+
 pub fn get_workspaces(
     conn: &ewmh::Connection,
     screen_num: i32,
@@ -10,15 +36,15 @@ pub fn get_workspaces(
         .get_reply()
         .unwrap_or(0) as usize;
     let names_reply = ewmh::get_desktop_names(&conn, screen_num).get_reply();
-    let names = match names_reply {
-        Ok(ref r) => r.strings(),
+    let names = match &names_reply {
+        Ok(r) => r.strings(),
         Err(_) => Vec::new(),
     };
 
     let viewports_reply = ewmh::get_desktop_viewport(&conn, screen_num).get_reply();
 
-    let viewports = match viewports_reply {
-        Ok(ref r) => r.desktop_viewports().iter()
+    let viewports = match &viewports_reply {
+        Ok(r) => r.desktop_viewports().iter()
             .map(|vp| (vp.x as i32, vp.y as i32)).collect(),
         Err(_) => Vec::new(),
     };
