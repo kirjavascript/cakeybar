@@ -13,8 +13,6 @@ layout = [
     "tray",
 ]
 
-workspace-scroll = true
-
 [bar.right]
 monitor = 1
 position = "top"

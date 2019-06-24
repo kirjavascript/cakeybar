@@ -313,7 +313,6 @@ impl WMUtil {
         self.data.borrow_mut().events.remove_listener(event, id);
     }
 
-    #[allow(dead_code)]
     pub fn emit(&self, event: Event) {
         self.data.borrow().events.emit(event);
     }

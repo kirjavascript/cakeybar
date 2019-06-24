@@ -19,7 +19,7 @@ glib-sys = { git = "https://github.com/gtk-rs/sys.git" }
 gtk-sys = { git = "https://github.com/gtk-rs/sys.git" }
 gobject-sys = { git = "https://github.com/gtk-rs/sys.git" }
 xcb = { version = "0.8.2", features = ["thread"] }
-xcb-util = { version = "0.2.1", features = ["ewmh"] }
+xcb-util = { version = "0.2.1", features = ["icccm", "ewmh"] }
 serde = { version = "1.0.89", features = ["derive"] }
 libc = "0.2"
 chrono = "0.4"

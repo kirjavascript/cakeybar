@@ -15,6 +15,17 @@ pub fn connect_ewmh() -> Result<(ewmh::Connection, i32), &'static str> {
     Ok((connection, screen_num))
 }
 
+pub fn get_wm_name() -> Result<String, String> {
+    let (conn, screen_num) = connect_ewmh()
+        .map_err(|err| err.to_string())?;
+    let root = conn.get_setup().roots().nth(screen_num as usize).unwrap().root();
+    let name_reply = xcb_util::ewmh::get_wm_name(&conn, root)
+        .get_reply().map_err(|err| format!("{:?}", err))?;
+
+    // let name_reply = xcb_util::ewmh::get_wm_name(&conn, root)
+    Ok(name_reply.string().to_string())
+}
+
 pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xcb::Screen) -> bool {
     // get active window
     let cookie = xcb::get_property(
