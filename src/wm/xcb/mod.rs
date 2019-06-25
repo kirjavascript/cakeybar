@@ -15,8 +15,6 @@ pub fn connect_ewmh() -> Result<(ewmh::Connection, i32), &'static str> {
     Ok((connection, screen_num))
 }
 
-// TODO: line up shit
-
 pub fn get_wm_name() -> String {
     let default = "".to_string();
     let (conn, screen_num) = match connect_ewmh() {

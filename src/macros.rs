@@ -20,7 +20,7 @@ macro_rules! clone {
 
 macro_rules! message {
     ($c:ident, $m:expr, $p:expr) => {{
-        let padding = String::from_utf8(vec![b' '; 12 - $m.len()]).unwrap();
+        let padding = String::from_utf8(vec![b' '; 8 - $m.len()]).unwrap();
         let file_line = format!("{}:{}", file!(), line!());
         if *$crate::config::NO_COLOR {
             eprintln!("{}{} {} {}", padding, $m, $p, file_line);
