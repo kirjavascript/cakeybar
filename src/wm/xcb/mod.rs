@@ -15,15 +15,30 @@ pub fn connect_ewmh() -> Result<(ewmh::Connection, i32), &'static str> {
     Ok((connection, screen_num))
 }
 
-pub fn get_wm_name() -> Result<String, String> {
-    let (conn, screen_num) = connect_ewmh()
-        .map_err(|err| err.to_string())?;
-    let root = conn.get_setup().roots().nth(screen_num as usize).unwrap().root();
-    let name_reply = xcb_util::ewmh::get_wm_name(&conn, root)
-        .get_reply().map_err(|err| format!("{:?}", err))?;
+// TODO: line up shit
 
-    // let name_reply = xcb_util::ewmh::get_wm_name(&conn, root)
-    Ok(name_reply.string().to_string())
+pub fn get_wm_name() -> String {
+    let default = "".to_string();
+    let (conn, screen_num) = match connect_ewmh() {
+        Ok(c) => c,
+        Err(_) => return default,
+    };
+    let root = conn.get_setup().roots().nth(screen_num as usize).unwrap().root();
+    let wm_check = xcb_util::ewmh::get_supporting_wm_check(&conn, root).get_reply();
+    let window = match wm_check {
+        Ok(window) => window,
+        Err(_) => return default,
+    };
+
+    match xcb_util::ewmh::get_wm_name(&conn, window).get_reply() {
+        Ok(reply) => reply.string().to_string(),
+        Err(_) => {
+            match xcb_util::icccm::get_wm_name(&conn, window).get_reply() {
+                Ok(reply) => reply.name().to_string(),
+                Err(_) => default,
+            }
+        },
+    }
 }
 
 pub fn check_fullscreen(conn: &xcb::Connection, atoms: &atom::Atoms, screen: &xcb::Screen) -> bool {

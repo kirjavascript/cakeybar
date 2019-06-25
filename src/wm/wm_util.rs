@@ -50,18 +50,25 @@ impl WMUtil {
     pub fn new(
         app: gtk::Application, config: Config, matches: &ArgMatches
     ) -> Self {
-        let wm_type = if wm::i3::connect().is_ok() {
-            WMType::I3
-        } else if wm::bsp::connect().is_ok() {
-            // TODO: for bspwm, replace detection with checking the root window so we can give
-            // better errors
-            WMType::Bsp
-        } else {
-            WMType::Unknown
+        let wm_name = wm::xcb::get_wm_name();
+        let wm_type = match wm_name.as_str() {
+            "bspwm" => {
+                if wm::bsp::connect().is_ok() {
+                    WMType::Bsp
+                } else {
+                    error!("found bspwm but failed to get a connection. \
+                        try setting BSPWM_SOCKET");
+                    WMType::Unknown
+                }
+            },
+            "i3" => WMType::I3,
+            _ => WMType::Unknown,
         };
 
         if wm_type != WMType::Unknown {
-            info!("detected {}wm", wm_type);
+            info!("using {}wm extensions", wm_type);
+        } else if &wm_name != "" {
+            info!("{}", wm_name);
         }
 
         let events = EventEmitter::new();
