@@ -4,16 +4,6 @@ pub enum Command {
     Show(Selectors),
     Hide(Selectors),
     Focus(Selector),
-    Help(HelpTopic),
-}
-
-#[derive(Debug)]
-pub enum HelpTopic {
-    Default,
-    Show,
-    Hide,
-    Reload,
-    Unknown(String),
 }
 
 pub struct Selectors(pub Vec<Selector>);

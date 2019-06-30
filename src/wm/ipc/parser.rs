@@ -53,15 +53,8 @@ named!(reload_config<Input,Command>,
     )
 );
 
-named!(reload_help<Input,Command>,
-    do_parse!(
-        multispace0 >> tag!("reload") >>
-        (Command::Help(HelpTopic::Reload))
-    )
-);
-
 named!(reload<Input,Command>,
-    alt!( reload_theme | reload_config | reload_help )
+    alt!( reload_theme | reload_config )
 );
 
 named!(focus<Input,Command>,
@@ -75,60 +68,21 @@ named!(focus<Input,Command>,
 named!(show<Input,Command>,
     do_parse!(
         multispace0 >> tag!("show") >>
-        selectors_opt: opt!(many1!( selector )) >>
-        (if let Some(selectors) = selectors_opt {
-            Command::Show(Selectors(selectors))
-        } else {
-            Command::Help(HelpTopic::Show)
-        })
+        selectors: many1!( selector ) >>
+        (Command::Show(Selectors(selectors)))
     )
 );
 
 named!(hide<Input,Command>,
     do_parse!(
         multispace0 >> tag!("hide") >>
-        selectors_opt: opt!(many1!( selector )) >>
-        (if let Some(selectors) = selectors_opt {
-            Command::Hide(Selectors(selectors))
-        } else {
-            Command::Help(HelpTopic::Hide)
-        })
+        selectors: many1!( selector ) >>
+        (Command::Hide(Selectors(selectors)))
     )
-);
-
-// help
-
-named!(help_default<Input,Command>,
-    do_parse!(
-        multispace0 >> tag!("help") >>
-        (Command::Help(HelpTopic::Default))
-    )
-);
-
-named!(help_topic<Input,Command>,
-    do_parse!(
-        multispace0 >> tag!("help") >>
-        topic: get_rest_opt >>
-        (Command::Help(
-            if let Some(topic) = topic {
-                match topic.as_str() {
-                    "show" => HelpTopic::Show,
-                    "hide" => HelpTopic::Hide,
-                    "reload" => HelpTopic::Reload,
-                    t if t.len() != 0 => HelpTopic::Unknown(t.to_string()),
-                    _ => HelpTopic::Default,
-                }
-            } else { HelpTopic::Default }
-        ))
-    )
-);
-
-named!(help<Input,Command>,
-    alt!( help_topic | help_default )
 );
 
 named!(get_command<Input,Command>,
-    alt!( show | hide | focus | reload | help )
+    alt!( show | hide | focus | reload )
 );
 
 pub fn parse_message(input: &str) -> Result<Command, String> {

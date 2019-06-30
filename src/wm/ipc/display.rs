@@ -32,7 +32,6 @@ impl fmt::Display for Command {
             Command::Show(selectors) => write!(f, "showing {}", selectors),
             Command::Focus(selector) => write!(f, "focus {}", selector),
             Command::Hide(selectors) => write!(f, "hiding {}", selectors),
-            Command::Help(topic) => write!(f, "w:TODO: show help for {:?}", topic),
         }
     }
 }

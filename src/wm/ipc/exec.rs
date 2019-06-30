@@ -19,6 +19,5 @@ pub fn run_command(wm_util: &WMUtil, cmd: Command) {
         Command::Focus(selector) => {
             wm_util.emit(Event::Focus(selector.get_name()));
         },
-        _ => {},
     }
 }

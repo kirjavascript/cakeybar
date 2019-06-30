@@ -68,7 +68,7 @@ impl WMUtil {
         if wm_type != WMType::Unknown {
             info!("using {}wm extensions", wm_type);
         } else if &wm_name != "" {
-            info!("{}", wm_name);
+            info!("using {}", wm_name);
         }
 
         let events = EventEmitter::new();

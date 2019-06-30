@@ -24,19 +24,18 @@ animations:
 https://gist.github.com/ptomato/0fb634ef4098bb89026f
 // formatting
 https://github.com/misterhat/livelook/blob/master/README.md
-workspaces: (alt bar)
 https://github.com/mjkillough/cnx
 
 show overlay win95 when press start / runbox
 mpd now playing
 features for 1.0.0: tray bugs, multiple install options, stacking order
+ist windows on active desktops
 
 unknownwm
 =========
 urgency
     https://docs.rs/xcb-util/0.2.1/xcb_util/ewmh/fn.get_wm_desktop.html
     https://docs.rs/xcb/0.8.2/xcb/xproto/fn.query_tree.html
-    store info needed on the root window?
 push to back, reserve space
 
 [decorations]
@@ -45,6 +44,7 @@ push to back, reserve space
 
 floats
 ======
+power menu -> label
 animation spring
 percet when you get both sides
 :move #info 25 300 animation then
@@ -97,7 +97,6 @@ restart position bug
 
 extra
 ===
-custom window decorations
 left/right bars
 
 components
@@ -134,6 +133,7 @@ add current process to cpu/mem
 
 docs
 ====
+link table for components
 add / remove - curl | sh install
     or install from cargo (google scrftch)
 pandoc
