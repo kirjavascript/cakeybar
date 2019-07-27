@@ -8,7 +8,7 @@ use crate::wm::workspace::Workspace;
 use crate::wm::watch::Watcher;
 use crate::wm::Window as _;
 use crate::wm;
-use clap::ArgMatches;
+// use clap::ArgMatches;
 
 use gtk;
 use gtk::prelude::*;
@@ -48,7 +48,7 @@ struct Data {
 
 impl WMUtil {
     pub fn new(
-        app: gtk::Application, config: Config, matches: &ArgMatches
+        app: gtk::Application, config: Config, // matches: &ArgMatches
     ) -> Self {
         let wm_name = wm::xcb::get_wm_name();
         let wm_type = match wm_name.as_str() {
@@ -108,9 +108,9 @@ impl WMUtil {
         wm::gtk::css_reset();
         util.load_theme(None);
         util.load_windows();
-        if matches.is_present("watch") {
-            util.watch_files();
-        }
+        // if matches.is_present("watch") {
+        //     util.watch_files();
+        // }
 
         util
     }
