@@ -106,7 +106,7 @@ impl ConfigGroup {
     }
 }
 
-pub fn parse_config(filename: &str) -> Result<Config, String> {
+pub fn parse_file(filename: &str) -> Result<Config, String> {
     let file_path = Path::new(filename);
     let config_dir = file_path.parent().ok_or("getting config directory")?;
     let config_file = file_path.file_name().ok_or("getting config filename")?;

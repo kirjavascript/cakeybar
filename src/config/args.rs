@@ -5,15 +5,15 @@ use std::env;
 pub struct Args {
     help: bool,
     #[options(help = "Specify a config path", meta = "[FILE]")]
-    config: Option<String>,
+    pub config: Option<String>,
     #[options(help = "Watch config files and reload on changes")]
-    watch: bool,
+    pub watch: bool,
     #[options(help = "Send an IPC message", meta = "[MESSAGE]")]
-    message: Option<String>,
+    pub message: Option<String>,
     #[options(help = "Shows information about monitors")]
-    monitors: bool,
+    pub monitors: bool,
     #[options(short = "D", no_long)]
-    multi: bool,
+    pub multi: bool,
 }
 
 pub fn get_args() -> Args {
@@ -22,7 +22,7 @@ pub fn get_args() -> Args {
     match Args::parse_args(&args[1..], ParsingStyle::AllOptions) {
         Ok(args) => {
             if args.help_requested() {
-                println!("{} - version {}", crate::NAME, crate::VERSION);
+                println!("{} {}\n", crate::NAME, crate::VERSION);
                 Args::parse_args_default_or_exit();
             }
             args

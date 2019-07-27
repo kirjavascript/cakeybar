@@ -1,6 +1,6 @@
 use crate::bar::Bar;
 use crate::float::Float;
-use crate::config::{Config, ConfigGroup, parse_config};
+use crate::config::{Args, Config, ConfigGroup, parse_file};
 use crate::wm::events::{Event, EventEmitter, EventId, EventValue};
 use crate::wm::ipc::parser::parse_message;
 use crate::wm::ipc::commands::*;
@@ -8,7 +8,6 @@ use crate::wm::workspace::Workspace;
 use crate::wm::watch::Watcher;
 use crate::wm::Window as _;
 use crate::wm;
-// use clap::ArgMatches;
 
 use gtk;
 use gtk::prelude::*;
@@ -48,7 +47,7 @@ struct Data {
 
 impl WMUtil {
     pub fn new(
-        app: gtk::Application, config: Config, // matches: &ArgMatches
+        app: gtk::Application, config: Config, args: &Args
     ) -> Self {
         let wm_name = wm::xcb::get_wm_name();
         let wm_type = match wm_name.as_str() {
@@ -108,9 +107,9 @@ impl WMUtil {
         wm::gtk::css_reset();
         util.load_theme(None);
         util.load_windows();
-        // if matches.is_present("watch") {
-        //     util.watch_files();
-        // }
+        if args.watch {
+            util.watch_files();
+        }
 
         util
     }
@@ -161,7 +160,7 @@ impl WMUtil {
         // get filename
         let filename = self.data.borrow().config.get_filename();
         // load config
-        let config_res = parse_config(&filename);
+        let config_res = parse_file(&filename);
         if let Ok(config) = config_res {
             // update config
             self.data.borrow_mut().config = config;
