@@ -15,7 +15,6 @@ enum XCBMsg {
 pub fn listen(wm_util: &crate::wm::WMUtil) {
     let (tx, rx) = mpsc::channel();
 
-    let monitors = wm::gtk::get_monitor_coords();
     let is_unknown = wm_util.get_wm_type() == crate::wm::WMType::Unknown;
 
     thread::spawn(move || {
@@ -93,7 +92,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                     );
 
                                     if is_workspace {
-
+                                        let monitors = wm::gtk::get_monitor_coords();
                                         let workspaces = wm::xcb::get_workspaces(&conn, screen_num, &monitors);
 
 
@@ -101,7 +100,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
 
                                     }
                                 },
-                                _ => {},
+                                _ => { },
                             }
                         }
                         None => {

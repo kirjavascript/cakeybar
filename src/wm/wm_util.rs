@@ -93,6 +93,9 @@ impl WMUtil {
         // listen for WM events
         wm::xcb::listen(&util);
 
+        // TODO
+        wm::xcb::windows::listen(&util);
+
         // WM specific listeners
         match util.get_wm_type() {
             WMType::I3 => {
