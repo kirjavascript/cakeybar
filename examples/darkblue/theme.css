@@ -27,9 +27,11 @@ label, entry {
 #info {
     padding: 25px;
     background-color: red;
-    border: 2px solid @blue;
-    background-color: rgba(0,0,0,0.7);
-    border-radius: 25px 25px 25px 0;
+    /* border: 2px solid @blue; */
+    border: 2px solid #8DC08C;
+    /* background-color: rgba(0,0,0,0.7); */
+    border-radius: 25px 0 25px 0;
+    background-color: #3c4c55;
 }
 
 /* components */

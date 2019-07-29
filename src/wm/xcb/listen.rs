@@ -117,7 +117,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
     });
 
     gtk::timeout_add(10, clone!(wm_util move || {
-        if let Ok(msg_result) = rx.try_recv() {
+        while let Ok(msg_result) = rx.try_recv() {
             match msg_result {
                 Ok(msg) => {
                     match msg {

@@ -25,6 +25,9 @@ https://gist.github.com/ptomato/0fb634ef4098bb89026f
 // formatting
 https://github.com/misterhat/livelook/blob/master/README.md
 https://github.com/mjkillough/cnx
+xid:
+https://github.com/gtk-rs/gdk/issues/182
+https://gitlab.freedesktop.org/gstreamer/gstreamer-rs/blob/master/examples/src/bin/gtkvideooverlay.rs#L54
 
 show overlay win95 when press start / runbox
 mpd now playing

@@ -122,7 +122,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
     });
 
     gtk::timeout_add(10, clone!(wm_util move || {
-        if let Ok(windows_result) = rx.try_recv() {
+        while let Ok(windows_result) = rx.try_recv() {
             match windows_result {
                 Ok(windows) => {
                     wm_util.emit_value(
