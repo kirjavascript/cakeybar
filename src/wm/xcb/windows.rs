@@ -1,16 +1,16 @@
-// use std::sync::mpsc;
+use std::sync::mpsc;
 use std::thread;
 use std::collections::HashMap;
 
 use crate::wm;
-// use crate::wm::events::{Event, EventValue};
+use crate::wm::events::{Event, EventValue};
 
-type XWindowData = (i16, i16, u16, u16, String);
+pub type XWindowData = (i16, i16, u16, u16, String);
 
 const GEOMETRY_NOTIFY: u8 = 150;
 
 pub fn listen(wm_util: &crate::wm::WMUtil) {
-    // let (tx, rx) = mpsc::channel();
+    let (tx, rx) = mpsc::channel();
 
     thread::spawn(move || {
         match xcb::Connection::connect(None) {
@@ -24,13 +24,8 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                 for window in get_client_list(&conn, &atoms, &screen) {
                     windows.insert(window, add_window(&conn, window));
                 }
-                println!("start {:#?}", windows);
-
-                // override redirect on decorations?
-                //
-                // account for border width
-
-                // iterate and == diff on the decoration side
+                // init windows
+                tx.send(Ok(windows.clone())).unwrap();
 
                 xcb::change_window_attributes(
                     &conn,
@@ -39,8 +34,6 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                 );
 
                 conn.flush();
-
-                // map notify event
 
                 loop {
                     match conn.wait_for_event() {
@@ -52,22 +45,27 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                         .filter(|c| !windows.keys().any(|k| &k == c))
                                         .collect::<Vec<_>>();
 
-                                    for window in new_clients {
-                                        windows.insert(*window, add_window(&conn, *window));
-                                        println!("add {:#?}", windows);
+                                    if !new_clients.is_empty() {
+                                        for window in new_clients {
+                                            windows.insert(*window, add_window(&conn, *window));
+                                            // add window
+                                        }
+                                        tx.send(Ok(windows.clone())).unwrap();
                                     }
                                 },
                                 xcb::DESTROY_NOTIFY => {
                                     let clients = get_client_list(&conn, &atoms, &screen);
-                                    let winkeys = windows.keys();
-                                    let removed_clients = winkeys
+                                    let removed_clients = windows.keys()
                                         .filter(|c| !clients.iter().any(|k| &k == c))
                                         .map(|c| c.clone())
                                         .collect::<Vec<xcb::Window>>();
 
-                                    for window in removed_clients {
-                                        windows.remove(&window);
-                                        println!("remove {:#?}", windows);
+                                    if !removed_clients.is_empty() {
+                                        for window in removed_clients {
+                                            windows.remove(&window);
+                                            // remove window
+                                        }
+                                        tx.send(Ok(windows.clone())).unwrap();
                                     }
                                 },
                                 xcb::PROPERTY_NOTIFY => {
@@ -82,15 +80,11 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                             let name = get_name(&conn, xcb_window);
                                             if window.4 != name {
                                                 window.4 = name;
-                                                println!("name {:#?}", windows);
+                                                // name window
+                                                tx.send(Ok(windows.clone())).unwrap();
                                             }
                                         }
                                     }
-                                    // println!("{:#?}", "prop");
-                                    // println!("{:#?}", get_client_list(&conn, &atoms, &screen));
-                                },
-                                xcb::CONFIGURE_NOTIFY => {
-                                    // println!("{:#?}", "config");
                                 },
                                 GEOMETRY_NOTIFY => {
                                     let event: &xcb::ConfigureNotifyEvent = unsafe {
@@ -107,16 +101,14 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                         event.height(),
                                         name,
                                     ));
-                                    println!("geom {:#?}", windows);
+                                    // geom window
+                                    tx.send(Ok(windows.clone())).unwrap();
                                 },
-                                _ => {
-                                    // println!("{:#?}", event.response_type());
-                                    // println!("{:#?}", get_client_list(&conn, &atoms, &screen));
-                                },
+                                _ => { },
                             }
                         }
                         None => {
-                            // tx.send(Err(format!("xcb: no events (?)"))).unwrap();
+                            tx.send(Err(format!("xcb: no events (?)"))).unwrap();
                             break;
                         }
 
@@ -124,42 +116,32 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                 }
             },
             Err(err) => {
-                // tx.send(Err(err.to_string())).unwrap();
+                tx.send(Err(err.to_string())).unwrap();
             },
         }
     });
 
-    // gtk::timeout_add(10, clone!(wm_util move || {
-    //     if let Ok(msg_result) = rx.try_recv() {
-    //         match msg_result {
-    //             Ok(msg) => {
-    //                 match msg {
-    //                     XCBMsg::WindowTitle(value) => {
-    //                         wm_util.emit_value(
-    //                             Event::Window,
-    //                             EventValue::String(value),
-    //                         );
-    //                     },
-    //                     XCBMsg::Workspace(workspaces) => {
-    //                         wm_util.emit_value(
-    //                             Event::Workspace,
-    //                             EventValue::Workspaces(workspaces),
-    //                         );
-    //                     },
-    //                 }
-    //             },
-    //             Err(err) => {
-    //                 warn!("{}, restarting thread", err.to_lowercase());
-    //                 gtk::timeout_add(1000, clone!(wm_util move || {
-    //                     listen(&wm_util);
-    //                     gtk::Continue(false)
-    //                 }));
-    //                 return gtk::Continue(false);
-    //             },
-    //         };
-    //     }
-    //     gtk::Continue(true)
-    // }));
+    gtk::timeout_add(10, clone!(wm_util move || {
+        if let Ok(windows_result) = rx.try_recv() {
+            match windows_result {
+                Ok(windows) => {
+                    wm_util.emit_value(
+                        Event::Windows,
+                        EventValue::Windows(windows),
+                    );
+                },
+                Err(err) => {
+                    warn!("{}, restarting thread", err.to_lowercase());
+                    gtk::timeout_add(1000, clone!(wm_util move || {
+                        listen(&wm_util);
+                        gtk::Continue(false)
+                    }));
+                    return gtk::Continue(false);
+                },
+            };
+        }
+        gtk::Continue(true)
+    }));
 }
 
 fn get_name(conn: &xcb::Connection, window: xcb::Window) -> String {
@@ -202,6 +184,8 @@ fn add_window(
             ),
         ],
     );
+    conn.flush();
+
     let name = get_name(&conn, window);
     let (x, y, width, height) = xcb::get_geometry(&conn, window)
         .get_reply()

@@ -36,7 +36,6 @@ cargo run --release -- -c examples/darkblue/config.toml
 ```
     -h, --help                 Prints help information
     -M, --monitors             Shows information about monitors
-    -V, --version              Prints version information
     -w, --watch                Watch config files and reload on changes
     -c, --config <FILE>        Specify a config path
     -m, --message <MESSAGE>    Send an IPC message
