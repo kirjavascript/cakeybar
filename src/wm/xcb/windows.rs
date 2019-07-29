@@ -18,8 +18,13 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
 
                 let screen = conn.get_setup().roots().nth(screen_num as usize).unwrap();
                 let atoms = wm::atom::Atoms::new(&conn);
-                let mut windows = get_initial_windows(&conn, &atoms, &screen);
-                println!("{:?}", windows);
+
+                let mut windows = HashMap::new();
+
+                for window in get_client_list(&conn, &atoms, &screen) {
+                    windows.insert(window, add_window(&conn, window));
+                }
+                println!("start {:#?}", windows);
 
                 // override redirect on decorations?
                 //
@@ -30,12 +35,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                 xcb::change_window_attributes(
                     &conn,
                     screen.root(),
-                    &[
-                        (
-                            xcb::CW_EVENT_MASK,
-                            xcb::EVENT_MASK_SUBSTRUCTURE_NOTIFY,
-                        ),
-                    ],
+                    &[(xcb::CW_EVENT_MASK, xcb::EVENT_MASK_SUBSTRUCTURE_NOTIFY)],
                 );
 
                 conn.flush();
@@ -46,11 +46,29 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                     match conn.wait_for_event() {
                         Some(event) => {
                             match event.response_type() {
-                                xcb::CREATE_NOTIFY => {
-                                    println!("{:#?}", "create");
+                                xcb::MAP_NOTIFY => {
+                                    let clients = get_client_list(&conn, &atoms, &screen);
+                                    let new_clients = clients.iter()
+                                        .filter(|c| !windows.keys().any(|k| &k == c))
+                                        .collect::<Vec<_>>();
+
+                                    for window in new_clients {
+                                        windows.insert(*window, add_window(&conn, *window));
+                                        println!("add {:#?}", windows);
+                                    }
                                 },
                                 xcb::DESTROY_NOTIFY => {
-                                    println!("{:#?}", "destroy");
+                                    let clients = get_client_list(&conn, &atoms, &screen);
+                                    let winkeys = windows.keys();
+                                    let removed_clients = winkeys
+                                        .filter(|c| !clients.iter().any(|k| &k == c))
+                                        .map(|c| c.clone())
+                                        .collect::<Vec<xcb::Window>>();
+
+                                    for window in removed_clients {
+                                        windows.remove(&window);
+                                        println!("remove {:#?}", windows);
+                                    }
                                 },
                                 xcb::PROPERTY_NOTIFY => {
                                     let event: &xcb::PropertyNotifyEvent = unsafe {
@@ -64,11 +82,12 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                             let name = get_name(&conn, xcb_window);
                                             if window.4 != name {
                                                 window.4 = name;
-                                                println!("{:#?}", windows);
+                                                println!("name {:#?}", windows);
                                             }
                                         }
                                     }
                                     // println!("{:#?}", "prop");
+                                    // println!("{:#?}", get_client_list(&conn, &atoms, &screen));
                                 },
                                 xcb::CONFIGURE_NOTIFY => {
                                     // println!("{:#?}", "config");
@@ -88,10 +107,11 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                         event.height(),
                                         name,
                                     ));
-                                    println!("{:#?}", windows);
+                                    println!("geom {:#?}", windows);
                                 },
                                 _ => {
                                     // println!("{:#?}", event.response_type());
+                                    // println!("{:#?}", get_client_list(&conn, &atoms, &screen));
                                 },
                             }
                         }
@@ -189,46 +209,4 @@ fn add_window(
         .unwrap_or_else(|_| (0, 0, 0, 0));
 
     (x, y, width, height, name)
-}
-
-fn get_initial_windows(
-    conn: &xcb::Connection,
-    atoms: &wm::atom::Atoms,
-    screen: &xcb::Screen,
-) -> HashMap<xcb::Window, XWindowData> {
-    let mut windows = HashMap::new();
-    let cookie = xcb::get_property(
-        &conn,
-        false,
-        screen.root(),
-        atoms.get(wm::atom::_NET_CLIENT_LIST),
-        xcb::ATOM_WINDOW,
-        0,
-        8,
-    );
-    match cookie.get_reply() {
-        Ok(reply) => {
-            for window in reply.value() {
-                xcb::change_window_attributes(
-                    &conn,
-                    *window,
-                    &[
-                        (
-                            xcb::CW_EVENT_MASK,
-                            xcb::EVENT_MASK_PROPERTY_CHANGE | xcb::EVENT_MASK_STRUCTURE_NOTIFY
-                        ),
-                    ],
-                );
-                let name = get_name(&conn, *window);
-                let (x, y, width, height) = xcb::get_geometry(&conn, *window)
-                    .get_reply()
-                    .map(|geom| (geom.x(), geom.y(), geom.width(), geom.height()))
-                    .unwrap_or_else(|_| (0, 0, 0, 0));
-
-                windows.insert(*window, (x, y, width, height, name));
-            }
-        },
-        _ => {},
-    }
-    windows
 }
