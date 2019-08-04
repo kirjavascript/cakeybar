@@ -62,6 +62,15 @@ pub fn keyboard_grab(window: &gtk::Window) -> i32 {
 
 // x11 stuff
 
+extern "C" {
+    fn gdk_x11_window_get_xid(window: *const gdk_sys::GdkWindow) -> u32;
+}
+
+pub fn gdk_get_xid(window: &gdk::Window) -> u32 {
+    let ptr: *const gdk_sys::GdkWindow = window.to_glib_none().0;
+    unsafe { gdk_x11_window_get_xid(ptr) }
+}
+
 pub fn disable_shadow(window: &gtk::Window) {
     let ptr: *mut gdk_sys::GdkWindow = window.get_window().unwrap().to_glib_none().0;
 

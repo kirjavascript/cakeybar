@@ -13,6 +13,7 @@ use gdk::WindowExt;
 use crate::wm;
 use crate::wm::events::{Event, EventId, EventValue};
 use crate::wm::xcb::windows::XWindowData;
+use crate::wm::gtk::gdk_get_xid;
 
 use gtk::prelude::*;
 
@@ -62,15 +63,11 @@ pub fn load_decorations(wm_util: &wm::WMUtil) {
         // window.show_unraised();
 
 
-        extern "C" {
-            pub fn gdk_x11_window_get_xid(window: gdk::Window) -> u32;
-        }
-        let id = unsafe {
-            let id = gdk_x11_window_get_xid(window.clone());
+        let id = {
+            let id = gdk_get_xid(&window);
             // println!("{:#?}", id);
             id
         };
-
 
         // wait a tick before restacking window
 
@@ -78,11 +75,22 @@ pub fn load_decorations(wm_util: &wm::WMUtil) {
             match xcb::Connection::connect(None) {
                 Ok((conn, screen_num)) => {
                     let screen = conn.get_setup().roots().nth(screen_num as usize).unwrap();
+
+                // let vim = 37748739;
                     // let parent = xcb::query_tree(&conn, id).get_reply().unwrap().parent();
                     // xcb::configure_window(
                     //     &conn,
                     //     parent,
                     //     &[(xcb::CONFIG_WINDOW_STACK_MODE as u16, xcb::STACK_MODE_BELOW)],
+                    // );
+                    // xcb::configure_window(
+
+                    //     &conn,
+                    //     vim,
+                    //     &[
+                    //     // (xcb::CONFIG_WINDOW_SIBLING as u16, id),
+                    //     (xcb::CONFIG_WINDOW_STACK_MODE as u16, xcb::STACK_MODE_ABOVE),
+                    //     ],
                     // );
                     xcb::configure_window(
                         &conn,
@@ -103,13 +111,16 @@ pub fn load_decorations(wm_util: &wm::WMUtil) {
 // 19:48 <+bdelloid> window
 // 19:48 <+bdelloid> up the chain
 
+// unmap / map vim window
+// create an xwindow to put all gtk windows behind
+
     let event_id = wm_util.add_listener(Event::Windows,
         clone!(window move |windows_opt| {
             if let Some(EventValue::Windows(event_windows)) = windows_opt {
-                let vim = 6291459;
+                let vim = 37748739;
                 println!("{:#?}", event_windows);
                 if let Some(v) = event_windows.get(&vim) {
-                    window.move_(v.0 as i32 - 20 , v.1 as i32 - 20);
+                    window.move_(v.x as i32 - 20 , v.y as i32 - 20);
                 }
 
                 // set behind
@@ -124,11 +135,8 @@ pub fn load_decorations(wm_util: &wm::WMUtil) {
 
 
 
-        extern "C" {
-            pub fn gdk_x11_window_get_xid(window: gdk::Window) -> u32;
-        }
-        let id = unsafe {
-            let id = gdk_x11_window_get_xid(window.clone());
+        let id = {
+            let id = gdk_get_xid(&window);
             // println!("{:#?}", id);
             id
         };
@@ -143,9 +151,7 @@ pub fn load_decorations(wm_util: &wm::WMUtil) {
                 // conn.flush();
 
 
-                // xcb::change_property(
                 xcb::configure_window(
-
                     &conn,
                     id,
                     &[
@@ -163,7 +169,7 @@ pub fn load_decorations(wm_util: &wm::WMUtil) {
                 //     (xcb::CONFIG_WINDOW_STACK_MODE as u16, xcb::STACK_MODE_ABOVE),
                 //     ],
                 // );
-                println!("{:#?}", id);
+                // println!("{:#?}", id);
 
                             // xcb::circulate_window(
                             //     &conn,

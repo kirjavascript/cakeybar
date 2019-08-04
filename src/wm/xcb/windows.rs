@@ -5,7 +5,15 @@ use std::collections::HashMap;
 use crate::wm;
 use crate::wm::events::{Event, EventValue};
 
-pub type XWindowData = (i16, i16, u16, u16, String);
+#[derive(Debug, Clone)]
+pub struct XWindowData {
+    pub x: i16,
+    pub y: i16,
+    pub width: u16,
+    pub height: u16,
+    pub name: String,
+    pub visible: bool,
+}
 
 const GEOMETRY_NOTIFY: u8 = 150;
 
@@ -78,29 +86,50 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                         let window = windows.get_mut(&xcb_window);
                                         if let Some(window) = window {
                                             let name = get_name(&conn, xcb_window);
-                                            if window.4 != name {
-                                                window.4 = name;
+                                            if window.name != name {
+                                                window.name = name;
                                                 // name window
                                                 tx.send(Ok(windows.clone())).unwrap();
                                             }
                                         }
                                     }
                                 },
+                                xcb::VISIBILITY_NOTIFY => {
+                                    for (window, windowdata) in windows.iter_mut() {
+                                        windowdata.visible = get_visible(&conn, *window);
+                                    }
+                                    tx.send(Ok(windows.clone())).unwrap();
+                                },
                                 GEOMETRY_NOTIFY => {
                                     let event: &xcb::ConfigureNotifyEvent = unsafe {
                                         xcb::cast_event(&event)
                                     };
-
                                     let window = event.window();
-                                    let name = get_name(&conn, window);
 
-                                    windows.insert(window, (
-                                        event.x(),
-                                        event.y(),
-                                        event.width(),
-                                        event.height(),
+                                    let (name, visible) = {
+                                        // try and get original window
+                                        let windowdata = windows.get(&window);
+                                        if let Some(window) = windowdata {
+                                            (window.name.clone(), window.visible)
+                                        } else {
+                                            // fallback to xcb
+                                            (
+                                                get_name(&conn, window),
+                                                get_visible(&conn, window),
+                                            )
+                                        }
+                                    };
+
+                                    // update window position
+
+                                    windows.insert(window, XWindowData {
+                                        x: event.x(),
+                                        y: event.y(),
+                                        width: event.width(),
+                                        height: event.height(),
                                         name,
-                                    ));
+                                        visible,
+                                    });
                                     // geom window
                                     tx.send(Ok(windows.clone())).unwrap();
                                 },
@@ -151,6 +180,13 @@ fn get_name(conn: &xcb::Connection, window: xcb::Window) -> String {
     }
 }
 
+fn get_visible(conn: &xcb::Connection, window: xcb::Window) -> bool {
+    xcb::get_window_attributes(conn, window)
+        .get_reply()
+        .map(|attrs| attrs.map_state() & 2 == 2)
+        .unwrap_or_else(|_| false)
+}
+
 fn get_client_list(
     conn: &xcb::Connection,
     atoms: &wm::atom::Atoms,
@@ -180,17 +216,20 @@ fn add_window(
         &[
             (
                 xcb::CW_EVENT_MASK,
-                xcb::EVENT_MASK_PROPERTY_CHANGE | xcb::EVENT_MASK_STRUCTURE_NOTIFY
+                xcb::EVENT_MASK_PROPERTY_CHANGE
+                | xcb::EVENT_MASK_STRUCTURE_NOTIFY
+                | xcb::EVENT_MASK_VISIBILITY_CHANGE
             ),
         ],
     );
     conn.flush();
 
     let name = get_name(&conn, window);
+    let visible = get_visible(&conn, window);
     let (x, y, width, height) = xcb::get_geometry(&conn, window)
         .get_reply()
         .map(|geom| (geom.x(), geom.y(), geom.width(), geom.height()))
         .unwrap_or_else(|_| (0, 0, 0, 0));
 
-    (x, y, width, height, name)
+    XWindowData { x, y, width, height, name, visible }
 }
