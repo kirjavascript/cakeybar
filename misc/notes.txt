@@ -163,7 +163,6 @@ https://github.com/kimond/awesome-statusbars
 SVG blobs
 slanted workspace names with SVG
 gifcurry
-request a feature
 progress reports
 
 https://alpha.wallhaven.cc/

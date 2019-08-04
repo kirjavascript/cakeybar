@@ -12,7 +12,7 @@ use gdk::WindowExt;
 
 use crate::wm;
 use crate::wm::events::{Event, EventId, EventValue};
-use crate::wm::xcb::windows::XWindowData;
+use crate::wm::xcb::xwindows::XWindowData;
 use crate::wm::gtk::gdk_get_xid;
 
 use gtk::prelude::*;

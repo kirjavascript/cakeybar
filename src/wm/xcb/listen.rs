@@ -123,7 +123,7 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                     match msg {
                         XCBMsg::WindowTitle(value) => {
                             wm_util.emit_value(
-                                Event::Window,
+                                Event::WindowTitle,
                                 EventValue::String(value),
                             );
                         },

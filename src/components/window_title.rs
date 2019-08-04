@@ -16,7 +16,7 @@ pub struct WindowTitle {
 
 impl Component for WindowTitle {
     fn destroy(&self) {
-        self.wm_util.remove_listener(Event::Window, self.event_id);
+        self.wm_util.remove_listener(Event::WindowTitle, self.event_id);
         self.label.destroy();
     }
 }
@@ -31,7 +31,7 @@ impl WindowTitle {
         let trunc = config.get_int_or("truncate", 100) as usize;
         let symbols = SymbolFmt::new(config.get_str_or("format", "{title}"));
 
-        let event_id = wm_util.add_listener(Event::Window, clone!(label
+        let event_id = wm_util.add_listener(Event::WindowTitle, clone!(label
             move |event_opt| {
                 if let Some(EventValue::String(name)) = event_opt {
                     let name = &name;

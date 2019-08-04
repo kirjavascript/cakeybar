@@ -1,6 +1,6 @@
 mod listen;
 mod workspaces;
-pub mod windows;
+pub mod xwindows;
 
 pub use self::listen::listen;
 pub use self::workspaces::*;

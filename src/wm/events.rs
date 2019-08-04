@@ -4,7 +4,7 @@ use crate::wm::workspace::Workspace;
 
 #[derive(Debug, Hash, Eq, PartialEq)]
 pub enum Event {
-    Window,
+    WindowTitle,
     Windows,
     Mode,
     Workspace,
@@ -15,7 +15,7 @@ pub enum Event {
 pub enum EventValue {
     String(String),
     Workspaces(Vec<Workspace>),
-    Windows(HashMap<xcb::Window, crate::wm::xcb::windows::XWindowData>)
+    Windows(HashMap<xcb::Window, crate::wm::xcb::xwindows::XWindowData>)
 }
 
 // impl

@@ -94,7 +94,7 @@ impl WMUtil {
         wm::xcb::listen(&util);
 
         // TODO
-        wm::xcb::windows::listen(&util);
+        wm::xcb::xwindows::listen(&util);
         crate::decorations::load_decorations(&util);
 
         // WM specific listeners
