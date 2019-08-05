@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use crate::wm;
 use crate::wm::events::{Event, EventValue};
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 pub struct XWindowData {
     pub x: i16,
     pub y: i16,

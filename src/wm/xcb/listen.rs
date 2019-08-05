@@ -95,7 +95,6 @@ pub fn listen(wm_util: &crate::wm::WMUtil) {
                                         let monitors = wm::gtk::get_monitor_coords();
                                         let workspaces = wm::xcb::get_workspaces(&conn, screen_num, &monitors);
 
-
                                         tx.send(Ok(XCBMsg::Workspace(workspaces))).unwrap();
 
                                     }
