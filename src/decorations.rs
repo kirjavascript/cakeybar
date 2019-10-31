@@ -88,15 +88,15 @@ pub fn load_decorations(wm_util: &wm::WMUtil) {
                             }
                         }
 
-        let label = gtk::Label::new(None);
+                        let label = gtk::Label::new(None);
 
-        label.set_text(&name);
-        label.show();
+                        label.set_text(&name);
+                        label.show();
 
-        let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
-        container.add(&label);
-        window.add(&container);
-        WidgetExt::set_name(&container, "info");
+                        let container = gtk::Box::new(gtk::Orientation::Horizontal, 0);
+                        container.add(&label);
+                        window.add(&container);
+                        WidgetExt::set_name(&container, "info");
 
                         WidgetExt::set_name(&window, "info");
 
