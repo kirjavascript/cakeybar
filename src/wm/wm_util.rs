@@ -95,7 +95,7 @@ impl WMUtil {
 
         // TODO
         wm::xcb::xwindows::listen(&util);
-        crate::decorations::load_decorations(&util);
+        // crate::decorations::load_decorations(&util);
 
         // WM specific listeners
         match util.get_wm_type() {

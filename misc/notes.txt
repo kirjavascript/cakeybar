@@ -28,11 +28,17 @@ https://github.com/mjkillough/cnx
 xid:
 https://github.com/gtk-rs/gdk/issues/182
 https://gitlab.freedesktop.org/gstreamer/gstreamer-rs/blob/master/examples/src/bin/gtkvideooverlay.rs#L54
+transparency
+https://github.com/sdhand/n30f/blob/master/n30f.c#L50
 
-show overlay win95 when press start / runbox
+show result of command in command_input
+
+cakeyshell
 mpd now playing
+show overlay win95 when press start / runbox
 features for 1.0.0: tray bugs, multiple install options, stacking order
 ist windows on active desktops
+color_backtrace -> dev dep
 
 unknownwm
 =========
@@ -104,7 +110,9 @@ left/right bars
 
 components
 ====
+videlike wmcursor
 emoji picker
+somaFM picker
 17:10:12 <+isk> Kirjava: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/Uno_Slave_Reader/Visualizer.h
 17:10:45 <+isk> also if you're interested in terminal ascii visual representation: https://github.com/bartlettmic/arduino-projects/blob/master/RoomLEDs/fade.cpp
 1D colour red-green lerping equalizer
